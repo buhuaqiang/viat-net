@@ -24,6 +24,7 @@ namespace VIAT.Basic.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IViat_com_custRepository _repository;//访问数据库
+        WebResponseContent webResponse = new WebResponseContent();
 
         [ActivatorUtilitiesConstructor]
         public Viat_com_custService(
@@ -37,5 +38,28 @@ namespace VIAT.Basic.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+
+
+        public override WebResponseContent Add(SaveModel saveDataModel)
+        {
+
+            string code = getCustCode();
+            saveDataModel.MainData["cust_code"] = code;
+            // 在保存数据库前的操作，所有数据都验证通过了，这一步执行完就执行数据库保存
+            AddOnExecuting = (Viat_com_cust order, object list) =>
+            {
+                order.cust_code = code;
+
+                return webResponse.OK();
+            };
+
+            return base.Add(saveDataModel);
+        }
+
+        public string getCustCode()
+        {
+            string rule = "C" + $"D{DateTime.Now.GetHashCode()}";
+            return rule.Substring(0, 10);
+        }
+    }
 }
