@@ -63,7 +63,6 @@ namespace VOL.System.Services
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
                 msg = ex.Message + ex.StackTrace;
                 return responseContent.Error(ResponseType.ServerError);
             }
