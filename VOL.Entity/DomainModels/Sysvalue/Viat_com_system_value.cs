@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 /*
  *代码由框架生成,任何更改都可能导致被代码生成器覆盖
  *如果数据库字段发生变化，请在代码生器重新生成此Model
@@ -14,53 +13,62 @@ using VOL.Entity.SystemModels;
 
 namespace VOL.Entity.DomainModels
 {
-    [Entity(TableCnName = "地區信息",TableName = "Viat_com_zip_city")]
-    public partial class Viat_com_zip_city:BaseEntity
+    [Entity(TableCnName = "系統參數設置",TableName = "Viat_com_system_value")]
+    public partial class Viat_com_system_value:BaseEntity
     {
         /// <summary>
-       ///識別碼, PK, Identity
+       ///ID
        /// </summary>
-       [Display(Name ="識別碼, PK, Identity")]
-       [JsonIgnore]
+       [Key]
+       [Display(Name ="ID")]
+       [Column(TypeName="uniqueidentifier")]
+       [Required(AllowEmptyStrings=false)]
+       public Guid sysval_dbid { get; set; }
+
+       /// <summary>
+       ///ID
+       /// </summary>
+       [Display(Name ="ID")]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
        public int dbid { get; set; }
 
        /// <summary>
-       ///地區編碼
+       ///類別代碼
        /// </summary>
-       [Display(Name ="地區編碼")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
+       [Display(Name ="類別代碼")]
+       [MaxLength(255)]
+       [Column(TypeName="varchar(255)")]
        [Editable(true)]
-       public string zip_id { get; set; }
+       [Required(AllowEmptyStrings=false)]
+       public string category_id { get; set; }
 
        /// <summary>
-       ///地區名稱
+       ///參數名稱
        /// </summary>
-       [Display(Name ="地區名稱")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
+       [Display(Name ="參數名稱")]
+       [MaxLength(255)]
+       [Column(TypeName="varchar(255)")]
        [Editable(true)]
-       public string zip_name { get; set; }
+       [Required(AllowEmptyStrings=false)]
+       public string sys_key { get; set; }
 
        /// <summary>
-       ///城市代碼
+       ///參數值
        /// </summary>
-       [Display(Name ="城市代碼")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
+       [Display(Name ="參數值")]
+       [MaxLength(255)]
+       [Column(TypeName="nvarchar(255)")]
        [Editable(true)]
-       public string city_id { get; set; }
+       public string sys_value { get; set; }
 
        /// <summary>
-       ///城市名稱
+       ///順序
        /// </summary>
-       [Display(Name ="城市名稱")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
+       [Display(Name ="順序")]
+       [Column(TypeName="decimal")]
        [Editable(true)]
-       public string city_name { get; set; }
+       public decimal? seqno { get; set; }
 
        /// <summary>
        ///是否有效
@@ -72,11 +80,27 @@ namespace VOL.Entity.DomainModels
        public string status { get; set; }
 
        /// <summary>
+       ///備註
+       /// </summary>
+       [Display(Name ="備註")]
+       [MaxLength(450)]
+       [Column(TypeName="nvarchar(450)")]
+       [Editable(true)]
+       public string remarks { get; set; }
+
+       /// <summary>
        ///建立用戶
        /// </summary>
        [Display(Name ="建立用戶")]
        [Column(TypeName="int")]
        public int? created_user { get; set; }
+
+       /// <summary>
+       ///建立者的委託人
+       /// </summary>
+       [Display(Name ="建立者的委託人")]
+       [Column(TypeName="int")]
+       public int? created_client { get; set; }
 
        /// <summary>
        ///建立時間
@@ -93,13 +117,6 @@ namespace VOL.Entity.DomainModels
        public int? modified_user { get; set; }
 
        /// <summary>
-       ///最後修改時間
-       /// </summary>
-       [Display(Name ="最後修改時間")]
-       [Column(TypeName="datetime")]
-       public DateTime? modified_date { get; set; }
-
-       /// <summary>
        ///最後修改者的委託人
        /// </summary>
        [Display(Name ="最後修改者的委託人")]
@@ -107,20 +124,11 @@ namespace VOL.Entity.DomainModels
        public int? modified_client { get; set; }
 
        /// <summary>
-       ///建立者的委託人
+       ///最後修改時間
        /// </summary>
-       [Display(Name ="建立者的委託人")]
-       [Column(TypeName="int")]
-       public int? created_client { get; set; }
-
-       /// <summary>
-       ///郵區表DBID
-       /// </summary>
-       [Key]
-       [Display(Name ="郵區表DBID")]
-       [Column(TypeName="uniqueidentifier")]
-       [Required(AllowEmptyStrings=false)]
-       public Guid zip_dbid { get; set; }
+       [Display(Name ="最後修改時間")]
+       [Column(TypeName="datetime")]
+       public DateTime? modified_date { get; set; }
 
        
     }

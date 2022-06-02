@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
+using System;
 
 namespace VIAT.Basic.Services
 {
@@ -44,11 +45,11 @@ namespace VIAT.Basic.Services
         {
 
             string code = getCustCode();
-            saveDataModel.MainData["cust_code"] = code;
+            saveDataModel.MainData["cust_id"] = code;
             // 在保存数据库前的操作，所有数据都验证通过了，这一步执行完就执行数据库保存
             AddOnExecuting = (Viat_com_cust order, object list) =>
             {
-                order.cust_code = code;
+                order.cust_id = code;
 
                 return webResponse.OK();
             };
