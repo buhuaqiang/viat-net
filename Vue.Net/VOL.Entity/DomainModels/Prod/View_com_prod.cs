@@ -64,13 +64,12 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///Item Code
        /// </summary>
-       [Key]
        [Display(Name ="Item Code")]
        [MaxLength(15)]
-       [Column(TypeName="uniqueidentifier")]
+       [Column(TypeName="varchar(15)")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
-       public Guid prod_id { get; set; }
+       public string prod_id { get; set; }
 
        /// <summary>
        ///Item Description(Chinese)
@@ -355,84 +354,6 @@ namespace VOL.Entity.DomainModels
        public Guid? localmpg_dbid { get; set; }
 
        /// <summary>
-       ///globalmpgid
-       /// </summary>
-       [Display(Name ="globalmpgid")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? globalmpg_dbid { get; set; }
-
-       /// <summary>
-       ///列名lmpg_mpg_name
-       /// </summary>
-       [Display(Name ="列名lmpg_mpg_name")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
-       public string lmpg_mpg_name { get; set; }
-
-       /// <summary>
-       ///列名lmpg_category
-       /// </summary>
-       [Display(Name ="列名lmpg_category")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       public string lmpg_category { get; set; }
-
-       /// <summary>
-       ///列名lmpg_bu_id
-       /// </summary>
-       [Display(Name ="列名lmpg_bu_id")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       public string lmpg_bu_id { get; set; }
-
-       /// <summary>
-       ///列名lmpg_ta
-       /// </summary>
-       [Display(Name ="列名lmpg_ta")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       public string lmpg_ta { get; set; }
-
-       /// <summary>
-       ///列名lmpg_ma_id
-       /// </summary>
-       [Display(Name ="列名lmpg_ma_id")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       public string lmpg_ma_id { get; set; }
-
-       /// <summary>
-       ///列名lmpg_supervisor_id
-       /// </summary>
-       [Display(Name ="列名lmpg_supervisor_id")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       public string lmpg_supervisor_id { get; set; }
-
-       /// <summary>
-       ///列名lmpg_sort
-       /// </summary>
-       [Display(Name ="列名lmpg_sort")]
-       [Column(TypeName="int")]
-       public int? lmpg_sort { get; set; }
-
-       /// <summary>
-       ///列名lmpg_status
-       /// </summary>
-       [Display(Name ="列名lmpg_status")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       public string lmpg_status { get; set; }
-
-       /// <summary>
-       ///列名lmpg_main_prod
-       /// </summary>
-       [Display(Name ="列名lmpg_main_prod")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       public string lmpg_main_prod { get; set; }
-
-       /// <summary>
        ///列名modified_client
        /// </summary>
        [Display(Name ="列名modified_client")]
@@ -477,9 +398,11 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///列名prod_dbid
        /// </summary>
+       [Key]
        [Display(Name ="列名prod_dbid")]
        [Column(TypeName="uniqueidentifier")]
-       public Guid? prod_dbid { get; set; }
+       [Required(AllowEmptyStrings=false)]
+       public Guid prod_dbid { get; set; }
 
        
     }
