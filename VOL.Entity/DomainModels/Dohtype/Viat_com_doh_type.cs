@@ -28,10 +28,10 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///ID
        /// </summary>
-       [Display(Name ="ID")]
+       /*[Display(Name ="ID")]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
+       public int dbid { get; set; }*/
 
        /// <summary>
        ///公司別,舊版SUN_DB
@@ -66,7 +66,6 @@ namespace VOL.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string doh_type_name { get; set; }
 
        /// <summary>
@@ -91,10 +90,10 @@ namespace VOL.Entity.DomainModels
        ///是否有效,True:生效;False:失效
        /// </summary>
        [Display(Name ="是否有效,True:生效;False:失效")]
-       [Column(TypeName="bit")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public bool status { get; set; }
+       public string status { get; set; }
 
        /// <summary>
        ///健保類別對照碼

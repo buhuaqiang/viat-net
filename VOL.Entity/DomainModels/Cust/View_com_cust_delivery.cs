@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 /*
  *代码由框架生成,任何更改都可能导致被代码生成器覆盖
  *如果数据库字段发生变化，请在代码生器重新生成此Model
@@ -14,146 +13,160 @@ using VOL.Entity.SystemModels;
 
 namespace VOL.Entity.DomainModels
 {
-    [Entity(TableCnName = "客戶送貨資訊",TableName = "Viat_com_cust_delivery")]
-    public partial class Viat_com_cust_delivery:BaseEntity
+    [Entity(TableCnName = "客戶送貨地址信息視圖",TableName = "View_com_cust_delivery")]
+    public partial class View_com_cust_delivery:BaseEntity
     {
         /// <summary>
-       ///ID
+       ///
        /// </summary>
        [Key]
-       [Display(Name ="ID")]
+       [Display(Name ="delivery_dbid")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
        public Guid delivery_dbid { get; set; }
 
        /// <summary>
-       ///識別碼, PK, Identity
+       ///
        /// </summary>
-       /*[Display(Name ="識別碼, PK, Identity")]
-       [JsonIgnore]
+       [Display(Name ="dbid")]
        [Column(TypeName="numeric")]
        [Required(AllowEmptyStrings=false)]
-       public decimal dbid { get; set; }*/
+       public decimal dbid { get; set; }
 
        /// <summary>
-       ///公司別,舊版SUM_DB
+       ///
        /// </summary>
-       [Display(Name ="公司別,舊版SUM_DB")]
+       [Display(Name ="entity")]
        [MaxLength(3)]
-       [JsonIgnore]
        [Column(TypeName="varchar(3)")]
        public string entity { get; set; }
 
        /// <summary>
-       ///所屬事業單位,01:PH;03:AH;05:CH;06:NU
+       ///
        /// </summary>
-       [Display(Name ="所屬事業單位,01:PH;03:AH;05:CH;06:NU")]
+       [Display(Name ="division")]
        [MaxLength(15)]
-       [JsonIgnore]
        [Column(TypeName="varchar(15)")]
        public string division { get; set; }
 
        /// <summary>
-       ///客戶代碼
+       ///
        /// </summary>
-       [Display(Name ="客戶代碼")]
+       [Display(Name ="cust_dbid")]
        [Column(TypeName="uniqueidentifier")]
        public Guid? cust_dbid { get; set; }
 
        /// <summary>
-       ///郵區代碼
+       ///
        /// </summary>
-       [Display(Name ="郵區代碼")]
+       [Display(Name ="zip_id")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
        public string zip_id { get; set; }
 
        /// <summary>
-       ///序號
+       ///
        /// </summary>
-       [Display(Name ="序號")]
+       [Display(Name ="seq_no")]
        [Column(TypeName="decimal")]
        [Editable(true)]
-        public decimal? seq_no { get; set; }
+       public decimal? seq_no { get; set; }
 
        /// <summary>
-       ///送貨抬頭
+       ///
        /// </summary>
-       [Display(Name ="送貨抬頭")]
+       [Display(Name ="delivery_name")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
        public string delivery_name { get; set; }
 
        /// <summary>
-       ///聯絡人
+       ///
        /// </summary>
-       [Display(Name ="聯絡人")]
+       [Display(Name ="delivery_contact")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
        public string delivery_contact { get; set; }
 
        /// <summary>
-       ///聯絡人電話
+       ///
        /// </summary>
-       [Display(Name ="聯絡人電話")]
+       [Display(Name ="delivery_tel_no")]
        [MaxLength(60)]
        [Column(TypeName="varchar(60)")]
        [Editable(true)]
        public string delivery_tel_no { get; set; }
 
        /// <summary>
-       ///送貨地址
+       ///
        /// </summary>
-       [Display(Name ="送貨地址")]
+       [Display(Name ="delivery_addr")]
        [MaxLength(200)]
        [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
        public string delivery_addr { get; set; }
 
        /// <summary>
-       ///建立用戶
+       ///
        /// </summary>
-       [Display(Name ="建立用戶")]
+       [Display(Name ="created_user")]
        [Column(TypeName="int")]
        public int? created_user { get; set; }
 
        /// <summary>
-       ///建立者的委託人
+       ///
        /// </summary>
-       [Display(Name ="建立者的委託人")]
+       [Display(Name ="created_client")]
        [Column(TypeName="int")]
        public int? created_client { get; set; }
 
        /// <summary>
-       ///建立時間
+       ///
        /// </summary>
-       [Display(Name ="建立時間")]
+       [Display(Name ="created_date")]
        [Column(TypeName="datetime")]
        public DateTime? created_date { get; set; }
 
        /// <summary>
-       ///最後修改用戶
+       ///
        /// </summary>
-       [Display(Name ="最後修改用戶")]
+       [Display(Name ="modified_user")]
        [Column(TypeName="int")]
        public int? modified_user { get; set; }
 
        /// <summary>
-       ///最後修改者的委託人
+       ///
        /// </summary>
-       [Display(Name ="最後修改者的委託人")]
+       [Display(Name ="modified_client")]
        [Column(TypeName="int")]
        public int? modified_client { get; set; }
 
        /// <summary>
-       ///最後修改時間
+       ///
        /// </summary>
-       [Display(Name ="最後修改時間")]
+       [Display(Name ="modified_date")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="city_name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       [Editable(true)]
+       public string city_name { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="zip_name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       public string zip_name { get; set; }
 
        
     }
