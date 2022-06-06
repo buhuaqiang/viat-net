@@ -170,7 +170,8 @@ namespace VOL.System.Controllers
             var data = new
             {
                 img = VierificationCode.CreateBase64Imgage(code),
-                uuid = Guid.NewGuid()
+                uuid = Guid.NewGuid(),
+                code = code
             };
             HttpContext.GetService<IMemoryCache>().Set(data.uuid.ToString(), code, new TimeSpan(0, 5, 0));
             return Json(data);
