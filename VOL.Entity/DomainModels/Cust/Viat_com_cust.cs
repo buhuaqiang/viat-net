@@ -20,7 +20,7 @@ namespace VOL.Entity.DomainModels
         /// <summary>
        ///
        /// </summary>
-       /*[Display(Name ="dbid")]
+      /* [Display(Name ="dbid")]
        [JsonIgnore]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
@@ -310,24 +310,6 @@ namespace VOL.Entity.DomainModels
        public string doh_type { get; set; }
 
        /// <summary>
-       ///客戶地址郵區代碼
-       /// </summary>
-       [Display(Name ="客戶地址郵區代碼")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       [Editable(true)]
-       public string zip_id { get; set; }
-
-       /// <summary>
-       ///郵寄郵區代碼
-       /// </summary>
-       [Display(Name ="郵寄郵區代碼")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       [Editable(true)]
-       public string bmp_zip_id { get; set; }
-
-       /// <summary>
        ///最後修改時間
        /// </summary>
        [Display(Name ="最後修改時間")]
@@ -377,6 +359,29 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
        public Guid cust_dbid { get; set; }
+
+       /// <summary>
+       ///客戶地址郵區代碼
+       /// </summary>
+       [Display(Name ="客戶地址郵區代碼")]
+       [MaxLength(5)]
+       [Column(TypeName="varchar(5)")]
+       public string cust_zip_id { get; set; }
+
+       /// <summary>
+       ///發票地址郵區代碼
+       /// </summary>
+       [Display(Name ="發票地址郵區代碼")]
+       [MaxLength(5)]
+       [Column(TypeName="varchar(5)")]
+       public string invoice_zip_id { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="last_deal_date")]
+       [Column(TypeName="date")]
+       public DateTime? last_deal_date { get; set; }
 
        [Display(Name ="客戶送貨資訊")]
        [ForeignKey("cust_dbid")]
