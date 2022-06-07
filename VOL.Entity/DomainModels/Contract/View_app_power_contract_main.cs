@@ -13,7 +13,7 @@ using VOL.Entity.SystemModels;
 
 namespace VOL.Entity.DomainModels
 {
-    [Entity(TableCnName = "GP合约主页面",TableName = "View_app_power_contract_main",DetailTable =  new Type[] { typeof(Viat_app_power_contract_cust)},DetailTableCnName = "合約客戶列表")]
+    [Entity(TableCnName = "GP合约主页面",TableName = "View_app_power_contract_main")]
     public partial class View_app_power_contract_main:BaseEntity
     {
         /// <summary>
@@ -81,7 +81,6 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="列cust_id")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
-       [Editable(true)]
        public string cust_id { get; set; }
 
        /// <summary>
@@ -136,10 +135,10 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///列state
        /// </summary>
-    /*   [Display(Name ="列state")]
+       [Display(Name ="列state")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       public string state { get; set; }*/
+       public string state { get; set; }
 
        /// <summary>
        ///列close_date
@@ -210,7 +209,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
-       public string state { get; set; }
+       public string contract_state { get; set; }
 
        /// <summary>
        ///列C1
@@ -218,7 +217,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="列C1")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-      // [Required(AllowEmptyStrings=false)]
+       [Required(AllowEmptyStrings=false)]
        public string C1 { get; set; }
 
        /// <summary>
@@ -268,6 +267,7 @@ namespace VOL.Entity.DomainModels
        /// </summary>
        [Display(Name ="列名pricegroup_dbid")]
        [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
        public Guid? pricegroup_dbid { get; set; }
 
        /// <summary>
@@ -275,6 +275,7 @@ namespace VOL.Entity.DomainModels
        /// </summary>
        [Display(Name ="列名cust_dbid")]
        [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
        public Guid? cust_dbid { get; set; }
 
        /// <summary>
@@ -283,6 +284,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="列名group_id")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
+       [Editable(true)]
        public string group_id { get; set; }
 
        /// <summary>
@@ -310,9 +312,47 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="nvarchar(255)")]
        public string GPDS_Contract_Type { get; set; }
 
-       [Display(Name ="合約客戶列表")]
-       [ForeignKey("powercont_dbid")]
-       public List<Viat_app_power_contract_cust> Viat_app_power_contract_cust { get; set; }
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="create_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string create_username { get; set; }
 
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="create_client")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string create_client { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientuser")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientuser { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="isgroup")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
+       public string isgroup { get; set; }
+
+       
     }
 }

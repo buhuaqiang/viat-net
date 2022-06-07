@@ -78,17 +78,27 @@ namespace VIAT.Contract.Services
                 return webResponse.OK();
             };
             saveModel.DetailData = null;
-            //VSellOrder为视图
-            //直接操作原表SellOrder的编辑功能
-            //saveModel为视图编辑字段信息，如果当前视图提交的saveModel字段与原表SellOrder不一致，
+
+            string code = getContractNo();
+            saveModel.MainData["contract_no"] = code;
+
             //可以直接修改视图提交saveModel里面的字段信息
-             return Viat_app_power_contractService.Instance.Add(saveModel);
+            return Viat_app_power_contractService.Instance.Add(saveModel);
             //return base.Update(saveModel);
         }
+
+
+        public string getContractNo()
+        {
+            string rule = "C" + $"D{DateTime.Now.GetHashCode()}";
+            return rule.Substring(0, 10);
+        }
+
+
         WebResponseContent webResponse = new WebResponseContent();
         public override WebResponseContent Update(SaveModel saveModel)
         {
-            //saveModel.MainData["C1"] = "1111";
+           /*
             UpdateOnExecuting = (View_app_power_contract_main view_App_Power, object addList, object updateList, List<object> delKeys) =>
             {
 
@@ -139,8 +149,10 @@ namespace VIAT.Contract.Services
                 webResponse.Code = "-1";
                 return webResponse.OK("OK");
             };
-            return base.Update(saveModel);
-            //  return Viat_app_power_contractService.Instance.Update(saveModel);
+           
+            //return base.Update(saveModel);
+           */
+              return Viat_app_power_contractService.Instance.Update(saveModel);
         }
         /// <summary>
         /// 查询业务代码编写(从表(明细表查询))
