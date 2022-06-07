@@ -366,7 +366,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="客戶地址郵區代碼")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
-       public string cust_zip_id { get; set; }
+        [Editable(true)]
+        public string cust_zip_id { get; set; }
 
        /// <summary>
        ///發票地址郵區代碼
@@ -374,7 +375,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="發票地址郵區代碼")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
-       public string invoice_zip_id { get; set; }
+        [Editable(true)]
+        public string invoice_zip_id { get; set; }
 
        /// <summary>
        ///
