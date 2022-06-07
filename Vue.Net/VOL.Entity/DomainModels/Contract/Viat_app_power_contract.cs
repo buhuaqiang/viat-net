@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 /*
  *代码由框架生成,任何更改都可能导致被代码生成器覆盖
  *如果数据库字段发生变化，请在代码生器重新生成此Model
@@ -181,10 +182,11 @@ namespace VOL.Entity.DomainModels
        ///識別碼, PK, Identity
        /// </summary>
     /*   [Display(Name ="識別碼, PK, Identity")]
+       [JsonIgnore]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-*/
+       public int dbid { get; set; }*/
+
        /// <summary>
        ///最後修改者的委託人
        /// </summary>
@@ -251,6 +253,38 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
        public Guid powercont_dbid { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="create_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string create_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="create_client")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string create_client { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientuser")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientuser { get; set; }
 
        
     }
