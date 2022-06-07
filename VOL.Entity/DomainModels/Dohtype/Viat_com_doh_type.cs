@@ -28,10 +28,10 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///ID
        /// </summary>
-       /*[Display(Name ="ID")]
+       [Display(Name ="ID")]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }*/
+       public int dbid { get; set; }
 
        /// <summary>
        ///公司別,舊版SUN_DB
@@ -145,6 +145,38 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="最後修改時間")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
        
     }

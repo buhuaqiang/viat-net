@@ -30,11 +30,11 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///列名dbid
        /// </summary>
-       [Display(Name ="列名dbid")]
+       /*[Display(Name ="列名dbid")]
        [JsonIgnore]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
+       public int dbid { get; set; }*/
 
        /// <summary>
        ///列名entity
@@ -230,21 +230,24 @@ namespace VOL.Entity.DomainModels
        /// </summary>
        [Display(Name ="列名own_hospital")]
        [Column(TypeName="uniqueidentifier")]
-       public Guid? own_hospital { get; set; }
+        [Editable(true)]
+        public Guid? own_hospital { get; set; }
 
        /// <summary>
        ///列名med_group
        /// </summary>
        [Display(Name ="列名med_group")]
        [Column(TypeName="uniqueidentifier")]
-       public Guid? med_group { get; set; }
+        [Editable(true)]
+        public Guid? med_group { get; set; }
 
        /// <summary>
        ///列名delv_group
        /// </summary>
        [Display(Name ="列名delv_group")]
        [Column(TypeName="uniqueidentifier")]
-       public Guid? delv_group { get; set; }
+        [Editable(true)]
+        public Guid? delv_group { get; set; }
 
        /// <summary>
        ///列名new_cust_id
@@ -323,11 +326,38 @@ namespace VOL.Entity.DomainModels
        public string invoice_city_name { get; set; }
 
        /// <summary>
+       ///客戶城市
+       /// </summary>
+       [Display(Name ="客戶城市")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       [Editable(true)]
+       public string cust_city_name { get; set; }
+
+       /// <summary>
+       ///客戶地區
+       /// </summary>
+       [Display(Name ="客戶地區")]
+       [MaxLength(5)]
+       [Column(TypeName="varchar(5)")]
+       [Editable(true)]
+       public string cust_zip_id { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="cust_zip_name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       public string cust_zip_name { get; set; }
+
+       /// <summary>
        ///列名invoice_zip_id
        /// </summary>
        [Display(Name ="列名invoice_zip_id")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
+       [Editable(true)]
        public string invoice_zip_id { get; set; }
 
        /// <summary>
@@ -385,17 +415,9 @@ namespace VOL.Entity.DomainModels
        ///列名created_username
        /// </summary>
        [Display(Name ="列名created_username")]
-       [MaxLength(100)]
-       [Column(TypeName="nvarchar(100)")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
        public string created_username { get; set; }
-
-       /// <summary>
-       ///列名modified_clientuser
-       /// </summary>
-       [Display(Name ="列名modified_clientuser")]
-       [MaxLength(100)]
-       [Column(TypeName="nvarchar(100)")]
-       public string modified_clientuser { get; set; }
 
        /// <summary>
        ///列名own_hospitalname
@@ -404,7 +426,6 @@ namespace VOL.Entity.DomainModels
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string own_hospitalname { get; set; }
 
        /// <summary>
@@ -414,7 +435,6 @@ namespace VOL.Entity.DomainModels
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string med_groupname { get; set; }
 
        /// <summary>
@@ -424,7 +444,6 @@ namespace VOL.Entity.DomainModels
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string delv_groupname { get; set; }
 
        /// <summary>
@@ -437,15 +456,6 @@ namespace VOL.Entity.DomainModels
        public string C1 { get; set; }
 
        /// <summary>
-       ///客戶地區
-       /// </summary>
-       [Display(Name ="客戶地區")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       [Editable(true)]
-       public string cust_zip_id { get; set; }
-
-       /// <summary>
        ///
        /// </summary>
        [Display(Name ="last_deal_date")]
@@ -453,21 +463,28 @@ namespace VOL.Entity.DomainModels
        public DateTime? last_deal_date { get; set; }
 
        /// <summary>
-       ///客戶城市
+       ///
        /// </summary>
-       [Display(Name ="客戶城市")]
+       [Display(Name ="created_clientusername")]
        [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
-       [Editable(true)]
-       public string cust_city_name { get; set; }
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
 
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="cust_zip_name")]
+       [Display(Name ="modified_username")]
        [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
-       public string cust_zip_name { get; set; }
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
        [Display(Name ="客戶送貨資訊")]
        [ForeignKey("cust_dbid")]

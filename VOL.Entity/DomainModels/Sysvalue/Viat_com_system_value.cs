@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 /*
  *代码由框架生成,任何更改都可能导致被代码生成器覆盖
  *如果数据库字段发生变化，请在代码生器重新生成此Model
@@ -28,10 +29,11 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///ID
        /// </summary>
-      /* [Display(Name ="ID")]
+       [Display(Name ="ID")]
+       [JsonIgnore]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }*/
+       public int dbid { get; set; }
 
        /// <summary>
        ///類別代碼
@@ -129,6 +131,38 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="最後修改時間")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
        
     }
