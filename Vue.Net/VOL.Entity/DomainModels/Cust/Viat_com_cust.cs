@@ -20,7 +20,7 @@ namespace VOL.Entity.DomainModels
         /// <summary>
        ///
        /// </summary>
-      /* [Display(Name ="dbid")]
+       /*[Display(Name ="dbid")]
        [JsonIgnore]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
@@ -366,8 +366,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="客戶地址郵區代碼")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
-        [Editable(true)]
-        public string cust_zip_id { get; set; }
+       [Editable(true)]
+       public string cust_zip_id { get; set; }
 
        /// <summary>
        ///發票地址郵區代碼
@@ -375,8 +375,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="發票地址郵區代碼")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
-        [Editable(true)]
-        public string invoice_zip_id { get; set; }
+       [Editable(true)]
+       public string invoice_zip_id { get; set; }
 
        /// <summary>
        ///
@@ -384,6 +384,38 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="last_deal_date")]
        [Column(TypeName="date")]
        public DateTime? last_deal_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
        [Display(Name ="客戶送貨資訊")]
        [ForeignKey("cust_dbid")]
