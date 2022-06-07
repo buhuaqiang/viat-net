@@ -106,7 +106,18 @@ namespace VIAT.Basic.Services
 
         public override WebResponseContent Update(SaveModel saveModel)
         {
+             UpdateOnExecuting = (View_com_cust order, object addList, object updateList, List<object> delKeys) =>
+             {
+
+                return webResponse.OK();
+            };
             return _viat_com_custService.Update(saveModel);
+        }
+
+
+        public override WebResponseContent Del(object[] keys, bool delList = true)
+        {
+            return _viat_com_custService.Del(keys, delList);
         }
     }
 }
