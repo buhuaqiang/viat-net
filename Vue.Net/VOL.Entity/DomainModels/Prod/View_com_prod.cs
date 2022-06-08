@@ -404,6 +404,38 @@ namespace VOL.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public Guid prod_dbid { get; set; }
 
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
+
        
     }
 }
