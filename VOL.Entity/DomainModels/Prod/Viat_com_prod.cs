@@ -96,7 +96,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="標準成本")]
        [DisplayFormat(DataFormatString="12,5")]
        [Column(TypeName="decimal")]
-       public decimal? std_cost { get; set; }
+        [Editable(true)]
+        public decimal? std_cost { get; set; }
 
        /// <summary>
        ///最小庫存單位
@@ -176,7 +177,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="是否為管制藥品")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       public string is_ctrl_drug { get; set; }
+        [Editable(true)]
+        public string is_ctrl_drug { get; set; }
 
        /// <summary>
        ///健保價
@@ -286,7 +288,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="產品簡稱")]
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
-       public string prod_short_name { get; set; }
+        [Editable(true)]
+        public string prod_short_name { get; set; }
 
        /// <summary>
        ///產品屬性-產品大類
@@ -302,7 +305,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="產品屬性-產品劑型(膠囊/針劑/藥丸)")]
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
-       public string prod_form { get; set; }
+        [Editable(true)]
+        public string prod_form { get; set; }
 
        /// <summary>
        ///產品屬性-產品劑量
@@ -310,7 +314,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="產品屬性-產品劑量")]
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
-       public string prod_strength { get; set; }
+        [Editable(true)]
+        public string prod_strength { get; set; }
 
        /// <summary>
        ///產品屬性-劑量單位
@@ -318,7 +323,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="產品屬性-劑量單位")]
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
-       public string prod_packed { get; set; }
+        [Editable(true)]
+        public string prod_packed { get; set; }
 
        /// <summary>
        ///最後修改者的委託人
