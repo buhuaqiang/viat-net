@@ -62,6 +62,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="產品id")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string prod_id { get; set; }
 
        /// <summary>
@@ -174,8 +176,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="是否為管制藥品")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-        [Editable(true)]
-        public string is_ctrl_drug { get; set; }
+       public string is_ctrl_drug { get; set; }
 
        /// <summary>
        ///健保價
@@ -192,7 +193,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
        [Editable(true)]
-        public string license_no { get; set; }
+       public string license_no { get; set; }
 
        /// <summary>
        ///許可證名稱
@@ -201,7 +202,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(60)]
        [Column(TypeName="nvarchar(60)")]
        [Editable(true)]
-        public string license_name { get; set; }
+       public string license_name { get; set; }
 
        /// <summary>
        ///
@@ -222,8 +223,8 @@ namespace VOL.Entity.DomainModels
        /// </summary>
        [Display(Name ="安全庫存量")]
        [Column(TypeName="int")]
-        [Editable(true)]
-        public int? safty_stock { get; set; }
+       [Editable(true)]
+       public int? safty_stock { get; set; }
 
        /// <summary>
        ///狀態
@@ -231,8 +232,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="狀態")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-        [Editable(true)]
-        public string state { get; set; }
+       [Editable(true)]
+       public string state { get; set; }
 
        /// <summary>
        ///是否可申請樣品
@@ -240,8 +241,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="是否可申請樣品")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-        [Editable(true)]
-        public string status_sample { get; set; }
+       [Editable(true)]
+       public string status_sample { get; set; }
 
        /// <summary>
        ///是否可申請議價決標單
@@ -249,8 +250,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="是否可申請議價決標單")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-        [Editable(true)]
-        public string status_bid { get; set; }
+       [Editable(true)]
+       public string status_bid { get; set; }
 
        /// <summary>
        ///輝瑞庫存狀態
@@ -258,6 +259,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="輝瑞庫存狀態")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Editable(true)]
        public string status_stock_pfizer { get; set; }
 
        /// <summary>
@@ -266,8 +268,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="經銷商庫存狀態")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-        [Editable(true)]
-        public string status_stock_dist { get; set; }
+       [Editable(true)]
+       public string status_stock_dist { get; set; }
 
        /// <summary>
        ///預設所屬經銷商
@@ -275,8 +277,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="預設所屬經銷商")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
-        [Editable(true)]
-        public string default_dist_id { get; set; }
+       [Editable(true)]
+       public string default_dist_id { get; set; }
 
        /// <summary>
        ///產品簡稱
@@ -284,8 +286,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="產品簡稱")]
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
-       [Editable(true)]
-        public string prod_short_name { get; set; }
+       public string prod_short_name { get; set; }
 
        /// <summary>
        ///產品屬性-產品大類
@@ -301,8 +302,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="產品屬性-產品劑型(膠囊/針劑/藥丸)")]
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
-        [Editable(true)]
-        public string prod_form { get; set; }
+       public string prod_form { get; set; }
 
        /// <summary>
        ///產品屬性-產品劑量
@@ -310,8 +310,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="產品屬性-產品劑量")]
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
-        [Editable(true)]
-        public string prod_strength { get; set; }
+       public string prod_strength { get; set; }
 
        /// <summary>
        ///產品屬性-劑量單位
@@ -319,8 +318,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="產品屬性-劑量單位")]
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
-        [Editable(true)]
-        public string prod_packed { get; set; }
+       public string prod_packed { get; set; }
 
        /// <summary>
        ///最後修改者的委託人
@@ -363,6 +361,38 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="最後修改時間")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
+
+       /// <summary>
+       ///建立用戶賬號
+       /// </summary>
+       [Display(Name ="建立用戶賬號")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///建立者的委託人賬號
+       /// </summary>
+       [Display(Name ="建立者的委託人賬號")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///最後修改用戶賬號
+       /// </summary>
+       [Display(Name ="最後修改用戶賬號")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///最後修改的委託人賬號
+       /// </summary>
+       [Display(Name ="最後修改的委託人賬號")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
        
     }
