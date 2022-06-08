@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using VOL.Core.Controllers.Basic;
 using VOL.Entity.AttributeManager;
 using VIAT.Contract.IServices;
+using VOL.Core.Filters;
+using VOL.Entity.DomainModels;
+
 namespace VIAT.Contract.Controllers
 {
     [Route("api/Viat_app_power_contract_cust")]
@@ -15,6 +18,13 @@ namespace VIAT.Contract.Controllers
         public Viat_app_power_contract_custController(IViat_app_power_contract_custService service)
         : base(service)
         {
+        }
+
+        [HttpPost, Route("GetPageData")]
+        [ApiActionPermission()]
+        public override ActionResult GetPageData([FromBody] PageDataOptions loadData)
+        {
+            return base.GetPageData(loadData);
         }
     }
 }
