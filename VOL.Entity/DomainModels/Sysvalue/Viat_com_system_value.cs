@@ -29,11 +29,11 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///ID
        /// </summary>
-       [Display(Name ="ID")]
+       /*[Display(Name ="ID")]
        [JsonIgnore]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
+       public int dbid { get; set; }*/
 
        /// <summary>
        ///類別代碼
