@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using VOL.Core.Controllers.Basic;
 using VOL.Entity.AttributeManager;
 using VIAT.Basic.IServices;
+using VOL.Entity.DomainModels;
+using VOL.Core.Filters;
+
 namespace VIAT.Basic.Controllers
 {
     [Route("api/View_com_prod_pop_query")]
@@ -15,6 +18,13 @@ namespace VIAT.Basic.Controllers
         public View_com_prod_pop_queryController(IView_com_prod_pop_queryService service)
         : base(service)
         {
+        }
+
+        [HttpPost, Route("GetPageData")]
+        [ApiActionPermission()]
+        public override ActionResult GetPageData([FromBody] PageDataOptions loadData)
+        {
+            return base.GetPageData(loadData);
         }
     }
 }
