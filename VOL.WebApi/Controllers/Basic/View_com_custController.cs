@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using VOL.Core.Controllers.Basic;
 using VOL.Entity.AttributeManager;
 using VIAT.Basic.IServices;
+using VOL.Core.Filters;
+using VOL.Entity.DomainModels;
+
 namespace VIAT.Basic.Controllers
 {
     [Route("api/View_com_cust")]
@@ -15,6 +18,13 @@ namespace VIAT.Basic.Controllers
         public View_com_custController(IView_com_custService service)
         : base(service)
         {
+        }
+
+        [ApiActionPermission]
+        [HttpPost, Route("GetPopPageData")]
+        public ActionResult GetPopPageData([FromBody] PageDataOptions loadData)
+        {
+            return base.GetPageData(loadData);
         }
     }
 }
