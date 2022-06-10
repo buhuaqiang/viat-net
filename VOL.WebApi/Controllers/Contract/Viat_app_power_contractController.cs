@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using VOL.Core.Controllers.Basic;
 using VOL.Entity.AttributeManager;
 using VIAT.Contract.IServices;
+using VOL.Entity.DomainModels;
+using VOL.Core.Filters;
+
 namespace VIAT.Contract.Controllers
 {
     [Route("api/Viat_app_power_contract")]
@@ -16,6 +19,7 @@ namespace VIAT.Contract.Controllers
         : base(service)
         {
         }
+       
     }
 }
 
