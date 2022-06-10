@@ -35,65 +35,6 @@ namespace VOL.Entity.DomainModels
        public int dbid { get; set; }
 
        /// <summary>
-       ///建立用戶
-       /// </summary>
-       [Display(Name ="建立用戶")]
-       [MaxLength(200)]
-       [Column(TypeName="varchar(200)")]
-       public string Creator { get; set; }
-
-       /// <summary>
-       ///建立用戶ID
-       /// </summary>
-       [Display(Name ="建立用戶ID")]
-       [Column(TypeName="int")]
-       public int? CreateID { get; set; }
-
-       /// <summary>
-       ///建立時間
-       /// </summary>
-       [Display(Name ="建立時間")]
-       [Column(TypeName="datetime")]
-       public DateTime? CreateDate { get; set; }
-
-       /// <summary>
-       ///建立者的委託人
-       /// </summary>
-       [Display(Name ="建立者的委託人")]
-       [Column(TypeName="int")]
-       [Editable(true)]
-       public int? CreateClient { get; set; }
-
-       /// <summary>
-       ///最後修改用戶ID
-       /// </summary>
-       [Display(Name ="最後修改用戶ID")]
-       [Column(TypeName="int")]
-       public int? ModifyID { get; set; }
-
-       /// <summary>
-       ///最後修改用戶
-       /// </summary>
-       [Display(Name ="最後修改用戶")]
-       [MaxLength(200)]
-       [Column(TypeName="varchar(200)")]
-       public string Modifier { get; set; }
-
-       /// <summary>
-       ///最後修改時間
-       /// </summary>
-       [Display(Name ="最後修改時間")]
-       [Column(TypeName="datetime")]
-       public DateTime? ModifyDate { get; set; }
-
-       /// <summary>
-       ///最後修改者的委託人
-       /// </summary>
-       [Display(Name ="最後修改者的委託人")]
-       [Column(TypeName="int")]
-       public int? ModifyClient { get; set; }
-
-       /// <summary>
        ///所屬事業單位,01:PH;03:AH;05:CH;06:NU
        /// </summary>
        [Display(Name ="所屬事業單位,01:PH;03:AH;05:CH;06:NU")]
@@ -103,22 +44,13 @@ namespace VOL.Entity.DomainModels
        public string division { get; set; }
 
        /// <summary>
-       ///Expfizer Customer ID
-       /// </summary>
-       [Display(Name ="Expfizer Customer ID")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string cust_id_expfizer { get; set; }
-
-       /// <summary>
        ///是否有效,Y: 是 ; N:否
        /// </summary>
        [Display(Name ="是否有效,Y: 是 ; N:否")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
 
        /// <summary>
@@ -138,6 +70,90 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
        public Guid dist_dbid { get; set; }
+
+       /// <summary>
+       ///最後修改時間
+       /// </summary>
+       [Display(Name ="最後修改時間")]
+       [Column(TypeName="datetime")]
+       public DateTime? modified_date { get; set; }
+
+       /// <summary>
+       ///最後修改者的委託人
+       /// </summary>
+       [Display(Name ="最後修改者的委託人")]
+       [Column(TypeName="int")]
+       public int? modified_client { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///最後修改用戶
+       /// </summary>
+       [Display(Name ="最後修改用戶")]
+       [Column(TypeName="int")]
+       public int? modified_user { get; set; }
+
+       /// <summary>
+       ///建立時間
+       /// </summary>
+       [Display(Name ="建立時間")]
+       [Column(TypeName="datetime")]
+       public DateTime? created_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///建立者的委託人
+       /// </summary>
+       [Display(Name ="建立者的委託人")]
+       [Column(TypeName="int")]
+       public int? created_client { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///建立用戶
+       /// </summary>
+       [Display(Name ="建立用戶")]
+       [Column(TypeName="int")]
+       public int? created_user { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
+
+       /// <summary>
+       ///Viatris Customer dbid
+       /// </summary>
+       [Display(Name ="Viatris Customer dbid")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public string cust_dbid { get; set; }
 
        
     }

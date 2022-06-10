@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
 using System.Collections.Generic;
+using VIAT.Basic.IServices;
 
 namespace VIAT.Basic.Services
 {
@@ -27,18 +28,22 @@ namespace VIAT.Basic.Services
         private readonly IView_com_distRepository _repository;//访问数据库
         WebResponseContent webResponse = new WebResponseContent();
 
-        private readonly Viat_com_distService _viat_com_distService;
+        private readonly IViat_com_distService _viat_com_distService;
         private readonly IViat_com_distRepository _viat_com_distRepository;
 
         [ActivatorUtilitiesConstructor]
         public View_com_distService(
             IView_com_distRepository dbRepository,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IViat_com_distService viat_com_distService,
+            IViat_com_distRepository viat_com_distRepository
             )
         : base(dbRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _repository = dbRepository;
+            _viat_com_distService = viat_com_distService;
+            _viat_com_distRepository = viat_com_distRepository;
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
@@ -49,7 +54,6 @@ namespace VIAT.Basic.Services
             // 在保存数据库前的操作，所有数据都验证通过了，这一步执行完就执行数据库保存
             return _viat_com_distService.Add(saveDataModel);
         }
-
 
         public override WebResponseContent Update(SaveModel saveModel)
         {

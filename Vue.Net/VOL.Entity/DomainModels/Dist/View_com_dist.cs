@@ -74,7 +74,6 @@ namespace VOL.Entity.DomainModels
        [MaxLength(3)]
        [Column(TypeName="varchar(3)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string entity { get; set; }
 
        /// <summary>
@@ -91,26 +90,26 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="Dist ID")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
+       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string dist_id { get; set; }
 
        /// <summary>
-       ///Dist Name
+       ///Distributor
        /// </summary>
-       [Display(Name ="Dist Name")]
+       [Display(Name ="Distributor")]
        [MaxLength(255)]
        [Column(TypeName="nvarchar(255)")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string sys_value { get; set; }
 
        /// <summary>
-       ///
+       ///Status
        /// </summary>
-       [Display(Name ="status")]
+       [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
 
        /// <summary>
@@ -121,7 +120,7 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
-       public string cust_id_expfizer { get; set; }
+       public string cust_dbid { get; set; }
 
        /// <summary>
        ///Cust Name
@@ -129,7 +128,6 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="Cust Name")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
-       [Required(AllowEmptyStrings=false)]
        public string cust_name { get; set; }
 
        /// <summary>
