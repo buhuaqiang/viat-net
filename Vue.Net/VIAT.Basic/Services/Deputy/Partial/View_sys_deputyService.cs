@@ -48,7 +48,6 @@ namespace VIAT.Basic.Services
 
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
-            saveDataModel.MainData["status"] = "Y";
             return _viat_sys_DeputyService.Add(saveDataModel);
         }
 
