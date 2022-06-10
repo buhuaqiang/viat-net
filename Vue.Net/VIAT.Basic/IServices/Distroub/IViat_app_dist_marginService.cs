@@ -6,7 +6,7 @@ using VOL.Entity.DomainModels;
 
 namespace VIAT.Basic.IServices
 {
-    public partial interface IViewDIstMarginService : IService<ViewDIstMargin>
+    public partial interface IViat_app_dist_marginService : IService<Viat_app_dist_margin>
     {
     }
 }
