@@ -135,7 +135,12 @@ namespace VOL.System.Services
                     loginInfo.ClientUserName = UserContext.Current.UserName ?? "";
                     loginInfo.ClientTrueUserName = UserContext.Current.UserTrueName ?? "";
                 }
-
+                else
+                {
+                    loginInfo.ClientID = UserContext.Current.ClientID??0;
+                    loginInfo.ClientUserName = UserContext.Current.ClientUserName ?? "";
+                    loginInfo.ClientTrueUserName = UserContext.Current.ClientTrueUserName ?? "";
+                }
                 responseContent.Data = loginInfo;
 
                 return responseContent.OK(ResponseType.LoginSuccess);
