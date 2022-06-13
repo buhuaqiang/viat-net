@@ -22,21 +22,24 @@ namespace VOL.System.Services
         /// <param name="loginInfo"></param>
         /// <param name="verificationCode"></param>
         /// <returns></returns>
-        public async Task<WebResponseContent> Login(LoginInfo loginInfo, bool verificationCode = true)
+        public async Task<WebResponseContent> Login(LoginInfo loginInfo, bool bverificationCode)
         {
             string msg = string.Empty;
             WebResponseContent responseContent = new WebResponseContent();
             //   2020.06.12增加验证码
             IMemoryCache memoryCache = HttpContext.Current.GetService<IMemoryCache>();
-            string cacheCode = (memoryCache.Get(loginInfo.UUID) ?? "").ToString();
-            if (string.IsNullOrEmpty(cacheCode))
+            if (bverificationCode == true)
             {
-                return responseContent.Error("验证码已失效");
-            }
-            if (cacheCode.ToLower() != loginInfo.VerificationCode.ToLower())
-            {
-                memoryCache.Remove(loginInfo.UUID);
-                return responseContent.Error("验证码不正确");
+                string cacheCode = (memoryCache.Get(loginInfo.UUID) ?? "").ToString();
+                if (string.IsNullOrEmpty(cacheCode))
+                {
+                    return responseContent.Error("验证码已失效");
+                }
+                if (cacheCode.ToLower() != loginInfo.VerificationCode.ToLower())
+                {
+                    memoryCache.Remove(loginInfo.UUID);
+                    return responseContent.Error("验证码不正确");
+                }
             }
             try
             {
@@ -50,7 +53,11 @@ namespace VOL.System.Services
                 {
                     User_Id = user.User_Id,
                     UserName = user.UserName,
-                    Role_Id = user.Role_Id
+                    Role_Id = user.Role_Id,
+                    ClientID = loginInfo.ClientID,
+                    ClientUserName = loginInfo.ClientUserName ?? "",
+                    ClientTrueUserName = loginInfo.ClientTrueUserName ?? "",
+                   
                 });
                 user.Token = token;
                 responseContent.Data = new { token, userName = user.UserTrueName, img = user.HeadImageUrl };
@@ -72,6 +79,78 @@ namespace VOL.System.Services
                 Logger.Info(LoggerType.Login, loginInfo.Serialize(), responseContent.Message, msg);
             }
         }
+
+
+
+        /// <summary>
+        /// 根据切换用户，返回模拟登录用户信息
+        /// 切换用户名，切换用户密码，切换前用户，验证码
+        /// </summary>
+        /// <param name=""></param>
+        /// <param name="sChangeUserName">代理用户名</param>
+        /// <param name="sCode">验证码</param>
+        /// <returns></returns>
+        public async Task<WebResponseContent> getChangeUserImformation(string sChangeUserName)
+        {
+            WebResponseContent responseContent = new WebResponseContent();
+            string msg = string.Empty;
+
+            if (string.IsNullOrEmpty(sChangeUserName) == true)
+            {
+                return responseContent.Error("切换的用户名为空，请确认。");
+            }
+
+            //根据用户名取得用户信息
+            try
+            {
+                
+                //根据切换的用户取得切换的用户信息
+                Sys_User sysUser = await repository.FindAsIQueryable(x => x.UserName == sChangeUserName)
+                    .FirstOrDefaultAsync();
+                if (sysUser == null)
+                {
+                    return responseContent.Error("切换的用户名在数据库中检索不到，请确认。");
+                }
+
+                //取得密码并解密
+                string sPassword = sysUser.UserPwd.DecryptDES(AppSetting.Secret.User);
+                string sUserName = sysUser.UserName;
+
+                //取得验证码 参数scode
+                //把验证码加入缓存
+
+                //初始化登录信息
+                LoginInfo loginInfo = new LoginInfo();
+
+                loginInfo.UserName = sUserName;
+                loginInfo.Password = sPassword;
+                loginInfo.VerificationCode = "XXX";
+                //虚拟验证码，模拟登录对象验证通过用
+                loginInfo.UUID = "XXX";
+                //记录代理人信息 切换前的登录信息,如果目前已经是代理状态下，则代理用户不修改          
+                if (UserContext.Current.ClientID ==null || UserContext.Current.ClientID == 0)
+                {
+                    //clientid为0时，则代理
+                    loginInfo.ClientID = UserContext.Current.UserId;
+                    loginInfo.ClientUserName = UserContext.Current.UserName ?? "";
+                    loginInfo.ClientTrueUserName = UserContext.Current.UserTrueName ?? "";
+                }
+
+                responseContent.Data = loginInfo;
+
+                return responseContent.OK(ResponseType.LoginSuccess);
+            }
+            catch (Exception ex)
+            {
+                msg = ex.Message + ex.StackTrace;
+                return responseContent.Error(ResponseType.ServerError);
+            }
+            finally
+            {
+                Logger.Info(LoggerType.Login, sChangeUserName, responseContent.Message, msg);
+            }
+        }
+
 
         /// <summary>
         ///当token将要过期时，提前置换一个新的token
@@ -99,8 +178,11 @@ namespace VOL.System.Services
                          UserName = s.UserName,
                          UserTrueName = s.UserTrueName,
                          Role_Id = s.Role_Id,
-                         RoleName = s.RoleName
-                     });
+                         RoleName = s.RoleName,
+                         ClientID = UserContext.Current.ClientID,
+                         ClientUserName = UserContext.Current.ClientUserName??"",
+                         ClientTrueUserName = UserContext.Current.ClientTrueUserName??""
+                    }) ;
 
                 if (userInfo == null) return responseContent.Error("未查到用户信息!");
 

@@ -12,6 +12,8 @@ namespace VOL.System.IServices
         Task<WebResponseContent> ReplaceToken();
         Task<WebResponseContent> ModifyPwd(string oldPwd, string newPwd);
         Task<WebResponseContent> GetCurrentUserInfo();
+
+        Task<WebResponseContent> getChangeUserImformation(string sChangeUserName);
     }
 }
 
