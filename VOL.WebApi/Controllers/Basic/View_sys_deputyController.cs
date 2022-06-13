@@ -18,6 +18,24 @@ namespace VIAT.Basic.Controllers
         : base(service)
         {
         }
+
+        [HttpPost, Route("GetPageDataByDeputy")]
+        [ApiActionPermission()]
+        public  ActionResult GetPageDataByDeputy()
+        {
+            //根据后端user的值进行数据查询
+            //优先取代理ID，防止多次切换代理，如果代理ID没有，说明没有切换过代理，直接取当前用户ID
+            int? nDeputyID = VOL.Core.ManageUser.UserContext.Current.ClientID;
+            if(nDeputyID == null || nDeputyID ==0)
+            {
+                nDeputyID =VOL.Core.ManageUser.UserContext.Current.UserId;
+            }
+           
+            PageDataOptions option = new PageDataOptions();
+            option.Wheres = "[{\"name\":\"deputy_user_id\"" + "," + "\"value\":" + nDeputyID + "}]"; 
+
+            return base.GetPageData(option);
+        }
     }
 }
 
