@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
 using VIAT.Basic.IServices;
+using System.Collections.Generic;
 
 namespace VIAT.Basic.Services
 {
