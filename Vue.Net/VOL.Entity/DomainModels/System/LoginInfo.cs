@@ -24,5 +24,18 @@ namespace VOL.Entity.DomainModels
         /// 2020.06.12增加验证码
         /// </summary>
         public string UUID { get; set; }
+        /*增加代理人信息*/
+        /// <summary>
+        /// 代理人ID
+        /// </summary>
+        public int ClientID { get; set; }
+        /// <summary>
+        /// 代理人账号
+        /// </summary>
+        public string ClientUserName { get; set; }
+        /// <summary>
+        /// 代理人名称
+        /// </summary>
+        public string ClientTrueUserName { get; set; }
     }
 }

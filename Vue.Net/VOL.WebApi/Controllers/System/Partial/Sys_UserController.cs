@@ -48,9 +48,17 @@ namespace VOL.System.Controllers
 
         [HttpPost, HttpGet, Route("login"), AllowAnonymous]
         [ObjectModelValidatorFilter(ValidatorModel.Login)]
-        public async Task<IActionResult> Login([FromBody] LoginInfo loginInfo)
+        public async Task<IActionResult> Login([FromBody] LoginInfo loginInfo, bool bverificationCode)
         {
-            return Json(await Service.Login(loginInfo));
+            return Json(await Service.Login(loginInfo, bverificationCode));
+        }
+
+
+        [HttpPost, HttpGet, Route("getChangeUserImformation"), AllowAnonymous]
+        public async Task<IActionResult> getChangeUserImformation(string sChangeUserNo)
+        {
+            //模拟登录
+            return Json(await Service.getChangeUserImformation(sChangeUserNo));
         }
 
         private readonly ConcurrentDictionary<int, object> _lockCurrent = new ConcurrentDictionary<int, object>();
@@ -89,7 +97,10 @@ namespace VOL.System.Controllers
                                  UserName = s.UserName,
                                  UserTrueName = s.UserTrueName,
                                  Role_Id = s.Role_Id,
-                                 RoleName = s.RoleName
+                                 RoleName = s.RoleName,
+                                 ClientID = UserContext.Current.ClientID,
+                                 ClientUserName = UserContext.Current.ClientUserName??"",
+                                 ClientTrueUserName = UserContext.Current.ClientTrueUserName??""
                              }).FirstOrDefault();
 
                     if (userInfo == null) return Json(responseContent.Error("未查到用户信息!"));

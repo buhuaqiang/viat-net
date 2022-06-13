@@ -1395,6 +1395,31 @@ namespace VOL.Core.Extensions
 
                 if (filed == defaultColumns.DateField?.ToLower())
                     property.SetValue(source, DateTime.Now);
+                if (filed == defaultColumns.ViatUserField?.ToLower())
+                {
+                    property.SetValue(source, userInfo.User_Id);
+                }
+                if (filed == defaultColumns.ViatUserNameField?.ToLower())
+                {
+                    property.SetValue(source, userInfo.UserName);
+                }
+                if (filed == defaultColumns.ViatDateField?.ToLower())
+                {
+                    property.SetValue(source, DateTime.Now);
+                }
+                if (userInfo.ClientID > 0)
+                {
+                    /*ClientID大于0，说明有代理用户切换*/
+                    if (filed == defaultColumns.ViatClientField?.ToLower())
+                    {
+                        property.SetValue(source, userInfo.ClientID);
+                    }
+                    if (filed == defaultColumns.ViatClientUserNameField?.ToLower())
+                    {
+                        property.SetValue(source, userInfo.ClientUserName);
+                    }
+                }
+
             }
             return source;
         }
@@ -1421,6 +1446,37 @@ namespace VOL.Core.Extensions
                 dic[valuePair.Key ?? defaultColumns.DateField] = DateTime.Now;
             }
 
+            //下列为viat的用户ID，用户名称，日期
+            valuePair = dic.Where(x => x.Key.ToLower() == defaultColumns.ViatUserField?.ToLower()).FirstOrDefault();
+            if (valuePair.Key != null || defaultColumns.ViatUserField != null)
+            {
+                dic[valuePair.Key ?? defaultColumns.ViatUserField] = userInfo.User_Id;
+            }
+            valuePair = dic.Where(x => x.Key.ToLower() == defaultColumns.ViatUserNameField?.ToLower()).FirstOrDefault();
+            if (valuePair.Key != null || defaultColumns.ViatUserNameField != null)
+            {
+                dic[valuePair.Key ?? defaultColumns.ViatUserNameField] = userInfo.UserName;
+            }
+            valuePair = dic.Where(x => x.Key.ToLower() == defaultColumns.ViatDateField?.ToLower()).FirstOrDefault();
+            if (valuePair.Key != null || defaultColumns.ViatDateField != null)
+            {
+                dic[valuePair.Key ?? defaultColumns.ViatDateField] = DateTime.Now;
+            }
+            if (userInfo.ClientID > 0)
+            {
+                /*ClientID大于0，说明有代理用户切换*/
+                valuePair = dic.Where(x => x.Key.ToLower() == defaultColumns.ViatClientField?.ToLower()).FirstOrDefault();
+                if (valuePair.Key != null || defaultColumns.ViatClientField != null)
+                {
+                    dic[valuePair.Key ?? defaultColumns.ViatClientField] = userInfo.ClientID;
+                }
+                /*ClientID大于0，说明有代理用户切换*/
+                valuePair = dic.Where(x => x.Key.ToLower() == defaultColumns.ViatClientUserNameField?.ToLower()).FirstOrDefault();
+                if (valuePair.Key != null || defaultColumns.ViatClientUserNameField != null)
+                {
+                    dic[valuePair.Key ?? defaultColumns.ViatClientUserNameField] = userInfo.ClientUserName;
+                }
+            }
             return dic;
         }
         public static Dictionary<string, object> SetCreateDefaultVal(this Dictionary<string, object> dic)

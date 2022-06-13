@@ -55,7 +55,7 @@ namespace VOL.Core.ManageUser
                 {
                     return _userInfo;
                 }
-                return GetUserInfo(UserId);
+                return GetUserInfo(UserId, ClientID, ClientUserName, ClientTrueUserName);
             }
         }
 
@@ -76,7 +76,7 @@ namespace VOL.Core.ManageUser
             return roleId == 1;
         }
 
-        public UserInfo GetUserInfo(int userId)
+        public UserInfo GetUserInfo(int userId,int? nClientID, string sClientUserName, string sClientTrueUserName)
         {
             if (_userInfo != null) return _userInfo;
             if (userId <= 0)
@@ -97,6 +97,9 @@ namespace VOL.Core.ManageUser
                     Token = s.Token,
                     UserName = s.UserName,
                     UserTrueName = s.UserTrueName,
+                    ClientID = nClientID,
+                    ClientUserName = sClientUserName,
+                    ClientTrueUserName = sClientTrueUserName,                 
                     Enable = s.Enable
                 }).FirstOrDefault();
 
@@ -343,6 +346,46 @@ namespace VOL.Core.ManageUser
             }
         }
 
+        /// <summary>
+        /// 从user中取得client_ID
+        /// </summary>
+        public int? ClientID
+        {
+            get
+            {
+                string sClientID = (Context.User.FindFirstValue("ClientID"));
+                if (string.IsNullOrEmpty(sClientID) == true)
+                {
+                    return null;
+                }
+                else
+                {
+                    return sClientID.GetInt();
+                }
+            }
+        }
+
+        /// <summary>
+        /// 从user中取得client
+        /// </summary>
+        public string ClientUserName
+        {
+            get
+            {
+                return (Context.User.FindFirstValue("ClientUserName"))?.ToString();
+            }
+        }
+
+        /// <summary>
+        /// 从user中取得clientUserName
+        /// </summary>
+        public string ClientTrueUserName
+        {
+            get
+            {
+                return (Context.User.FindFirstValue("ClientTrueUserName"))?.ToString();
+            }
+        }
         public string UserName
         {
             get { return UserInfo.UserName; }
