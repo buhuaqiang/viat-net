@@ -142,6 +142,20 @@ namespace VOL.Core.Configuration
         public string UserIdField { get; set; }
         public string UserNameField { get; set; }
         public string DateField { get; set; }
+
+        public string ViatUserField { get; set; }
+
+        public string ViatUserNameField { get; set; }
+
+        public string ViatDateField { get; set; }
+
+        public string ViatClientField { get; set; }
+
+        public string ViatClientUserNameField { get; set; }
+
+        
+
+            
     }
     public class GlobalFilter
     {
