@@ -143,6 +143,28 @@ namespace VOL.Core.Configuration
         public string UserNameField { get; set; }
         public string DateField { get; set; }
 
+        /// <summary>
+        /// 用户ID
+        /// </summary>
+        public string ViatUserField { get; set; }
+        /// <summary>
+        /// 用户中文名称
+        /// </summary>
+        public string ViatUserNameField { get; set; }
+        /// <summary>
+        /// 代理用户ID
+        /// </summary>
+        public string ViatClientField { get; set; }
+        /// <summary>
+        /// 代理用户名称
+        /// </summary>
+        public string ViatClientUserNameField { get; set; }
+        /// <summary>
+        /// 日期
+        /// </summary>
+        public string ViatDateField { get; set; }
+                   
+
         public string ViatUserField { get; set; }
 
         public string ViatUserNameField { get; set; }
