@@ -749,6 +749,23 @@ namespace VOL.Core.BaseProvider
             //明细修改
             editList.ForEach(x =>
             {
+                /*框架不是更新主从表的表体 modify一套栏位，故进行调整
+                 调整思路：不改动框架大有前提下，updateField
+                 */
+                bool bHavaViatModify = false;
+                string[] sModifyArray = typeof(DetailT).GetEditField();
+                if(sModifyArray.Length>0)
+                {
+                    if(sModifyArray.Contains(AppSetting.ModifyMember.ViatUserField)
+                     && sModifyArray.Contains(AppSetting.ModifyMember.ViatUserNameField)
+                      && sModifyArray.Contains(AppSetting.ModifyMember.ViatDateField)
+                       && sModifyArray.Contains(AppSetting.ModifyMember.ViatClientField)
+                        && sModifyArray.Contains(AppSetting.ModifyMember.ViatClientUserNameField))
+                    {
+                        //存在modify这一套
+                        bHavaViatModify = true;
+                    }                   
+                }
                 //获取编辑的字段
                 string[] updateField = saveModel.DetailData
                     .Where(c => c[detailKeyInfo.Name].ChangeType(detailKeyInfo.PropertyType)
@@ -757,6 +774,20 @@ namespace VOL.Core.BaseProvider
                     .Keys.Where(k => k != detailKeyInfo.Name)
                     .Where(r => !CreateFields.Contains(r))
                     .ToArray();
+
+                //
+                if(bHavaViatModify == true)
+                {
+                    // 存在modify这一套
+                    List<string> tmpLst = new List<string>(updateField);
+                    tmpLst.Add(AppSetting.ModifyMember.ViatUserField);
+                    tmpLst.Add(AppSetting.ModifyMember.ViatUserNameField);
+                    tmpLst.Add(AppSetting.ModifyMember.ViatDateField);
+                    tmpLst.Add(AppSetting.ModifyMember.ViatClientField);
+                    tmpLst.Add(AppSetting.ModifyMember.ViatClientUserNameField);
+                    updateField = tmpLst.ToArray();
+                }
+                
                 //設置默認值
                 x.SetModifyDefaultVal();
                 //添加修改字段
