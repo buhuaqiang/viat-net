@@ -8,6 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="..\VOL.Core\Enums\LinqExpressionType.cs" Link="LinqExpressionType.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\VOL.Core\VOL.Core.csproj" />
     <ProjectReference Include="..\VOL.Entity\VOL.Entity.csproj" />
   </ItemGroup>
