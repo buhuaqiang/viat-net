@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VIAT.Basic", "VIAT.Basic\VIAT.Basic.csproj", "{5FE3AE8E-580C-478C-A3B2-07AAF7D4985A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VIAT.Contract", "VIAT.Contract\VIAT.Contract.csproj", "{C88350EA-1FB5-498F-A991-FB239F87D6D2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VIAT.Contract", "VIAT.Contract\VIAT.Contract.csproj", "{C88350EA-1FB5-498F-A991-FB239F87D6D2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VIAT.Price", "VIAT.Price\VIAT.Price.csproj", "{88374568-0B07-4744-9B13-F743FD22997D}"
 EndProject
@@ -79,5 +79,9 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0B6F8CD0-546F-442D-ABCE-92EF6E3C1386}
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN2019 - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal
