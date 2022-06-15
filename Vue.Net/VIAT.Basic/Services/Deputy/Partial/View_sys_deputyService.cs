@@ -56,5 +56,10 @@ namespace VIAT.Basic.Services
         {
             return _viat_sys_DeputyService.Update(saveModel);
         }
+
+        public override WebResponseContent Del(object[] keys, bool delList = true)
+        {
+            return _viat_sys_DeputyService.Del(keys, delList);
+        }
     }
 }
