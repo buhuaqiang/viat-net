@@ -11,7 +11,7 @@ using VOL.Entity.DomainModels;
 namespace VIAT.Basic.Controllers
 {
     [Route("api/View_sys_deputy")]
-    [PermissionTable(Name = "View_sys_deputy")]
+   // [PermissionTable(Name = "View_sys_deputy")]
     public partial class View_sys_deputyController : ApiBaseController<IView_sys_deputyService>
     {
         public View_sys_deputyController(IView_sys_deputyService service)
@@ -35,6 +35,13 @@ namespace VIAT.Basic.Controllers
             option.Wheres = "[{\"name\":\"deputy_user_id\"" + "," + "\"value\":" + nDeputyID + "}]"; 
 
             return base.GetPageData(option);
+        }
+
+          [ApiActionPermission()]
+        [HttpPost, Route("GetDeputyPopPageData")]
+        public ActionResult GetDeputyPopPageData([FromBody] PageDataOptions loadData)
+        {
+            return base.GetPageData(loadData);
         }
     }
 }
