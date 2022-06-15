@@ -55,5 +55,9 @@ namespace VIAT.Basic.Services
         {
             return _viat_com_notify_templateService.Update(saveModel);
         }
+        public override WebResponseContent Del(object[] keys, bool delList = true)
+        {
+            return _viat_com_notify_templateService.Del(keys, delList);
+        }
     }
 }
