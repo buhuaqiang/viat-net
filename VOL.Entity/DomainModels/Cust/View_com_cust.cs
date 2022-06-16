@@ -28,15 +28,6 @@ namespace VOL.Entity.DomainModels
        public string cust_id { get; set; }
 
        /// <summary>
-       ///列名dbid
-       /// </summary>
-       /*[Display(Name ="列名dbid")]
-       [JsonIgnore]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }*/
-
-       /// <summary>
        ///列名entity
        /// </summary>
        [Display(Name ="列名entity")]
@@ -61,16 +52,18 @@ namespace VOL.Entity.DomainModels
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string cust_name { get; set; }
 
        /// <summary>
-       ///列名cust_address
+       ///列名territory_id
        /// </summary>
-       [Display(Name ="列名cust_address")]
-       [MaxLength(200)]
-       [Column(TypeName="nvarchar(200)")]
+       [Display(Name ="列名territory_id")]
+       [MaxLength(5)]
+       [Column(TypeName="varchar(5)")]
        [Editable(true)]
-       public string cust_address { get; set; }
+       [Required(AllowEmptyStrings=false)]
+       public string territory_id { get; set; }
 
        /// <summary>
        ///列名invoice_name
@@ -79,6 +72,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string invoice_name { get; set; }
 
        /// <summary>
@@ -88,6 +82,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(200)]
        [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string invoice_address { get; set; }
 
        /// <summary>
@@ -97,6 +92,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(100)]
        [Column(TypeName="varchar(100)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string owner { get; set; }
 
        /// <summary>
@@ -118,15 +114,6 @@ namespace VOL.Entity.DomainModels
        public string contact { get; set; }
 
        /// <summary>
-       ///列名tel_no
-       /// </summary>
-       [Display(Name ="列名tel_no")]
-       [MaxLength(40)]
-       [Column(TypeName="varchar(40)")]
-       [Editable(true)]
-       public string tel_no { get; set; }
-
-       /// <summary>
        ///列名fax_no
        /// </summary>
        [Display(Name ="列名fax_no")]
@@ -145,13 +132,24 @@ namespace VOL.Entity.DomainModels
        public string email { get; set; }
 
        /// <summary>
-       ///列名territory_id
+       ///列名cust_address
        /// </summary>
-       [Display(Name ="列名territory_id")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
+       [Display(Name ="列名cust_address")]
+       [MaxLength(200)]
+       [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
-       public string territory_id { get; set; }
+       [Required(AllowEmptyStrings=false)]
+       public string cust_address { get; set; }
+
+       /// <summary>
+       ///列名tel_no
+       /// </summary>
+       [Display(Name ="列名tel_no")]
+       [MaxLength(40)]
+       [Column(TypeName="varchar(40)")]
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public string tel_no { get; set; }
 
        /// <summary>
        ///列名doh_institute_no
@@ -187,6 +185,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string doh_type { get; set; }
 
        /// <summary>
@@ -196,6 +195,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string margin_type { get; set; }
 
        /// <summary>
@@ -223,6 +223,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string own_by_hospital { get; set; }
 
        /// <summary>
@@ -230,24 +231,21 @@ namespace VOL.Entity.DomainModels
        /// </summary>
        [Display(Name ="列名own_hospital")]
        [Column(TypeName="uniqueidentifier")]
-        [Editable(true)]
-        public Guid? own_hospital { get; set; }
+       public Guid? own_hospital { get; set; }
 
        /// <summary>
        ///列名med_group
        /// </summary>
        [Display(Name ="列名med_group")]
        [Column(TypeName="uniqueidentifier")]
-        [Editable(true)]
-        public Guid? med_group { get; set; }
+       public Guid? med_group { get; set; }
 
        /// <summary>
        ///列名delv_group
        /// </summary>
        [Display(Name ="列名delv_group")]
        [Column(TypeName="uniqueidentifier")]
-        [Editable(true)]
-        public Guid? delv_group { get; set; }
+       public Guid? delv_group { get; set; }
 
        /// <summary>
        ///列名new_cust_id
@@ -323,6 +321,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string invoice_city_name { get; set; }
 
        /// <summary>
@@ -332,6 +331,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string cust_city_name { get; set; }
 
        /// <summary>
@@ -341,6 +341,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string cust_zip_id { get; set; }
 
        /// <summary>
@@ -358,6 +359,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string invoice_zip_id { get; set; }
 
        /// <summary>
