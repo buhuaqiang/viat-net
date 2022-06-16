@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 /*
  *代码由框架生成,任何更改都可能导致被代码生成器覆盖
  *如果数据库字段发生变化，请在代码生器重新生成此Model
@@ -179,15 +178,6 @@ namespace VOL.Entity.DomainModels
        public string contract_term { get; set; }
 
        /// <summary>
-       ///識別碼, PK, Identity
-       /// </summary>
-    /*   [Display(Name ="識別碼, PK, Identity")]
-       [JsonIgnore]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }*/
-
-       /// <summary>
        ///最後修改者的委託人
        /// </summary>
        [Display(Name ="最後修改者的委託人")]
@@ -257,22 +247,6 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="create_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string create_username { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="create_client")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string create_client { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
        [Display(Name ="modified_username")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
@@ -281,10 +255,26 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="modified_clientuser")]
+       [Display(Name ="created_username")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
-       public string modified_clientuser { get; set; }
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
        
     }
