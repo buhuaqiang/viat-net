@@ -285,6 +285,14 @@ namespace VOL.Entity.DomainModels
        [Editable(true)]
        public int? OrderNo { get; set; }
 
+     /// <summary>
+       ///員工識別碼
+       /// </summary>
+       [Display(Name ="員工識別碼")]
+       [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
+        public Guid emp_dbid { get; set; }
+ 
        
     }
 }
