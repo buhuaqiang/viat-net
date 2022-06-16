@@ -133,14 +133,6 @@ namespace VOL.Entity.DomainModels
        public string contract_term { get; set; }
 
        /// <summary>
-       ///列state
-       /// </summary>
-       [Display(Name ="列state")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       public string state { get; set; }
-
-       /// <summary>
        ///列close_date
        /// </summary>
        [Display(Name ="列close_date")]
@@ -203,13 +195,13 @@ namespace VOL.Entity.DomainModels
        public string cust_name { get; set; }
 
        /// <summary>
-       ///列Contract_State
+       ///列State
        /// </summary>
-       [Display(Name ="列Contract_State")]
+       [Display(Name ="列State")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
-       public string contract_state { get; set; }
+       public string state { get; set; }
 
        /// <summary>
        ///列C1
@@ -315,34 +307,10 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="create_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string create_username { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="create_client")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string create_client { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
        [Display(Name ="modified_username")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_username { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_clientuser")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string modified_clientuser { get; set; }
 
        /// <summary>
        ///
@@ -352,6 +320,30 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="varchar(1)")]
        [Required(AllowEmptyStrings=false)]
        public string isgroup { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
        
     }
