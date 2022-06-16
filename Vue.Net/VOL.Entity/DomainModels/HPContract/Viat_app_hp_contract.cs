@@ -13,17 +13,17 @@ using VOL.Entity.SystemModels;
 
 namespace VOL.Entity.DomainModels
 {
-    [Entity(TableCnName = "價格群組",TableName = "Viat_app_cust_price_group")]
-    public partial class Viat_app_cust_price_group:BaseEntity
+    [Entity(TableCnName = "HP合約主表",TableName = "Viat_app_hp_contract")]
+    public partial class Viat_app_hp_contract:BaseEntity
     {
         /// <summary>
-       ///主鍵
+       ///PKID
        /// </summary>
        [Key]
-       [Display(Name ="主鍵")]
+       [Display(Name ="PKID")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-       public Guid pricegroup_dbid { get; set; }
+       public Guid hpcont_dbid { get; set; }
 
        /// <summary>
        ///公司別,舊版SUN_DB
@@ -31,6 +31,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="公司別,舊版SUN_DB")]
        [MaxLength(3)]
        [Column(TypeName="varchar(3)")]
+       [Editable(true)]
        public string entity { get; set; }
 
        /// <summary>
@@ -39,45 +40,93 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="所屬事業單位,01:PH;03:AH;05:CH;06:NU")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
+       [Editable(true)]
        public string division { get; set; }
 
        /// <summary>
-       ///群組代碼
+       ///合約號碼(案號)
        /// </summary>
-       [Display(Name ="群組代碼")]
-       [MaxLength(20)]
-       [Column(TypeName="varchar(20)")]
+       [Display(Name ="合約號碼(案號)")]
+       [MaxLength(30)]
+       [Column(TypeName="varchar(30)")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
-       public string group_id { get; set; }
+       public string contract_no { get; set; }
 
        /// <summary>
-       ///群組名稱
+       ///主鍵
        /// </summary>
-       [Display(Name ="群組名稱")]
-       [MaxLength(100)]
-       [Column(TypeName="varchar(100)")]
+       [Display(Name ="主鍵")]
+       [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string group_name { get; set; }
+       public Guid? pricegroup_id { get; set; }
 
        /// <summary>
-       ///群組類別
+       ///生效日
        /// </summary>
-       [Display(Name ="群組類別")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
+       [Display(Name ="生效日")]
+       [Column(TypeName="datetime")]
        [Editable(true)]
-       public string group_type { get; set; }
+       public DateTime? start_date { get; set; }
 
        /// <summary>
-       ///是否有效
+       ///結束日
        /// </summary>
-       [Display(Name ="是否有效")]
+       [Display(Name ="結束日")]
+       [Column(TypeName="datetime")]
+       [Editable(true)]
+       public DateTime? end_date { get; set; }
+
+       /// <summary>
+       ///折讓類別(1:By Amount;2:By Qty)
+       /// </summary>
+       [Display(Name ="折讓類別(1:By Amount;2:By Qty)")]
+       [Column(TypeName="int")]
+       [Editable(true)]
+       public int? allw_type { get; set; }
+
+       /// <summary>
+       ///預估參考月數
+       /// </summary>
+       [Display(Name ="預估參考月數")]
+       [Column(TypeName="int")]
+       [Editable(true)]
+       public int? est_months { get; set; }
+
+       /// <summary>
+       ///預估金額
+       /// </summary>
+       [Display(Name ="預估金額")]
+       [DisplayFormat(DataFormatString="18,5")]
+       [Column(TypeName="decimal")]
+       [Editable(true)]
+       public decimal? accrue_amt { get; set; }
+
+       /// <summary>
+       ///合約條款
+       /// </summary>
+       [Display(Name ="合約條款")]
+       [MaxLength(16)]
+       [Column(TypeName="text(16)")]
+       [Editable(true)]
+       public string contract_term { get; set; }
+
+       /// <summary>
+       ///合約狀態,Y:Valid;N:Invalid;C:Over period still active;A:Not Achieve
+       /// </summary>
+       [Display(Name ="合約狀態,Y:Valid;N:Invalid;C:Over period still active;A:Not Achieve")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
-       public string status { get; set; }
+       public string state { get; set; }
+
+       /// <summary>
+       ///LocalAddon Contractno
+       /// </summary>
+       [Display(Name ="LocalAddon Contractno")]
+       [Column(TypeName="int")]
+       [Editable(true)]
+       public int? o_contract_no { get; set; }
 
        /// <summary>
        ///建立用戶
@@ -152,15 +201,6 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="最後修改時間")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
-
-       /// <summary>
-       ///備註
-       /// </summary>
-       [Display(Name ="備註")]
-       [MaxLength(450)]
-       [Column(TypeName="nvarchar(450)")]
-       [Editable(true)]
-       public string remarks { get; set; }
 
        
     }

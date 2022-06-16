@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 /*
  *代码由框架生成,任何更改都可能导致被代码生成器覆盖
  *如果数据库字段发生变化，请在代码生器重新生成此Model
@@ -18,21 +17,13 @@ namespace VOL.Entity.DomainModels
     public partial class Viat_com_zip_city:BaseEntity
     {
         /// <summary>
-       ///識別碼, PK, Identity
-       /// </summary>
-       [Display(Name ="識別碼, PK, Identity")]
-       [JsonIgnore]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
-       /// <summary>
        ///地區編碼
        /// </summary>
        [Display(Name ="地區編碼")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string zip_id { get; set; }
 
        /// <summary>
@@ -42,6 +33,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string zip_name { get; set; }
 
        /// <summary>
@@ -51,6 +43,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string city_id { get; set; }
 
        /// <summary>
@@ -60,6 +53,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string city_name { get; set; }
 
        /// <summary>
@@ -69,6 +63,7 @@ namespace VOL.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
 
        /// <summary>
@@ -77,6 +72,14 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="建立用戶")]
        [Column(TypeName="int")]
        public int? created_user { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
 
        /// <summary>
        ///建立時間
@@ -91,6 +94,14 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="最後修改用戶")]
        [Column(TypeName="int")]
        public int? modified_user { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
 
        /// <summary>
        ///最後修改時間
@@ -125,26 +136,10 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="created_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string created_username { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
        [Display(Name ="created_clientusername")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string created_clientusername { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string modified_username { get; set; }
 
        /// <summary>
        ///
