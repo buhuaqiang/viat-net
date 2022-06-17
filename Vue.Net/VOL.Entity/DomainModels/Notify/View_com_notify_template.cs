@@ -111,14 +111,6 @@ namespace VOL.Entity.DomainModels
        public string remarks { get; set; }
 
        /// <summary>
-       ///列名modified_username
-       /// </summary>
-       [Display(Name ="列名modified_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string modified_username { get; set; }
-
-       /// <summary>
        ///Last Modified
        /// </summary>
        [Display(Name ="Last Modified")]
@@ -126,6 +118,14 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="varchar(40)")]
        [Editable(true)]
        public string emp_ename { get; set; }
+
+       /// <summary>
+       ///列名modified_username
+       /// </summary>
+       [Display(Name ="列名modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
 
        /// <summary>
        ///Modified Date
@@ -141,7 +141,6 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="列名function_id")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
-       //[Required(AllowEmptyStrings=false)]
        public string function_id { get; set; }
 
        /// <summary>
@@ -162,11 +161,49 @@ namespace VOL.Entity.DomainModels
        public string emp_cname { get; set; }
 
        /// <summary>
-       ///列名row_number
+       ///列名created_user
        /// </summary>
-       [Display(Name ="列名row_number")]
-       [Column(TypeName="bigint")]
-       public long? row_number { get; set; }
+       [Display(Name ="列名created_user")]
+       [Column(TypeName="int")]
+       public int? created_user { get; set; }
+
+       /// <summary>
+       ///列名created_username
+       /// </summary>
+       [Display(Name ="列名created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///列名created_client
+       /// </summary>
+       [Display(Name ="列名created_client")]
+       [Column(TypeName="int")]
+       public int? created_client { get; set; }
+
+       /// <summary>
+       ///列名created_clientusername
+       /// </summary>
+       [Display(Name ="列名created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///列名modified_client
+       /// </summary>
+       [Display(Name ="列名modified_client")]
+       [Column(TypeName="int")]
+       public int? modified_client { get; set; }
+
+       /// <summary>
+       ///列名modified_clientusername
+       /// </summary>
+       [Display(Name ="列名modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
        
     }
