@@ -6,8 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using VOL.Core.Controllers.Basic;
 using VOL.Entity.AttributeManager;
 using VIAT.Basic.IServices;
-using VOL.Entity.DomainModels;
 using VOL.Core.Filters;
+using VOL.Entity.DomainModels;
 
 namespace VIAT.Basic.Controllers
 {
@@ -19,13 +19,13 @@ namespace VIAT.Basic.Controllers
         : base(service)
         {
         }
-
-        [HttpPost, Route("GetPageData")]
-        [ApiActionPermission()]
-        public override ActionResult GetPageData([FromBody] PageDataOptions loadData)
+         [ApiActionPermission]
+        [HttpPost, Route("GetProdPageData")]
+        public ActionResult GetPopPageData([FromBody] PageDataOptions loadData)
         {
             return base.GetPageData(loadData);
         }
+
     }
 }
 
