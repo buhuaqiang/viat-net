@@ -17,170 +17,158 @@ namespace VOL.Entity.DomainModels
     public partial class view_dist_margin:BaseEntity
     {
         /// <summary>
-       ///
-       /// </summary>
-       [Key]
-       [Display(Name ="distmargin_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       [Required(AllowEmptyStrings=false)]
-       public Guid distmargin_dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="dbid")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="created_user")]
-       [Column(TypeName="int")]
-       public int? created_user { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="created_client")]
-       [Column(TypeName="int")]
-       public int? created_client { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="created_date")]
-       [Column(TypeName="datetime")]
-       public DateTime? created_date { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_user")]
-       [Column(TypeName="int")]
-       public int? modified_user { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_client")]
-       [Column(TypeName="int")]
-       public int? modified_client { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_date")]
-       [Column(TypeName="datetime")]
-       public DateTime? modified_date { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="entity")]
-       [MaxLength(3)]
-       [Column(TypeName="varchar(3)")]
-       public string entity { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="division")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       public string division { get; set; }
-
-       /// <summary>
        ///Distributor
        /// </summary>
        [Display(Name ="Distributor")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
+       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string dist_id { get; set; }
+
+       /// <summary>
+       ///Dist Name
+       /// </summary>
+       [Display(Name ="Dist Name")]
+       [MaxLength(255)]
+       [Column(TypeName="nvarchar(255)")]
+       public string sys_value { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="prod_dbid")]
+       [Column(TypeName="uniqueidentifier")]
+       public Guid? prod_dbid { get; set; }
+
+       /// <summary>
+       ///Prod ID
+       /// </summary>
+       [Display(Name ="Prod ID")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       [Editable(true)]
+       public string prod_id { get; set; }
+
+       /// <summary>
+       ///Prod Name
+       /// </summary>
+       [Display(Name ="Prod Name")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       [Editable(true)]
+       public string prod_ename { get; set; }
+
+       /// <summary>
+       ///Product
+       /// </summary>
+       [Display(Name ="Product")]
+       [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
+       public Guid? prod_dbidname { get; set; }
+
+       /// <summary>
+       ///Customer
+       /// </summary>
+       [Display(Name ="Customer")]
+       [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
+       public Guid? cust_dbidname { get; set; }
+
+       /// <summary>
+       ///Channel
+       /// </summary>
+       [Display(Name ="Channel")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Editable(true)]
+       public string channel { get; set; }
+
+       /// <summary>
+       ///Channel Description
+       /// </summary>
+       [Display(Name ="Channel Description")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       public string doh_type_ename { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="cust_dbid")]
+       [Column(TypeName="uniqueidentifier")]
+       public Guid? cust_dbid { get; set; }
+
+       /// <summary>
+       ///Cust ID
+       /// </summary>
+       [Display(Name ="Cust ID")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Editable(true)]
+       public string cust_id { get; set; }
+
+       /// <summary>
+       ///Cust Name
+       /// </summary>
+       [Display(Name ="Cust Name")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
+       [Editable(true)]
+       public string cust_name { get; set; }
 
        /// <summary>
        ///Margin Type
        /// </summary>
        [Display(Name ="Margin Type")]
        [Column(TypeName="int")]
-       public int? margin_value_type { get; set; }
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public int margin_value_type { get; set; }
 
        /// <summary>
-       ///
+       ///Margin Rate/Price
        /// </summary>
-       [Display(Name ="margin_value")]
+       [Display(Name ="Margin Rate/Price")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
-       public decimal? margin_value { get; set; }
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public decimal margin_value { get; set; }
 
        /// <summary>
-       ///
+       ///Start Date
        /// </summary>
-       [Display(Name ="cust_id_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? cust_id_dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="mpg_id_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? mpg_id_dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="channel")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string channel { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="start_date")]
+       [Display(Name ="Start Date")]
        [Column(TypeName="datetime")]
-       public DateTime? start_date { get; set; }
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public DateTime start_date { get; set; }
 
        /// <summary>
-       ///
+       ///End Date
        /// </summary>
-       [Display(Name ="end_date")]
+       [Display(Name ="End Date")]
        [Column(TypeName="datetime")]
-       public DateTime? end_date { get; set; }
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public DateTime end_date { get; set; }
 
        /// <summary>
-       ///
+       ///Modified Date
        /// </summary>
-       [Display(Name ="prod_id_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? prod_id_dbid { get; set; }
+       [Display(Name ="Modified Date")]
+       [Column(TypeName="datetime")]
+       public DateTime? modified_date { get; set; }
 
        /// <summary>
-       ///
+       ///Status
        /// </summary>
-       [Display(Name ="status")]
+       [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Editable(true)]
        public string status { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="cust_id")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string cust_id { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="cust_name")]
-       [MaxLength(100)]
-       [Column(TypeName="nvarchar(100)")]
-       public string cust_name { get; set; }
 
        /// <summary>
        ///
@@ -201,42 +189,101 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="prod_id")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       public string prod_id { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="prod_ename")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string prod_ename { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="sys_value")]
-       [MaxLength(255)]
-       [Column(TypeName="nvarchar(255)")]
-       public string sys_value { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="doh_type_ename")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
-       public string doh_type_ename { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
        [Display(Name ="emp_ename")]
        [MaxLength(40)]
        [Column(TypeName="varchar(40)")]
        public string emp_ename { get; set; }
+
+       /// <summary>
+       ///Prod ID-test
+       /// </summary>
+       [Display(Name ="Prod ID-test")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       public string prod_id_show { get; set; }
+
+       /// <summary>
+       ///Cust ID-test
+       /// </summary>
+       [Display(Name ="Cust ID-test")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       public string cust_id_show { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="division")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       public string division { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="entity")]
+       [MaxLength(3)]
+       [Column(TypeName="varchar(3)")]
+       public string entity { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_client")]
+       [Column(TypeName="int")]
+       public int? modified_client { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_user")]
+       [Column(TypeName="int")]
+       public int? modified_user { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_date")]
+       [Column(TypeName="datetime")]
+       public DateTime? created_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_client")]
+       [Column(TypeName="int")]
+       public int? created_client { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_user")]
+       [Column(TypeName="int")]
+       public int? created_user { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="dbid")]
+       [Column(TypeName="int")]
+       [Required(AllowEmptyStrings=false)]
+       public int dbid { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Key]
+       [Display(Name ="distmargin_dbid")]
+       [Column(TypeName="uniqueidentifier")]
+       [Required(AllowEmptyStrings=false)]
+       public Guid distmargin_dbid { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="local_mpg_dbid")]
+       [Column(TypeName="uniqueidentifier")]
+       public Guid? local_mpg_dbid { get; set; }
 
        
     }
