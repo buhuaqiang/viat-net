@@ -17,13 +17,6 @@ namespace VOL.Entity.DomainModels
     public partial class View_com_bulletin:BaseEntity
     {
         /// <summary>
-       ///列名user_id
-       /// </summary>
-       [Display(Name ="列名user_id")]
-       [Column(TypeName="int")]
-       public int? user_id { get; set; }
-
-       /// <summary>
        ///列名bulletin_dbid
        /// </summary>
        [Key]
@@ -31,14 +24,6 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
        public Guid bulletin_dbid { get; set; }
-
-       /// <summary>
-       ///列名C1
-       /// </summary>
-       [Display(Name ="列名C1")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int C1 { get; set; }
 
        /// <summary>
        ///列名created_user
@@ -151,68 +136,11 @@ namespace VOL.Entity.DomainModels
        public string emp_ename { get; set; }
 
        /// <summary>
-       ///列名C2
-       /// </summary>
-       [Display(Name ="列名C2")]
-       [Column(TypeName="int")]
-       public int? C2 { get; set; }
-
-       /// <summary>
-       ///列名created_user1
-       /// </summary>
-       [Display(Name ="列名created_user1")]
-       [Column(TypeName="int")]
-       public int? created_user1 { get; set; }
-
-       /// <summary>
-       ///列名created_client1
-       /// </summary>
-       [Display(Name ="列名created_client1")]
-       [Column(TypeName="int")]
-       public int? created_client1 { get; set; }
-
-       /// <summary>
-       ///列名created_date1
-       /// </summary>
-       [Display(Name ="列名created_date1")]
-       [Column(TypeName="datetime")]
-       public DateTime? created_date1 { get; set; }
-
-       /// <summary>
-       ///列名modified_user1
-       /// </summary>
-       [Display(Name ="列名modified_user1")]
-       [Column(TypeName="int")]
-       public int? modified_user1 { get; set; }
-
-       /// <summary>
-       ///列名modified_client1
-       /// </summary>
-       [Display(Name ="列名modified_client1")]
-       [Column(TypeName="int")]
-       public int? modified_client1 { get; set; }
-
-       /// <summary>
-       ///列名modified_date1
-       /// </summary>
-       [Display(Name ="列名modified_date1")]
-       [Column(TypeName="datetime")]
-       public DateTime? modified_date1 { get; set; }
-
-       /// <summary>
        ///列名user_id1
        /// </summary>
        [Display(Name ="列名user_id1")]
        [Column(TypeName="int")]
        public int? user_id1 { get; set; }
-
-       /// <summary>
-       ///列名status
-       /// </summary>
-       [Display(Name ="列名status")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       public string status { get; set; }
 
        /// <summary>
        ///Creator
@@ -223,13 +151,51 @@ namespace VOL.Entity.DomainModels
        public string created_username { get; set; }
 
        /// <summary>
-       ///Send To
+       ///列名r_user_id
        /// </summary>
-       [Display(Name ="Send To")]
+       [Display(Name ="列名r_user_id")]
        [Column(TypeName="int")]
-       [Editable(true)]
+       public int? r_user_id { get; set; }
+
+       /// <summary>
+       ///列名modified_clientusername
+       /// </summary>
+       [Display(Name ="列名modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
+
+       /// <summary>
+       ///列名modified_username
+       /// </summary>
+       [Display(Name ="列名modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///列名created_clientusername
+       /// </summary>
+       [Display(Name ="列名created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///列名r_status
+       /// </summary>
+       [Display(Name ="列名r_status")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       public string r_status { get; set; }
+
+       /// <summary>
+       ///列名dbid
+       /// </summary>
+       [Display(Name ="列名dbid")]
+       [Column(TypeName="bigint")]
        [Required(AllowEmptyStrings=false)]
-       public int send { get; set; }
+       public long dbid { get; set; }
 
        
     }
