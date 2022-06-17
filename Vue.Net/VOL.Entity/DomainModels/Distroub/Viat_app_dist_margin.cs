@@ -55,6 +55,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="經銷商代碼")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
+       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string dist_id { get; set; }
 
@@ -63,6 +64,7 @@ namespace VOL.Entity.DomainModels
        /// </summary>
        [Display(Name ="毛利類別,0: Fix Rate ;1:Fix Price")]
        [Column(TypeName="int")]
+       [Editable(true)]
        public int? margin_value_type { get; set; }
 
        /// <summary>
@@ -71,6 +73,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="毛利值,Rate or 固定金額")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
+       [Editable(true)]
        public decimal? margin_value { get; set; }
 
        /// <summary>
@@ -78,6 +81,7 @@ namespace VOL.Entity.DomainModels
        /// </summary>
        [Display(Name ="產品代碼,舊版ITEM_CODE")]
        [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
        public Guid? prod_dbid { get; set; }
 
        /// <summary>
@@ -85,6 +89,7 @@ namespace VOL.Entity.DomainModels
        /// </summary>
        [Display(Name ="客戶代碼")]
        [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
        public Guid? cust_dbid { get; set; }
 
        /// <summary>
@@ -100,6 +105,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="通路")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
+       [Editable(true)]
        public string channel { get; set; }
 
        /// <summary>
@@ -107,6 +113,7 @@ namespace VOL.Entity.DomainModels
        /// </summary>
        [Display(Name ="起始日期")]
        [Column(TypeName="datetime")]
+       [Editable(true)]
        public DateTime? start_date { get; set; }
 
        /// <summary>
@@ -114,6 +121,7 @@ namespace VOL.Entity.DomainModels
        /// </summary>
        [Display(Name ="結束日期")]
        [Column(TypeName="datetime")]
+       [Editable(true)]
        public DateTime? end_date { get; set; }
 
        /// <summary>
@@ -130,6 +138,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="Y:是,N：否")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Editable(true)]
        public string status { get; set; }
 
        /// <summary>
