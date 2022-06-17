@@ -59,7 +59,6 @@ namespace VOL.Entity.DomainModels
        [MaxLength(3)]
        [Column(TypeName="varchar(3)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string entity { get; set; }
 
        /// <summary>
@@ -149,11 +148,10 @@ namespace VOL.Entity.DomainModels
        ///Viatris Customer dbid
        /// </summary>
        [Display(Name ="Viatris Customer dbid")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
+       [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
-       public string cust_dbid { get; set; }
+       public Guid cust_dbid { get; set; }
 
        
     }

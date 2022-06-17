@@ -43,9 +43,9 @@ namespace VOL.Entity.DomainModels
        public string division { get; set; }
 
        /// <summary>
-       ///Dist ID
+       ///Distributor
        /// </summary>
-       [Display(Name ="Dist ID")]
+       [Display(Name ="Distributor")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
@@ -71,14 +71,12 @@ namespace VOL.Entity.DomainModels
        public string status { get; set; }
 
        /// <summary>
-       ///Viatris CustID
+       ///
        /// </summary>
-       [Display(Name ="Viatris CustID")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
+       [Display(Name ="cust_dbid")]
+       [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string cust_dbid { get; set; }
+       public Guid? cust_dbid { get; set; }
 
        /// <summary>
        ///Cust Name
@@ -177,6 +175,16 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
        public int dbid { get; set; }
+
+       /// <summary>
+       ///Viatris CustID
+       /// </summary>
+       [Display(Name ="Viatris CustID")]
+       [MaxLength(55)]
+       [Column(TypeName="varchar(55)")]
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public string cust_id { get; set; }
 
        
     }
