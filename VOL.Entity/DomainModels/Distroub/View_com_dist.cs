@@ -26,55 +26,12 @@ namespace VOL.Entity.DomainModels
        public Guid dist_dbid { get; set; }
 
        /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="CreateID")]
-       [Column(TypeName="int")]
-       public int? CreateID { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="CreateClient")]
-       [Column(TypeName="int")]
-       public int? CreateClient { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="CreateDate")]
-       [Column(TypeName="datetime")]
-       public DateTime? CreateDate { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="ModifyID")]
-       [Column(TypeName="int")]
-       public int? ModifyID { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="ModifyClient")]
-       [Column(TypeName="int")]
-       public int? ModifyClient { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="ModifyDate")]
-       [Column(TypeName="datetime")]
-       public DateTime? ModifyDate { get; set; }
-
-       /// <summary>
        ///Entity
        /// </summary>
        [Display(Name ="Entity")]
        [MaxLength(3)]
        [Column(TypeName="varchar(3)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string entity { get; set; }
 
        /// <summary>
@@ -134,10 +91,92 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="status1")]
+       [Display(Name ="status2")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       public string status1 { get; set; }
+       public string status2 { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_date")]
+       [Column(TypeName="datetime")]
+       public DateTime? modified_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_user")]
+       [Column(TypeName="int")]
+       public int? modified_user { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_date")]
+       [Column(TypeName="datetime")]
+       public DateTime? created_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_client")]
+       [Column(TypeName="int")]
+       public int? created_client { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_user")]
+       [Column(TypeName="int")]
+       public int? created_user { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_client")]
+       [Column(TypeName="int")]
+       public int? modified_client { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="dbid")]
+       [Column(TypeName="int")]
+       [Required(AllowEmptyStrings=false)]
+       public int dbid { get; set; }
 
        
     }
