@@ -17,10 +17,10 @@ namespace VOL.Entity.DomainModels
     public partial class View_sys_deputy:BaseEntity
     {
         /// <summary>
-       ///
+       ///列名deputy_dbid
        /// </summary>
        [Key]
-       [Display(Name ="deputy_dbid")]
+       [Display(Name ="列名deputy_dbid")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
        public Guid deputy_dbid { get; set; }
@@ -53,34 +53,6 @@ namespace VOL.Entity.DomainModels
        public int deputy_user_id { get; set; }
 
        /// <summary>
-       ///Deputy Name
-       /// </summary>
-       [Display(Name ="Deputy Name")]
-       [MaxLength(40)]
-       [Column(TypeName="varchar(40)")]
-       [Editable(true)]
-       public string emp_ename { get; set; }
-
-       /// <summary>
-       ///User Id
-       /// </summary>
-       [Display(Name ="User Id")]
-       [Column(TypeName="int")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public int user_id2 { get; set; }
-
-       /// <summary>
-       ///user_name2
-       /// </summary>
-       [Display(Name ="user_name2")]
-       [MaxLength(100)]
-       [Column(TypeName="nvarchar(100)")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string user_name2 { get; set; }
-
-       /// <summary>
        ///列userid
        /// </summary>
        [Display(Name ="列userid")]
@@ -96,33 +68,6 @@ namespace VOL.Entity.DomainModels
        public DateTime? created_date { get; set; }
 
        /// <summary>
-       ///dept_name
-       /// </summary>
-       [Display(Name ="dept_name")]
-       [MaxLength(80)]
-       [Column(TypeName="varchar(80)")]
-       public string dept_name { get; set; }
-
-       /// <summary>
-       ///emp_cname
-       /// </summary>
-       [Display(Name ="emp_cname")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
-       [Editable(true)]
-       public string emp_cname { get; set; }
-
-       /// <summary>
-       ///UserTrueName
-       /// </summary>
-       [Display(Name ="UserTrueName")]
-       [MaxLength(20)]
-       [Column(TypeName="nvarchar(20)")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string UserTrueName { get; set; }
-
-       /// <summary>
        ///status
        /// </summary>
        [Display(Name ="status")]
@@ -131,6 +76,131 @@ namespace VOL.Entity.DomainModels
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
+
+       /// <summary>
+       ///列名emp_cname2
+       /// </summary>
+       [Display(Name ="列名emp_cname2")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       public string emp_cname2 { get; set; }
+
+       /// <summary>
+       ///列名emp_ename2
+       /// </summary>
+       [Display(Name ="列名emp_ename2")]
+       [MaxLength(40)]
+       [Column(TypeName="varchar(40)")]
+       public string emp_ename2 { get; set; }
+
+       /// <summary>
+       ///列名UserTrueName1
+       /// </summary>
+       [Display(Name ="列名UserTrueName1")]
+       [MaxLength(20)]
+       [Column(TypeName="nvarchar(20)")]
+       [Required(AllowEmptyStrings=false)]
+       public string UserTrueName1 { get; set; }
+
+       /// <summary>
+       ///列名UserName1
+       /// </summary>
+       [Display(Name ="列名UserName1")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
+       [Required(AllowEmptyStrings=false)]
+       public string UserName1 { get; set; }
+
+       /// <summary>
+       ///列名userid1
+       /// </summary>
+       [Display(Name ="列名userid1")]
+       [Column(TypeName="int")]
+       [Required(AllowEmptyStrings=false)]
+       public int userid1 { get; set; }
+
+       /// <summary>
+       ///列名modified_date
+       /// </summary>
+       [Display(Name ="列名modified_date")]
+       [Column(TypeName="datetime")]
+       public DateTime? modified_date { get; set; }
+
+       /// <summary>
+       ///列名modified_client
+       /// </summary>
+       [Display(Name ="列名modified_client")]
+       [Column(TypeName="int")]
+       public int? modified_client { get; set; }
+
+       /// <summary>
+       ///列名modified_username
+       /// </summary>
+       [Display(Name ="列名modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///列名modified_user
+       /// </summary>
+       [Display(Name ="列名modified_user")]
+       [Column(TypeName="int")]
+       public int? modified_user { get; set; }
+
+       /// <summary>
+       ///列名created_clientusername
+       /// </summary>
+       [Display(Name ="列名created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///列名created_client
+       /// </summary>
+       [Display(Name ="列名created_client")]
+       [Column(TypeName="int")]
+       public int? created_client { get; set; }
+
+       /// <summary>
+       ///列名created_username
+       /// </summary>
+       [Display(Name ="列名created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///列名created_user
+       /// </summary>
+       [Display(Name ="列名created_user")]
+       [Column(TypeName="int")]
+       public int? created_user { get; set; }
+
+       /// <summary>
+       ///列名division
+       /// </summary>
+       [Display(Name ="列名division")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       public string division { get; set; }
+
+       /// <summary>
+       ///列名entity
+       /// </summary>
+       [Display(Name ="列名entity")]
+       [MaxLength(3)]
+       [Column(TypeName="varchar(3)")]
+       public string entity { get; set; }
+
+       /// <summary>
+       ///列名modified_clientusername
+       /// </summary>
+       [Display(Name ="列名modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
        
     }
