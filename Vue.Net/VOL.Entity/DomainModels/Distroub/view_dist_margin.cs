@@ -195,22 +195,6 @@ namespace VOL.Entity.DomainModels
        public string emp_ename { get; set; }
 
        /// <summary>
-       ///Prod ID-test
-       /// </summary>
-       [Display(Name ="Prod ID-test")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       public string prod_id_show { get; set; }
-
-       /// <summary>
-       ///Cust ID-test
-       /// </summary>
-       [Display(Name ="Cust ID-test")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string cust_id_show { get; set; }
-
-       /// <summary>
        ///
        /// </summary>
        [Display(Name ="division")]
@@ -284,6 +268,46 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="local_mpg_dbid")]
        [Column(TypeName="uniqueidentifier")]
        public Guid? local_mpg_dbid { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="remarks")]
+       [MaxLength(256)]
+       [Column(TypeName="nvarchar(256)")]
+       public string remarks { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_clientusername")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
        
     }
