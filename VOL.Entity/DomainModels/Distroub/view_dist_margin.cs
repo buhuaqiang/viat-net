@@ -248,14 +248,6 @@ namespace VOL.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="dbid")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
        [Key]
        [Display(Name ="distmargin_dbid")]
        [Column(TypeName="uniqueidentifier")]
@@ -308,6 +300,24 @@ namespace VOL.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_clientusername { get; set; }
+
+       /// <summary>
+       ///Customers
+       /// </summary>
+       [Display(Name ="Customers")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Editable(true)]
+       public string custs { get; set; }
+
+       /// <summary>
+       ///Products
+       /// </summary>
+       [Display(Name ="Products")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Editable(true)]
+       public string prods { get; set; }
 
        
     }

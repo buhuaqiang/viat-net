@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
+using System.Collections.Generic;
 
 namespace VIAT.Basic.Services
 {
@@ -37,5 +38,24 @@ namespace VIAT.Basic.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+
+        public override WebResponseContent DownLoadTemplate()
+        {
+            DownLoadTemplateColumns = x => new{ x.city_id,x.city_name,x.status };
+            return base.DownLoadTemplate();
+        }
+
+        public override WebResponseContent Import(List<IFormFile> files)
+        {
+            //如果下載模板指定了DownLoadTemplate,則在Import方法必須也要指定,並且字段要和下載模板裡指定的一致
+            DownLoadTemplateColumns = x => new { x.city_id, x.city_name, x.status };
+            return base.Import(files);
+        }
+
+        public override WebResponseContent Export(PageDataOptions pageData)
+        {
+            ExportColumns = x => new { x.city_id, x.city_name, x.zip_id,x.zip_name, x.status };
+            return base.Export(pageData);
+        }
+    }
 }
