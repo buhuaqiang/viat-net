@@ -139,7 +139,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="是否手机用户")]
        [Column(TypeName="int")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
+      // [Required(AllowEmptyStrings=false)]
        public int IsRegregisterPhone { get; set; }
 
        /// <summary>
