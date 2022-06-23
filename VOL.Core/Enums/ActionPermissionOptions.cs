@@ -13,6 +13,8 @@ namespace VOL.Core.Enums
         Export=4,
         Audit,
         Upload,//上传文件
-        Import //导入表数据Excel
+        Import, //导入表数据Excel
+        ProductDetach, //產品脫離價格群組
+        Invalid //
     }
 }

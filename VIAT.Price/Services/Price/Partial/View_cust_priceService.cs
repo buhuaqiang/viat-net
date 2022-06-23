@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Price.IRepositories;
+using VIAT.Price.IServices;
 
 namespace VIAT.Price.Services
 {
@@ -24,11 +25,15 @@ namespace VIAT.Price.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IView_cust_priceRepository _repository;//访问数据库
+        WebResponseContent webResponse = new WebResponseContent();
+        private readonly IViat_app_cust_priceService _cust_priceService;
+
 
         [ActivatorUtilitiesConstructor]
         public View_cust_priceService(
             IView_cust_priceRepository dbRepository,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IViat_app_cust_priceService cust_priceService
             )
         : base(dbRepository)
         {
@@ -36,6 +41,29 @@ namespace VIAT.Price.Services
             _repository = dbRepository;
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
+            _cust_priceService = cust_priceService;
         }
-  }
+
+        public override WebResponseContent Add(SaveModel saveDataModel)
+        {
+            //
+            return _cust_priceService.Add(saveDataModel);
+        }
+
+
+        public override WebResponseContent Update(SaveModel saveModel)
+        {
+            return _cust_priceService.Update(saveModel);
+        }
+
+        public WebResponseContent invalidData(SaveModel saveModel)
+        {
+            return null;
+        }
+
+        public WebResponseContent detachProducts(SaveModel saveModel)
+        {
+            return null;
+        }
+    }
 }

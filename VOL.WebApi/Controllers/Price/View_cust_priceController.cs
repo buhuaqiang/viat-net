@@ -16,6 +16,7 @@ namespace VIAT.Price.Controllers
         : base(service)
         {
         }
+
     }
 }
 
