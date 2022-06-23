@@ -119,6 +119,30 @@ namespace VOL.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public int userid1 { get; set; }
 
+         /// <summary>
+       ///列名UserTrueName1
+       /// </summary>
+       [Display(Name ="列名UserTrueName2")]
+       [MaxLength(20)]
+       [Column(TypeName="nvarchar(20)")]
+       public string UserTrueName2 { get; set; }
+
+
+        /// <summary>
+       ///列名UserName2
+       /// </summary>
+       [Display(Name ="列名UserName2")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
+       public string UserName2 { get; set; }
+
+       /// <summary>
+       ///列名userid1
+       /// </summary>
+       [Display(Name ="列名userid2")]
+       [Column(TypeName="int")]
+       public int userid2 { get; set; }
+
        /// <summary>
        ///列名modified_date
        /// </summary>
