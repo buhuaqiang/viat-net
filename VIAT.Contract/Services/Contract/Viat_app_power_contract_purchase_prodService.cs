@@ -1,0 +1,29 @@
+/*
+ *Author：jxx
+ *Contact：283591387@qq.com
+ *代码由框架生成,此处任何更改都可能导致被代码生成器覆盖
+ *所有业务编写全部应在Partial文件夹下Viat_app_power_contract_purchase_prodService与IViat_app_power_contract_purchase_prodService中编写
+ */
+using VIAT.Contract.IRepositories;
+using VIAT.Contract.IServices;
+using VOL.Core.BaseProvider;
+using VOL.Core.Extensions.AutofacManager;
+using VOL.Entity.DomainModels;
+
+namespace VIAT.Contract.Services
+{
+    public partial class Viat_app_power_contract_purchase_prodService : ServiceBase<Viat_app_power_contract_purchase_prod_select, IViat_app_power_contract_purchase_prodRepository>
+    , IViat_app_power_contract_purchase_prodService, IDependency
+    {
+    public Viat_app_power_contract_purchase_prodService(IViat_app_power_contract_purchase_prodRepository repository)
+    : base(repository)
+    {
+    Init(repository);
+    }
+    public static IViat_app_power_contract_purchase_prodService Instance
+    {
+      get { return AutofacContainerModule.GetService<IViat_app_power_contract_purchase_prodService>(); } }
+    }
+
+
+ }

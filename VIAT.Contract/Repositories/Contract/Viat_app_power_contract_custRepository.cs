@@ -10,7 +10,7 @@ using VOL.Entity.DomainModels;
 
 namespace VIAT.Contract.Repositories
 {
-    public partial class Viat_app_power_contract_custRepository : RepositoryBase<Viat_app_power_contract_cust> , IViat_app_power_contract_custRepository
+    public partial class Viat_app_power_contract_custRepository : RepositoryBase<Viat_app_power_contract_cust_select>,IViat_app_power_contract_custRepository
     {
     public Viat_app_power_contract_custRepository(VOLContext dbContext)
     : base(dbContext)

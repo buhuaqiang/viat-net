@@ -13,338 +13,268 @@ using VOL.Entity.SystemModels;
 
 namespace VOL.Entity.DomainModels
 {
-    [Entity(TableCnName = "GP合约主页面",TableName = "View_app_power_contract_main")]
+    [Entity(TableCnName = "GP合约主页面",TableName = "viat_app_power_contract",DetailTable =  new Type[] { typeof(Viat_app_power_contract_purchase_prod)},DetailTableCnName = "客戶送貨資訊")]
     public partial class View_app_power_contract_main:BaseEntity
     {
         /// <summary>
-       ///列dbid
-       /// </summary>
-       [Display(Name ="列dbid")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
+        ///
+        /// </summary>
+        [Display(Name = "total_fg_amount")]
+        [DisplayFormat(DataFormatString = "18,5")]
+        [Column(TypeName = "decimal")]
+        [Editable(true)]
+        public decimal? total_fg_amount { get; set; }
 
-       /// <summary>
-       ///列entity
-       /// </summary>
-       [Display(Name ="列entity")]
-       [MaxLength(3)]
-       [Column(TypeName="varchar(3)")]
-       public string entity { get; set; }
+        /// <summary>
+        ///贈送給用戶的百分比
+        /// </summary>
+        [Display(Name = "贈送給用戶的百分比")]
+        [DisplayFormat(DataFormatString = "18,5")]
+        [Column(TypeName = "decimal")]
+        [Editable(true)]
+        public decimal? rate { get; set; }
 
-       /// <summary>
-       ///列division
-       /// </summary>
-       [Display(Name ="列division")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       public string division { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "trans_end_date")]
+        [Column(TypeName = "datetime")]
+        public DateTime? trans_end_date { get; set; }
 
-       /// <summary>
-       ///列contract_no
-       /// </summary>
-       [Display(Name ="列contract_no")]
-       [MaxLength(30)]
-       [Column(TypeName="varchar(30)")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string contract_no { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "trans_start_date")]
+        [Column(TypeName = "datetime")]
+        public DateTime? trans_start_date { get; set; }
 
-       /// <summary>
-       ///列contract_type
-       /// </summary>
-       [Display(Name ="列contract_type")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       [Editable(true)]
-       public string contract_type { get; set; }
+        /// <summary>
+        ///結案日期2
+        /// </summary>
+        [Display(Name = "結案日期2")]
+        [Column(TypeName = "date")]
+        public DateTime? close_date2 { get; set; }
 
-       /// <summary>
-       ///列start_date
-       /// </summary>
-       [Display(Name ="列start_date")]
-       [Column(TypeName="datetime")]
-       [Editable(true)]
-       public DateTime? start_date { get; set; }
+        /// <summary>
+        ///結案日期
+        /// </summary>
+        [Display(Name = "結案日期")]
+        [Column(TypeName = "date")]
+        [Editable(true)]
+        public DateTime? close_date { get; set; }
 
-       /// <summary>
-       ///列end_date
-       /// </summary>
-       [Display(Name ="列end_date")]
-       [Column(TypeName="datetime")]
-       [Editable(true)]
-       public DateTime? end_date { get; set; }
+        /// <summary>
+        ///合約狀態,Y:Not Close;N:Not Achieve;C:Cancel;A:Achieve; 1: 1st Closed
+        /// </summary>
+        [Display(Name = "合約狀態,Y:Not Close;N:Not Achieve;C:Cancel;A:Achieve; 1: 1st Closed")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        [Editable(true)]
+        public string state { get; set; }
 
-       /// <summary>
-       ///列cust_id
-       /// </summary>
-       [Display(Name ="列cust_id")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string cust_id { get; set; }
+        /// <summary>
+        ///(銷售金額
+        /// </summary>
+        [Display(Name = "(銷售金額")]
+        [DisplayFormat(DataFormatString = "18,5")]
+        [Column(TypeName = "decimal")]
+        [Editable(true)]
+        public decimal? sales_amt { get; set; }
 
-       /// <summary>
-       ///列territory_id
-       /// </summary>
-       [Display(Name ="列territory_id")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       public string territory_id { get; set; }
+        /// <summary>
+        ///預估金額
+        /// </summary>
+        [Display(Name = "預估金額")]
+        [DisplayFormat(DataFormatString = "18,5")]
+        [Column(TypeName = "decimal")]
+        [Editable(true)]
+        public decimal? accrue_amt { get; set; }
 
-       /// <summary>
-       ///列allw_type
-       /// </summary>
-       [Display(Name ="列allw_type")]
-       [Column(TypeName="int")]
-       [Editable(true)]
-       public int? allw_type { get; set; }
+        /// <summary>
+        ///預估參考月數
+        /// </summary>
+        [Display(Name = "預估參考月數")]
+        [Column(TypeName = "int")]
+        [Editable(true)]
+        public int? est_months { get; set; }
 
-       /// <summary>
-       ///列est_months
-       /// </summary>
-       [Display(Name ="列est_months")]
-       [Column(TypeName="int")]
-       public int? est_months { get; set; }
+        /// <summary>
+        ///折讓類別(1:By Amount;2:By Qty)
+        /// </summary>
+        [Display(Name = "折讓類別(1:By Amount;2:By Qty)")]
+        [Column(TypeName = "int")]
+        [Editable(true)]
+        public int? allw_type { get; set; }
 
-       /// <summary>
-       ///列accrue_amt
-       /// </summary>
-       [Display(Name ="列accrue_amt")]
-       [DisplayFormat(DataFormatString="18,5")]
-       [Column(TypeName="decimal")]
-       [Editable(true)]
-       public decimal? accrue_amt { get; set; }
+        /// <summary>
+        ///業代區域
+        /// </summary>
+        [Display(Name = "業代區域")]
+        [MaxLength(5)]
+        [Column(TypeName = "varchar(5)")]
+        [Editable(true)]
+        public string territory_id { get; set; }
 
-       /// <summary>
-       ///列sales_amt
-       /// </summary>
-       [Display(Name ="列sales_amt")]
-       [DisplayFormat(DataFormatString="18,5")]
-       [Column(TypeName="decimal")]
-       public decimal? sales_amt { get; set; }
+        /// <summary>
+        ///結束日
+        /// </summary>
+        [Display(Name = "結束日")]
+        [Column(TypeName = "datetime")]
+        [Editable(true)]
+        public DateTime? end_date { get; set; }
 
-       /// <summary>
-       ///列contract_term
-       /// </summary>
-       [Display(Name ="列contract_term")]
-       [MaxLength(16)]
-       [Column(TypeName="text(16)")]
-       [Editable(true)]
-       public string contract_term { get; set; }
+        /// <summary>
+        ///生效日
+        /// </summary>
+        [Display(Name = "生效日")]
+        [Column(TypeName = "datetime")]
+        [Editable(true)]
+        public DateTime? start_date { get; set; }
 
-       /// <summary>
-       ///列close_date
-       /// </summary>
-       [Display(Name ="列close_date")]
-       [Column(TypeName="date")]
-       [Editable(true)]
-       public DateTime? close_date { get; set; }
+        /// <summary>
+        ///合約類型 L:Loyal; C:Champix ; P:PCV 13;O:Others
+        /// </summary>
+        [Display(Name = "合約類型 L:Loyal; C:Champix ; P:PCV 13;O:Others")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        [Editable(true)]
+        public string contract_type { get; set; }
 
-       /// <summary>
-       ///列close_date2
-       /// </summary>
-       [Display(Name ="列close_date2")]
-       [Column(TypeName="date")]
-       public DateTime? close_date2 { get; set; }
+        /// <summary>
+        ///合約號碼(案號)
+        /// </summary>
+        [Display(Name = "合約號碼(案號)")]
+        [MaxLength(30)]
+        [Column(TypeName = "varchar(30)")]
+        [Editable(true)]
+        [Required(AllowEmptyStrings = false)]
+        public string contract_no { get; set; }
 
-       /// <summary>
-       ///列trans_start_date
-       /// </summary>
-       [Display(Name ="列trans_start_date")]
-       [Column(TypeName="datetime")]
-       public DateTime? trans_start_date { get; set; }
+        /// <summary>
+        ///所屬事業單位,01:PH;03:AH;05:CH;06:NU
+        /// </summary>
+        [Display(Name = "所屬事業單位,01:PH;03:AH;05:CH;06:NU")]
+        [MaxLength(15)]
+        [Column(TypeName = "varchar(15)")]
+        [Editable(true)]
+        public string division { get; set; }
 
-       /// <summary>
-       ///列trans_end_date
-       /// </summary>
-       [Display(Name ="列trans_end_date")]
-       [Column(TypeName="datetime")]
-       public DateTime? trans_end_date { get; set; }
+        /// <summary>
+        ///公司別,舊版SUN_DB
+        /// </summary>
+        [Display(Name = "公司別,舊版SUN_DB")]
+        [MaxLength(3)]
+        [Column(TypeName = "varchar(3)")]
+        [Editable(true)]
+        public string entity { get; set; }
 
-       /// <summary>
-       ///列rate
-       /// </summary>
-       [Display(Name ="列rate")]
-       [DisplayFormat(DataFormatString="18,5")]
-       [Column(TypeName="decimal")]
-       [Editable(true)]
-       public decimal? rate { get; set; }
+        /// <summary>
+        ///合約條款
+        /// </summary>
+        [Display(Name = "合約條款")]
+        [MaxLength(16)]
+        [Column(TypeName = "text(16)")]
+        [Editable(true)]
+        public string contract_term { get; set; }
 
-       /// <summary>
-       ///列total_fg_amount
-       /// </summary>
-       [Display(Name ="列total_fg_amount")]
-       [DisplayFormat(DataFormatString="18,5")]
-       [Column(TypeName="decimal")]
-       public decimal? total_fg_amount { get; set; }
+        /// <summary>
+        ///最後修改者的委託人
+        /// </summary>
+        [Display(Name = "最後修改者的委託人")]
+        [Column(TypeName = "int")]
+        public int? modified_client { get; set; }
 
-       /// <summary>
-       ///列group_name
-       /// </summary>
-       [Display(Name ="列group_name")]
-       [MaxLength(100)]
-       [Column(TypeName="varchar(100)")]
-       public string group_name { get; set; }
+        /// <summary>
+        ///最後修改用戶
+        /// </summary>
+        [Display(Name = "最後修改用戶")]
+        [Column(TypeName = "int")]
+        public int? modified_user { get; set; }
 
-       /// <summary>
-       ///列cust_name
-       /// </summary>
-       [Display(Name ="列cust_name")]
-       [MaxLength(100)]
-       [Column(TypeName="nvarchar(100)")]
-       public string cust_name { get; set; }
+        /// <summary>
+        ///建立時間
+        /// </summary>
+        [Display(Name = "建立時間")]
+        [Column(TypeName = "datetime")]
+        public DateTime? created_date { get; set; }
 
-       /// <summary>
-       ///列State
-       /// </summary>
-       [Display(Name ="列State")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       [Editable(true)]
-       public string state { get; set; }
+        /// <summary>
+        ///建立者的委託人
+        /// </summary>
+        [Display(Name = "建立者的委託人")]
+        [Column(TypeName = "int")]
+        public int? created_client { get; set; }
 
-       /// <summary>
-       ///列C1
-       /// </summary>
-       [Display(Name ="列C1")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
-       public string C1 { get; set; }
+        /// <summary>
+        ///建立用戶
+        /// </summary>
+        [Display(Name = "建立用戶")]
+        [Column(TypeName = "int")]
+        public int? created_user { get; set; }
 
-       /// <summary>
-       ///列名modified_date
-       /// </summary>
-       [Display(Name ="列名modified_date")]
-       [Column(TypeName="datetime")]
-       public DateTime? modified_date { get; set; }
+        /// <summary>
+        ///價格群組主鍵
+        /// </summary>
+        [Display(Name = "價格群組主鍵")]
+        [Column(TypeName = "uniqueidentifier")]
+        [Editable(true)]
+        public Guid? pricegroup_dbid { get; set; }
 
-       /// <summary>
-       ///列名modified_client
-       /// </summary>
-       [Display(Name ="列名modified_client")]
-       [Column(TypeName="int")]
-       public int? modified_client { get; set; }
+        /// <summary>
+        ///客戶表主鍵
+        /// </summary>
+        [Display(Name = "客戶表主鍵")]
+        [Column(TypeName = "uniqueidentifier")]
+        [Editable(true)]
+        public Guid? cust_dbid { get; set; }
 
-       /// <summary>
-       ///列名modified_user
-       /// </summary>
-       [Display(Name ="列名modified_user")]
-       [Column(TypeName="int")]
-       public int? modified_user { get; set; }
+        /// <summary>
+        ///最後修改時間
+        /// </summary>
+        [Display(Name = "最後修改時間")]
+        [Column(TypeName = "datetime")]
+        public DateTime? modified_date { get; set; }
 
-       /// <summary>
-       ///列名created_date
-       /// </summary>
-       [Display(Name ="列名created_date")]
-       [Column(TypeName="datetime")]
-       public DateTime? created_date { get; set; }
+        /// <summary>
+        ///主鍵
+        /// </summary>
+        [Key]
+        [Display(Name = "主鍵")]
+        [Column(TypeName = "uniqueidentifier")]
+        [Required(AllowEmptyStrings = false)]
+        public Guid powercont_dbid { get; set; }
 
-       /// <summary>
-       ///列名created_client
-       /// </summary>
-       [Display(Name ="列名created_client")]
-       [Column(TypeName="int")]
-       public int? created_client { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "modified_username")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string modified_username { get; set; }
 
-       /// <summary>
-       ///列名created_user
-       /// </summary>
-       [Display(Name ="列名created_user")]
-       [Column(TypeName="int")]
-       public int? created_user { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "created_username")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string created_username { get; set; }
 
-       /// <summary>
-       ///列名pricegroup_dbid
-       /// </summary>
-       [Display(Name ="列名pricegroup_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       [Editable(true)]
-       public Guid? pricegroup_dbid { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "created_clientusername")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string created_clientusername { get; set; }
 
-       /// <summary>
-       ///列名cust_dbid
-       /// </summary>
-       [Display(Name ="列名cust_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       [Editable(true)]
-       public Guid? cust_dbid { get; set; }
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "modified_clientusername")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string modified_clientusername { get; set; }
 
-       /// <summary>
-       ///列名group_id
-       /// </summary>
-       [Display(Name ="列名group_id")]
-       [MaxLength(20)]
-       [Column(TypeName="varchar(20)")]
-       [Editable(true)]
-       public string group_id { get; set; }
-
-       /// <summary>
-       ///列名powercont_dbid
-       /// </summary>
-       [Key]
-       [Display(Name ="列名powercont_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       [Required(AllowEmptyStrings=false)]
-       public Guid powercont_dbid { get; set; }
-
-       /// <summary>
-       ///Contract_State
-       /// </summary>
-       [Display(Name ="Contract_State")]
-       [MaxLength(255)]
-       [Column(TypeName="nvarchar(255)")]
-       public string Contract_State { get; set; }
-
-       /// <summary>
-       ///GPDS_Contract_Type
-       /// </summary>
-       [Display(Name ="GPDS_Contract_Type")]
-       [MaxLength(255)]
-       [Column(TypeName="nvarchar(255)")]
-       public string GPDS_Contract_Type { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string modified_username { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="isgroup")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
-       public string isgroup { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="created_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string created_username { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="created_clientusername")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string created_clientusername { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_clientusername")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string modified_clientusername { get; set; }
-
-       
     }
 }

@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 namespace VIAT.Contract.IServices
 {
-    public partial interface IViat_app_power_contract_custService
+    public partial interface IViat_app_power_contract_free_prodService
     {
 
 

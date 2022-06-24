@@ -20,6 +20,7 @@ using VIAT.Contract.IRepositories;
 using System.Collections.Generic;
 using System;
 using VIAT.Contract.Repositories;
+using Newtonsoft.Json;
 
 namespace VIAT.Contract.Services
 {
@@ -99,31 +100,155 @@ namespace VIAT.Contract.Services
         WebResponseContent webResponse = new WebResponseContent();
         public override WebResponseContent Update(SaveModel saveModel)
         {
-            /*
-             UpdateOnExecuting = (View_app_power_contract_main view_App_Power, object addList, object updateList, List<object> delKeys) =>
-             {
 
-                 Viat_app_power_contract app_Power_Contract = new Viat_app_power_contract()
-                 {
-                     powercont_dbid = view_App_Power.powercont_dbid,
-                     contract_no = view_App_Power.contract_no,
-                     contract_type = view_App_Power.contract_type,
-                     start_date = view_App_Power.start_date,
-                     end_date = view_App_Power.end_date,
-                     cust_dbid = view_App_Power.cust_dbid,
-                     pricegroup_dbid = view_App_Power.pricegroup_dbid,
-                     territory_id = view_App_Power.territory_id,
-                     allw_type = view_App_Power.allw_type,
-                     accrue_amt = view_App_Power.accrue_amt,
-                     contract_term = view_App_Power.contract_term,
-                     state = view_App_Power.state,
-                     close_date = view_App_Power.close_date,
-                     rate = view_App_Power.rate,
-                     total_fg_amount = view_App_Power.total_fg_amount
+            /*多表处理时，自定义处理表体的addlist,editlidt,delKeys*/
+            UpdateMoreDetails = (saveModel) =>
+            {
+                if (saveModel.DetailData != null && saveModel.DetailData.Count > 0)
+                {
+                    saveModel.DetailListData = new List<SaveModel.DetailListDataResult>();
+                    foreach (Dictionary<string, object> dic in saveModel.DetailData)
+                    {
 
-                 };
-                 _viat_App_Power_ContractRepository.Update(app_Power_Contract, x => new 
-                 { x.contract_no, x.contract_type, x.start_date, x.end_date, x.cust_dbid, x.pricegroup_dbid, x.territory_id, x.allw_type, x.accrue_amt, x.contract_term, x.state, x.close_date, x.rate, x.total_fg_amount });
+                        Dictionary<string, object> dicTmp = dic;
+                        if (dicTmp["key"]?.ToString() == "table1RowData")
+                        {
+                            //合約客戶List
+                            string cusDic = dicTmp["value"]?.ToString();
+                            //取得所有
+                            if (string.IsNullOrEmpty(cusDic) == false)
+                            {
+
+                                SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                                detailDataResult.detailType = typeof(Viat_app_power_contract_cust);
+
+
+                                //计算表体和实体的值
+                                List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, cusDic);
+
+                                #region
+                                //定义合约客户表体实体                            
+                                // Newtonsoft.Json.Linq.JArray jarray = JsonConvert.DeserializeObject(cusDic) as Newtonsoft.Json.Linq.JArray;
+                                //  List<Viat_app_power_contract_cust> bodyList = new List<Viat_app_power_contract_cust>();
+
+
+
+                                /* for (int i = 0; i < jarray.Count; i++)
+                                 {
+                                     Dictionary<string, object> dcResult = new Dictionary<string, object>();
+
+                                     string listdata = jarray[i].ToString();
+                                     Object obj1 = JsonConvert.DeserializeObject(listdata);
+                                     Newtonsoft.Json.Linq.JObject js1 = obj1 as Newtonsoft.Json.Linq.JObject;//把上面的obj转换为 Jobject对象
+
+                                     foreach(var item in js1)
+                                     {
+                                         string s = item.Key;
+                                         object d =item.Value;
+                                     }
+
+                                     dcResult.Add("powercont_dbid", new Guid(js1["powercont_dbid"].ToString()));
+                                     dcResult.Add("cust_dbid", js1["cust_dbid"].ToString());
+                                     dcResult.Add("cust_id", js1["cust_id"].ToString());
+                                    // dcResult.Add("territory_id", js1["territory_id"].ToString());
+
+                                     lst.Add(dcResult);
+                                 }*/
+                                #endregion
+                                detailDataResult.DetailData = entityDic;
+                                saveModel.DetailListData.Add(detailDataResult);
+                            }
+
+                        }
+                        else if (dicTmp["key"]?.ToString() == "table2RowData")
+                        // 合約產品List   
+                        {
+                            //合約客戶List
+                            Dictionary<string, object> dicTmpPro = dic;
+                            if (dicTmp["key"]?.ToString() == "table2RowData")
+                            {
+                                //合約客戶List
+                                string proDic = dicTmp["value"]?.ToString();
+                                //取得所有
+                                if (string.IsNullOrEmpty(proDic) == false)
+                                {
+
+                                    SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                                    detailDataResult.detailType = typeof(Viat_app_power_contract_purchase_prod);
+
+
+                                    //计算表体和实体的值
+                                    List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, proDic);
+
+                                    detailDataResult.DetailData = entityDic;
+                                    saveModel.DetailListData.Add(detailDataResult);
+                                }
+
+                            }
+                        }
+
+                        else if (dicTmp["key"]?.ToString() == "table3RowData")
+                        {
+                            //合約贈送產品List
+                            Dictionary<string, object> dicTmpPro = dic;
+                            if (dicTmp["key"]?.ToString() == "table3RowData")
+                            {
+                                //合約客戶List
+                                string proDic = dicTmp["value"]?.ToString();
+                                //取得所有
+                                if (string.IsNullOrEmpty(proDic) == false)
+                                {
+
+                                    SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                                    detailDataResult.detailType = typeof(Viat_app_power_contract_free_prod);
+
+
+                                    //计算表体和实体的值
+                                    List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, proDic);
+
+                                    detailDataResult.DetailData = entityDic;
+                                    saveModel.DetailListData.Add(detailDataResult);
+                                }
+
+                            }
+                        }
+
+                      
+                    };
+
+                }
+                return base.UpdateToEntityForDetails(saveModel);
+
+            };
+
+            return base.Update(saveModel);
+        }
+
+         #region
+            /*UpdateOnExecuting = (View_app_power_contract_main view_App_Power, object addList, object updateList, List<object> delKeys) =>
+            {
+
+                Viat_app_power_contract app_Power_Contract = new Viat_app_power_contract()
+                {
+                    powercont_dbid = view_App_Power.powercont_dbid,
+                    contract_no = view_App_Power.contract_no,
+                    contract_type = view_App_Power.contract_type,
+                    start_date = view_App_Power.start_date,
+                    end_date = view_App_Power.end_date,
+                    cust_dbid = view_App_Power.cust_dbid,
+                    pricegroup_dbid = view_App_Power.pricegroup_dbid,
+                    territory_id = view_App_Power.territory_id,
+                    allw_type = view_App_Power.allw_type,
+                    accrue_amt = view_App_Power.accrue_amt,
+                    contract_term = view_App_Power.contract_term,
+                    state = view_App_Power.state,
+                    close_date = view_App_Power.close_date,
+                    rate = view_App_Power.rate,
+                    total_fg_amount = view_App_Power.total_fg_amount
+
+                };
+                _viat_App_Power_ContractRepository.Update(app_Power_Contract, x => new
+                { x.contract_no, x.contract_type, x.start_date, x.end_date, x.cust_dbid, x.pricegroup_dbid, x.territory_id, x.allw_type, x.accrue_amt, x.contract_term, x.state, x.close_date, x.rate, x.total_fg_amount });
 
                  //  _viat_App_Power_ContractRepository.Update(app_Power_Contract);
 
@@ -133,28 +258,28 @@ namespace VIAT.Contract.Services
 
                  //新增的明细表
                  List<Viat_app_power_contract_cust> add = addList as List<Viat_app_power_contract_cust>;
-                 _viat_App_Power_ContractRepository.AddRange(add);
+                _viat_App_Power_ContractRepository.AddRange(add);
                  //修改的明细表
                  List<Viat_app_power_contract_cust> update = updateList as List<Viat_app_power_contract_cust>;
 
-                 _viat_App_Power_ContractRepository.UpdateRange(update);
+                _viat_App_Power_ContractRepository.UpdateRange(update);
 
                  //删除明细表Id
                  //  var guids = delKeys?.Select(x => (Guid)x);
                  if (delKeys.Count > 0)
-                 {
-                     Viat_app_power_contract_custRepository.Instance.DeleteWithKeys(delKeys.ToArray());
-                 }
+                {
+                    Viat_app_power_contract_custRepository.Instance.DeleteWithKeys(delKeys.ToArray());
+                }
 
-                 _viat_App_Power_ContractRepository.SaveChanges();
-                 webResponse.Code = "-1";
-                 return webResponse.OK("OK");
-             };
+                _viat_App_Power_ContractRepository.SaveChanges();
+                webResponse.Code = "-1";
+                return webResponse.OK("OK");
+            }
+*/
+            //return base.Update(saveModel);
+            #endregion
 
-             //return base.Update(saveModel);
-            */
-            return Viat_app_power_contractService.Instance.Update(saveModel);
-        }
+         
         /// <summary>
         /// 查询业务代码编写(从表(明细表查询))
         /// </summary>
