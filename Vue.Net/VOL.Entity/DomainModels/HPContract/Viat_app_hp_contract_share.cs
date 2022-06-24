@@ -13,8 +13,8 @@ using VOL.Entity.SystemModels;
 
 namespace VOL.Entity.DomainModels
 {
-    [Entity(TableCnName = "HP合約主表",TableName = "Viat_app_hp_contract")]
-    public partial class Viat_app_hp_contract:BaseEntity
+    [Entity(TableCnName = "shareTable",TableName = "Viat_app_hp_contract_share")]
+    public partial class Viat_app_hp_contract_share:BaseEntity
     {
         /// <summary>
        ///PKID
@@ -23,16 +23,7 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="PKID")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-       public Guid hpcont_dbid { get; set; }
-
-       /// <summary>
-       ///公司別,舊版SUN_DB
-       /// </summary>
-       [Display(Name ="公司別,舊版SUN_DB")]
-       [MaxLength(3)]
-       [Column(TypeName="varchar(3)")]
-       [Editable(true)]
-       public string entity { get; set; }
+       public Guid hpcontshare_dbid { get; set; }
 
        /// <summary>
        ///所屬事業單位,01:PH;03:AH;05:CH;06:NU
@@ -44,81 +35,53 @@ namespace VOL.Entity.DomainModels
        public string division { get; set; }
 
        /// <summary>
-       ///合約號碼(案號)
+       ///PKID
        /// </summary>
-       [Display(Name ="合約號碼(案號)")]
-       [MaxLength(30)]
-       [Column(TypeName="varchar(30)")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string contract_no { get; set; }
-
-       /// <summary>
-       ///主鍵
-       /// </summary>
-       [Display(Name ="主鍵")]
+       [Display(Name ="PKID")]
        [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
-       public Guid? pricegroup_dbid { get; set; }
+       public Guid? hpcont_dbid { get; set; }
 
        /// <summary>
-       ///生效日
+       ///產品代碼,舊版ITEM_CODE
        /// </summary>
-       [Display(Name ="生效日")]
-       [Column(TypeName="datetime")]
+       [Display(Name ="產品代碼,舊版ITEM_CODE")]
+       [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
-       public DateTime? start_date { get; set; }
+       public Guid? prod_dbid { get; set; }
 
        /// <summary>
-       ///結束日
+       ///客戶代碼
        /// </summary>
-       [Display(Name ="結束日")]
-       [Column(TypeName="datetime")]
+       [Display(Name ="客戶代碼")]
+       [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
-       public DateTime? end_date { get; set; }
+       public Guid? cust_dbid { get; set; }
 
        /// <summary>
-       ///折讓類別(1:By Amount;2:By Qty)
+       ///序號
        /// </summary>
-       [Display(Name ="折讓類別(1:By Amount;2:By Qty)")]
-       [Column(TypeName="int")]
+       [Display(Name ="序號")]
+       [Column(TypeName="decimal")]
        [Editable(true)]
-       public int? allw_type { get; set; }
+       public decimal? serial_no { get; set; }
 
        /// <summary>
-       ///預估參考月數
+       ///分配比例
        /// </summary>
-       [Display(Name ="預估參考月數")]
-       [Column(TypeName="int")]
-       [Editable(true)]
-       public int? est_months { get; set; }
-
-       /// <summary>
-       ///預估金額
-       /// </summary>
-       [Display(Name ="預估金額")]
+       [Display(Name ="分配比例")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
        [Editable(true)]
-       public decimal? accrue_amt { get; set; }
+       public decimal? percent { get; set; }
 
        /// <summary>
-       ///合約條款
+       ///是否有效,Y:生效/N:未生效or期滿
        /// </summary>
-       [Display(Name ="合約條款")]
-       [MaxLength(16)]
-       [Column(TypeName="text(16)")]
+       [Display(Name ="是否有效,Y:生效/N:未生效or期滿")]
+       [Column(TypeName="bit")]
        [Editable(true)]
-       public string contract_term { get; set; }
-
-       /// <summary>
-       ///合約狀態,Y:Valid;N:Invalid;C:Over period still active;A:Not Achieve
-       /// </summary>
-       [Display(Name ="合約狀態,Y:Valid;N:Invalid;C:Over period still active;A:Not Achieve")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       [Editable(true)]
-       public string state { get; set; }
+       public bool? status { get; set; }
 
        /// <summary>
        ///LocalAddon Contractno
@@ -136,7 +99,7 @@ namespace VOL.Entity.DomainModels
        public int? created_user { get; set; }
 
        /// <summary>
-       ///
+       ///created_username
        /// </summary>
        [Display(Name ="created_username")]
        [MaxLength(50)]
@@ -151,7 +114,7 @@ namespace VOL.Entity.DomainModels
        public int? created_client { get; set; }
 
        /// <summary>
-       ///
+       ///created_clientusername
        /// </summary>
        [Display(Name ="created_clientusername")]
        [MaxLength(50)]
@@ -173,7 +136,7 @@ namespace VOL.Entity.DomainModels
        public int? modified_user { get; set; }
 
        /// <summary>
-       ///
+       ///modified_username
        /// </summary>
        [Display(Name ="modified_username")]
        [MaxLength(50)]
@@ -188,7 +151,7 @@ namespace VOL.Entity.DomainModels
        public int? modified_client { get; set; }
 
        /// <summary>
-       ///
+       ///modified_clientusername
        /// </summary>
        [Display(Name ="modified_clientusername")]
        [MaxLength(50)]
