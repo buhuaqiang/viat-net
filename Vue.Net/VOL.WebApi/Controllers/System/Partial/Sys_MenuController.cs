@@ -36,7 +36,9 @@ namespace VOL.System.Controllers
 
         //[ActionPermission("Sys_Menu", "1", ActionPermissionOptions.Add)]
         //只有角色ID为1的才能进行保存操作
-        [HttpPost, Route("save"), ApiActionPermission(ActionRolePermission.SuperAdmin)]
+		//[ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        [HttpPost, Route("save")]
+		[ApiActionPermission]
         public async Task<ActionResult> Save([FromBody] Sys_Menu menu)
         {
             return Json(await _service.Save(menu));
