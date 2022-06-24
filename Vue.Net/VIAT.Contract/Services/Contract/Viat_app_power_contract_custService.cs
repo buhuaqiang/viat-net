@@ -12,7 +12,7 @@ using VOL.Entity.DomainModels;
 
 namespace VIAT.Contract.Services
 {
-    public partial class Viat_app_power_contract_custService : ServiceBase<Viat_app_power_contract_cust, IViat_app_power_contract_custRepository>
+    public partial class Viat_app_power_contract_custService : ServiceBase<Viat_app_power_contract_cust_select, IViat_app_power_contract_custRepository>
     , IViat_app_power_contract_custService, IDependency
     {
     public Viat_app_power_contract_custService(IViat_app_power_contract_custRepository repository)
@@ -24,4 +24,6 @@ namespace VIAT.Contract.Services
     {
       get { return AutofacContainerModule.GetService<IViat_app_power_contract_custService>(); } }
     }
+
+
  }

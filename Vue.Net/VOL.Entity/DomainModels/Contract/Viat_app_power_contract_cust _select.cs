@@ -15,7 +15,7 @@ using System.Reflection;
 namespace VOL.Entity.DomainModels
 {
     [Entity(TableCnName = "GP合約客戶子表",TableName = "Viat_app_power_contract_cust")] 
-    public partial class Viat_app_power_contract_cust:BaseEntity
+    public partial class Viat_app_power_contract_cust_select:BaseEntity
     {
       /*  /// <summary>
        ///識別碼, PK, Identity
@@ -140,7 +140,7 @@ namespace VOL.Entity.DomainModels
        public Guid powercontcust_dbid { get; set; }
 
 
-      /*  /// <summary>
+        /// <summary>
         ///cust_id
         /// </summary>
         [Display(Name = "CanNotWrite", AutoGenerateField=false)]
@@ -152,7 +152,7 @@ namespace VOL.Entity.DomainModels
         /// </summary>    
         [Display(Name = "CanNotWrite")]      
         [Column(TypeName = "varcher(15)")]
-        public string cust_name { get; set; }*/
+        public string cust_name { get; set; }
 
         /*/// <summary>
         ///territory_id

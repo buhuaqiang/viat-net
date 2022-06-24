@@ -99,6 +99,8 @@ namespace VOL.Core.BaseProvider
             if (QuerySql != null && !IsMultiTenancy)
             // if ((QuerySql != null && !IsMultiTenancy) || UserContext.Current.IsSuperAdmin)
             {
+
+
                 return repository.DbContext.Set<T>().FromSqlRaw(QuerySql);
             }
             string multiTenancyString = TenancyManager<T>.GetSearchQueryable(typeof(T).GetEntityTableName());
@@ -125,7 +127,7 @@ namespace VOL.Core.BaseProvider
             //例如sql，只能(编辑)自己创建的数据:判断数据是不是当前用户创建的
             //sql = $" {sql} and createid!={UserContext.Current.UserId}";
             object obj = repository.DapperContext.ExecuteScalar(sql, null);
-            if (obj == null || obj.GetInt()== 0)
+            if (obj == null || obj.GetInt() == 0)
             {
                 Response.Error("不能编辑此数据");
             }
@@ -143,8 +145,8 @@ namespace VOL.Core.BaseProvider
             //例如sql，只能(删除)自己创建的数据:找出不是自己创建的数据
             //sql = $" {sql} and createid!={UserContext.Current.UserId}";
             object obj = repository.DapperContext.ExecuteScalar(sql, null);
-            int idsCount=  ids.Split(",").Distinct().Count();
-            if (obj == null || obj.GetInt()!= idsCount)
+            int idsCount = ids.Split(",").Distinct().Count();
+            if (obj == null || obj.GetInt() != idsCount)
             {
                 Response.Error("不能删除此数据");
             }
@@ -222,7 +224,7 @@ namespace VOL.Core.BaseProvider
             // queryable = repository.DbContext.Set<T>();
             //2020.08.15添加自定义原生查询sql或多租户
             queryable = GetSearchQueryable();
-
+            
             //判断列的数据类型数字，日期的需要判断值的格式是否正确
             for (int i = 0; i < searchParametersList.Count; i++)
             {
@@ -249,9 +251,9 @@ namespace VOL.Core.BaseProvider
                               ? queryable.Where(x.Name.CreateExpression<T>(values, expressionType))
                               : queryable.Where(x.Name.CreateExpression<T>(x.Value, expressionType));
             }
-            options.TableName = base.TableName ?? typeof(T).Name;
+            options.TableName = base.TableName ?? typeof(T).GetEntityTableName() ?? typeof(T).Name;
             return options;
-        }
+        }         
 
         /// <summary>
         /// 加载页面数据
@@ -444,7 +446,7 @@ namespace VOL.Core.BaseProvider
             if (HttpContext.Current.Request.Query.ContainsKey("table"))
             {
                 ImportOnExecuted?.Invoke(list);
-                return Response.OK("文件上传成功",list.Serialize());
+                return Response.OK("文件上传成功", list.Serialize());
             }
             repository.AddRange(list, true);
             if (ImportOnExecuted != null)
@@ -452,7 +454,7 @@ namespace VOL.Core.BaseProvider
                 Response = ImportOnExecuted.Invoke(list);
                 if (CheckResponseResult()) return Response;
             }
-            return Response.OK("文件上传成功" );
+            return Response.OK("文件上传成功");
         }
 
         /// <summary>
@@ -646,7 +648,7 @@ namespace VOL.Core.BaseProvider
             return Response.Set(ResponseType.SaveSuccess);
         }
 
-        #region 编辑
+         
 
         /// <summary>
         /// 获取编辑明细主键
@@ -754,9 +756,9 @@ namespace VOL.Core.BaseProvider
                  */
                 bool bHavaViatModify = false;
                 string[] sModifyArray = typeof(DetailT).GetEditField();
-                if(sModifyArray.Length>0)
+                if (sModifyArray.Length > 0)
                 {
-                    if(sModifyArray.Contains(AppSetting.ModifyMember.ViatUserField)
+                    if (sModifyArray.Contains(AppSetting.ModifyMember.ViatUserField)
                      && sModifyArray.Contains(AppSetting.ModifyMember.ViatUserNameField)
                       && sModifyArray.Contains(AppSetting.ModifyMember.ViatDateField)
                        && sModifyArray.Contains(AppSetting.ModifyMember.ViatClientField)
@@ -764,7 +766,7 @@ namespace VOL.Core.BaseProvider
                     {
                         //存在modify这一套
                         bHavaViatModify = true;
-                    }                   
+                    }
                 }
                 //获取编辑的字段
                 string[] updateField = saveModel.DetailData
@@ -776,7 +778,7 @@ namespace VOL.Core.BaseProvider
                     .ToArray();
 
                 //
-                if(bHavaViatModify == true)
+                if (bHavaViatModify == true)
                 {
                     // 存在modify这一套
                     List<string> tmpLst = new List<string>(updateField);
@@ -787,7 +789,7 @@ namespace VOL.Core.BaseProvider
                     tmpLst.Add(AppSetting.ModifyMember.ViatClientUserNameField);
                     updateField = tmpLst.ToArray();
                 }
-                
+
                 //設置默認值
                 x.SetModifyDefaultVal();
                 //添加修改字段
@@ -837,7 +839,7 @@ namespace VOL.Core.BaseProvider
         /// </summary>
         private static string[] _userIgnoreFields { get; set; }
 
-        private static string[] UserIgnoreFields
+        public static string[] UserIgnoreFields
         {
             get
             {
@@ -891,6 +893,19 @@ namespace VOL.Core.BaseProvider
             }
             if (saveModel == null)
                 return Response.Error(ResponseType.ParametersLack);
+
+            #region 多表体委托处理,
+            if (UpdateMoreDetails != null)
+            {
+                Response = UpdateMoreDetails(saveModel);
+                if (CheckResponseResult()) return Response;
+
+                /*单独处理*/
+                Response = this.UpdateToEntityForDetails(saveModel);
+                if (CheckResponseResult()) return Response;
+            }
+            #endregion
+
 
             Type type = typeof(T);
 
@@ -1049,6 +1064,340 @@ namespace VOL.Core.BaseProvider
                 .MakeGenericMethod(new Type[] { detailType })
                 .Invoke(this, new object[] { saveModel, mainKeyProperty, detailKeyInfo, keyDefaultVal })
                 as WebResponseContent;
+        }
+
+
+
+
+        #region 多表体批量保存
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <param name="sJson"></param>
+        /// <returns></returns>
+        public List<Dictionary<string,object>> CalcSameEntiryProperties(Type type, string sJsonData)
+        {
+            PropertyInfo[] pInfo = type.GetProperties();
+            List<Dictionary<string, object>> dictionaryResult = new List<Dictionary<string, object>>();
+
+            //把json转换成数组 把多条json转成单条json的数据
+            Newtonsoft.Json.Linq.JArray jarray = JsonConvert.DeserializeObject(sJsonData) as Newtonsoft.Json.Linq.JArray;
+            if (jarray != null && jarray.Count > 0)
+            {
+                for (int i = 0; i < jarray.Count; i++)
+                {
+
+                    Dictionary<string, object> dicRow = new Dictionary<string, object>();
+                    //表体的多条数据，利用循环一条一条转成dictinary
+                    //把数组中，单条json转成 键值对
+                    string listdata = jarray[i].ToString();
+                    Object obj1 = JsonConvert.DeserializeObject(listdata);
+                    Newtonsoft.Json.Linq.JObject js1 = obj1 as Newtonsoft.Json.Linq.JObject;//把上面的obj转换为 Jobject对象
+
+                    foreach (var item in js1)
+                    {
+                        string sKey = item.Key;
+                        object sData = item.Value;
+
+                        foreach (PropertyInfo pInfoTmp in pInfo)
+                        {
+                            if(pInfoTmp.GetDisplayName()== "CanNotWrite")
+                            {
+                                break;
+                            }
+                            if (sKey.ToLower() == pInfoTmp.Name.ToLower())
+                            {
+                                //界面上的值和实体中的值一致，需要保存 如果该值是guid，需要注意类型 
+                                if (pInfoTmp.GetType() == typeof(System.Guid))
+                                {
+                                    dicRow.Add(sKey, new Guid(sData.ToString()));
+                                }
+                                else
+                                {
+                                    dicRow.Add(sKey, sData);
+                                }
+                            }
+
+                        }
+
+                    }
+                    dictionaryResult.Add(dicRow);
+
+                }
+
+              
+            }     
+
+            return dictionaryResult;
+        }
+
+        /// <summary>
+        /// 将数据转换成对象后最终保存
+        /// </summary>
+        /// <typeparam name="DetailT"></typeparam>
+        /// <param name="saveModel"></param>
+        /// <param name="mainKeyProperty"></param>
+        /// <param name="detailKeyInfo"></param>
+        /// <param name="keyDefaultVal"></param>
+        /// <returns></returns>
+        public WebResponseContent UpdateToEntityForDetails(SaveModel saveModel)
+        {
+            try
+            {
+                if (saveModel == null)
+                    return Response.Error(ResponseType.ParametersLack);
+
+                #region 表头校验
+                Type type = typeof(T);
+                //设置修改时间,修改人的默认值
+                UserInfo userInfo = UserContext.Current.UserInfo;
+                saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);
+
+                //判断提交的数据与实体格式是否一致
+                string result = type.ValidateDicInEntity(saveModel.MainData, true, false, UserIgnoreFields);
+                if (result != string.Empty)
+                    return Response.Error(result);
+
+                //获取主建类型的默认值用于判断后面数据是否正确,int long默认值为0,guid :0000-000....
+                PropertyInfo mainKeyProperty = type.GetKeyProperty();
+                object keyDefaultVal = mainKeyProperty.PropertyType.Assembly.CreateInstance(mainKeyProperty.PropertyType.FullName);//.ToString();
+                                                                                                                                   //判断是否包含主键
+                if (mainKeyProperty == null
+                    || !saveModel.MainData.ContainsKey(mainKeyProperty.Name)
+                    || saveModel.MainData[mainKeyProperty.Name] == null
+                    )
+                {
+                    return Response.Error(ResponseType.NoKey);
+                }
+
+                object mainKeyVal = saveModel.MainData[mainKeyProperty.Name];
+                //判断主键类型是否正确
+                (bool, string, object) validation = mainKeyProperty.ValidationValueForDbType(mainKeyVal).FirstOrDefault();
+                if (!validation.Item1)
+                    return Response.Error(ResponseType.KeyError);
+
+                object valueType = mainKeyVal.ToString().ChangeType(mainKeyProperty.PropertyType);
+                //判断主键值是不是当前类型的默认值
+                if (valueType == null ||
+                    (!valueType.GetType().Equals(mainKeyProperty.PropertyType)
+                    || valueType.ToString() == keyDefaultVal.ToString()
+                    ))
+                    return Response.Error(ResponseType.KeyError);
+
+                if (saveModel.MainData.Count <= 1) return Response.Error("系统没有配置好编辑的数据，请检查model!");
+
+
+                Expression<Func<T, bool>> expression = mainKeyProperty.Name.CreateExpression<T>(mainKeyVal.ToString(), LinqExpressionType.Equal);
+                if (!repository.Exists(expression)) return Response.Error("保存的数据不存在!");
+                #endregion
+
+                #region 表体校验
+                if (saveModel.DetailListData != null && saveModel.DetailListData.Count > 0)
+                {
+                    foreach (SaveModel.DetailListDataResult resultDetails in saveModel.DetailListData)
+                    {
+                        Type detailType = resultDetails.detailType;
+                        // 明细操作
+                        PropertyInfo detailKeyInfo = detailType.GetKeyProperty();
+                        //判断明细是否包含了主表的主键
+                        string deatilDefaultVal = detailKeyInfo.PropertyType.Assembly.CreateInstance(detailKeyInfo.PropertyType.FullName).ToString();
+                        foreach (Dictionary<string, object> dic in saveModel.DetailData)
+                        {
+                            //不包含主键的默认添加主键默认值，用于后面判断是否为新增数据
+                            if (!dic.ContainsKey(detailKeyInfo.Name))
+                            {
+                                dic.Add(detailKeyInfo.Name, keyDefaultVal);
+                                if (dic.ContainsKey(mainKeyProperty.Name))
+                                {
+                                    dic[mainKeyProperty.Name] = keyDefaultVal;
+                                }
+                                else
+                                {
+                                    dic.Add(mainKeyProperty.Name, keyDefaultVal);
+                                }
+                                continue;
+                            }
+                            if (dic[detailKeyInfo.Name] == null)
+                                return Response.Error(ResponseType.NoKey);
+
+                            //主键值是否正确
+                            string detailKeyVal = dic[detailKeyInfo.Name].ToString();
+                            if (!mainKeyProperty.ValidationValueForDbType(detailKeyVal).FirstOrDefault().Item1
+                                || deatilDefaultVal == detailKeyVal)
+                                return Response.Error(ResponseType.KeyError);
+
+                            //判断主表的值是否正确
+                            if (detailKeyVal != keyDefaultVal.ToString() && (!dic.ContainsKey(mainKeyProperty.Name) || dic[mainKeyProperty.Name] == null || dic[mainKeyProperty.Name].ToString() == keyDefaultVal.ToString()))
+                            {
+                                return Response.Error(mainKeyProperty.Name + "是必填项!");
+                            }
+                        }
+                    }
+                    #endregion
+
+                    #region 更新表头
+                    saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);
+                    T mainEntity = saveModel.MainData.DicToEntity<T>();
+                    if (UpdateOnExecuting != null)
+                    {
+                        Response = UpdateOnExecuting(mainEntity, null, null, null);
+                        if (CheckResponseResult()) return Response;
+                    }
+                    //不修改!CreateFields.Contains创建人信息
+                    repository.Update(mainEntity, type.GetEditField().Where(c => saveModel.MainData.Keys.Contains(c) && !CreateFields.Contains(c)).ToArray());
+                    #endregion
+
+                    #region 更新表体 表体的值
+
+                    if (saveModel.DetailListData != null && saveModel.DetailListData.Count > 0)
+                    {
+                        foreach (SaveModel.DetailListDataResult resultDetails in saveModel.DetailListData)
+                        {
+
+                            Type detailType = resultDetails.detailType;
+                            PropertyInfo detailKeyInfo = detailType.GetKeyProperty();
+
+                            saveModel.DetailsData = resultDetails.DetailData;                                
+                            WebResponseContent webResponseResult = this.GetType().GetMethod("UpdateDetailsToEntity")
+                            .MakeGenericMethod(new Type[] { detailType })
+                            .Invoke(this, new object[] { saveModel, mainKeyProperty, detailKeyInfo, keyDefaultVal })
+                            as WebResponseContent;
+
+                            if (webResponseResult.Status == false)
+                            {
+                                return webResponseResult.Error("保存失败。");
+                            }
+                        }
+                    }
+
+                    #endregion
+
+                    /*更新数据库*/
+                    repository.SaveChanges();
+                }
+
+                return Response.OK("OK");
+            }
+            catch (Exception error)
+            {
+                return Response.Error("保存失败：" + error.Message);
+            }
+            finally
+            {
+                Response.Code = "-1";
+            }
+        }
+        public WebResponseContent UpdateDetailsToEntity<DetailT>(SaveModel saveModel, PropertyInfo mainKeyProperty, PropertyInfo detailKeyInfo, object keyDefaultVal) where DetailT : class
+        {
+            List<DetailT> detailList = saveModel.DetailsData.DicToList<DetailT>();
+
+            //新增对象
+            List<DetailT> addList = new List<DetailT>();
+            //   List<object> containsKeys = new List<object>();
+            //编辑对象
+            List<DetailT> editList = new List<DetailT>();
+            //删除的主键
+            List<object> delKeys = new List<object>();
+            mainKeyProperty = typeof(DetailT).GetProperties().Where(x => x.Name == mainKeyProperty.Name).FirstOrDefault();
+            //获取新增与修改的对象
+            foreach (DetailT item in detailList)
+            {
+                object value = detailKeyInfo.GetValue(item);
+                if (keyDefaultVal.Equals(value))//主键为默认值的,新增数据
+                {
+                    //设置新增的主表的值
+                    mainKeyProperty.SetValue(item,
+                        saveModel.MainData[mainKeyProperty.Name]
+                        .ChangeType(mainKeyProperty.PropertyType));
+
+                    if (detailKeyInfo.PropertyType == typeof(Guid))
+                    {
+                        detailKeyInfo.SetValue(item, Guid.NewGuid());
+                    }
+                    addList.Add(item);
+                }
+                else //if (detailKeys.Contains(value))
+                {
+                    //containsKeys.Add(value);
+                    editList.Add(item);
+                }
+            }
+
+            //获取需要删除的对象的主键
+            if (saveModel.DelKeys != null && saveModel.DelKeys.Count > 0)
+            {
+                //2021.08.21优化明细表删除
+                delKeys = saveModel.DelKeys.Select(q => q.ChangeType(detailKeyInfo.PropertyType)).Where(x => x != null).ToList();
+                //.Where(x => detailKeys.Contains(x.ChangeType(detailKeyInfo.PropertyType)))
+                //.Select(q => q.ChangeType(detailKeyInfo.PropertyType)).ToList();
+            }
+
+            //明细修改
+            editList.ForEach(x =>
+            {
+                    /*框架不是更新主从表的表体 modify一套栏位，故进行调整
+                     调整思路：不改动框架大有前提下，updateField
+                     */
+                bool bHavaViatModify = false;
+                string[] sModifyArray = typeof(DetailT).GetEditField();
+                if (sModifyArray.Length > 0)
+                {
+                    if (sModifyArray.Contains(AppSetting.ModifyMember.ViatUserField)
+                     && sModifyArray.Contains(AppSetting.ModifyMember.ViatUserNameField)
+                      && sModifyArray.Contains(AppSetting.ModifyMember.ViatDateField)
+                       && sModifyArray.Contains(AppSetting.ModifyMember.ViatClientField)
+                        && sModifyArray.Contains(AppSetting.ModifyMember.ViatClientUserNameField))
+                    {
+                            //存在modify这一套
+                            bHavaViatModify = true;
+                    }
+                }
+                    //获取编辑的字段
+                    string[] updateField = saveModel.DetailsData
+                    .Where(c => c[detailKeyInfo.Name].ChangeType(detailKeyInfo.PropertyType)
+                    .Equal(detailKeyInfo.GetValue(x)))
+                    .FirstOrDefault()
+                    .Keys.Where(k => k != detailKeyInfo.Name)
+                    .Where(r => !CreateFields.Contains(r))
+                    .ToArray();
+
+                    //
+                    if (bHavaViatModify == true)
+                {
+                        // 存在modify这一套
+                        List<string> tmpLst = new List<string>(updateField);
+                    tmpLst.Add(AppSetting.ModifyMember.ViatUserField);
+                    tmpLst.Add(AppSetting.ModifyMember.ViatUserNameField);
+                    tmpLst.Add(AppSetting.ModifyMember.ViatDateField);
+                    tmpLst.Add(AppSetting.ModifyMember.ViatClientField);
+                    tmpLst.Add(AppSetting.ModifyMember.ViatClientUserNameField);
+                    updateField = tmpLst.ToArray();
+                }
+
+                    //設置默認值
+                    x.SetModifyDefaultVal();
+                    //添加修改字段
+                    repository.Update<DetailT>(x, updateField);
+            });
+
+            //明细新增
+            addList.ForEach(x =>
+            {
+                x.SetCreateDefaultVal();
+                repository.DbContext.Entry<DetailT>(x).State = EntityState.Added;
+            });
+            //明细删除
+            delKeys.ForEach(x =>
+            {
+                DetailT delT = Activator.CreateInstance<DetailT>();
+                detailKeyInfo.SetValue(delT, x);
+                repository.DbContext.Entry<DetailT>(delT).State = EntityState.Deleted;
+            });
+
+            return Response.OK("OK");
+
         }
 
         #endregion
@@ -1306,5 +1655,6 @@ namespace VOL.Core.BaseProvider
         {
             return !Response.Status || Response.Code == "-1";
         }
+
     }
 }

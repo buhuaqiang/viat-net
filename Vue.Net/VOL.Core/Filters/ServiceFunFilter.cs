@@ -120,6 +120,12 @@ namespace VOL.Core.Filters
         protected Func<SaveModel, WebResponseContent> UpdateOnExecute;
 
         /// <summary>
+        /// 把多表体的校验，挂载到实际的实例操作中
+        /// </summary>
+        protected Func<SaveModel, WebResponseContent> UpdateMoreDetails; 
+
+
+        /// <summary>
         ///  调用更新方法保存数据库前处理
         ///  (已将提交的原生数据转换成了对象,将明细新增、修改、删除的数据分别用object1/2/3标识出来 )
         ///  T=更新的主表对象
