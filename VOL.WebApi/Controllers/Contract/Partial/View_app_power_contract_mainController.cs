@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VOL.Entity.DomainModels;
 using VIAT.Contract.IServices;
+using VOL.Core.Filters;
 
 namespace VIAT.Contract.Controllers
 {
@@ -28,6 +29,16 @@ namespace VIAT.Contract.Controllers
         {
             _service = service;
             _httpContextAccessor = httpContextAccessor;
+        }
+
+        /// 關閉GP合約
+
+        [HttpPost, Route("close")]
+        [ApiActionPermission]
+        public async Task<ActionResult> close( Guid[] ids)
+        {
+            //await Service.Close(menuId)
+            return Json("ok");
         }
     }
 }
