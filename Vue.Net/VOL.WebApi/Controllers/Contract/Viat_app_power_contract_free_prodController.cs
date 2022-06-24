@@ -11,11 +11,11 @@ using VOL.Entity.DomainModels;
 
 namespace VIAT.Contract.Controllers
 {
-    [Route("api/Viat_app_power_contract_cust")]
-    [PermissionTable(Name = "Viat_app_power_contract_cust")]
-    public partial class Viat_app_power_contract_custController : ApiBaseController<IViat_app_power_contract_custService>
+    [Route("api/Viat_app_power_contract_free_prod")]
+    [PermissionTable(Name = "Viat_app_power_contract_free_prod")]
+    public partial class Viat_app_power_contract_free_prodController : ApiBaseController<IViat_app_power_contract_free_prodService>
     {
-        public Viat_app_power_contract_custController(IViat_app_power_contract_custService service)
+        public Viat_app_power_contract_free_prodController(IViat_app_power_contract_free_prodService service)
         : base(service)
         {
         }

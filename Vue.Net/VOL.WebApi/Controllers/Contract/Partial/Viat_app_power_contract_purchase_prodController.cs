@@ -1,7 +1,7 @@
 /*
  *接口编写处...
 *如果接口需要做Action的权限验证，请在Action上使用属性
-*如: [ApiActionPermission("Viat_app_power_contract_cust",Enums.ActionPermissionOptions.Search)]
+*如: [ApiActionPermission("Viat_app_power_contract_purchase_prod",Enums.ActionPermissionOptions.Search)]
  */
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -15,14 +15,14 @@ using VOL.Core.Filters;
 
 namespace VIAT.Contract.Controllers
 {
-    public partial class Viat_app_power_contract_custController
+    public partial class Viat_app_power_contract_purchase_prodController
     {
-        private readonly IViat_app_power_contract_custService _service;//访问业务代码
+        private readonly IViat_app_power_contract_purchase_prodService _service;//访问业务代码
         private readonly IHttpContextAccessor _httpContextAccessor;
 
         [ActivatorUtilitiesConstructor]
-        public Viat_app_power_contract_custController(
-            IViat_app_power_contract_custService service,
+        public Viat_app_power_contract_purchase_prodController(
+            IViat_app_power_contract_purchase_prodService service,
             IHttpContextAccessor httpContextAccessor
         )
         : base(service)
@@ -32,7 +32,7 @@ namespace VIAT.Contract.Controllers
         }
 
 /*
-        [HttpPost, Route("GetPageDataCust")]
+        [HttpPost, Route("GetPageDatapurchase_prod")]
         [ApiActionPermission()]
         public object GetPageDataCus(PageDataOptions options)
         {
