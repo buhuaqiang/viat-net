@@ -47,8 +47,9 @@ namespace VOL.System.Controllers
         /// </summary>
         /// <param name="keys"></param>
         /// <returns></returns>
-        [ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        //[ApiActionPermission(ActionRolePermission.SuperAdmin)]
         [HttpPost, Route("delMenu")]
+		[ApiActionPermission]
         public async Task<ActionResult> DelMenu(int menuId)
         {
             return Json(await Service.DelMenu(menuId));

@@ -34,28 +34,32 @@ namespace VOL.WebApi.Controllers.Builder
         }
 
         [Route("CreateVuePage")]
-        [ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        //[ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        [ApiActionPermission]
         [HttpPost]
         public ActionResult CreateVuePage([FromBody] Sys_TableInfo sysTableInfo, string vuePath)
         {
             return Content(Service.CreateVuePage(sysTableInfo, vuePath));
         }
         [Route("CreateModel")]
-        [ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        //[ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        [ApiActionPermission]
         [HttpPost]
         public ActionResult CreateEntityModel([FromBody] Sys_TableInfo tableInfo)
         {
             return Content(Service.CreateEntityModel(tableInfo));
         }
         [Route("Save")]
-        [ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        //[ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        [ApiActionPermission]
         [HttpPost]
         public ActionResult SaveEidt([FromBody] Sys_TableInfo tableInfo)
         {
             return Json(Service.SaveEidt(tableInfo));
         }
         [Route("CreateServices")]
-        [ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        // [ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        [ApiActionPermission]
         [HttpPost]
         public ActionResult CreateServices(string tableName, string nameSpace, string foldername, bool? partial, bool? api)
         {
@@ -69,14 +73,16 @@ namespace VOL.WebApi.Controllers.Builder
 
         }
         [Route("delTree")]
-        [ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        //[ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        [ApiActionPermission]
         [HttpPost]
         public async Task<ActionResult> DelTree(int table_Id)
         {
             return Json(await Service.DelTree(table_Id));
         }
         [Route("syncTable")]
-        [ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        // [ApiActionPermission(ActionRolePermission.SuperAdmin)]
+        [ApiActionPermission]
         [HttpPost]
         public async Task<ActionResult> SyncTable(string tableName)
         {
