@@ -59,76 +59,7 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
        public Guid? cust_dbid { get; set; }
-
-       /// <summary>
-       ///建立用戶
-       /// </summary>
-       [Display(Name ="建立用戶")]
-       [Column(TypeName="int")]
-       public int? created_user { get; set; }
-
-        /// <summary>
-        ///建立用戶名称
-        /// </summary>
-        [Display(Name = "建立用戶名称")]
-        [Column(TypeName = "varcher（50）")]
-        public string created_username { get; set; }
-
-        /// <summary>
-        ///建立者的委託人
-        /// </summary>
-        [Display(Name ="建立者的委託人")]
-       [Column(TypeName="int")]
-       public int? created_client { get; set; }
-
-        /// <summary>
-        ///建立委託人用戶名称
-        /// </summary>
-        [Display(Name = "建立用戶名称")]
-        [Column(TypeName = "varcher（50）")]
-        public string created_clientusername { get; set; }
-
-        /// <summary>
-        ///建立時間
-        /// </summary>
-        [Display(Name ="建立時間")]
-       [Column(TypeName="datetime")]
-       public DateTime? created_date { get; set; }
-
-       /// <summary>
-       ///最後修改用戶
-       /// </summary>
-       [Display(Name ="最後修改用戶")]
-       [Column(TypeName="int")]
-       public int? modified_user { get; set; }
-
-        /// <summary>
-        ///最後修改用戶名称
-        /// </summary>
-        [Display(Name = "最後修改用戶名称")]
-        [Column(TypeName = "varcher（50）")]
-        public string modified_username { get; set; }
-
-        /// <summary>
-        ///最後修改者的委託人
-        /// </summary>
-        [Display(Name ="最後修改者的委託人")]
-       [Column(TypeName="int")]
-       public int? modified_client { get; set; }
-
-        /// <summary>
-        ///最後修改委託人用戶名称
-        /// </summary>
-        [Display(Name = "最後修改用戶名称")]
-        [Column(TypeName = "varcher（50）")]
-        public string modified_clientusername { get; set; }
-
-        /// <summary>
-        ///最後修改時間
-        /// </summary>
-        [Display(Name ="最後修改時間")]
-       [Column(TypeName="datetime")]
-       public DateTime? modified_date { get; set; }
+ 
 
        /// <summary>
        ///主鍵
@@ -154,12 +85,85 @@ namespace VOL.Entity.DomainModels
         [Column(TypeName = "varcher(15)")]
         public string cust_name { get; set; }
 
-        /*/// <summary>
+
+        /// <summary>
+        ///建立用戶
+        /// </summary>
+        [Display(Name = "建立用戶")]
+        [Column(TypeName = "int")]
+        public int? created_user { get; set; }
+
+        /// <summary>
+        ///建立用戶名称
+        /// </summary>
+        [Display(Name = "建立用戶名称")]
+        [Column(TypeName = "varcher（50）")]
+        public string created_username { get; set; }
+
+        /// <summary>
+        ///建立者的委託人
+        /// </summary>
+        [Display(Name = "建立者的委託人")]
+        [Column(TypeName = "int")]
+        public int? created_client { get; set; }
+
+        /// <summary>
+        ///建立委託人用戶名称
+        /// </summary>
+        [Display(Name = "建立用戶名称")]
+        [Column(TypeName = "varcher（50）")]
+        public string created_clientusername { get; set; }
+
+        /// <summary>
+        ///建立時間
+        /// </summary>
+        [Display(Name = "建立時間")]
+        [Column(TypeName = "datetime")]
+        public DateTime? created_date { get; set; }
+
+        /// <summary>
+        ///最後修改用戶
+        /// </summary>
+        [Display(Name = "最後修改用戶")]
+        [Column(TypeName = "int")]
+        public int? modified_user { get; set; }
+
+        /// <summary>
+        ///最後修改用戶名称
+        /// </summary>
+        [Display(Name = "最後修改用戶名称")]
+        [Column(TypeName = "varcher（50）")]
+        public string modified_username { get; set; }
+
+        /// <summary>
+        ///最後修改者的委託人
+        /// </summary>
+        [Display(Name = "最後修改者的委託人")]
+        [Column(TypeName = "int")]
+        public int? modified_client { get; set; }
+
+        /// <summary>
+        ///最後修改委託人用戶名称
+        /// </summary>
+        [Display(Name = "最後修改用戶名称")]
+        [Column(TypeName = "varcher（50）")]
+        public string modified_clientusername { get; set; }
+
+        /// <summary>
+        ///最後修改時間
+        /// </summary>
+        [Display(Name = "最後修改時間")]
+        [Column(TypeName = "datetime")]
+        public DateTime? modified_date { get; set; }
+
+
+
+        /// <summary>
         ///territory_id
         /// </summary>
         [Display(Name = "預設業代分區")]
         [Column(TypeName = "varcher(15)")]
-        public string territory_id { get; set; }*/
+        public string territory_id { get; set; }
 
     }
 }

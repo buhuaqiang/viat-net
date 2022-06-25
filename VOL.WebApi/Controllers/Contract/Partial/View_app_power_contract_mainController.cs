@@ -30,6 +30,7 @@ namespace VIAT.Contract.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
+       
 
         /// 關閉GP合約
 

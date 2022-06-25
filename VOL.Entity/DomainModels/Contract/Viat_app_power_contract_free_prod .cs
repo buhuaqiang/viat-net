@@ -53,49 +53,7 @@ namespace VOL.Entity.DomainModels
         [Display(Name = "客戶表主鍵")]
         [Column(TypeName = "uniqueidentifier")]
         [Editable(true)]
-        public Guid? cust_dbid { get; set; }
-
-        /// <summary>
-        ///建立用戶
-        /// </summary>
-        [Display(Name = "建立用戶")]
-        [Column(TypeName = "int")]
-        public int? created_user { get; set; }
-
-        /// <summary>
-        ///建立者的委託人
-        /// </summary>
-        [Display(Name = "建立者的委託人")]
-        [Column(TypeName = "int")]
-        public int? created_client { get; set; }
-
-        /// <summary>
-        ///建立時間
-        /// </summary>
-        [Display(Name = "建立時間")]
-        [Column(TypeName = "datetime")]
-        public DateTime? created_date { get; set; }
-
-        /// <summary>
-        ///最後修改用戶
-        /// </summary>
-        [Display(Name = "最後修改用戶")]
-        [Column(TypeName = "int")]
-        public int? modified_user { get; set; }
-
-        /// <summary>
-        ///最後修改者的委託人
-        /// </summary>
-        [Display(Name = "最後修改者的委託人")]
-        [Column(TypeName = "int")]
-        public int? modified_client { get; set; }
-
-        /// <summary>
-        ///最後修改時間
-        /// </summary>
-        [Display(Name = "最後修改時間")]
-        [Column(TypeName = "datetime")]
-        public DateTime? modified_date { get; set; }
+        public Guid? cust_dbid { get; set; } 
 
         /// <summary>
         ///主鍵
@@ -126,6 +84,81 @@ namespace VOL.Entity.DomainModels
         [Display(Name = "金額")]
         [Column(TypeName = "decimal")]
         public decimal? amt { get; set; }
+
+        /// <summary>
+        ///列名modified_date
+        /// </summary>
+        [Display(Name = "列名modified_date")]
+        [Column(TypeName = "datetime")]
+        public DateTime? modified_date { get; set; }
+
+        /// <summary>
+        ///列名modified_client
+        /// </summary>
+        [Display(Name = "列名modified_client")]
+        [Column(TypeName = "int")]
+        public int? modified_client { get; set; }
+
+        /// <summary>
+        ///列名modified_user
+        /// </summary>
+        [Display(Name = "列名modified_user")]
+        [Column(TypeName = "int")]
+        public int? modified_user { get; set; }
+
+        /// <summary>
+        ///列名created_date
+        /// </summary>
+        [Display(Name = "列名created_date")]
+        [Column(TypeName = "datetime")]
+        public DateTime? created_date { get; set; }
+
+        /// <summary>
+        ///列名created_client
+        /// </summary>
+        [Display(Name = "列名created_client")]
+        [Column(TypeName = "int")]
+        public int? created_client { get; set; }
+
+        /// <summary>
+        ///列名created_user
+        /// </summary>
+        [Display(Name = "列名created_user")]
+        [Column(TypeName = "int")]
+        public int? created_user { get; set; }
+
+
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "modified_username")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string modified_username { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "created_username")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string created_username { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "created_clientusername")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string created_clientusername { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "modified_clientusername")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string modified_clientusername { get; set; }
 
     }
 }
