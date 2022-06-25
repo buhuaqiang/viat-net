@@ -100,6 +100,12 @@ namespace VIAT.Contract.Services
         WebResponseContent webResponse = new WebResponseContent();
         public override WebResponseContent Update(SaveModel saveModel)
         {
+            UpdateOnExecute = (saveModel) =>
+             {
+                 //指定表头真实有类型
+                 saveModel.MainFacType = typeof(Viat_app_power_contract);
+                 return webResponse.OK();
+             };
 
             /*多表处理时，自定义处理表体的addlist,editlidt,delKeys*/
             UpdateMoreDetails = (saveModel) =>
@@ -224,62 +230,70 @@ namespace VIAT.Contract.Services
             return base.Update(saveModel);
         }
 
-         #region
-            /*UpdateOnExecuting = (View_app_power_contract_main view_App_Power, object addList, object updateList, List<object> delKeys) =>
+        #region
+        /*UpdateOnExecuting = (View_app_power_contract_main view_App_Power, object addList, object updateList, List<object> delKeys) =>
+        {
+
+            Viat_app_power_contract app_Power_Contract = new Viat_app_power_contract()
             {
+                powercont_dbid = view_App_Power.powercont_dbid,
+                contract_no = view_App_Power.contract_no,
+                contract_type = view_App_Power.contract_type,
+                start_date = view_App_Power.start_date,
+                end_date = view_App_Power.end_date,
+                cust_dbid = view_App_Power.cust_dbid,
+                pricegroup_dbid = view_App_Power.pricegroup_dbid,
+                territory_id = view_App_Power.territory_id,
+                allw_type = view_App_Power.allw_type,
+                accrue_amt = view_App_Power.accrue_amt,
+                contract_term = view_App_Power.contract_term,
+                state = view_App_Power.state,
+                close_date = view_App_Power.close_date,
+                rate = view_App_Power.rate,
+                total_fg_amount = view_App_Power.total_fg_amount
 
-                Viat_app_power_contract app_Power_Contract = new Viat_app_power_contract()
-                {
-                    powercont_dbid = view_App_Power.powercont_dbid,
-                    contract_no = view_App_Power.contract_no,
-                    contract_type = view_App_Power.contract_type,
-                    start_date = view_App_Power.start_date,
-                    end_date = view_App_Power.end_date,
-                    cust_dbid = view_App_Power.cust_dbid,
-                    pricegroup_dbid = view_App_Power.pricegroup_dbid,
-                    territory_id = view_App_Power.territory_id,
-                    allw_type = view_App_Power.allw_type,
-                    accrue_amt = view_App_Power.accrue_amt,
-                    contract_term = view_App_Power.contract_term,
-                    state = view_App_Power.state,
-                    close_date = view_App_Power.close_date,
-                    rate = view_App_Power.rate,
-                    total_fg_amount = view_App_Power.total_fg_amount
+            };
+            _viat_App_Power_ContractRepository.Update(app_Power_Contract, x => new
+            { x.contract_no, x.contract_type, x.start_date, x.end_date, x.cust_dbid, x.pricegroup_dbid, x.territory_id, x.allw_type, x.accrue_amt, x.contract_term, x.state, x.close_date, x.rate, x.total_fg_amount });
 
-                };
-                _viat_App_Power_ContractRepository.Update(app_Power_Contract, x => new
-                { x.contract_no, x.contract_type, x.start_date, x.end_date, x.cust_dbid, x.pricegroup_dbid, x.territory_id, x.allw_type, x.accrue_amt, x.contract_term, x.state, x.close_date, x.rate, x.total_fg_amount });
+             //  _viat_App_Power_ContractRepository.Update(app_Power_Contract);
 
-                 //  _viat_App_Power_ContractRepository.Update(app_Power_Contract);
+             ////如果要手动设置某些字段的值,值不是前端提交的（代码生成器里面编辑行必须设置为0并生成model）,如Remark字段:
+             ////注意必须设置上面saveModel.MainData.TryAdd("Remark", "1231")
+             //order.Remark = "888";
 
-                 ////如果要手动设置某些字段的值,值不是前端提交的（代码生成器里面编辑行必须设置为0并生成model）,如Remark字段:
-                 ////注意必须设置上面saveModel.MainData.TryAdd("Remark", "1231")
-                 //order.Remark = "888";
+             //新增的明细表
+             List<Viat_app_power_contract_cust> add = addList as List<Viat_app_power_contract_cust>;
+            _viat_App_Power_ContractRepository.AddRange(add);
+             //修改的明细表
+             List<Viat_app_power_contract_cust> update = updateList as List<Viat_app_power_contract_cust>;
 
-                 //新增的明细表
-                 List<Viat_app_power_contract_cust> add = addList as List<Viat_app_power_contract_cust>;
-                _viat_App_Power_ContractRepository.AddRange(add);
-                 //修改的明细表
-                 List<Viat_app_power_contract_cust> update = updateList as List<Viat_app_power_contract_cust>;
+            _viat_App_Power_ContractRepository.UpdateRange(update);
 
-                _viat_App_Power_ContractRepository.UpdateRange(update);
-
-                 //删除明细表Id
-                 //  var guids = delKeys?.Select(x => (Guid)x);
-                 if (delKeys.Count > 0)
-                {
-                    Viat_app_power_contract_custRepository.Instance.DeleteWithKeys(delKeys.ToArray());
-                }
-
-                _viat_App_Power_ContractRepository.SaveChanges();
-                webResponse.Code = "-1";
-                return webResponse.OK("OK");
+             //删除明细表Id
+             //  var guids = delKeys?.Select(x => (Guid)x);
+             if (delKeys.Count > 0)
+            {
+                Viat_app_power_contract_custRepository.Instance.DeleteWithKeys(delKeys.ToArray());
             }
-*/
-            //return base.Update(saveModel);
-            #endregion
 
-         
+            _viat_App_Power_ContractRepository.SaveChanges();
+            webResponse.Code = "-1";
+            return webResponse.OK("OK");
+        }
+*/
+        //return base.Update(saveModel);
+        #endregion
+
+        public override PageGridData<View_app_power_contract_main> GetPageData(PageDataOptions options)
+        {
+            /*解析查询条件*/
+
+            options.TableName = "Viat_app_power_contract_cust";
+            QuerySql = "select * from view_app_power_contract_main ";
+            return base.GetPageData(options);
+        }
+
         /// <summary>
         /// 查询业务代码编写(从表(明细表查询))
         /// </summary>

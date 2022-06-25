@@ -8,6 +8,12 @@ namespace VOL.Entity.DomainModels
     public class SaveModel
     {
         public Dictionary<string, object> MainData { get; set; }
+
+        /// <summary>
+        /// 当用视图作为查询时，指定实际操作表的类型
+        /// </summary>
+        public Type MainFacType { get; set; }
+
         public List<Dictionary<string, object>> DetailData { get; set; }
 
         #region 多表体对像

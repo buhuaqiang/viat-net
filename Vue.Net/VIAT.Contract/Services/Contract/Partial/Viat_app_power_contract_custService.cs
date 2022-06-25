@@ -92,8 +92,8 @@ namespace VIAT.Contract.Services
                             continue;
                         }
                     }
-                    options.TableName = "Viat_app_power_contract_cust";
-                    QuerySql = "select cus.*,comcus.cust_id,comcus.cust_name from Viat_app_power_contract_cust cus " +
+                   
+                    QuerySql = "select cus.*,comcus.cust_id,comcus.cust_name,comcus.territory_id from Viat_app_power_contract_cust cus " +
                 "left join Viat_com_cust comcus on cus.cust_dbid=comcus.cust_dbid" +
                 " where cus.powercont_dbid='" + sPowerContDbid + "'";
                 }

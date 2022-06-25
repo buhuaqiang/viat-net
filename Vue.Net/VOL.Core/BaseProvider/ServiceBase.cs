@@ -894,30 +894,36 @@ namespace VOL.Core.BaseProvider
             if (saveModel == null)
                 return Response.Error(ResponseType.ParametersLack);
 
+            Type type = typeof(T);
+            #region 表头真实类型处理
+            if(type.Name.ToLower() != type.GetEntityTableName().ToLower() && saveModel.MainFacType != null)
+            {
+                type = saveModel.MainFacType;
+            }
+            #endregion           
+
+            //判断提交的数据与实体格式是否一致
+            string result = type.ValidateDicInEntity(saveModel.MainData, true, false, UserIgnoreFields);
+            if (result != string.Empty)
+                return Response.Error(result);
+
             #region 多表体委托处理,
             if (UpdateMoreDetails != null)
             {
                 Response = UpdateMoreDetails(saveModel);
                 if (CheckResponseResult()) return Response;
 
-                /*单独处理*/
+                /*单独处理*//*
                 Response = this.UpdateToEntityForDetails(saveModel);
-                if (CheckResponseResult()) return Response;
+                if (CheckResponseResult()) return Response;*/
             }
             #endregion
 
-
-            Type type = typeof(T);
 
             //设置修改时间,修改人的默认值
             UserInfo userInfo = UserContext.Current.UserInfo;
             saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);
 
-
-            //判断提交的数据与实体格式是否一致
-            string result = type.ValidateDicInEntity(saveModel.MainData, true, false, UserIgnoreFields);
-            if (result != string.Empty)
-                return Response.Error(result);
 
             PropertyInfo mainKeyProperty = type.GetKeyProperty();
             //验证明细
@@ -1149,16 +1155,23 @@ namespace VOL.Core.BaseProvider
                 if (saveModel == null)
                     return Response.Error(ResponseType.ParametersLack);
 
-                #region 表头校验
+                #region 表头校验 
                 Type type = typeof(T);
+                #region 表头真实类型处理
+                if (type.Name.ToLower() != type.GetEntityTableName().ToLower() && saveModel.MainFacType != null)
+                {
+                    type = saveModel.MainFacType;
+                }
+                #endregion
+
                 //设置修改时间,修改人的默认值
                 UserInfo userInfo = UserContext.Current.UserInfo;
-                saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);
+                 saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);                
 
-                //判断提交的数据与实体格式是否一致
+              /*  //判断提交的数据与实体格式是否一致
                 string result = type.ValidateDicInEntity(saveModel.MainData, true, false, UserIgnoreFields);
                 if (result != string.Empty)
-                    return Response.Error(result);
+                    return Response.Error(result);*/
 
                 //获取主建类型的默认值用于判断后面数据是否正确,int long默认值为0,guid :0000-000....
                 PropertyInfo mainKeyProperty = type.GetKeyProperty();
@@ -1240,12 +1253,13 @@ namespace VOL.Core.BaseProvider
                     #region 更新表头
                     saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);
                     T mainEntity = saveModel.MainData.DicToEntity<T>();
-                    if (UpdateOnExecuting != null)
+                   
+                  /*  if (UpdateOnExecuting != null)
                     {
                         Response = UpdateOnExecuting(mainEntity, null, null, null);
                         if (CheckResponseResult()) return Response;
-                    }
-                    //不修改!CreateFields.Contains创建人信息
+                    }*/
+                    //不修改!CreateFields.Contains创建人信息                
                     repository.Update(mainEntity, type.GetEditField().Where(c => saveModel.MainData.Keys.Contains(c) && !CreateFields.Contains(c)).ToArray());
                     #endregion
 
@@ -1337,10 +1351,10 @@ namespace VOL.Core.BaseProvider
             //明细修改
             editList.ForEach(x =>
             {
-                    /*框架不是更新主从表的表体 modify一套栏位，故进行调整
-                     调整思路：不改动框架大有前提下，updateField
-                     */
-                bool bHavaViatModify = false;
+                /*框架不是更新主从表的表体 modify一套栏位，故进行调整
+                 调整思路：不改动框架大有前提下，updateField
+                 */
+              /*  bool bHavaViatModify = false;
                 string[] sModifyArray = typeof(DetailT).GetEditField();
                 if (sModifyArray.Length > 0)
                 {
@@ -1350,12 +1364,12 @@ namespace VOL.Core.BaseProvider
                        && sModifyArray.Contains(AppSetting.ModifyMember.ViatClientField)
                         && sModifyArray.Contains(AppSetting.ModifyMember.ViatClientUserNameField))
                     {
-                            //存在modify这一套
-                            bHavaViatModify = true;
+                        //存在modify这一套
+                        bHavaViatModify = true;
                     }
-                }
-                    //获取编辑的字段
-                    string[] updateField = saveModel.DetailsData
+                }*/
+                //获取编辑的字段
+                string[] updateField = saveModel.DetailsData
                     .Where(c => c[detailKeyInfo.Name].ChangeType(detailKeyInfo.PropertyType)
                     .Equal(detailKeyInfo.GetValue(x)))
                     .FirstOrDefault()
@@ -1363,23 +1377,23 @@ namespace VOL.Core.BaseProvider
                     .Where(r => !CreateFields.Contains(r))
                     .ToArray();
 
-                    //
-                    if (bHavaViatModify == true)
+                //
+              /*  if (bHavaViatModify == true)
                 {
-                        // 存在modify这一套
-                        List<string> tmpLst = new List<string>(updateField);
+                    // 存在modify这一套
+                    List<string> tmpLst = new List<string>(updateField);
                     tmpLst.Add(AppSetting.ModifyMember.ViatUserField);
                     tmpLst.Add(AppSetting.ModifyMember.ViatUserNameField);
                     tmpLst.Add(AppSetting.ModifyMember.ViatDateField);
                     tmpLst.Add(AppSetting.ModifyMember.ViatClientField);
                     tmpLst.Add(AppSetting.ModifyMember.ViatClientUserNameField);
                     updateField = tmpLst.ToArray();
-                }
+                }*/
 
-                    //設置默認值
-                    x.SetModifyDefaultVal();
+                //設置默認值
+                x.SetModifyDefaultVal();
                     //添加修改字段
-                    repository.Update<DetailT>(x, updateField);
+                repository.Update<DetailT>(x, updateField);
             });
 
             //明细新增
