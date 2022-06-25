@@ -754,7 +754,7 @@ namespace VOL.Core.BaseProvider
                 /*框架不是更新主从表的表体 modify一套栏位，故进行调整
                  调整思路：不改动框架大有前提下，updateField
                  */
-                bool bHavaViatModify = false;
+               /* bool bHavaViatModify = false;
                 string[] sModifyArray = typeof(DetailT).GetEditField();
                 if (sModifyArray.Length > 0)
                 {
@@ -767,7 +767,7 @@ namespace VOL.Core.BaseProvider
                         //存在modify这一套
                         bHavaViatModify = true;
                     }
-                }
+                }*/
                 //获取编辑的字段
                 string[] updateField = saveModel.DetailData
                     .Where(c => c[detailKeyInfo.Name].ChangeType(detailKeyInfo.PropertyType)
@@ -778,7 +778,7 @@ namespace VOL.Core.BaseProvider
                     .ToArray();
 
                 //
-                if (bHavaViatModify == true)
+              /*  if (bHavaViatModify == true)
                 {
                     // 存在modify这一套
                     List<string> tmpLst = new List<string>(updateField);
@@ -788,7 +788,7 @@ namespace VOL.Core.BaseProvider
                     tmpLst.Add(AppSetting.ModifyMember.ViatClientField);
                     tmpLst.Add(AppSetting.ModifyMember.ViatClientUserNameField);
                     updateField = tmpLst.ToArray();
-                }
+                }*/
 
                 //設置默認值
                 x.SetModifyDefaultVal();
@@ -1076,6 +1076,32 @@ namespace VOL.Core.BaseProvider
 
 
         #region 多表体批量保存
+
+        /// <summary>
+        /// 直接用sql语句进行批量更新操作，支持事务
+        /// </summary>
+        /// <param name="sSqls"></param>
+        /// <returns></returns>
+        public virtual WebResponseContent UpdateBySql(List<string> sSqls, string sMessage)
+        {
+            try
+            {
+                Response = repository.DbContextBeginTransaction(() =>
+                {
+                    foreach (string sSql in sSqls)
+                    {
+                        repository.ExecuteSqlCommand(sSql);                        
+                    }
+                    return Response;
+                });
+            }
+            catch(Exception eError)
+            {
+                Response.Error("数据库更新操作失败：" + eError.Message);
+            }
+          
+            return Response.OK(sMessage);
+        }
 
         /// <summary>
         /// 

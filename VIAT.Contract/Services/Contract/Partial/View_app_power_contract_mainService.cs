@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System;
 using VIAT.Contract.Repositories;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
 
 namespace VIAT.Contract.Services
 {
@@ -288,8 +289,6 @@ namespace VIAT.Contract.Services
         public override PageGridData<View_app_power_contract_main> GetPageData(PageDataOptions options)
         {
             /*解析查询条件*/
-
-            options.TableName = "Viat_app_power_contract_cust";
             QuerySql = "select * from view_app_power_contract_main ";
             return base.GetPageData(options);
         }
@@ -335,5 +334,27 @@ namespace VIAT.Contract.Services
              Viat_app_power_contractService.Instance.Del(keys, delList);
             return webResponse.OK("OK");
         }
+
+
+        /// <summary>
+        /// 批量更机新Contract_State，把状态为not close(Y)更新成Achieve(A)
+        /// </summary>
+        /// <param name="ids">主键</param>
+        /// <returns></returns>
+
+        public async Task<WebResponseContent> close(string[] ids)
+        {
+          
+            List<string> sSqlLst = new List<string>();
+            
+            for(int i=0; i<ids.Length; i++)
+            {
+                string sSql = "update viat_app_power_contract set state='A' where powercont_dbid='" + ids[i].ToString() + "' and state='Y'";
+                sSqlLst.Add(sSql);
+            }         
+           
+            return base.UpdateBySql(sSqlLst,"Close Success。");
+        }
+
     }
 }
