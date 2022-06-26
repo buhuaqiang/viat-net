@@ -13,6 +13,6 @@ namespace VIAT.Contract.IServices
 {
     public partial interface IView_app_power_contract_mainService
     {
-        Task<WebResponseContent> close(string[] ids);
+        WebResponseContent close(string[] ids);
     }
  }

@@ -244,6 +244,8 @@ namespace VOL.Core.BaseProvider
         int DeleteWithKeys(object[] keys, bool delList = false);
 
         void Add(TEntity entities, bool SaveChanges = false);
+
+        void Add<TSource>(TSource entities, bool SaveChanges = false) where TSource : class;
         void AddRange(IEnumerable<TEntity> entities, bool SaveChanges = false);
 
         Task AddAsync(TEntity entities);

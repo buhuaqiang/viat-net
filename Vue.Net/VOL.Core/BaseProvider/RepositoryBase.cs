@@ -626,5 +626,10 @@ namespace VOL.Core.BaseProvider
                 DbContext.Entry(entity).State = EntityState.Detached;
             }
         }
+
+        public virtual void Add<TSource>(TSource entities, bool SaveChanges = false) where TSource : class
+        {
+            DbContext.Set<TSource>().AddRange(entities);
+        }
     }
 }

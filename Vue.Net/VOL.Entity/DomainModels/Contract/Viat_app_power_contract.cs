@@ -16,13 +16,13 @@ namespace VOL.Entity.DomainModels
     [Entity(TableCnName = "GP合约主表", TableName = "Viat_app_power_contract")]
     public partial class Viat_app_power_contract : BaseEntity
     {
-        /// <summary>
+       /* /// <summary>
         ///列dbid
         /// </summary>
         [Display(Name = "列dbid")]
         [Column(TypeName = "int")]
         [Required(AllowEmptyStrings = false)]
-        public int dbid { get; set; }
+        public int dbid { get; set; }*/
 
         /// <summary>
         ///列entity

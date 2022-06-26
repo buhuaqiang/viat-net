@@ -22,7 +22,6 @@ using System;
 using VIAT.Contract.Repositories;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
-
 namespace VIAT.Contract.Services
 {
     public partial class View_app_power_contract_mainService
@@ -46,48 +45,52 @@ namespace VIAT.Contract.Services
         }
         public override WebResponseContent Add(SaveModel saveModel)
         {
+            /*
+             * 如果表头是Isgroup,则把组内的用户，同时增加到viat_app_power_contract_cust表中
+             *思路：根据pricegroup_dbid关联出用户，根据信息生成cust类，用框架表头表体事务插入
+             */
+            AddOnExecute = (saveModel) => {
+                //指定操作类型为新增
+                saveModel.mainOptionType = SaveModel.MainOptionType.add;
+                //如果是视图，则要替换maindata
+                saveModel.MainFacType = typeof(Viat_app_power_contract);
 
-            AddOnExecuting = (View_app_power_contract_main view_App_Power, object list) =>
-            {
-                //如果设置code=-1会强制返回，不再继续后面的操作,2021.07.04更新LambdaExtensions文件后才可以使用此属性
-                //webResponse.Code = "-1";
-                // webResponse.Message = "测试强制返回";
-                //return webResponse.OK();
-
-                Viat_app_power_contract app_Power_Contract = new Viat_app_power_contract()
+                if (saveModel.MainData.GetValue("isgroup")?.ToString() == "1")
                 {
-                    powercont_dbid = Guid.NewGuid(),
-                    accrue_amt = view_App_Power.allw_type,
-                    close_date2 = view_App_Power.close_date2
+                    //isgroup为1时，则pricegroup
+                    string sPriceGroupDBID = saveModel.MainData.GetValue("pricegroup_dbid")?.ToString() ;
+                    string sSql = @"select distinct b.* from viat_app_cust_group  a left join viat_com_cust b on a.cust_dbid=b.cust_dbid 
+                            where a.pricegroup_dbid=@pricegroup_dbid";
+                    //根据pricegroupid获取用户信息列表
+                    List<Viat_com_cust> lstCust = repository.DapperContext.QueryList<Viat_com_cust>(sSql, new { pricegroup_dbid = sPriceGroupDBID });
+                    List<Dictionary<string, object>> dicLst = new List<Dictionary<string, object>>();
+                    SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                    
+                    detailDataResult.detailType = typeof(Viat_app_power_contract_cust);
+                    foreach (Viat_com_cust cust in lstCust)
+                    {
+                        //把用户信息转化实体
+                        Dictionary<string, object> dic = new Dictionary<string, object>();                        
+                        dic.Add("cust_dbid", cust.cust_dbid);
+                        dicLst.Add(dic);                       
+                    }             
+                    Dictionary<string, object> dic1 = new Dictionary<string, object>();                  
+                    dic1.Add("cust_dbid", "D7F97B6A-2A13-4463-8EE5-9156988D9CBA");
+                    dicLst.Add(dic1);
+                    Dictionary<string, object> dic2 = new Dictionary<string, object>();                   
+                    dic2.Add("cust_dbid", "4BBEBDE6-39A3-4497-8CA0-07A4AAE64954");
+                    dicLst.Add(dic2);
+                    detailDataResult.DetailData = dicLst;
 
-                };
-
-                _viat_App_Power_ContractRepository.Add(app_Power_Contract);
-
-                List<Viat_app_power_contract_cust> orderLists = list as List<Viat_app_power_contract_cust>;
-                //  orderLists
-                foreach (var item in orderLists)
-                {
-                    item.powercont_dbid = app_Power_Contract.powercont_dbid;
+                    saveModel.DetailListData.Add(detailDataResult);
+                     
                 }
-                if (orderLists.Count > 0)
-                {
-                    _viat_App_Power_ContractRepository.AddRange(orderLists);
-                }
+                return base.CustomUpdateToEntityForDetails(saveModel); 
 
-                _viat_App_Power_ContractRepository.SaveChanges();
-                webResponse.Code = "-1";
-
-                return webResponse.OK();
             };
-            saveModel.DetailData = null;
 
-            string code = getContractNo();
-            saveModel.MainData["contract_no"] = code;
 
-            //可以直接修改视图提交saveModel里面的字段信息
-            return Viat_app_power_contractService.Instance.Add(saveModel);
-            //return base.Update(saveModel);
+            return base.Add(saveModel);
         }
 
 
@@ -111,6 +114,7 @@ namespace VIAT.Contract.Services
             /*多表处理时，自定义处理表体的addlist,editlidt,delKeys*/
             UpdateMoreDetails = (saveModel) =>
             {
+                saveModel.mainOptionType = SaveModel.MainOptionType.update;
                 if (saveModel.DetailData != null && saveModel.DetailData.Count > 0)
                 {
                     saveModel.DetailListData = new List<SaveModel.DetailListDataResult>();
@@ -224,68 +228,13 @@ namespace VIAT.Contract.Services
                     };
 
                 }
-                return base.UpdateToEntityForDetails(saveModel);
+                return base.CustomUpdateToEntityForDetails(saveModel);
 
             };
 
             return base.Update(saveModel);
         }
-
-        #region
-        /*UpdateOnExecuting = (View_app_power_contract_main view_App_Power, object addList, object updateList, List<object> delKeys) =>
-        {
-
-            Viat_app_power_contract app_Power_Contract = new Viat_app_power_contract()
-            {
-                powercont_dbid = view_App_Power.powercont_dbid,
-                contract_no = view_App_Power.contract_no,
-                contract_type = view_App_Power.contract_type,
-                start_date = view_App_Power.start_date,
-                end_date = view_App_Power.end_date,
-                cust_dbid = view_App_Power.cust_dbid,
-                pricegroup_dbid = view_App_Power.pricegroup_dbid,
-                territory_id = view_App_Power.territory_id,
-                allw_type = view_App_Power.allw_type,
-                accrue_amt = view_App_Power.accrue_amt,
-                contract_term = view_App_Power.contract_term,
-                state = view_App_Power.state,
-                close_date = view_App_Power.close_date,
-                rate = view_App_Power.rate,
-                total_fg_amount = view_App_Power.total_fg_amount
-
-            };
-            _viat_App_Power_ContractRepository.Update(app_Power_Contract, x => new
-            { x.contract_no, x.contract_type, x.start_date, x.end_date, x.cust_dbid, x.pricegroup_dbid, x.territory_id, x.allw_type, x.accrue_amt, x.contract_term, x.state, x.close_date, x.rate, x.total_fg_amount });
-
-             //  _viat_App_Power_ContractRepository.Update(app_Power_Contract);
-
-             ////如果要手动设置某些字段的值,值不是前端提交的（代码生成器里面编辑行必须设置为0并生成model）,如Remark字段:
-             ////注意必须设置上面saveModel.MainData.TryAdd("Remark", "1231")
-             //order.Remark = "888";
-
-             //新增的明细表
-             List<Viat_app_power_contract_cust> add = addList as List<Viat_app_power_contract_cust>;
-            _viat_App_Power_ContractRepository.AddRange(add);
-             //修改的明细表
-             List<Viat_app_power_contract_cust> update = updateList as List<Viat_app_power_contract_cust>;
-
-            _viat_App_Power_ContractRepository.UpdateRange(update);
-
-             //删除明细表Id
-             //  var guids = delKeys?.Select(x => (Guid)x);
-             if (delKeys.Count > 0)
-            {
-                Viat_app_power_contract_custRepository.Instance.DeleteWithKeys(delKeys.ToArray());
-            }
-
-            _viat_App_Power_ContractRepository.SaveChanges();
-            webResponse.Code = "-1";
-            return webResponse.OK("OK");
-        }
-*/
-        //return base.Update(saveModel);
-        #endregion
-
+       
         public override PageGridData<View_app_power_contract_main> GetPageData(PageDataOptions options)
         {
             /*解析查询条件*/
@@ -331,8 +280,27 @@ namespace VIAT.Contract.Services
 
         public override WebResponseContent Del(object[] keys, bool delList = true)
         {
-             Viat_app_power_contractService.Instance.Del(keys, delList);
-            return webResponse.OK("OK");
+            DelOnExecuting = (keys) =>
+             {
+                 List<string> sSqlLst = new List<string>();
+
+                 for (int i = 0; i < keys.Length; i++)
+                 {
+                     string sContractDeleteSql = "delete from  viat_app_power_contract  where powercont_dbid='" + keys[i].ToString() + "'";
+                     string sCustDeleteSql = "delete from  viat_app_power_contract_cust  where powercont_dbid='" + keys[i].ToString() + "'";
+                     string sPurchaseDeleteSql = "delete from  viat_app_power_contract_purchase_prod   where powercont_dbid='" + keys[i].ToString() + "'";
+                     string sFreeDeleteSql = "delete from  viat_app_power_contract_free_prod where powercont_dbid='" + keys[i].ToString() + "'";
+
+                     sSqlLst.Add(sContractDeleteSql);
+                     sSqlLst.Add(sCustDeleteSql);
+                     sSqlLst.Add(sPurchaseDeleteSql);
+                     sSqlLst.Add(sFreeDeleteSql);
+                 }
+
+                 //直接自定义sql语句删除
+                 return base.CustomExcuteBySql(sSqlLst,"delete success");
+             };
+            return base.Del(keys, delList);             
         }
 
 
@@ -342,7 +310,7 @@ namespace VIAT.Contract.Services
         /// <param name="ids">主键</param>
         /// <returns></returns>
 
-        public async Task<WebResponseContent> close(string[] ids)
+        public  WebResponseContent close(string[] ids)
         {
           
             List<string> sSqlLst = new List<string>();
@@ -353,7 +321,7 @@ namespace VIAT.Contract.Services
                 sSqlLst.Add(sSql);
             }         
            
-            return base.UpdateBySql(sSqlLst,"Close Success。");
+            return base.CustomExcuteBySql(sSqlLst,"Close Success。");
         }
 
     }
