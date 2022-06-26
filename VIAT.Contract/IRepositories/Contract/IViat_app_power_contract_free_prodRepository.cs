@@ -12,7 +12,7 @@ using VOL.Entity.DomainModels;
 using VOL.Core.Extensions.AutofacManager;
 namespace VIAT.Contract.IRepositories
 {
-    public partial interface IViat_app_power_contract_free_prodRepository : IDependency,IRepository<Viat_app_power_contract_free_prod_select>
+    public partial interface IViat_app_power_contract_free_prodRepository : IDependency,IRepository<viat_app_hp_contract_free_prod_select>
     {
     }
 }
