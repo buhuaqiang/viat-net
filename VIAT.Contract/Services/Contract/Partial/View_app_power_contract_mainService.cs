@@ -74,12 +74,12 @@ namespace VIAT.Contract.Services
                         dic.Add("cust_dbid", cust.cust_dbid);
                         dicLst.Add(dic);                       
                     }             
-                    Dictionary<string, object> dic1 = new Dictionary<string, object>();                  
+                  /*  Dictionary<string, object> dic1 = new Dictionary<string, object>();                  
                     dic1.Add("cust_dbid", "D7F97B6A-2A13-4463-8EE5-9156988D9CBA");
                     dicLst.Add(dic1);
                     Dictionary<string, object> dic2 = new Dictionary<string, object>();                   
                     dic2.Add("cust_dbid", "4BBEBDE6-39A3-4497-8CA0-07A4AAE64954");
-                    dicLst.Add(dic2);
+                    dicLst.Add(dic2);*/
                     detailDataResult.DetailData = dicLst;
 
                     saveModel.DetailListData.Add(detailDataResult);
