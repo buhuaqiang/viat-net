@@ -502,7 +502,12 @@ namespace VOL.Core.BaseProvider
 
             saveDataModel.DetailData = saveDataModel.DetailData?.Where(x => x.Count > 0).ToList();
             Type type = typeof(T);
-
+            #region 表头真实类型处理
+            if (type.Name.ToLower() != type.GetEntityTableName().ToLower() && saveDataModel.MainFacType != null)
+            {
+                type = saveDataModel.MainFacType;
+            }
+            #endregion           
             string validReslut = type.ValidateDicInEntity(saveDataModel.MainData, true, UserIgnoreFields);
 
             if (!string.IsNullOrEmpty(validReslut)) return Response.Error(validReslut);
@@ -516,16 +521,17 @@ namespace VOL.Core.BaseProvider
             PropertyInfo keyPro = type.GetKeyProperty();
             if (keyPro.PropertyType == typeof(Guid))
             {
-                saveDataModel.MainData.Add(keyPro.Name, Guid.NewGuid());
+                saveDataModel.MainData.Add(keyPro.Name, System.Guid.NewGuid());
             }
             else
             {
                 saveDataModel.MainData.Remove(keyPro.Name);
             }
             //没有明细直接保存返回
-            if (saveDataModel.DetailData == null || saveDataModel.DetailData.Count == 0)
-            {
+            if (saveDataModel.DetailData == null || saveDataModel.DetailData.Count == 0)            {
+                 
                 T mainEntity = saveDataModel.MainData.DicToEntity<T>();
+                
                 if (base.AddOnExecuting != null)
                 {
                     Response = base.AddOnExecuting(mainEntity, null);
@@ -1082,7 +1088,7 @@ namespace VOL.Core.BaseProvider
         /// </summary>
         /// <param name="sSqls"></param>
         /// <returns></returns>
-        public virtual WebResponseContent UpdateBySql(List<string> sSqls, string sMessage)
+        public virtual WebResponseContent CustomExcuteBySql(List<string> sSqls, string sMessage)
         {
             try
             {
@@ -1098,6 +1104,10 @@ namespace VOL.Core.BaseProvider
             catch(Exception eError)
             {
                 Response.Error("数据库更新操作失败：" + eError.Message);
+            }
+            finally
+            {
+                Response.Code = "-1";
             }
           
             return Response.OK(sMessage);
@@ -1174,12 +1184,17 @@ namespace VOL.Core.BaseProvider
         /// <param name="detailKeyInfo"></param>
         /// <param name="keyDefaultVal"></param>
         /// <returns></returns>
-        public WebResponseContent UpdateToEntityForDetails(SaveModel saveModel)
+        public WebResponseContent CustomUpdateToEntityForDetails(SaveModel saveModel)
         {
             try
             {
                 if (saveModel == null)
                     return Response.Error(ResponseType.ParametersLack);
+
+                if(saveModel.mainOptionType == SaveModel.MainOptionType.None)
+                {
+                    return Response.Error("please setting main table optionType");
+                }
 
                 #region 表头校验 
                 Type type = typeof(T);
@@ -1192,13 +1207,33 @@ namespace VOL.Core.BaseProvider
 
                 //设置修改时间,修改人的默认值
                 UserInfo userInfo = UserContext.Current.UserInfo;
-                 saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);                
+                //saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);                
 
-              /*  //判断提交的数据与实体格式是否一致
+                //判断提交的数据与实体格式是否一致
                 string result = type.ValidateDicInEntity(saveModel.MainData, true, false, UserIgnoreFields);
                 if (result != string.Empty)
-                    return Response.Error(result);*/
+                    return Response.Error(result);
 
+                //主键处理新增时
+                if (saveModel.mainOptionType == SaveModel.MainOptionType.add)
+                {
+                    PropertyInfo keyPro = type.GetKeyProperty();
+                    if (keyPro.PropertyType == typeof(Guid))
+                    {
+                        if (saveModel.MainData.ContainsKey(keyPro.Name) == true)
+                        {
+                            saveModel.MainData[keyPro.Name] = System.Guid.NewGuid();
+                        }
+                        else
+                        {
+                            saveModel.MainData.Add(keyPro.Name, System.Guid.NewGuid());
+                        }
+                    }
+                    else
+                    {
+                        saveModel.MainData.Remove(keyPro.Name);
+                    }
+                }
                 //获取主建类型的默认值用于判断后面数据是否正确,int long默认值为0,guid :0000-000....
                 PropertyInfo mainKeyProperty = type.GetKeyProperty();
                 object keyDefaultVal = mainKeyProperty.PropertyType.Assembly.CreateInstance(mainKeyProperty.PropertyType.FullName);//.ToString();
@@ -1217,6 +1252,7 @@ namespace VOL.Core.BaseProvider
                 if (!validation.Item1)
                     return Response.Error(ResponseType.KeyError);
 
+
                 object valueType = mainKeyVal.ToString().ChangeType(mainKeyProperty.PropertyType);
                 //判断主键值是不是当前类型的默认值
                 if (valueType == null ||
@@ -1226,10 +1262,7 @@ namespace VOL.Core.BaseProvider
                     return Response.Error(ResponseType.KeyError);
 
                 if (saveModel.MainData.Count <= 1) return Response.Error("系统没有配置好编辑的数据，请检查model!");
-
-
-                Expression<Func<T, bool>> expression = mainKeyProperty.Name.CreateExpression<T>(mainKeyVal.ToString(), LinqExpressionType.Equal);
-                if (!repository.Exists(expression)) return Response.Error("保存的数据不存在!");
+          
                 #endregion
 
                 #region 表体校验
@@ -1242,7 +1275,7 @@ namespace VOL.Core.BaseProvider
                         PropertyInfo detailKeyInfo = detailType.GetKeyProperty();
                         //判断明细是否包含了主表的主键
                         string deatilDefaultVal = detailKeyInfo.PropertyType.Assembly.CreateInstance(detailKeyInfo.PropertyType.FullName).ToString();
-                        foreach (Dictionary<string, object> dic in saveModel.DetailData)
+                        foreach (Dictionary<string, object> dic in resultDetails.DetailData)
                         {
                             //不包含主键的默认添加主键默认值，用于后面判断是否为新增数据
                             if (!dic.ContainsKey(detailKeyInfo.Name))
@@ -1276,47 +1309,95 @@ namespace VOL.Core.BaseProvider
                     }
                     #endregion
 
-                    #region 更新表头
+                }
+
+                #region 操作数据库
+
+                #region 更新表头
+                if (saveModel.mainOptionType == SaveModel.MainOptionType.add)
+                {
+                    saveModel.SetDefaultVal(AppSetting.CreateMember, userInfo);
+                }
+                else if (saveModel.mainOptionType == SaveModel.MainOptionType.update)
+                {
+                    //编辑时，根据主键确认数据是否存在
+                    Expression<Func<T, bool>> expression = mainKeyProperty.Name.CreateExpression<T>(mainKeyVal.ToString(), LinqExpressionType.Equal);
+                    if (!repository.Exists(expression)) return Response.Error("保存的数据不存在!");
                     saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);
-                    T mainEntity = saveModel.MainData.DicToEntity<T>();
-                   
-                  /*  if (UpdateOnExecuting != null)
+                }
+
+                #region
+                //把字典转成实体类
+                /*T mainEntity = saveModel.MainData.DicToEntity<T>();
+              
+                if (saveModel.mainOptionType == SaveModel.MainOptionType.add)
+                {
+                    
+                    //新增处理                    
+                    if (base.AddOnExecuting != null)
                     {
-                        Response = UpdateOnExecuting(mainEntity, null, null, null);
+                        Response = base.AddOnExecuting(mainEntity, null);
                         if (CheckResponseResult()) return Response;
-                    }*/
+                    }
+                    Response = repository.DbContextBeginTransaction(() =>
+                    {
+                        repository.Add(mainEntity, true);
+                        saveModel.MainData[keyPro.Name] = keyPro.GetValue(mainEntity);
+                        Response.OK(ResponseType.SaveSuccess);
+                        if (base.AddOnExecuted != null)
+                        {
+                            Response = base.AddOnExecuted(mainEntity, null);
+                        }
+                        return Response;
+                    });
+                    if (Response.Status) Response.Data = new { data = saveModel.MainData };
+                    return Response;
+                }
+                else if (saveModel.mainOptionType == SaveModel.MainOptionType.update)
+                {
                     //不修改!CreateFields.Contains创建人信息                
                     repository.Update(mainEntity, type.GetEditField().Where(c => saveModel.MainData.Keys.Contains(c) && !CreateFields.Contains(c)).ToArray());
-                    #endregion
 
-                    #region 更新表体 表体的值
+                }*/
+                #endregion
+                WebResponseContent webMainResponseResult = this.GetType().GetMethod("UpdateMainToEntity")
+                       .MakeGenericMethod(new Type[] { type })
+                       .Invoke(this, new object[] { saveModel, mainKeyProperty })
+                       as WebResponseContent;
 
-                    if (saveModel.DetailListData != null && saveModel.DetailListData.Count > 0)
+                if (webMainResponseResult.Status == false)
+                {
+                    return webMainResponseResult.Error("保存失败。");
+                }
+                #endregion
+
+                #region 更新表体 表体的值
+
+                if (saveModel.DetailListData != null && saveModel.DetailListData.Count > 0)
+                {
+                    foreach (SaveModel.DetailListDataResult resultDetails in saveModel.DetailListData)
                     {
-                        foreach (SaveModel.DetailListDataResult resultDetails in saveModel.DetailListData)
+                        Type detailType = resultDetails.detailType;
+                        PropertyInfo detailKeyInfo = detailType.GetKeyProperty();
+
+                        saveModel.DetailsData = resultDetails.DetailData;
+                        WebResponseContent webResponseResult = this.GetType().GetMethod("UpdateDetailsToEntity")
+                        .MakeGenericMethod(new Type[] { detailType })
+                        .Invoke(this, new object[] { saveModel, mainKeyProperty, detailKeyInfo, keyDefaultVal })
+                        as WebResponseContent;
+
+                        if (webResponseResult.Status == false)
                         {
-
-                            Type detailType = resultDetails.detailType;
-                            PropertyInfo detailKeyInfo = detailType.GetKeyProperty();
-
-                            saveModel.DetailsData = resultDetails.DetailData;                                
-                            WebResponseContent webResponseResult = this.GetType().GetMethod("UpdateDetailsToEntity")
-                            .MakeGenericMethod(new Type[] { detailType })
-                            .Invoke(this, new object[] { saveModel, mainKeyProperty, detailKeyInfo, keyDefaultVal })
-                            as WebResponseContent;
-
-                            if (webResponseResult.Status == false)
-                            {
-                                return webResponseResult.Error("保存失败。");
-                            }
+                            return webResponseResult.Error("保存失败。");
                         }
                     }
-
-                    #endregion
-
-                    /*更新数据库*/
-                    repository.SaveChanges();
                 }
+
+                #endregion
+
+                /*更新数据库*/
+                repository.SaveChanges();
+                #endregion
 
                 return Response.OK("OK");
             }
@@ -1329,7 +1410,41 @@ namespace VOL.Core.BaseProvider
                 Response.Code = "-1";
             }
         }
-        public WebResponseContent UpdateDetailsToEntity<DetailT>(SaveModel saveModel, PropertyInfo mainKeyProperty, PropertyInfo detailKeyInfo, object keyDefaultVal) where DetailT : class
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="MainT"></typeparam>
+        /// <param name="saveModel"></param>
+        /// <param name="keyPro"></param>
+        /// <returns></returns>
+        public WebResponseContent UpdateMainToEntity<MainT>(SaveModel saveModel, PropertyInfo keyPro) where MainT : class
+        {
+            MainT mainEntity = saveModel.MainData.DicToEntity<MainT>();
+
+            if (saveModel.mainOptionType == SaveModel.MainOptionType.add)
+            {
+                Response = repository.DbContextBeginTransaction(() =>
+                {
+                    repository.Add(mainEntity);
+                    saveModel.MainData[keyPro.Name] = keyPro.GetValue(mainEntity);
+                    Response.OK(ResponseType.SaveSuccess);                    
+                    return Response;
+                });
+                if (Response.Status) Response.Data = new { data = saveModel.MainData };
+                return Response;
+            }
+            else if (saveModel.mainOptionType == SaveModel.MainOptionType.update)
+            {
+                //不修改!CreateFields.Contains创建人信息                
+                repository.Update(mainEntity, mainEntity.GetType().GetEditField().Where(c => saveModel.MainData.Keys.Contains(c) && !CreateFields.Contains(c)).ToArray());
+
+            }
+            return Response.OK();
+        }
+
+
+            public WebResponseContent UpdateDetailsToEntity<DetailT>(SaveModel saveModel, PropertyInfo mainKeyProperty, PropertyInfo detailKeyInfo, object keyDefaultVal) where DetailT : class
         {
             List<DetailT> detailList = saveModel.DetailsData.DicToList<DetailT>();
 
@@ -1426,7 +1541,7 @@ namespace VOL.Core.BaseProvider
             addList.ForEach(x =>
             {
                 x.SetCreateDefaultVal();
-                repository.DbContext.Entry<DetailT>(x).State = EntityState.Added;
+                repository.DbContext.Entry<DetailT>(x).State = EntityState.Added;               
             });
             //明细删除
             delKeys.ForEach(x =>

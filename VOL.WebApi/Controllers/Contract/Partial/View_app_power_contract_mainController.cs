@@ -36,9 +36,9 @@ namespace VIAT.Contract.Controllers
 
         [HttpPost, Route("close")]
         [ApiActionPermission]
-        public async Task<ActionResult> close([FromBody]  string[] ids)
+        public  ActionResult close([FromBody]  string[] ids)
         {
-            return Json(await _service.close(ids));
+            return Json(_service.close(ids));
         }
     }
 }
