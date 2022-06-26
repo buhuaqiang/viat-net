@@ -62,20 +62,7 @@ namespace VIAT.Contract.Services
         //override PageGridData<Viat_app_power_contract_cust_select> GetPageData(PageDataOptions options)
         public override PageGridData<Viat_app_power_contract_cust_select> GetPageData(PageDataOptions options)
         {
-            /*VOLContext context = DBServerProvider.GetEFDbContext();
-            var dicData =  (from d in context.Set<Viat_app_power_contract_cust>() 
-                                 join list in context.Set<Viat_com_cust>()
-                                 on d.cust_dbid equals list.cust_dbid
-                                 into t
-                                 from list in t.DefaultIfEmpty()
-                                 where d.powercont_dbid.Equals(powercont_dbid)
-                                 select new { 
-                                     d.powercont_dbid, 
-                                     d.powercontcust_dbid,
-                                     d.cust_dbid, 
-                                     list.cust_id,
-                                     list.cust_name
-                                 }).ToListAsync();*/
+            
             /*解析查询条件*/
             List<SearchParameters> searchParametersList = new List<SearchParameters>();
             if (!string.IsNullOrEmpty(options.Wheres))
@@ -97,9 +84,7 @@ namespace VIAT.Contract.Services
                 "left join Viat_com_cust comcus on cus.cust_dbid=comcus.cust_dbid" +
                 " where cus.powercont_dbid='" + sPowerContDbid + "'";
                 }
-            }
-
-          
+            }     
           
 
             return base.GetPageData(options);
