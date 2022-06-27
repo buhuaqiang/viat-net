@@ -908,10 +908,6 @@ namespace VOL.Core.BaseProvider
             }
             #endregion           
 
-            //判断提交的数据与实体格式是否一致
-            string result = type.ValidateDicInEntity(saveModel.MainData, true, false, UserIgnoreFields);
-            if (result != string.Empty)
-                return Response.Error(result);
 
             #region 多表体委托处理,
             if (UpdateMoreDetails != null)
@@ -926,6 +922,10 @@ namespace VOL.Core.BaseProvider
             #endregion
 
 
+            //判断提交的数据与实体格式是否一致 
+            string result = type.ValidateDicInEntity(saveModel.MainData, true, false, UserIgnoreFields);
+            if (result != string.Empty)
+                return Response.Error(result);
             //设置修改时间,修改人的默认值
             UserInfo userInfo = UserContext.Current.UserInfo;
             saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);
@@ -1275,37 +1275,39 @@ namespace VOL.Core.BaseProvider
                         PropertyInfo detailKeyInfo = detailType.GetKeyProperty();
                         //判断明细是否包含了主表的主键
                         string deatilDefaultVal = detailKeyInfo.PropertyType.Assembly.CreateInstance(detailKeyInfo.PropertyType.FullName).ToString();
-                        foreach (Dictionary<string, object> dic in resultDetails.DetailData)
-                        {
-                            //不包含主键的默认添加主键默认值，用于后面判断是否为新增数据
-                            if (!dic.ContainsKey(detailKeyInfo.Name))
+                        
+                            foreach (Dictionary<string, object> dic in resultDetails.DetailData)
                             {
-                                dic.Add(detailKeyInfo.Name, keyDefaultVal);
-                                if (dic.ContainsKey(mainKeyProperty.Name))
+                                //不包含主键的默认添加主键默认值，用于后面判断是否为新增数据
+                                if (!dic.ContainsKey(detailKeyInfo.Name))
                                 {
-                                    dic[mainKeyProperty.Name] = keyDefaultVal;
+                                    dic.Add(detailKeyInfo.Name, keyDefaultVal);
+                                    if (dic.ContainsKey(mainKeyProperty.Name))
+                                    {
+                                        dic[mainKeyProperty.Name] = keyDefaultVal;
+                                    }
+                                    else
+                                    {
+                                        dic.Add(mainKeyProperty.Name, keyDefaultVal);
+                                    }
+                                    continue;
                                 }
-                                else
+                                if (dic[detailKeyInfo.Name] == null)
+                                    return Response.Error(ResponseType.NoKey);
+
+                                //主键值是否正确
+                                string detailKeyVal = dic[detailKeyInfo.Name].ToString();
+                                if (!mainKeyProperty.ValidationValueForDbType(detailKeyVal).FirstOrDefault().Item1
+                                    || deatilDefaultVal == detailKeyVal)
+                                    return Response.Error(ResponseType.KeyError);
+
+                                //判断主表的值是否正确
+                                if (detailKeyVal != keyDefaultVal.ToString() && (!dic.ContainsKey(mainKeyProperty.Name) || dic[mainKeyProperty.Name] == null || dic[mainKeyProperty.Name].ToString() == keyDefaultVal.ToString()))
                                 {
-                                    dic.Add(mainKeyProperty.Name, keyDefaultVal);
+                                    return Response.Error(mainKeyProperty.Name + "是必填项!");
                                 }
-                                continue;
                             }
-                            if (dic[detailKeyInfo.Name] == null)
-                                return Response.Error(ResponseType.NoKey);
-
-                            //主键值是否正确
-                            string detailKeyVal = dic[detailKeyInfo.Name].ToString();
-                            if (!mainKeyProperty.ValidationValueForDbType(detailKeyVal).FirstOrDefault().Item1
-                                || deatilDefaultVal == detailKeyVal)
-                                return Response.Error(ResponseType.KeyError);
-
-                            //判断主表的值是否正确
-                            if (detailKeyVal != keyDefaultVal.ToString() && (!dic.ContainsKey(mainKeyProperty.Name) || dic[mainKeyProperty.Name] == null || dic[mainKeyProperty.Name].ToString() == keyDefaultVal.ToString()))
-                            {
-                                return Response.Error(mainKeyProperty.Name + "是必填项!");
-                            }
-                        }
+                         
                     }
                     #endregion
 
@@ -1381,6 +1383,7 @@ namespace VOL.Core.BaseProvider
                         PropertyInfo detailKeyInfo = detailType.GetKeyProperty();
 
                         saveModel.DetailsData = resultDetails.DetailData;
+                        saveModel.DelKeys = resultDetails.detailDelKeys;
                         WebResponseContent webResponseResult = this.GetType().GetMethod("UpdateDetailsToEntity")
                         .MakeGenericMethod(new Type[] { detailType })
                         .Invoke(this, new object[] { saveModel, mainKeyProperty, detailKeyInfo, keyDefaultVal })
@@ -1446,7 +1449,7 @@ namespace VOL.Core.BaseProvider
 
             public WebResponseContent UpdateDetailsToEntity<DetailT>(SaveModel saveModel, PropertyInfo mainKeyProperty, PropertyInfo detailKeyInfo, object keyDefaultVal) where DetailT : class
         {
-            List<DetailT> detailList = saveModel.DetailsData.DicToList<DetailT>();
+            List<DetailT> detailList = saveModel.DetailsData?.DicToList<DetailT>();
 
             //新增对象
             List<DetailT> addList = new List<DetailT>();

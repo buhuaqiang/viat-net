@@ -46,7 +46,10 @@ namespace VOL.Entity.DomainModels
         public class DetailListDataResult
         {
             public Type detailType { get; set; }
-            public List<Dictionary<string, object>> DetailData { get; set; }
+            public List<Dictionary<string, object>> DetailData = new List<Dictionary<string, object>>();
+
+            //删除key记录
+            public List<object> detailDelKeys = new List<object>();
         }
 
         /// <summary>
