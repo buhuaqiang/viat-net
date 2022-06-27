@@ -325,6 +325,15 @@ namespace VOL.Entity.DomainModels
        [Column(TypeName="uniqueidentifier")]
        public Guid? pricegroup_dbid { get; set; }
 
-       
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "costomer_type")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        [Required(AllowEmptyStrings = false)]
+        public string costomer_type { get; set; }
+
+
     }
 }
