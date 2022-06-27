@@ -13,7 +13,7 @@ using VOL.Entity.SystemModels;
 
 namespace VOL.Entity.DomainModels
 {
-    [Entity(TableCnName = "HP合約設置",TableName = "View_app_hp_contract")]
+    [Entity(TableCnName = "HP合約設置",TableName = "viat_app_hp_contract")]
     public partial class View_app_hp_contract:BaseEntity
     {
         /// <summary>
