@@ -12,7 +12,7 @@ using VOL.Entity.DomainModels;
 
 namespace VIAT.Contract.Services
 {
-    public partial class Viat_app_power_contract_free_prodService : ServiceBase<viat_app_hp_contract_free_prod_select, IViat_app_power_contract_free_prodRepository>
+    public partial class Viat_app_power_contract_free_prodService : ServiceBase<Viat_app_power_contract_free_prod_select, IViat_app_power_contract_free_prodRepository>
     , IViat_app_power_contract_free_prodService, IDependency
     {
     public Viat_app_power_contract_free_prodService(IViat_app_power_contract_free_prodRepository repository)

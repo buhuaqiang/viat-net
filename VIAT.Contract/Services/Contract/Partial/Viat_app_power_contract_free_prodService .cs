@@ -45,7 +45,7 @@ namespace VIAT.Contract.Services
         }
 
         //override PageGridData<Viat_app_power_contract_free_prod_select> GetPageData(PageDataOptions options)
-        public override PageGridData<viat_app_hp_contract_free_prod_select> GetPageData(PageDataOptions options)
+        public override PageGridData<Viat_app_power_contract_free_prod_select> GetPageData(PageDataOptions options)
         {
           
             /*解析查询条件*/
