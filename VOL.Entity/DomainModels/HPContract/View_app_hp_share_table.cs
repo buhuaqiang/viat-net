@@ -106,10 +106,19 @@ namespace VOL.Entity.DomainModels
        [Editable(true)]
        public decimal? percent { get; set; }
 
-       /// <summary>
-       ///Status
-       /// </summary>
-       [Display(Name ="Status")]
+        /// <summary>
+        ///sumpercent
+        /// </summary>
+        [Display(Name = "sum_percent")]
+        [DisplayFormat(DataFormatString = "18,5")]
+        [Column(TypeName = "sum_percent")]
+        [Editable(true)]
+        public decimal? sum_percent { get; set; }
+
+        /// <summary>
+        ///Status
+        /// </summary>
+        [Display(Name ="Status")]
        [Column(TypeName="bit")]
        [Editable(true)]
        public bool? status { get; set; }
