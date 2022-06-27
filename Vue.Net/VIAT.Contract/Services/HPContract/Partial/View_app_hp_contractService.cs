@@ -20,7 +20,7 @@ using VIAT.Contract.IRepositories;
 using VIAT.Contract.IServices;
 using System;
 using VIAT.Contract.Repositories;
-
+using System.Collections.Generic;
 
 namespace VIAT.Contract.Services
 {
@@ -30,7 +30,7 @@ namespace VIAT.Contract.Services
         private readonly IView_app_hp_contractRepository _repository;//访问数据库
         private readonly IViat_app_hp_contractService _viat_app_hp_contractService;
         private readonly IViat_app_hp_contractRepository _viat_app_hp_contractRepository;
-
+        private WebResponseContent webResponse = new WebResponseContent();
         [ActivatorUtilitiesConstructor]
         public View_app_hp_contractService(
             IView_app_hp_contractRepository dbRepository,
@@ -48,23 +48,152 @@ namespace VIAT.Contract.Services
             //base.Init(dbRepository);
         }
 
+
+
+
+
+       
+
+        public override PageGridData<View_app_hp_contract> GetPageData(PageDataOptions options)
+        {
+            /*解析查询条件*/
+            QuerySql = "select * from view_app_hp_contract ";
+            return base.GetPageData(options);
+        }
+
         public string getContractNo()
         {
             string rule = "A" + $"{DateTime.Now.GetHashCode()}";
             return rule.Substring(0, 10);
         }
         //新增
-        public override WebResponseContent Add(SaveModel saveDataModel)
+        public override WebResponseContent Add(SaveModel saveModel)
         {
             string contractNo = getContractNo();
             Guid cust_dbid = Guid.NewGuid();
-            saveDataModel.MainData["contract_no"] = contractNo;
-            return _viat_app_hp_contractService.Add(saveDataModel);
+            saveModel.MainData["contract_no"] = contractNo;
+
+            /*
+             * 如果表头是Isgroup,则把组内的用户，同时增加到viat_app_hp_contract_cust表中
+             *思路：根据pricegroup_dbid关联出用户，根据信息生成cust类，用框架表头表体事务插入
+             */
+            AddOnExecute = (saveModel) => {
+                //指定操作类型为新增
+                saveModel.mainOptionType = SaveModel.MainOptionType.add;
+                //如果是视图，则要替换maindata
+                saveModel.MainFacType = typeof(Viat_app_hp_contract);
+
+                if (saveModel.MainData.GetValue("isgroup")?.ToString() == "1")
+                {
+                    //isgroup为1时，则pricegroup
+                    string sPriceGroupDBID = saveModel.MainData.GetValue("pricegroup_dbid")?.ToString();
+                    string sSql = @"select distinct b.* from viat_app_cust_group  a left join viat_com_cust b on a.cust_dbid=b.cust_dbid 
+                            where a.pricegroup_dbid=@pricegroup_dbid";
+                    //根据pricegroupid获取用户信息列表
+                    List<Viat_com_cust> lstCust = repository.DapperContext.QueryList<Viat_com_cust>(sSql, new { pricegroup_dbid = sPriceGroupDBID });
+                    List<Dictionary<string, object>> dicLst = new List<Dictionary<string, object>>();
+                    SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+
+                    detailDataResult.detailType = typeof(Viat_app_hp_contract_cust);
+                    foreach (Viat_com_cust cust in lstCust)
+                    {
+                        //把用户信息转化实体
+                        Dictionary<string, object> dic = new Dictionary<string, object>();
+                        dic.Add("cust_dbid", cust.cust_dbid);
+                        dicLst.Add(dic);
+                    }
+                    
+                    detailDataResult.DetailData = dicLst;
+
+                    saveModel.DetailListData.Add(detailDataResult);
+
+                }
+                return base.CustomUpdateToEntityForDetails(saveModel);
+
+            }; 
+
+            return base.Add(saveModel);
+ 
         }
         //更新
         public override WebResponseContent Update(SaveModel saveModel)
         {
-            return _viat_app_hp_contractService.Update(saveModel);
+            UpdateOnExecute = (saveModel) =>
+            {
+                //指定表头真实有类型
+                saveModel.MainFacType = typeof(Viat_app_hp_contract);
+                return webResponse.OK();
+            };
+
+            /*多表处理时，自定义处理表体的addlist,editlidt,delKeys*/
+            UpdateMoreDetails = (saveModel) =>
+            {
+                saveModel.mainOptionType = SaveModel.MainOptionType.update;
+                if (saveModel.DetailData != null && saveModel.DetailData.Count > 0)
+                {
+                    saveModel.DetailListData = new List<SaveModel.DetailListDataResult>();
+                    foreach (Dictionary<string, object> dic in saveModel.DetailData)
+                    {
+
+                        Dictionary<string, object> dicTmp = dic;
+                        if (dicTmp["key"]?.ToString() == "table1RowData")
+                        {
+                            //合約客戶List
+                            string cusDic = dicTmp["value"]?.ToString();
+                            //取得所有
+                            if (string.IsNullOrEmpty(cusDic) == false)
+                            {
+
+                                SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                                detailDataResult.detailType = typeof(Viat_app_hp_contract_cust);
+
+
+                                //计算表体和实体的值
+                                List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, cusDic);
+ 
+                                detailDataResult.DetailData = entityDic;
+                                saveModel.DetailListData.Add(detailDataResult);
+                            }
+
+                        }
+                        else if (dicTmp["key"]?.ToString() == "table2RowData")
+                        // 合約產品List   
+                        {
+                            //合約客戶List
+                            Dictionary<string, object> dicTmpPro = dic;
+                            if (dicTmp["key"]?.ToString() == "table2RowData")
+                            {
+                                //合約客戶List
+                                string proDic = dicTmp["value"]?.ToString();
+                                //取得所有
+                                if (string.IsNullOrEmpty(proDic) == false)
+                                {
+
+                                    SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                                    detailDataResult.detailType = typeof(Viat_app_hp_contract_free_prod);
+
+
+                                    //计算表体和实体的值
+                                    List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, proDic);
+
+                                    detailDataResult.DetailData = entityDic;
+                                    saveModel.DetailListData.Add(detailDataResult);
+                                }
+
+                            }
+                        }
+  
+                    };
+
+                }
+                return base.CustomUpdateToEntityForDetails(saveModel);
+
+            };
+
+            return base.Update(saveModel);
         }
+
+
+
     }
 }

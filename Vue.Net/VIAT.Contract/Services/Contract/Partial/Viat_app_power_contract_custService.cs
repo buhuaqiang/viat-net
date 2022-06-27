@@ -23,22 +23,7 @@ using System.Collections.Generic;
 using VOL.Core.EFDbContext;
 using VOL.Core.DBManager;
 using Newtonsoft.Json;
-
-
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using VOL.Core.Configuration;
-using VOL.Core.Extensions;
-using VOL.Core.Filters;
-using VOL.Core.Services;
-using VOL.Core.Utilities;
-using VOL.Entity.DomainModels;
+ 
 namespace VIAT.Contract.Services
 {
     public partial class Viat_app_power_contract_custService
