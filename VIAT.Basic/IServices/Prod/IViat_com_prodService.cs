@@ -8,5 +8,6 @@ namespace VIAT.Basic.IServices
 {
     public partial interface IViat_com_prodService : IService<Viat_com_prod>
     {
+        Viat_com_prod getProdByProdID(string prod_id);
     }
 }

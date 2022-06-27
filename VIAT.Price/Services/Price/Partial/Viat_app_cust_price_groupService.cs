@@ -37,5 +37,16 @@ namespace VIAT.Price.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+
+        /// <summary>
+        /// 根据GROUPID获取单实体
+        /// </summary>
+        /// <param name="group_id"></param>
+        /// <returns></returns>
+        public Viat_app_cust_price_group getPriceGroupByGroupID(string group_id)
+        {
+
+            return repository.FindAsIQueryable(x => x.group_id == group_id).FirstOrDefault();
+        }
+    }
 }

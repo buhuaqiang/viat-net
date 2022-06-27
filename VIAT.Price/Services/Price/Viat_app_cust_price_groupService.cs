@@ -24,4 +24,6 @@ namespace VIAT.Price.Services
     {
       get { return AutofacContainerModule.GetService<IViat_app_cust_price_groupService>(); } }
     }
- }
+
+   
+}

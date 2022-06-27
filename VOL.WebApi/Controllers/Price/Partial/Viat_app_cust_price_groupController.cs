@@ -29,5 +29,11 @@ namespace VIAT.Price.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        [HttpGet, Route("getPriceGroupByGroupID")]
+        public IActionResult getPriceGroupByGroupID(string group_id)
+        {
+            return Json(_service.getPriceGroupByGroupID(group_id));
+        }
     }
 }

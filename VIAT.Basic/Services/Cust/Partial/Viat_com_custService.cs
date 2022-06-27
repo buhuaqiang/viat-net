@@ -62,5 +62,16 @@ namespace VIAT.Basic.Services
             string rule = "C" + $"D{DateTime.Now.GetHashCode()}";
             return rule.Substring(0, 10);
         }
+
+
+        /// <summary>
+        /// 根据custID获取单一实体
+        /// </summary>
+        /// <param name="sCustID"></param>
+        /// <returns></returns>
+        public Viat_com_cust getCustByCustID(string sCustID)
+        {
+            return   repository.FindAsIQueryable(x => x.cust_id == sCustID).FirstOrDefault();
+        }
     }
 }
