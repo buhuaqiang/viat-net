@@ -14,6 +14,7 @@ using VIAT.Basic.IServices;
 
 namespace VIAT.Basic.Controllers
 {
+  
     public partial class Viat_com_custController
     {
         private readonly IViat_com_custService _service;//访问业务代码
@@ -28,6 +29,12 @@ namespace VIAT.Basic.Controllers
         {
             _service = service;
             _httpContextAccessor = httpContextAccessor;
+        }
+
+        [HttpGet, Route("getCustByCustID")]
+        public IActionResult getCustByCustID(string cust_id)
+        {
+            return Json(_service.getCustByCustID(cust_id));
         }
     }
 }

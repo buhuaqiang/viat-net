@@ -37,5 +37,15 @@ namespace VIAT.Basic.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+
+        /// <summary>
+        /// 根据prodID获取单一实体
+        /// </summary>
+        /// <param name="sCustID"></param>
+        /// <returns></returns>
+        public Viat_com_prod getProdByProdID(string prod_id)
+        {
+            return repository.FindAsIQueryable(x => x.prod_id == prod_id).FirstOrDefault();
+        }
+    }
 }

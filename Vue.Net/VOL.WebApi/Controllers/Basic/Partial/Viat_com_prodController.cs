@@ -29,5 +29,11 @@ namespace VIAT.Basic.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        [HttpGet, Route("getProdByProdID")]
+        public IActionResult getProdByProdID(string prod_id)
+        {
+            return Json(_service.getProdByProdID(prod_id));
+        }
     }
 }
