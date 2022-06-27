@@ -62,9 +62,9 @@ namespace VOL.Entity.DomainModels
         /// <summary>
         ///合約號碼(案號)
         /// </summary>
-        [Display(Name = "Y;Valid;N;Invalid;C;OverA:Not Achieve")]
+      /*  [Display(Name = "Y;Valid;N;Invalid;C;OverA:Not Achieve")]
          
-        public string contract_no { get; set; }
+        public string contract_no { get; set; }*/
 
         /// <summary>
         ///客戶表主鍵
