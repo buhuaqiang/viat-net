@@ -55,7 +55,21 @@ namespace VIAT.Contract.Services
                 //如果是视图，则要替换maindata
                 saveModel.MainFacType = typeof(Viat_app_power_contract);
 
+                //新增保存时，给合约号赋值
+                string code = getContractNo();
+                saveModel.MainData["contract_no"] = code;
+
+                //isgroup与iscust二选择一
                 if (saveModel.MainData.GetValue("isgroup")?.ToString() == "1")
+                {
+                    saveModel.MainData["cust_dbid"] = "";
+                }
+                else if (saveModel.MainData.GetValue("isgroup")?.ToString() == "0")
+                {
+                    saveModel.MainData["pricegroup_dbid"] = "";
+                }
+
+                    if (saveModel.MainData.GetValue("isgroup")?.ToString() == "1")
                 {
                     //isgroup为1时，则pricegroup
                     string sPriceGroupDBID = saveModel.MainData.GetValue("pricegroup_dbid")?.ToString() ;
@@ -115,6 +129,18 @@ namespace VIAT.Contract.Services
             UpdateMoreDetails = (saveModel) =>
             {
                 saveModel.mainOptionType = SaveModel.MainOptionType.update;
+
+                //isgroup与iscust二选择一
+                if (saveModel.MainData.GetValue("isgroup")?.ToString() == "1")
+                {
+                    saveModel.MainData["cust_dbid"] = "";
+                }
+                else if (saveModel.MainData.GetValue("isgroup")?.ToString() == "0")
+                {
+                    saveModel.MainData["pricegroup_dbid"] = "";
+                }
+
+
                 if (saveModel.DetailData != null && saveModel.DetailData.Count > 0)
                 {
                     saveModel.DetailListData = new List<SaveModel.DetailListDataResult>();
@@ -213,18 +239,88 @@ namespace VIAT.Contract.Services
                                     SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
                                     detailDataResult.detailType = typeof(Viat_app_power_contract_free_prod);
 
-
                                     //计算表体和实体的值
                                     List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, proDic);
-
                                     detailDataResult.DetailData = entityDic;
                                     saveModel.DetailListData.Add(detailDataResult);
                                 }
 
                             }
                         }
+                        //删除操作
+                        else if (dicTmp["key"]?.ToString() == "delTable1RowData")
+                        {
+                            //合約贈送產品List      
 
-                      
+                            //合約客戶List
+                            string cusDic = dicTmp["value"]?.ToString();
+                            //取得所有
+                            if (string.IsNullOrEmpty(cusDic) == false)
+                            {
+
+                                SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                                detailDataResult.detailType = typeof(Viat_app_power_contract_cust);
+
+                                //计算表体和实体的值
+                                List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, cusDic);
+                                foreach (Dictionary<string, object> entiry in entityDic)
+                                {
+                                    detailDataResult.detailDelKeys.Add(entiry.GetValue("powercontcust_dbid"));
+                                }
+
+                                saveModel.DetailListData.Add(detailDataResult);
+                            }
+
+                        }
+                        else if (dicTmp["key"]?.ToString() == "delTable2RowData")
+                        {
+                            //合約贈送產品List      
+                            if (dicTmp["key"]?.ToString() == "delTable2RowData")
+                            {
+                                //合約客戶List
+                                string cusDic = dicTmp["value"]?.ToString();
+                                //取得所有
+                                if (string.IsNullOrEmpty(cusDic) == false)
+                                {
+                                    SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                                    detailDataResult.detailType = typeof(Viat_app_power_contract_purchase_prod);
+
+                                    //计算表体和实体的值
+                                    List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, cusDic);
+                                    foreach (Dictionary<string, object> entiry in entityDic)
+                                    {
+                                        detailDataResult.detailDelKeys.Add(entiry.GetValue("powercontpurprod_dbid"));
+                                    }
+                                    saveModel.DetailListData.Add(detailDataResult);
+                                }
+
+                            }
+                        }
+                        else if (dicTmp["key"]?.ToString() == "delTable3RowData")
+                        {
+                            //合約贈送產品List      
+                            if (dicTmp["key"]?.ToString() == "delTable3RowData")
+                            {
+                                //合約客戶List
+                                string cusDic = dicTmp["value"]?.ToString();
+                                //取得所有
+                                if (string.IsNullOrEmpty(cusDic) == false)
+                                {
+                                    SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                                    detailDataResult.detailType = typeof(Viat_app_power_contract_free_prod);
+
+                                    //计算表体和实体的值
+                                    List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, cusDic);
+                                    foreach (Dictionary<string, object> entiry in entityDic)
+                                    {
+                                        detailDataResult.detailDelKeys.Add(entiry.GetValue("powercontfreeprod_dbid"));
+                                    }
+                                    saveModel.DetailListData.Add(detailDataResult);
+                                }
+
+                            }
+                        }
+
                     };
 
                 }
@@ -317,7 +413,7 @@ namespace VIAT.Contract.Services
             
             for(int i=0; i<ids.Length; i++)
             {
-                string sSql = "update viat_app_power_contract set state='A' where powercont_dbid='" + ids[i].ToString() + "' and state='Y'";
+                string sSql = "update viat_app_power_contract set state='A',close_date=GETDATE() where powercont_dbid='" + ids[i].ToString() + "' and state='Y'";
                 sSqlLst.Add(sSql);
             }         
            
