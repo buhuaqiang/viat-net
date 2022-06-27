@@ -25,9 +25,4 @@ namespace VIAT.Contract.Services
       get { return AutofacContainerModule.GetService<IView_app_hp_share_tableService>(); } }
     }
 
-   /* public override object GetDetailPage(PageDataOptions pageData)
-    {
-        return base.GetDetailPage(pageData);
-    }*/
-   
 }
