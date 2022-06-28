@@ -26,7 +26,6 @@ namespace VOL.Entity.DomainModels
         [Display(Name = "所屬事業單位,01:PH;03:AH;05:CH;06:NU")]
         [MaxLength(15)]
         [Column(TypeName = "varchar(15)")]
-        [Editable(true)]
         public string division { get; set; }
 
         /*/// <summary>
@@ -43,8 +42,6 @@ namespace VOL.Entity.DomainModels
         /// </summary>
         [Display(Name = "HP合約表主鍵")]
         [Column(TypeName = "uniqueidentifier")]
-        [Required(AllowEmptyStrings = false)]
-        [Editable(true)]
         public Guid hpcont_dbid { get; set; }
 /*
         /// <summary>
@@ -62,29 +59,25 @@ namespace VOL.Entity.DomainModels
         /// </summary>
         [Key]
         [Display(Name = "主鍵")]
-        [Column(TypeName = "uniqueidentifier")]
-        [Required(AllowEmptyStrings = false)]
+        [Column(TypeName = "uniqueidentifier")]  
         public Guid hpcontfreeprod_dbid { get; set; }
 
         /// <summary>
         ///產品表PKID,舊版ITEM_CODE
         /// </summary> 
         [Column(TypeName = "uniqueidentifier")]
-        [Required(AllowEmptyStrings = false)]
         public Guid prod_dbid { get; set; }
 
         /// <summary>
         ///產品ID
         /// </summary> 
         [Column(TypeName = "prod_id")]
-        [Required(AllowEmptyStrings = false)]
         public string prod_id { get; set; }
 
         /// <summary>
         ///公司別,舊版SUN_DB
         /// </summary> 
         [Column(TypeName = "entity")]
-        [Required(AllowEmptyStrings = false)]
         public string entity { get; set; }
 
         /// <summary>

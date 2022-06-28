@@ -119,9 +119,8 @@ namespace VOL.Entity.DomainModels
         ///Status
         /// </summary>
         [Display(Name ="Status")]
-       [Column(TypeName="bit")]
-       [Editable(true)]
-       public bool? status { get; set; }
+       [Column(TypeName= "varchar(50)")]
+       public string status { get; set; }
 
        /// <summary>
        ///Update Date
