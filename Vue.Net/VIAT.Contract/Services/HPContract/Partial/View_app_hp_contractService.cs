@@ -69,21 +69,34 @@ namespace VIAT.Contract.Services
         //新增
         public override WebResponseContent Add(SaveModel saveModel)
         {
-            string contractNo = getContractNo();
-            Guid cust_dbid = Guid.NewGuid();
-            saveModel.MainData["contract_no"] = contractNo;
-
+      
             /*
              * 如果表头是Isgroup,则把组内的用户，同时增加到viat_app_hp_contract_cust表中
              *思路：根据pricegroup_dbid关联出用户，根据信息生成cust类，用框架表头表体事务插入
              */
             AddOnExecute = (saveModel) => {
+
                 //指定操作类型为新增
                 saveModel.mainOptionType = SaveModel.MainOptionType.add;
                 //如果是视图，则要替换maindata
                 saveModel.MainFacType = typeof(Viat_app_hp_contract);
 
-                if (saveModel.MainData.GetValue("isgroup")?.ToString() == "1")
+                //新增保存时，给合约号赋值
+                string code = getContractNo();
+                saveModel.MainData["contract_no"] = code;
+
+                //isgroup与iscust二选择一
+                if (saveModel.MainData.GetValue("costomer_type")?.ToString() == "0")
+                {
+                    saveModel.MainData["cust_dbid"] = "";
+                }
+                else if (saveModel.MainData.GetValue("costomer_type")?.ToString() == "1")
+                {
+                    saveModel.MainData["pricegroup_dbid"] = "";
+                }
+        
+
+                if (saveModel.MainData.GetValue("costomer_type")?.ToString() == "0")
                 {
                     //isgroup为1时，则pricegroup
                     string sPriceGroupDBID = saveModel.MainData.GetValue("pricegroup_dbid")?.ToString();
@@ -102,7 +115,12 @@ namespace VIAT.Contract.Services
                         dic.Add("cust_dbid", cust.cust_dbid);
                         dicLst.Add(dic);
                     }
-                    
+                    Dictionary<string, object> dic1 = new Dictionary<string, object>();
+                    dic1.Add("cust_dbid", "D7F97B6A-2A13-4463-8EE5-9156988D9CBA");
+                    dicLst.Add(dic1);
+                    Dictionary<string, object> dic2 = new Dictionary<string, object>();
+                    dic2.Add("cust_dbid", "4BBEBDE6-39A3-4497-8CA0-07A4AAE64954");
+                    dicLst.Add(dic2);
                     detailDataResult.DetailData = dicLst;
 
                     saveModel.DetailListData.Add(detailDataResult);
@@ -182,7 +200,56 @@ namespace VIAT.Contract.Services
 
                             }
                         }
-  
+                        //删除操作
+                        else if (dicTmp["key"]?.ToString() == "delTable1RowData")
+                        {
+                            //合約贈送產品List      
+
+                            //合約客戶List
+                            string cusDic = dicTmp["value"]?.ToString();
+                            //取得所有
+                            if (string.IsNullOrEmpty(cusDic) == false)
+                            {
+
+                                SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                                detailDataResult.detailType = typeof(Viat_app_hp_contract_cust);
+
+                                //计算表体和实体的值
+                                List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, cusDic);
+                                foreach (Dictionary<string, object> entiry in entityDic)
+                                {
+                                    detailDataResult.detailDelKeys.Add(entiry.GetValue("hpcontcust_dbid"));
+                                }
+
+                                saveModel.DetailListData.Add(detailDataResult);
+                            }
+
+                        }
+                        else if (dicTmp["key"]?.ToString() == "delTable2RowData")
+                        {
+                            //合約贈送產品List      
+                            if (dicTmp["key"]?.ToString() == "delTable2RowData")
+                            {
+                                //合約客戶List
+                                string cusDic = dicTmp["value"]?.ToString();
+                                //取得所有
+                                if (string.IsNullOrEmpty(cusDic) == false)
+                                {
+                                    SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+                                    detailDataResult.detailType = typeof(Viat_app_hp_contract_free_prod);
+
+                                    //计算表体和实体的值
+                                    List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, cusDic);
+                                    foreach (Dictionary<string, object> entiry in entityDic)
+                                    {
+                                        detailDataResult.detailDelKeys.Add(entiry.GetValue("hpcontfreeprod_dbid"));
+                                    }
+                                    saveModel.DetailListData.Add(detailDataResult);
+                                }
+
+                            }
+                        }
+
                     };
 
                 }
