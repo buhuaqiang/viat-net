@@ -33,6 +33,15 @@ namespace VIAT.Price.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
+        //查詢當前價格群組商品(需要重新寫sql)
+        [ApiActionPermission]
+        [HttpPost, Route("getPriceGroupProducts")]
+        public ActionResult getPriceGroupProducts([FromBody] PageDataOptions loadData)
+        {
+            return base.GetPageData(loadData);
+        }
+
+
         [ApiActionPermission("View_cust_price", VOL.Core.Enums.ActionPermissionOptions.ProductDetach)]
         [HttpPost, Route("detachProductFromGroup")]
         public ActionResult detachProductFromGroup([FromBody] Guid[] keys)
@@ -41,7 +50,14 @@ namespace VIAT.Price.Controllers
             return Json(_baseWebResponseContent);
         }
 
-        
+        [ApiActionPermission("View_cust_price", VOL.Core.Enums.ActionPermissionOptions.detachAll)]
+        [HttpPost, Route("detachAll")]
+        public ActionResult detachAll([FromBody] SaveModel saveModel)
+        {
+
+            return Json(_baseWebResponseContent);
+        }
+
         [ApiActionPermission]
         [HttpPost, Route("GetPopPageData")]
         public  ActionResult GetPopPageData([FromBody] PageDataOptions loadData)
@@ -56,5 +72,22 @@ namespace VIAT.Price.Controllers
         {
             return Json(_baseWebResponseContent);
         }
+
+        
+        [ApiActionPermission]
+        [HttpPost, Route("excuteCustomerJoinGroup")]
+        public ActionResult excuteCustomerJoinGroup([FromBody] SaveModel saveModel)
+        {
+            return Json(_baseWebResponseContent);
+        }
+
+        [ApiActionPermission]
+        [HttpPost, Route("excuteCustomerDetachGroup")]
+        public ActionResult excuteCustomerDetachGroup([FromBody] SaveModel saveModel)
+        {
+            return Json(_baseWebResponseContent);
+        }
+
+        
     }
     }

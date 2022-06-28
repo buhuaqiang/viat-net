@@ -47,7 +47,6 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="source_type")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
        public string source_type { get; set; }
 
        /// <summary>
@@ -56,7 +55,6 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="Group ID")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
-       [Required(AllowEmptyStrings=false)]
        public string group_id { get; set; }
 
        /// <summary>
@@ -100,7 +98,6 @@ namespace VOL.Entity.DomainModels
        [MaxLength(66)]
        [Column(TypeName="varchar(66)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string prod_dbidname { get; set; }
 
        /// <summary>
@@ -139,8 +136,8 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="Gross Price")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
-       [Required(AllowEmptyStrings=false)]
-       public decimal gross_price { get; set; }
+       [Editable(true)]
+       public decimal? gross_price { get; set; }
 
        /// <summary>
        ///Min Qty
@@ -231,7 +228,6 @@ namespace VOL.Entity.DomainModels
        [Display(Name ="Products")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
        public string prods { get; set; }
 
        /// <summary>

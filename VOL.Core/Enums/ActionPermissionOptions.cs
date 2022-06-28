@@ -15,6 +15,7 @@ namespace VOL.Core.Enums
         Upload,//上传文件
         Import, //导入表数据Excel
         ProductDetach, //產品脫離價格群組
+        detachAll,//根據條件脫離所有符合條件的商品
         Invalid //
     }
 }

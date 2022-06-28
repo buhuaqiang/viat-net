@@ -137,7 +137,6 @@ namespace VOL.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string is_used { get; set; }
 
        /// <summary>
