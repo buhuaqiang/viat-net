@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Price.IRepositories;
 using VIAT.Price.IServices;
+using System.Collections.Generic;
 
 namespace VIAT.Price.Services
 {
@@ -65,5 +66,24 @@ namespace VIAT.Price.Services
         {
             return null;
         }
+
+        public override WebResponseContent DownLoadTemplate()
+        {
+            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price,x.net_price,x.min_qty,x.start_date,x.end_date,x.remarks };
+            return base.DownLoadTemplate();
+        }
+
+        public override WebResponseContent Import(List<IFormFile> files)
+        {
+            //如果下載模板指定了DownLoadTemplate,則在Import方法必須也要指定,並且字段要和下載模板裡指定的一致
+            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price, x.net_price, x.min_qty, x.start_date, x.end_date, x.remarks };
+            return base.Import(files);
+        }
+
+        /*public override WebResponseContent Export(PageDataOptions pageData)
+        {
+            ExportColumns = x => new {  };
+            return base.Export(pageData);
+        }*/
     }
 }

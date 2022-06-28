@@ -41,6 +41,13 @@ namespace VIAT.Price.Controllers
             return base.GetPageData(loadData);
         }
 
+        //copy price list頁面查詢方法
+        [ApiActionPermission]
+        [HttpPost, Route("getOrginalDataFromCustOrGroup")]
+        public ActionResult getOrginalDataFromCustOrGroup([FromBody] PageDataOptions loadData)
+        {
+            return base.GetPageData(loadData);
+        }
 
         [ApiActionPermission("View_cust_price", VOL.Core.Enums.ActionPermissionOptions.ProductDetach)]
         [HttpPost, Route("detachProductFromGroup")]
@@ -88,6 +95,12 @@ namespace VIAT.Price.Controllers
             return Json(_baseWebResponseContent);
         }
 
-        
+
+        [ApiActionPermission]
+        [HttpPost, Route("copyPriceList")]
+        public ActionResult copyPriceList([FromBody] SaveModel saveModel)
+        {
+            return Json(_baseWebResponseContent);
+        }
     }
     }
