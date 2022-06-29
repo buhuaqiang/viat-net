@@ -60,7 +60,7 @@ namespace VIAT.Contract.Services
                     {
                         if(sp.Name.ToLower() == "powercont_dbid".ToLower())
                         {
-                            sPowerContDbid = sp.Value;
+                            sPowerContDbid = sp.Value??System.Guid.NewGuid().ToString()??sp.Value;
                             continue;
                         }
                     }

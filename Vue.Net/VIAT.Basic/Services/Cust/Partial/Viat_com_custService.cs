@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
 using System;
+using System.Collections.Generic;
 
 namespace VIAT.Basic.Services
 {
@@ -72,6 +73,21 @@ namespace VIAT.Basic.Services
         public Viat_com_cust getCustByCustID(string sCustID)
         {
             return   repository.FindAsIQueryable(x => x.cust_id == sCustID).FirstOrDefault();
+        }
+
+
+        /// <summary>
+        /// 根据pricegroupid获取cust全部信息
+        /// </summary>
+        /// <param name="sPriceGroupDBID"></param>
+        /// <returns></returns>
+
+        public List<Viat_com_cust> GetCustListByPriceGroupDBID(string sPriceGroupDBID)
+        {
+            string sSql = @"select distinct b.* from viat_app_cust_group  a left join viat_com_cust b on a.cust_dbid=b.cust_dbid 
+                            where a.pricegroup_dbid=@pricegroup_dbid";
+
+            return repository.DapperContext.QueryList<Viat_com_cust>(sSql, new { pricegroup_dbid = sPriceGroupDBID });
         }
     }
 }

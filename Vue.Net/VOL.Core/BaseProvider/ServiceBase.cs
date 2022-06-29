@@ -500,14 +500,27 @@ namespace VOL.Core.BaseProvider
                 || saveDataModel.MainData.Count == 0)
                 return Response.Set(ResponseType.ParametersLack, false);
 
-            saveDataModel.DetailData = saveDataModel.DetailData?.Where(x => x.Count > 0).ToList();
+
             Type type = typeof(T);
             #region 表头真实类型处理
             if (type.Name.ToLower() != type.GetEntityTableName().ToLower() && saveDataModel.MainFacType != null)
             {
                 type = saveDataModel.MainFacType;
             }
-            #endregion           
+            #endregion  
+            #region 多表体委托处理,
+            if (UpdateMoreDetails != null)
+            {
+                Response = UpdateMoreDetails(saveDataModel);
+                if (CheckResponseResult()) return Response;
+
+              
+            }
+            #endregion
+
+
+            saveDataModel.DetailData = saveDataModel.DetailData?.Where(x => x.Count > 0).ToList();
+                   
             string validReslut = type.ValidateDicInEntity(saveDataModel.MainData, true, UserIgnoreFields);
 
             if (!string.IsNullOrEmpty(validReslut)) return Response.Error(validReslut);

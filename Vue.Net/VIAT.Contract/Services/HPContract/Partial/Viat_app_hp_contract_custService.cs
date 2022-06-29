@@ -60,7 +60,7 @@ namespace VIAT.Contract.Services
                     {
                         if(sp.Name.ToLower() == "hpcont_dbid".ToLower())
                         {
-                            shpContDbid = sp.Value;
+                            shpContDbid = sp.Value ?? System.Guid.NewGuid().ToString() ?? sp.Value;
                             continue;
                         }
                     }
