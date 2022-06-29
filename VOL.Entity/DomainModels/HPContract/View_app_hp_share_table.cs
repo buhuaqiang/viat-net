@@ -119,8 +119,10 @@ namespace VOL.Entity.DomainModels
         ///Status
         /// </summary>
         [Display(Name ="Status")]
-       [Column(TypeName= "varchar(50)")]
-       public string status { get; set; }
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        [Editable(true)]
+        public string status { get; set; }
 
        /// <summary>
        ///Update Date
