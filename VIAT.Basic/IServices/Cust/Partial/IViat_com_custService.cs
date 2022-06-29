@@ -5,10 +5,14 @@ using VOL.Core.BaseProvider;
 using VOL.Entity.DomainModels;
 using VOL.Core.Utilities;
 using System.Linq.Expressions;
+using System.Collections.Generic;
+
 namespace VIAT.Basic.IServices
 {
     public partial interface IViat_com_custService
     {
         Viat_com_cust getCustByCustID(string sCustID);
+
+        List<Viat_com_cust> GetCustListByPriceGroupDBID(string sPriceGroupDBID);
     }
  }
