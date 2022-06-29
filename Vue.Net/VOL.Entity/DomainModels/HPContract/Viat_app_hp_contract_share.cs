@@ -79,8 +79,9 @@ namespace VOL.Entity.DomainModels
        ///是否有效,Y:生效/N:未生效or期滿
        /// </summary>
        [Display(Name ="是否有效,Y:生效/N:未生效or期滿")]
-       [Column(TypeName="bit")]
-       [Editable(true)]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        [Editable(true)]
        public bool? status { get; set; }
 
        /// <summary>
