@@ -36,5 +36,11 @@ namespace VIAT.Basic.Controllers
         {
             return Json(_service.getCustByCustID(cust_id));
         }
+
+        [HttpGet, Route("GetCustListByPriceGroupDBID")]
+        public List<Viat_com_cust> GetCustListByPriceGroupDBID(string sPriceGroupDBID)
+        {
+            return _service.GetCustListByPriceGroupDBID(sPriceGroupDBID);
+        }
     }
 }
