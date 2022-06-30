@@ -107,31 +107,25 @@ namespace VIAT.Contract.Services
             //导入保存前处理(可以对list设置新的值)
             ImportOnExecuting = (List<View_app_hp_share_table> list) =>
             {
-                /* list.ForEach(item =>
-                 {
-                     Guid hpcontshare_dbid = Guid.NewGuid();
-                     Viat_app_hp_share_table share_table = new Viat_app_hp_share_table()
-                     {
-                         hpcontshare_dbid = hpcontshare_dbid,
-                         hpcont_dbid = item.hpcont_dbid,
-                         prod_dbid = item.prod_dbid,
-                         cust_dbid = item.cust_dbid,
-                         percent = item.percent,
-                         status = item.status,
-                     };
+                List<Viat_app_hp_contract_share> facList = new List<Viat_app_hp_contract_share>();
+                list.ForEach(item =>
+                {
+                    Viat_app_hp_contract_share facEntity = new Viat_app_hp_contract_share();
+                    item.hpcontshare_dbid = Guid.NewGuid();                  
+                    item.MapValueToEntity(facEntity);
+                    facList.Add(facEntity);
+                });
 
-                     _viat_app_hp_contract_shareService.Add(share_table);
-                 });
-                */
-
-                return webResponse.OK();
+                base.repository.AddRange(facList,true);
+                webResponse.Code = "-1";
+                return webResponse.OK("文件上传成功");
             };
 
-            //导入后处理(已经写入到数据库了)
+         /*   //导入后处理(已经写入到数据库了)
             ImportOnExecuted = (List<View_app_hp_share_table> list) =>
             {
                 return webResponse.OK();
-            };
+            };*/
             return base.Import(files);
         }
 
