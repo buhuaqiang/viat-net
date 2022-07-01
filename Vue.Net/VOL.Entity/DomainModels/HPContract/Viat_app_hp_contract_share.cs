@@ -75,19 +75,19 @@ namespace VOL.Entity.DomainModels
        [Editable(true)]
        public decimal? percent { get; set; }
 
-       /// <summary>
-       ///是否有效,Y:生效/N:未生效or期滿
-       /// </summary>
-       [Display(Name ="是否有效,Y:生效/N:未生效or期滿")]
+        /// <summary>
+        ///Status
+        /// </summary>
+        [Display(Name = "Status")]
         [MaxLength(1)]
         [Column(TypeName = "varchar(1)")]
         [Editable(true)]
-       public bool? status { get; set; }
+        public string status { get; set; }
 
-       /// <summary>
-       ///LocalAddon Contractno
-       /// </summary>
-       [Display(Name ="LocalAddon Contractno")]
+        /// <summary>
+        ///LocalAddon Contractno
+        /// </summary>
+        [Display(Name ="LocalAddon Contractno")]
        [Column(TypeName="int")]
        [Editable(true)]
        public int? o_contract_no { get; set; }
