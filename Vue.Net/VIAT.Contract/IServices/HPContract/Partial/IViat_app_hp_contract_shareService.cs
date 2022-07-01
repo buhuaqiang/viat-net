@@ -9,5 +9,6 @@ namespace VIAT.Contract.IServices
 {
     public partial interface IViat_app_hp_contract_shareService
     {
+        decimal GetSumPercentByHpcontDBID(string hpcont_dbid);
     }
  }

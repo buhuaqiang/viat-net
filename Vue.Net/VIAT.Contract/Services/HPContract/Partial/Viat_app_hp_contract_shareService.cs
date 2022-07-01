@@ -17,6 +17,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Contract.IRepositories;
+using System.Data;
+using System.Collections.Generic;
 
 namespace VIAT.Contract.Services
 {
@@ -37,5 +39,25 @@ namespace VIAT.Contract.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+
+
+        /// <summary>
+        /// 根据hpcont_dbid取得汇总信息
+        /// </summary>
+        /// <param name="hpcont_dbid"></param>
+        /// <returns></returns>
+        public decimal GetSumPercentByHpcontDBID(string hpcont_dbid)
+        {
+            string sSql = "select sum([percent]) as sum_percent from viat_app_hp_contract_share sum_share  where hpcont_dbid='" + hpcont_dbid + "'";
+           
+            object obj = _repository.DapperContext.ExecuteScalar(sSql, null);
+           
+            if (obj == null)
+            {
+                return 0;
+            }
+
+            return (decimal)obj;
+        }
+    }
 }

@@ -29,5 +29,11 @@ namespace VIAT.Contract.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        [HttpPost, Route("GetSumPercentByHpcontDBID")]
+        public decimal  GetSumPercentByHpcontDBID(string hpcont_dbid)
+        {
+            return _service.GetSumPercentByHpcontDBID(hpcont_dbid);
+        }
     }
 }
