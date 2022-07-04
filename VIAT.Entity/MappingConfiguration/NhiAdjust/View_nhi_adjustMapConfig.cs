@@ -1,8 +1,8 @@
-using VOL.Entity.MappingConfiguration;
-using VOL.Entity.DomainModels;
+using VIAT.Entity.MappingConfiguration;
+using VIAT.Entity.DomainModels;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace VOL.Entity.MappingConfiguration
+namespace VIAT.Entity.MappingConfiguration
 {
     public class View_nhi_adjustMapConfig : EntityMappingConfiguration<View_nhi_adjust>
     {

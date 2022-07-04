@@ -9,9 +9,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VOL.Entity.SystemModels;
+using VIAT.Entity.SystemModels;
 
-namespace VOL.Entity.DomainModels
+namespace VIAT.Entity.DomainModels
 {
     [Entity(TableCnName = "健保價調整主表二",TableName = "Viat_app_nhi_adjust")]
     public partial class Viat_app_nhi_adjust:BaseEntity
@@ -49,34 +49,38 @@ namespace VOL.Entity.DomainModels
        public Guid? nhiadjustm_dbid { get; set; }
 
        /// <summary>
-       ///產品代碼,舊版ITEM_CODE
+       ///Product
        /// </summary>
-       [Display(Name ="產品代碼,舊版ITEM_CODE")]
+       [Display(Name ="Product")]
        [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
        public Guid? prod_dbid { get; set; }
 
        /// <summary>
-       ///舊健保價(單顆)
+       ///Old NHI Price
        /// </summary>
-       [Display(Name ="舊健保價(單顆)")]
+       [Display(Name ="Old NHI Price")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
+       [Editable(true)]
        public decimal? old_nhi_price { get; set; }
 
        /// <summary>
-       ///新健保價(單顆)
+       ///New NHI Price
        /// </summary>
-       [Display(Name ="新健保價(單顆)")]
+       [Display(Name ="New NHI Price")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
+       [Editable(true)]
        public decimal? new_nhi_price { get; set; }
 
        /// <summary>
-       ///產品健保代碼,舊版ANAL_I4
+       ///NHI Code
        /// </summary>
-       [Display(Name ="產品健保代碼,舊版ANAL_I4")]
+       [Display(Name ="NHI Code")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
+       [Editable(true)]
        public string nhi_id { get; set; }
 
        /// <summary>

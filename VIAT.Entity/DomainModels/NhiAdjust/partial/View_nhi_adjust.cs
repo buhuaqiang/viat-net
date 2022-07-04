@@ -9,9 +9,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VOL.Entity.SystemModels;
+using VIAT.Entity.SystemModels;
 
-namespace VOL.Entity.DomainModels
+namespace VIAT.Entity.DomainModels
 {
     
     public partial class View_nhi_adjust
