@@ -1,9 +1,9 @@
-﻿using VOL.Core.BaseProvider;
-using VOL.Core.Extensions.AutofacManager;
-using VOL.Entity.DomainModels;
+﻿using VIAT.Core.BaseProvider;
+using VIAT.Core.Extensions.AutofacManager;
+using VIAT.Entity.DomainModels;
 using System.Linq;
-using VOL.Core.Extensions;
-namespace VOL.AppManager.Services
+using VIAT.Core.Extensions;
+namespace VIAT.AppManager.Services
 {
     public partial class App_TransactionService
     {

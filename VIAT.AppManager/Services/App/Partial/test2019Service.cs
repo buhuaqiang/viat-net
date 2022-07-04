@@ -6,12 +6,12 @@
 *用户信息、权限、角色等使用UserContext.Current操作
 *test2019Service对增、删、改查、导入、导出、审核业务代码扩展参照ServiceFunFilter
 */
-using VOL.Core.BaseProvider;
-using VOL.Core.Extensions.AutofacManager;
-using VOL.Entity.DomainModels;
+using VIAT.Core.BaseProvider;
+using VIAT.Core.Extensions.AutofacManager;
+using VIAT.Entity.DomainModels;
 using System.Linq;
-using VOL.Core.Extensions;
-namespace VOL.AppManager.Services
+using VIAT.Core.Extensions;
+namespace VIAT.AppManager.Services
 {
     public partial class test2019Service
     {

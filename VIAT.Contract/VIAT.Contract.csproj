@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -6,8 +6,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\VIAT.Basic\VIAT.Basic.csproj" />
-    <ProjectReference Include="..\VOL.Core\VOL.Core.csproj" />
-    <ProjectReference Include="..\VOL.Entity\VOL.Entity.csproj" />
+    <ProjectReference Include="..\VIAT.Core\VIAT.Core.csproj" />
+    <ProjectReference Include="..\VIAT.Entity\VIAT.Entity.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,10 +3,10 @@
  *Repository提供数据库操作，如果要增加数据库操作请在当前目录下Partial文件夹Viat_com_zip_cityRepository编写代码
  */
 using VIAT.Basic.IRepositories;
-using VOL.Core.BaseProvider;
-using VOL.Core.EFDbContext;
-using VOL.Core.Extensions.AutofacManager;
-using VOL.Entity.DomainModels;
+using VIAT.Core.BaseProvider;
+using VIAT.Core.EFDbContext;
+using VIAT.Core.Extensions.AutofacManager;
+using VIAT.Entity.DomainModels;
 
 namespace VIAT.Basic.Repositories
 {

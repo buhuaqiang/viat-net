@@ -2,10 +2,10 @@
 *所有关于App_News类的业务代码接口应在此处编写
 */
 using System.Threading.Tasks;
-using VOL.Core.Utilities;
-using VOL.Entity.DomainModels;
+using VIAT.Core.Utilities;
+using VIAT.Entity.DomainModels;
 
-namespace VOL.AppManager.IServices
+namespace VIAT.AppManager.IServices
 {
     public partial interface IApp_NewsService
     {

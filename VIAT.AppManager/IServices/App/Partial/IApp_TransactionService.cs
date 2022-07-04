@@ -1,7 +1,7 @@
-﻿using VOL.Core.BaseProvider;
-using VOL.Entity.DomainModels;
+﻿using VIAT.Core.BaseProvider;
+using VIAT.Entity.DomainModels;
 
-namespace VOL.AppManager.IServices
+namespace VIAT.AppManager.IServices
 {
     public partial interface IApp_TransactionService
     {

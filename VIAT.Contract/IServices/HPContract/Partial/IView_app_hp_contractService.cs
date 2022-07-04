@@ -1,9 +1,9 @@
 /*
 *所有关于View_app_hp_contract类的业务代码接口应在此处编写
 */
-using VOL.Core.BaseProvider;
-using VOL.Entity.DomainModels;
-using VOL.Core.Utilities;
+using VIAT.Core.BaseProvider;
+using VIAT.Entity.DomainModels;
+using VIAT.Core.Utilities;
 using System.Linq.Expressions;
 namespace VIAT.Contract.IServices
 {

@@ -6,9 +6,9 @@
  */
 using VIAT.Price.IRepositories;
 using VIAT.Price.IServices;
-using VOL.Core.BaseProvider;
-using VOL.Core.Extensions.AutofacManager;
-using VOL.Entity.DomainModels;
+using VIAT.Core.BaseProvider;
+using VIAT.Core.Extensions.AutofacManager;
+using VIAT.Entity.DomainModels;
 
 namespace VIAT.Price.Services
 {

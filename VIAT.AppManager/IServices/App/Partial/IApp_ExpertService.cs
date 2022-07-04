@@ -1,9 +1,9 @@
-﻿using VOL.Core.BaseProvider;
-using VOL.Core.Utilities;
-using VOL.Entity.DomainModels;
+﻿using VIAT.Core.BaseProvider;
+using VIAT.Core.Utilities;
+using VIAT.Entity.DomainModels;
 using System.Threading.Tasks;
 
-namespace VOL.AppManager.IServices
+namespace VIAT.AppManager.IServices
 {
     public partial interface IApp_ExpertService
     {

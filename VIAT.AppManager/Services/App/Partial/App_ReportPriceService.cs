@@ -6,23 +6,23 @@
 *用户信息、权限、角色等使用UserContext.Current操作
 *App_ReportPriceService对增、删、改查、导入、导出、审核业务代码扩展参照ServiceFunFilter
 */
-using VOL.Core.BaseProvider;
-using VOL.Core.Extensions.AutofacManager;
-using VOL.Entity.DomainModels;
+using VIAT.Core.BaseProvider;
+using VIAT.Core.Extensions.AutofacManager;
+using VIAT.Entity.DomainModels;
 using System.Linq;
-using VOL.Core.Extensions;
-using VOL.Core.Utilities;
+using VIAT.Core.Extensions;
+using VIAT.Core.Utilities;
 using System.Threading.Tasks;
-using VOL.AppManager.Repositories;
+using VIAT.AppManager.Repositories;
 using System.Collections.Generic;
-using VOL.Core.Enums;
+using VIAT.Core.Enums;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using VOL.AppManager.IRepositories;
+using VIAT.AppManager.IRepositories;
 
-namespace VOL.AppManager.Services
+namespace VIAT.AppManager.Services
 {
     public partial class App_ReportPriceService
     {
