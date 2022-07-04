@@ -3,10 +3,10 @@
  *Repository提供数据库操作，如果要增加数据库操作请在当前目录下Partial文件夹Viat_app_nhi_adjust_mRepository编写代码
  */
 using VIAT.DataEntry.IRepositories;
-using VOL.Core.BaseProvider;
-using VOL.Core.EFDbContext;
-using VOL.Core.Extensions.AutofacManager;
-using VOL.Entity.DomainModels;
+using VIAT.Core.BaseProvider;
+using VIAT.Core.EFDbContext;
+using VIAT.Core.Extensions.AutofacManager;
+using VIAT.Entity.DomainModels;
 
 namespace VIAT.DataEntry.Repositories
 {

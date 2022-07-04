@@ -9,49 +9,43 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VOL.Entity.SystemModels;
+using VIAT.Entity.SystemModels;
 
-namespace VOL.Entity.DomainModels
+namespace VIAT.Entity.DomainModels
 {
     [Entity(TableCnName = "健保價調整",TableName = "View_nhi_adjust")]
     public partial class View_nhi_adjust:BaseEntity
     {
         /// <summary>
-       ///
+       ///Batch No
        /// </summary>
        [Key]
-       [Display(Name ="nhiadjustm_dbid")]
+       [Display(Name ="Batch No")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
        public Guid nhiadjustm_dbid { get; set; }
 
        /// <summary>
-       ///
+       ///Batch No
        /// </summary>
-       [Display(Name ="dbid")]
+       [Display(Name ="Batch No")]
        [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="nhi_batch")]
-       [Column(TypeName="int")]
+       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public int nhi_batch { get; set; }
 
        /// <summary>
-       ///
+       ///Base Date
        /// </summary>
-       [Display(Name ="start_date")]
+       [Display(Name ="Base Date")]
        [Column(TypeName="datetime")]
+       [Editable(true)]
        public DateTime? start_date { get; set; }
 
        /// <summary>
-       ///
+       ///Status
        /// </summary>
-       [Display(Name ="status")]
+       [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        public string status { get; set; }
@@ -65,11 +59,12 @@ namespace VOL.Entity.DomainModels
        public string apply_allw { get; set; }
 
        /// <summary>
-       ///
+       ///Note
        /// </summary>
-       [Display(Name ="remarks")]
+       [Display(Name ="Note")]
        [MaxLength(256)]
        [Column(TypeName="nvarchar(256)")]
+       [Editable(true)]
        public string remarks { get; set; }
 
        /// <summary>
@@ -154,11 +149,21 @@ namespace VOL.Entity.DomainModels
        public Guid? prod_dbid { get; set; }
 
        /// <summary>
+       ///Product
+       /// </summary>
+       [Display(Name ="Product")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       [Required(AllowEmptyStrings=false)]
+       public string prod_id { get; set; }
+
+       /// <summary>
        ///
        /// </summary>
-       [Display(Name ="prod_dbidname")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? prod_dbidname { get; set; }
+       [Display(Name ="prod_ename")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string prod_ename { get; set; }
 
        
     }

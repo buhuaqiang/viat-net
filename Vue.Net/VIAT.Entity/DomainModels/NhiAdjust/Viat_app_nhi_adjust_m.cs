@@ -9,9 +9,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VOL.Entity.SystemModels;
+using VIAT.Entity.SystemModels;
 
-namespace VOL.Entity.DomainModels
+namespace VIAT.Entity.DomainModels
 {
     [Entity(TableCnName = "健保價調整主表一",TableName = "Viat_app_nhi_adjust_m")]
     public partial class Viat_app_nhi_adjust_m:BaseEntity
@@ -26,26 +26,20 @@ namespace VOL.Entity.DomainModels
        public Guid nhiadjustm_dbid { get; set; }
 
        /// <summary>
-       ///識別碼, PK, Identity
+       ///Batch No
        /// </summary>
-       [Display(Name ="識別碼, PK, Identity")]
+       [Display(Name ="Batch No")]
        [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
-       /// <summary>
-       ///健保調整批次
-       /// </summary>
-       [Display(Name ="健保調整批次")]
-       [Column(TypeName="int")]
+       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public int nhi_batch { get; set; }
 
        /// <summary>
-       ///生效日
+       ///Base Date
        /// </summary>
-       [Display(Name ="生效日")]
+       [Display(Name ="Base Date")]
        [Column(TypeName="datetime")]
+       [Editable(true)]
        public DateTime? start_date { get; set; }
 
        /// <summary>
@@ -65,11 +59,12 @@ namespace VOL.Entity.DomainModels
        public string apply_allw { get; set; }
 
        /// <summary>
-       ///備註
+       ///Note
        /// </summary>
-       [Display(Name ="備註")]
+       [Display(Name ="Note")]
        [MaxLength(256)]
        [Column(TypeName="nvarchar(256)")]
+       [Editable(true)]
        public string remarks { get; set; }
 
        /// <summary>
