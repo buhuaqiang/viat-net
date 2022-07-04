@@ -7,10 +7,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VOL.Core.BaseProvider;
-using VOL.Entity.DomainModels;
-using VOL.Core.Extensions.AutofacManager;
-namespace VOL.AppManager.IRepositories
+using VIAT.Core.BaseProvider;
+using VIAT.Entity.DomainModels;
+using VIAT.Core.Extensions.AutofacManager;
+namespace VIAT.AppManager.IRepositories
 {
     public partial interface Itest2019Repository : IDependency,IRepository<test2019>
     {

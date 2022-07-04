@@ -4,8 +4,8 @@
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using VOL.Core.BaseProvider;
-using VOL.Entity.DomainModels;
+using VIAT.Core.BaseProvider;
+using VIAT.Entity.DomainModels;
 
 namespace VIAT.Contract.IServices
 {

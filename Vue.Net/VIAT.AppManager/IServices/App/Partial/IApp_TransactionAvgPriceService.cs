@@ -1,9 +1,9 @@
 /*
 *所有关于App_TransactionAvgPrice类的业务代码接口应在此处编写
 */
-using VOL.Core.BaseProvider;
-using VOL.Entity.DomainModels;
-namespace VOL.AppManager.IServices
+using VIAT.Core.BaseProvider;
+using VIAT.Entity.DomainModels;
+namespace VIAT.AppManager.IServices
 {
     public partial interface IApp_TransactionAvgPriceService
     {

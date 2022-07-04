@@ -8,12 +8,12 @@
 */
 using System;
 using System.Threading.Tasks;
-using VOL.Core.Extensions;
-using VOL.Core.ManageUser;
-using VOL.Core.Utilities;
-using VOL.Entity.DomainModels;
+using VIAT.Core.Extensions;
+using VIAT.Core.ManageUser;
+using VIAT.Core.Utilities;
+using VIAT.Entity.DomainModels;
 
-namespace VOL.AppManager.Services
+namespace VIAT.AppManager.Services
 {
     public partial class App_NewsService
     {

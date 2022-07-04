@@ -1,10 +1,10 @@
 /*
  *代码由框架生成,任何更改都可能导致被代码生成器覆盖
  */
-using VOL.Core.BaseProvider;
-using VOL.Entity.DomainModels;
+using VIAT.Core.BaseProvider;
+using VIAT.Entity.DomainModels;
 
-namespace VOL.AppManager.IServices
+namespace VIAT.AppManager.IServices
 {
     public partial interface IApp_TransactionAvgPriceService : IService<App_TransactionAvgPrice>
     {

@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VOL.Core.BaseProvider;
-using VOL.Entity.DomainModels;
-using VOL.Core.Extensions.AutofacManager;
+using VIAT.Core.BaseProvider;
+using VIAT.Entity.DomainModels;
+using VIAT.Core.Extensions.AutofacManager;
 namespace VIAT.Price.IRepositories
 {
     public partial interface IView_cust_custgroup_pricegroupRepository : IDependency,IRepository<View_cust_custgroup_pricegroup>

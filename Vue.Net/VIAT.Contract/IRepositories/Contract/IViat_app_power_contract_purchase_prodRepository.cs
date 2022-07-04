@@ -7,9 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using VOL.Core.BaseProvider;
-using VOL.Entity.DomainModels;
-using VOL.Core.Extensions.AutofacManager;
+using VIAT.Core.BaseProvider;
+using VIAT.Entity.DomainModels;
+using VIAT.Core.Extensions.AutofacManager;
 namespace VIAT.Contract.IRepositories
 {
     public partial interface IViat_app_power_contract_purchase_prodRepository : IDependency,IRepository<Viat_app_power_contract_purchase_prod_select>

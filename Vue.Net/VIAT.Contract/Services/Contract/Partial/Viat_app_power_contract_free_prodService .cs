@@ -6,22 +6,22 @@
 *用户信息、权限、角色等使用UserContext.Current操作
 *Viat_app_power_contract_free_prodService对增、删、改查、导入、导出、审核业务代码扩展参照ServiceFunFilter
 */
-using VOL.Core.BaseProvider;
-using VOL.Core.Extensions.AutofacManager;
-using VOL.Entity.DomainModels;
+using VIAT.Core.BaseProvider;
+using VIAT.Core.Extensions.AutofacManager;
+using VIAT.Entity.DomainModels;
 using System.Linq;
-using VOL.Core.Utilities;
+using VIAT.Core.Utilities;
 using System.Linq.Expressions;
-using VOL.Core.Extensions;
+using VIAT.Core.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Contract.IRepositories;
 using Microsoft.AspNetCore.Mvc;
-using VOL.Core.Filters;
+using VIAT.Core.Filters;
 using System.Collections.Generic;
-using VOL.Core.EFDbContext;
-using VOL.Core.DBManager;
+using VIAT.Core.EFDbContext;
+using VIAT.Core.DBManager;
 using Newtonsoft.Json;
  
 namespace VIAT.Contract.Services
