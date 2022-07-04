@@ -102,5 +102,24 @@ namespace VIAT.Price.Controllers
         {
             return Json(_baseWebResponseContent);
         }
+
+
+
+        //新增价格群组商品前检验
+        [ApiActionPermission]
+        [HttpPost, Route("checkCustPriceData")]
+        public ActionResult checkCustPriceData([FromBody] SaveModel saveModel)
+        {
+            return Json(_baseWebResponseContent);
+        }
+
+
+        //批量新增价格群组商品
+        [ApiActionPermission]
+        [HttpPost, Route("bathSaveCustPrice")]
+        public ActionResult bathSaveCustPrice([FromBody] SaveModel saveModel)
+        {
+            return Json(_baseWebResponseContent);
+        }
     }
     }
