@@ -3,8 +3,8 @@
  *如果要增加方法请在当前目录下Partial文件夹View_full_allowance_sharingController编写
  */
 using Microsoft.AspNetCore.Mvc;
-using VOL.Core.Controllers.Basic;
-using VOL.Entity.AttributeManager;
+using VIAT.Core.Controllers.Basic;
+using VIAT.Entity.AttributeManager;
 using VIAT.DataEntry.IServices;
 namespace VIAT.DataEntry.Controllers
 {
