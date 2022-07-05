@@ -20,7 +20,16 @@ namespace VIAT.Price.Controllers
         {
         }
 
-        
+        [HttpPost, Route("GetPageData")]
+        [ApiActionPermission()]
+        public override ActionResult GetPageData([FromBody] PageDataOptions loadData)
+        {
+            //处理Prods
+
+            _service.setQueryParameters();
+            return base.GetPageData(loadData);
+        }
+
     }
 }
 

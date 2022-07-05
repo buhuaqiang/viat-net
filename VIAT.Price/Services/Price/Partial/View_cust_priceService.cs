@@ -45,6 +45,34 @@ namespace VIAT.Price.Services
             _cust_priceService = cust_priceService;
         }
 
+        /// <summary>
+        /// 查询条件：产品可以多选查询，把查询列表中的prods换成prod_dbid
+        /// </summary>
+        /// <param name="options"></param>
+        public void setQueryParameters()
+        {
+            QueryRelativeList = (searchParametersList) =>
+            {
+                foreach (SearchParameters item in searchParametersList)
+                {
+                    if (item.Name == "prods")
+                    {
+                        //替换成prod_id 
+                        //先移除再添加
+                        searchParametersList.Remove(item);
+
+                        SearchParameters paraTmp = new SearchParameters();
+                        paraTmp.Name = "prod_dbid";
+                        paraTmp.Value = item.Value;
+                        paraTmp.DisplayType = item.DisplayType;
+                        searchParametersList.Add(paraTmp);
+
+                        break;
+                    }
+                }
+            };
+        }
+
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
             //
