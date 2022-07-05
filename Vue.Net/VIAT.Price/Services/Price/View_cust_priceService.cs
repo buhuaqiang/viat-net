@@ -9,6 +9,7 @@ using VIAT.Price.IServices;
 using VIAT.Core.BaseProvider;
 using VIAT.Core.Extensions.AutofacManager;
 using VIAT.Entity.DomainModels;
+using System.Collections.Generic;
 
 namespace VIAT.Price.Services
 {
@@ -24,4 +25,7 @@ namespace VIAT.Price.Services
     {
       get { return AutofacContainerModule.GetService<IView_cust_priceService>(); } }
     }
+
+
+    
  }
