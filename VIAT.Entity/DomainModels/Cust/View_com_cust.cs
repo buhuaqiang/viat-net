@@ -14,13 +14,13 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "客戶基本信息視圖",TableName = "View_com_cust",DetailTable =  new Type[] { typeof(View_com_cust_delivery)},DetailTableCnName = "客戶送貨資訊")]
+    [Entity(TableCnName = "客戶基本信息",TableName = "View_com_cust",DetailTable =  new Type[] { typeof(View_com_cust_delivery)},DetailTableCnName = "客戶送貨資訊")]
     public partial class View_com_cust:BaseEntity
     {
         /// <summary>
-       ///列名cust_id
+       ///Customer  Code
        /// </summary>
-       [Display(Name ="列名cust_id")]
+       [Display(Name ="Customer  Code")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
@@ -28,27 +28,27 @@ namespace VIAT.Entity.DomainModels
        public string cust_id { get; set; }
 
        /// <summary>
-       ///列名entity
+       ///Entity
        /// </summary>
-       [Display(Name ="列名entity")]
+       [Display(Name ="Entity")]
        [MaxLength(3)]
        [JsonIgnore]
        [Column(TypeName="varchar(3)")]
        public string entity { get; set; }
 
        /// <summary>
-       ///列名division
+       ///Division
        /// </summary>
-       [Display(Name ="列名division")]
+       [Display(Name ="Division")]
        [MaxLength(15)]
        [JsonIgnore]
        [Column(TypeName="varchar(15)")]
        public string division { get; set; }
 
        /// <summary>
-       ///列名cust_name
+       ///Customer name
        /// </summary>
-       [Display(Name ="列名cust_name")]
+       [Display(Name ="Customer name")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
@@ -56,9 +56,9 @@ namespace VIAT.Entity.DomainModels
        public string cust_name { get; set; }
 
        /// <summary>
-       ///列名territory_id
+       ///Default Zone
        /// </summary>
-       [Display(Name ="列名territory_id")]
+       [Display(Name ="Default Zone")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
@@ -66,9 +66,9 @@ namespace VIAT.Entity.DomainModels
        public string territory_id { get; set; }
 
        /// <summary>
-       ///列名invoice_name
+       ///Invoice name
        /// </summary>
-       [Display(Name ="列名invoice_name")]
+       [Display(Name ="Invoice name")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
@@ -76,9 +76,19 @@ namespace VIAT.Entity.DomainModels
        public string invoice_name { get; set; }
 
        /// <summary>
-       ///列名invoice_address
+       ///Customer Zip Code
        /// </summary>
-       [Display(Name ="列名invoice_address")]
+       [Display(Name ="Customer Zip Code")]
+       [MaxLength(5)]
+       [Column(TypeName="varchar(5)")]
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public string cust_zip_id { get; set; }
+
+       /// <summary>
+       ///Invoice address
+       /// </summary>
+       [Display(Name ="Invoice address")]
        [MaxLength(200)]
        [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
@@ -86,9 +96,9 @@ namespace VIAT.Entity.DomainModels
        public string invoice_address { get; set; }
 
        /// <summary>
-       ///列名owner
+       ///Owner
        /// </summary>
-       [Display(Name ="列名owner")]
+       [Display(Name ="Owner")]
        [MaxLength(100)]
        [Column(TypeName="varchar(100)")]
        [Editable(true)]
@@ -96,45 +106,45 @@ namespace VIAT.Entity.DomainModels
        public string owner { get; set; }
 
        /// <summary>
-       ///列名tax_id
+       ///Tax ID
        /// </summary>
-       [Display(Name ="列名tax_id")]
+       [Display(Name ="Tax ID")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
        public string tax_id { get; set; }
 
        /// <summary>
-       ///列名contact
+       ///Contact
        /// </summary>
-       [Display(Name ="列名contact")]
+       [Display(Name ="Contact")]
        [MaxLength(100)]
        [Column(TypeName="varchar(100)")]
        [Editable(true)]
        public string contact { get; set; }
 
        /// <summary>
-       ///列名fax_no
+       ///Fax
        /// </summary>
-       [Display(Name ="列名fax_no")]
+       [Display(Name ="Fax")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
        [Editable(true)]
        public string fax_no { get; set; }
 
        /// <summary>
-       ///列名email
+       ///Email
        /// </summary>
-       [Display(Name ="列名email")]
+       [Display(Name ="Email")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        [Editable(true)]
        public string email { get; set; }
 
        /// <summary>
-       ///列名cust_address
+       ///Customer address
        /// </summary>
-       [Display(Name ="列名cust_address")]
+       [Display(Name ="Customer address")]
        [MaxLength(200)]
        [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
@@ -142,9 +152,9 @@ namespace VIAT.Entity.DomainModels
        public string cust_address { get; set; }
 
        /// <summary>
-       ///列名tel_no
+       ///Telephone
        /// </summary>
-       [Display(Name ="列名tel_no")]
+       [Display(Name ="Telephone")]
        [MaxLength(40)]
        [Column(TypeName="varchar(40)")]
        [Editable(true)]
@@ -152,36 +162,36 @@ namespace VIAT.Entity.DomainModels
        public string tel_no { get; set; }
 
        /// <summary>
-       ///列名doh_institute_no
+       ///NHI Institute no
        /// </summary>
-       [Display(Name ="列名doh_institute_no")]
+       [Display(Name ="NHI Institute no")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
        public string doh_institute_no { get; set; }
 
        /// <summary>
-       ///列名ctrl_drug_no
+       ///Controlled Medicine Certificate NO
        /// </summary>
-       [Display(Name ="列名ctrl_drug_no")]
+       [Display(Name ="Controlled Medicine Certificate NO")]
        [MaxLength(40)]
        [Column(TypeName="varchar(40)")]
        [Editable(true)]
        public string ctrl_drug_no { get; set; }
 
        /// <summary>
-       ///列名ctrl_drug_contact
+       ///Controlled Medicine Contact
        /// </summary>
-       [Display(Name ="列名ctrl_drug_contact")]
+       [Display(Name ="Controlled Medicine Contact")]
        [MaxLength(100)]
        [Column(TypeName="varchar(100)")]
        [Editable(true)]
        public string ctrl_drug_contact { get; set; }
 
        /// <summary>
-       ///列名doh_type
+       ///DOH Type
        /// </summary>
-       [Display(Name ="列名doh_type")]
+       [Display(Name ="DOH Type")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
@@ -189,9 +199,9 @@ namespace VIAT.Entity.DomainModels
        public string doh_type { get; set; }
 
        /// <summary>
-       ///列名margin_type
+       ///Margin Type
        /// </summary>
-       [Display(Name ="列名margin_type")]
+       [Display(Name ="Margin Type")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
@@ -199,27 +209,27 @@ namespace VIAT.Entity.DomainModels
        public string margin_type { get; set; }
 
        /// <summary>
-       ///列名is_contract
+       ///Is contracted
        /// </summary>
-       [Display(Name ="列名is_contract")]
+       [Display(Name ="Is contracted")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
        public string is_contract { get; set; }
 
        /// <summary>
-       ///列名is_private
+       ///Public/Private
        /// </summary>
-       [Display(Name ="列名is_private")]
+       [Display(Name ="Public/Private")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
        public string is_private { get; set; }
 
        /// <summary>
-       ///列名own_by_hospital
+       ///Is Hospital Owned Drug Store
        /// </summary>
-       [Display(Name ="列名own_by_hospital")]
+       [Display(Name ="Is Hospital Owned Drug Store")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
@@ -227,65 +237,65 @@ namespace VIAT.Entity.DomainModels
        public string own_by_hospital { get; set; }
 
        /// <summary>
-       ///列名own_hospital
+       ///Owned Hospital
        /// </summary>
-       [Display(Name ="列名own_hospital")]
+       [Display(Name ="Owned Hospital")]
        [Column(TypeName="uniqueidentifier")]
        public Guid? own_hospital { get; set; }
 
        /// <summary>
-       ///列名med_group
+       ///Medical Group
        /// </summary>
-       [Display(Name ="列名med_group")]
+       [Display(Name ="Medical Group")]
        [Column(TypeName="uniqueidentifier")]
        public Guid? med_group { get; set; }
 
        /// <summary>
-       ///列名delv_group
+       ///Price Group
        /// </summary>
-       [Display(Name ="列名delv_group")]
+       [Display(Name ="Price Group")]
        [Column(TypeName="uniqueidentifier")]
        public Guid? delv_group { get; set; }
 
        /// <summary>
-       ///列名new_cust_id
+       ///New Customer
        /// </summary>
-       [Display(Name ="列名new_cust_id")]
+       [Display(Name ="New Customer")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
        public string new_cust_id { get; set; }
 
        /// <summary>
-       ///列名inactive_date
+       ///End Date
        /// </summary>
-       [Display(Name ="列名inactive_date")]
+       [Display(Name ="End Date")]
        [Column(TypeName="datetime")]
        [Editable(true)]
        public DateTime? inactive_date { get; set; }
 
        /// <summary>
-       ///列名status
+       ///Status
        /// </summary>
-       [Display(Name ="列名status")]
+       [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
        public string status { get; set; }
 
        /// <summary>
-       ///列名remarks
+       ///Remarks
        /// </summary>
-       [Display(Name ="列名remarks")]
+       [Display(Name ="Remarks")]
        [MaxLength(4000)]
        [Column(TypeName="nvarchar(4000)")]
        [Editable(true)]
        public string remarks { get; set; }
 
        /// <summary>
-       ///列名source
+       ///Source
        /// </summary>
-       [Display(Name ="列名source")]
+       [Display(Name ="Source")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        public string source { get; set; }
@@ -299,25 +309,25 @@ namespace VIAT.Entity.DomainModels
        public string accnt_code { get; set; }
 
        /// <summary>
-       ///列名invoice_type
+       ///Invoice Type
        /// </summary>
-       [Display(Name ="列名invoice_type")]
+       [Display(Name ="Invoice Type")]
        [MaxLength(2)]
        [Column(TypeName="varchar(2)")]
        public string invoice_type { get; set; }
 
        /// <summary>
-       ///列名invoice_zip_name
+       ///Invoice Zip Name
        /// </summary>
-       [Display(Name ="列名invoice_zip_name")]
+       [Display(Name ="Invoice Zip Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        public string invoice_zip_name { get; set; }
 
        /// <summary>
-       ///列名invoice_city_name
+       ///Invoice City Name
        /// </summary>
-       [Display(Name ="列名invoice_city_name")]
+       [Display(Name ="Invoice City Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
@@ -325,24 +335,14 @@ namespace VIAT.Entity.DomainModels
        public string invoice_city_name { get; set; }
 
        /// <summary>
-       ///客戶城市
+       ///Customer City Name
        /// </summary>
-       [Display(Name ="客戶城市")]
+       [Display(Name ="Customer City Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string cust_city_name { get; set; }
-
-       /// <summary>
-       ///客戶地區
-       /// </summary>
-       [Display(Name ="客戶地區")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string cust_zip_id { get; set; }
 
        /// <summary>
        ///
@@ -353,9 +353,9 @@ namespace VIAT.Entity.DomainModels
        public string cust_zip_name { get; set; }
 
        /// <summary>
-       ///列名invoice_zip_id
+       ///Invoice Zip Id
        /// </summary>
-       [Display(Name ="列名invoice_zip_id")]
+       [Display(Name ="Invoice Zip Id")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
@@ -363,9 +363,9 @@ namespace VIAT.Entity.DomainModels
        public string invoice_zip_id { get; set; }
 
        /// <summary>
-       ///列名modified_date
+       ///Modified Date
        /// </summary>
-       [Display(Name ="列名modified_date")]
+       [Display(Name ="Modified Date")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 
@@ -414,38 +414,38 @@ namespace VIAT.Entity.DomainModels
        public Guid cust_dbid { get; set; }
 
        /// <summary>
-       ///列名created_username
+       ///Created User
        /// </summary>
-       [Display(Name ="列名created_username")]
+       [Display(Name ="Created User")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string created_username { get; set; }
 
        /// <summary>
-       ///列名own_hospitalname
+       ///
        /// </summary>
-       [Display(Name ="列名own_hospitalname")]
+       [Display(Name ="own_hospitalname")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
-       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string own_hospitalname { get; set; }
 
        /// <summary>
-       ///列名med_groupname
+       ///
        /// </summary>
-       [Display(Name ="列名med_groupname")]
+       [Display(Name ="med_groupname")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
-       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string med_groupname { get; set; }
 
        /// <summary>
-       ///列名delv_groupname
+       ///
        /// </summary>
-       [Display(Name ="列名delv_groupname")]
+       [Display(Name ="delv_groupname")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
-       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string delv_groupname { get; set; }
 
        /// <summary>
@@ -487,6 +487,57 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_clientusername { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="delv_group_cust_name")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
+       public string delv_group_cust_name { get; set; }
+
+       /// <summary>
+       ///Owned Hospitalname
+       /// </summary>
+       [Display(Name ="Owned Hospitalname")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Editable(true)]
+       public string own_hospital_cust_id { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="own_hospital_cust_name")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
+       public string own_hospital_cust_name { get; set; }
+
+       /// <summary>
+       ///Medical Group
+       /// </summary>
+       [Display(Name ="Medical Group")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Editable(true)]
+       public string med_group_cust_id { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="med_group_cust_name")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
+       public string med_group_cust_name { get; set; }
+
+       /// <summary>
+       ///Price Group
+       /// </summary>
+       [Display(Name ="Price Group")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Editable(true)]
+       public string delv_group_cust_id { get; set; }
 
        [Display(Name ="客戶送貨資訊")]
        [ForeignKey("cust_dbid")]
