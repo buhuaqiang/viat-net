@@ -26,14 +26,6 @@ namespace VIAT.Entity.DomainModels
        public Guid nhiadjust_dbid { get; set; }
 
        /// <summary>
-       ///識別碼, PK, Identity
-       /// </summary>
-       [Display(Name ="識別碼, PK, Identity")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
-       /// <summary>
        ///所屬事業單位,01:PH;03:AH;05:CH;06:NU
        /// </summary>
        [Display(Name ="所屬事業單位,01:PH;03:AH;05:CH;06:NU")]
@@ -42,10 +34,11 @@ namespace VIAT.Entity.DomainModels
        public string division { get; set; }
 
        /// <summary>
-       ///
+       ///m主鍵
        /// </summary>
-       [Display(Name ="nhiadjustm_dbid")]
+       [Display(Name ="m主鍵")]
        [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
        public Guid? nhiadjustm_dbid { get; set; }
 
        /// <summary>
