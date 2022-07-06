@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "群組價格主頁面",TableName = "View_cust_price")]
+    [Entity(TableCnName = "Group Price Book",TableName = "View_cust_price")]
     public partial class View_cust_price:BaseEntity
     {
         /// <summary>
@@ -22,7 +22,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Group Id")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
-       [Required(AllowEmptyStrings=false)]
+       [Editable(true)]
        public string group_id { get; set; }
 
        /// <summary>
@@ -39,7 +39,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product Id")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
-       [Required(AllowEmptyStrings=false)]
+       [Editable(true)]
        public string prod_id { get; set; }
 
        /// <summary>
@@ -159,6 +159,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
 
@@ -305,12 +306,11 @@ namespace VIAT.Entity.DomainModels
        public DateTime? modified_date { get; set; }
 
        /// <summary>
-       ///Group
+       ///
        /// </summary>
-       [Display(Name ="Group")]
+       [Display(Name ="pricegroup_dbidname")]
        [MaxLength(121)]
        [Column(TypeName="varchar(121)")]
-       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string pricegroup_dbidname { get; set; }
 
@@ -360,9 +360,26 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product")]
        [MaxLength(66)]
        [Column(TypeName="varchar(66)")]
-       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string prod_dbidname { get; set; }
+
+       /// <summary>
+       ///Products
+       /// </summary>
+       [Display(Name ="Products")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
+       public string prods { get; set; }
+
+       /// <summary>
+       ///Status
+       /// </summary>
+       [Display(Name ="Status")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
+       public string QueryStatus { get; set; }
 
        
     }
