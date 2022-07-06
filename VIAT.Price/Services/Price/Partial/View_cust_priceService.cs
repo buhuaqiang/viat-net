@@ -69,6 +69,25 @@ namespace VIAT.Price.Services
 
                         break;
                     }
+                    if(item.Name== "QueryStatus")
+                    {
+                        searchParametersList.Remove(item);
+                        //Valid(Current)
+                        if (item.Value == "1")
+                        {
+
+                        } 
+                        //InValid History
+                        else if (item.Value == "2")
+                        {
+
+                        }
+                        //Valid future
+                        else if (item.Value == "3")
+                        {
+
+                        }
+                    }
                 }
             };
         }
