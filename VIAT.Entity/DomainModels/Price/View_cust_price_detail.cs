@@ -31,6 +31,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Cust ID")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
+       [Editable(true)]
        public string cust_id { get; set; }
 
        /// <summary>
@@ -47,6 +48,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="source_type")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
        public string source_type { get; set; }
 
        /// <summary>
@@ -55,6 +57,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Group ID")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
+       [Required(AllowEmptyStrings=false)]
        public string group_id { get; set; }
 
        /// <summary>
@@ -71,7 +74,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Cust")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
-       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string cust_dbidname { get; set; }
 
@@ -81,6 +83,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product ID")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
+       [Editable(true)]
        public string prod_id { get; set; }
 
        /// <summary>
@@ -97,7 +100,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product")]
        [MaxLength(66)]
        [Column(TypeName="varchar(66)")]
-       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string prod_dbidname { get; set; }
 
        /// <summary>
@@ -107,8 +110,7 @@ namespace VIAT.Entity.DomainModels
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public decimal nhi_price { get; set; }
+       public decimal? nhi_price { get; set; }
 
        /// <summary>
        ///Invoice Price
@@ -117,8 +119,7 @@ namespace VIAT.Entity.DomainModels
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public decimal invoice_price { get; set; }
+       public decimal? invoice_price { get; set; }
 
        /// <summary>
        ///Net Price
@@ -127,8 +128,7 @@ namespace VIAT.Entity.DomainModels
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public decimal net_price { get; set; }
+       public decimal? net_price { get; set; }
 
        /// <summary>
        ///Gross Price
@@ -154,6 +154,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
 
        /// <summary>
@@ -162,8 +163,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Start Date")]
        [Column(TypeName="datetime")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public DateTime start_date { get; set; }
+       public DateTime? start_date { get; set; }
 
        /// <summary>
        ///End Date
@@ -171,8 +171,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="End Date")]
        [Column(TypeName="datetime")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public DateTime end_date { get; set; }
+       public DateTime? end_date { get; set; }
 
        /// <summary>
        ///Modified Date
@@ -228,6 +227,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Products")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
        public string prods { get; set; }
 
        /// <summary>
@@ -254,6 +254,15 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
        public Guid? cust_dbid { get; set; }
+
+       /// <summary>
+       ///Status
+       /// </summary>
+       [Display(Name ="Status")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
+       public string QueryStatus { get; set; }
 
        
     }

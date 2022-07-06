@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "經銷商margin查詢視圖",TableName = "view_dist_margin")]
+    [Entity(TableCnName = "Dustibutor Margin Rate Maintain",TableName = "view_dist_margin")]
     public partial class view_dist_margin:BaseEntity
     {
         /// <summary>
@@ -39,6 +39,7 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="prod_dbid")]
        [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
        public Guid? prod_dbid { get; set; }
 
        /// <summary>
@@ -56,7 +57,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Prod Name")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
-       [Editable(true)]
        public string prod_ename { get; set; }
 
        /// <summary>
@@ -64,7 +64,6 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="Product")]
        [Column(TypeName="uniqueidentifier")]
-       [Editable(true)]
        public Guid? prod_dbidname { get; set; }
 
        /// <summary>
@@ -72,7 +71,6 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="Customer")]
        [Column(TypeName="uniqueidentifier")]
-       [Editable(true)]
        public Guid? cust_dbidname { get; set; }
 
        /// <summary>
@@ -97,6 +95,7 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="cust_dbid")]
        [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
        public Guid? cust_dbid { get; set; }
 
        /// <summary>
@@ -114,7 +113,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Cust Name")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
-       [Editable(true)]
        public string cust_name { get; set; }
 
        /// <summary>
