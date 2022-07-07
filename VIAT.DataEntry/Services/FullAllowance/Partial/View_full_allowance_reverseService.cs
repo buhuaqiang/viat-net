@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.DataEntry.IRepositories;
+using VIAT.DataEntry.IServices;
 
 namespace VIAT.DataEntry.Services
 {
@@ -24,18 +25,36 @@ namespace VIAT.DataEntry.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IView_full_allowance_reverseRepository _repository;//访问数据库
+        private readonly IViat_app_hp_contract_allw_sumRepository _viat_app_hp_contract_allw_sumRepository;
+        private readonly IViat_app_hp_contract_allw_sumService _viat_app_hp_contract_allw_sumService;
+        
 
         [ActivatorUtilitiesConstructor]
         public View_full_allowance_reverseService(
             IView_full_allowance_reverseRepository dbRepository,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IViat_app_hp_contract_allw_sumRepository viat_app_hp_contract_allw_sumRepository,
+            IViat_app_hp_contract_allw_sumService viat_app_hp_contract_allw_sumService
             )
         : base(dbRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _repository = dbRepository;
+            _viat_app_hp_contract_allw_sumRepository = viat_app_hp_contract_allw_sumRepository;
+            _viat_app_hp_contract_allw_sumService = viat_app_hp_contract_allw_sumService;
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
+        }
+        //新增
+        public override WebResponseContent Add(SaveModel saveDataModel)
+        {
+              saveDataModel.MainData["action_type"] = '2';
+            return _viat_app_hp_contract_allw_sumService.Add(saveDataModel);
+        }
+        //刪除
+         public override WebResponseContent Del(object[] keys, bool delList = true)
+        {
+            return _viat_app_hp_contract_allw_sumService.Del(keys, delList);
         }
   }
 }
