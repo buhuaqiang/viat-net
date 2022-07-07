@@ -17,23 +17,29 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
-
+using VIAT.Basic.IServices;
 namespace VIAT.Basic.Services
 {
     public partial class View_com_prodService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IView_com_prodRepository _repository;//访问数据库
+        private readonly IViat_com_prodService _viat_com_prodService;
+        private readonly IViat_com_prodRepository _viat_com_prodRepository;
 
         [ActivatorUtilitiesConstructor]
         public View_com_prodService(
             IView_com_prodRepository dbRepository,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IViat_com_prodService viat_com_prodService,
+            IViat_com_prodRepository viat_com_prodRepository
             )
         : base(dbRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _repository = dbRepository;
+            _viat_com_prodService = viat_com_prodService;
+            _viat_com_prodRepository = viat_com_prodRepository;
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
@@ -41,7 +47,13 @@ namespace VIAT.Basic.Services
         //重写更新方法，更新Viat_com_prod表
         public override WebResponseContent Update(SaveModel saveModel)
         {
-            return Viat_com_prodService.Instance.Update(saveModel);
+            return _viat_com_prodService.Update(saveModel);
+        }
+
+         //重写新增方法，
+        public override WebResponseContent Add(SaveModel saveDataModel)
+        {
+            return _viat_com_prodService.Add(saveDataModel);
         }
 
        
