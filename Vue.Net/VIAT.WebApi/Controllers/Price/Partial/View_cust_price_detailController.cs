@@ -29,5 +29,16 @@ namespace VIAT.Price.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        /// <summary>
+        /// 3.	判斷是否為ExpfizerCust
+        /// </summary>
+        /// <param name="cust_id"></param>
+        /// <returns></returns>
+
+        public bool IsExpfizer(string cust_id)
+        {
+            return _service.IsExpfizer(cust_id);
+        }
     }
 }

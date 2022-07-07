@@ -28,8 +28,7 @@ namespace VIAT.Price.Controllers
 
             _service.setQueryParameters();
             return base.GetPageData(loadData);
-        }
-
+        } 
     }
 }
 
