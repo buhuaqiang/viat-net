@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "全球產品群組",TableName = "Viat_com_global_mpg")]
+    [Entity(TableCnName = "Global MPG Maintain",TableName = "Viat_com_global_mpg")]
     public partial class Viat_com_global_mpg:BaseEntity
     {
         /// <summary>
@@ -42,9 +42,9 @@ namespace VIAT.Entity.DomainModels
        public string division { get; set; }
 
        /// <summary>
-       ///Mpg代碼
+       ///Mpg ID
        /// </summary>
-       [Display(Name ="Mpg代碼")]
+       [Display(Name ="Mpg ID")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
@@ -59,12 +59,13 @@ namespace VIAT.Entity.DomainModels
        public Guid? financempg_dbid { get; set; }
 
        /// <summary>
-       ///Bu
+       ///Bu ID
        /// </summary>
-       [Display(Name ="Bu")]
+       [Display(Name ="Bu ID")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string bu_id { get; set; }
 
        /// <summary>
@@ -77,27 +78,29 @@ namespace VIAT.Entity.DomainModels
        public string finance_mpg { get; set; }
 
        /// <summary>
-       ///Mpg名稱
+       ///Mpg Name
        /// </summary>
-       [Display(Name ="Mpg名稱")]
+       [Display(Name ="Mpg Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string mpg_name { get; set; }
 
        /// <summary>
-       ///category
+       ///Category
        /// </summary>
-       [Display(Name ="category")]
+       [Display(Name ="Category")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string category { get; set; }
 
        /// <summary>
-       ///備註
+       ///HFM Description
        /// </summary>
-       [Display(Name ="備註")]
+       [Display(Name ="HFM Description")]
        [MaxLength(255)]
        [Column(TypeName="nvarchar(255)")]
        [Editable(true)]
@@ -111,12 +114,13 @@ namespace VIAT.Entity.DomainModels
        public int? sort { get; set; }
 
        /// <summary>
-       ///是否有效,True:生效;False:失效
+       ///Status
        /// </summary>
-       [Display(Name ="是否有效,True:生效;False:失效")]
+       [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
 
        /// <summary>
@@ -164,9 +168,9 @@ namespace VIAT.Entity.DomainModels
        public int? modified_user { get; set; }
 
        /// <summary>
-       ///最后修改用户
+       ///Last Modified
        /// </summary>
-       [Display(Name ="最后修改用户")]
+       [Display(Name ="Last Modified")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_username { get; set; }
@@ -187,9 +191,9 @@ namespace VIAT.Entity.DomainModels
        public string modified_clientusername { get; set; }
 
        /// <summary>
-       ///最後修改時間
+       ///Modified Date
        /// </summary>
-       [Display(Name ="最後修改時間")]
+       [Display(Name ="Modified Date")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 

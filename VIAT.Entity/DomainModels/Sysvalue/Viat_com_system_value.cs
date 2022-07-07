@@ -1,4 +1,3 @@
-using Newtonsoft.Json;
 /*
  *代码由框架生成,任何更改都可能导致被代码生成器覆盖
  *如果数据库字段发生变化，请在代码生器重新生成此Model
@@ -14,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "系統參數設置",TableName = "Viat_com_system_value")]
+    [Entity(TableCnName = "System Parameter Setting",TableName = "Viat_com_system_value")]
     public partial class Viat_com_system_value:BaseEntity
     {
         /// <summary>
@@ -27,18 +26,9 @@ namespace VIAT.Entity.DomainModels
        public Guid sysval_dbid { get; set; }
 
        /// <summary>
-       ///ID
+       ///Category ID
        /// </summary>
-       /*[Display(Name ="ID")]
-       [JsonIgnore]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }*/
-
-       /// <summary>
-       ///類別代碼
-       /// </summary>
-       [Display(Name ="類別代碼")]
+       [Display(Name ="Category ID")]
        [MaxLength(255)]
        [Column(TypeName="varchar(255)")]
        [Editable(true)]
@@ -46,9 +36,9 @@ namespace VIAT.Entity.DomainModels
        public string category_id { get; set; }
 
        /// <summary>
-       ///參數名稱
+       ///Key
        /// </summary>
-       [Display(Name ="參數名稱")]
+       [Display(Name ="Key")]
        [MaxLength(255)]
        [Column(TypeName="varchar(255)")]
        [Editable(true)]
@@ -56,35 +46,38 @@ namespace VIAT.Entity.DomainModels
        public string sys_key { get; set; }
 
        /// <summary>
-       ///參數值
+       ///Value
        /// </summary>
-       [Display(Name ="參數值")]
+       [Display(Name ="Value")]
        [MaxLength(255)]
        [Column(TypeName="nvarchar(255)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string sys_value { get; set; }
 
        /// <summary>
-       ///順序
+       ///Sort Order
        /// </summary>
-       [Display(Name ="順序")]
+       [Display(Name ="Sort Order")]
        [Column(TypeName="decimal")]
        [Editable(true)]
-       public decimal? seqno { get; set; }
+       [Required(AllowEmptyStrings=false)]
+       public decimal seqno { get; set; }
 
        /// <summary>
-       ///是否有效
+       ///Status
        /// </summary>
-       [Display(Name ="是否有效")]
+       [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
 
        /// <summary>
-       ///備註
+       ///Remark
        /// </summary>
-       [Display(Name ="備註")]
+       [Display(Name ="Remark")]
        [MaxLength(450)]
        [Column(TypeName="nvarchar(450)")]
        [Editable(true)]
@@ -96,6 +89,14 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="建立用戶")]
        [Column(TypeName="int")]
        public int? created_user { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
 
        /// <summary>
        ///建立者的委託人
@@ -119,6 +120,14 @@ namespace VIAT.Entity.DomainModels
        public int? modified_user { get; set; }
 
        /// <summary>
+       ///Last Modified
+       /// </summary>
+       [Display(Name ="Last Modified")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
        ///最後修改者的委託人
        /// </summary>
        [Display(Name ="最後修改者的委託人")]
@@ -126,19 +135,11 @@ namespace VIAT.Entity.DomainModels
        public int? modified_client { get; set; }
 
        /// <summary>
-       ///最後修改時間
+       ///Modified Date
        /// </summary>
-       [Display(Name ="最後修改時間")]
+       [Display(Name ="Modified Date")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="created_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string created_username { get; set; }
 
        /// <summary>
        ///
@@ -147,14 +148,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string created_clientusername { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string modified_username { get; set; }
 
        /// <summary>
        ///
