@@ -14,7 +14,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "客戶基本信息",TableName = "View_com_cust",DetailTable =  new Type[] { typeof(View_com_cust_delivery)},DetailTableCnName = "客戶送貨資訊")]
+    [Entity(TableCnName = "Customer Maintain",TableName = "View_com_cust",DetailTable =  new Type[] { typeof(View_com_cust_delivery)},DetailTableCnName = "客戶送貨資訊")]
     public partial class View_com_cust:BaseEntity
     {
         /// <summary>
