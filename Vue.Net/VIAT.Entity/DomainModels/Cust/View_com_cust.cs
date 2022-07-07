@@ -384,9 +384,9 @@ namespace VIAT.Entity.DomainModels
        public int? modified_user { get; set; }
 
        /// <summary>
-       ///列名created_date
+       ///Created Date
        /// </summary>
-       [Display(Name ="列名created_date")]
+       [Display(Name ="Created Date")]
        [Column(TypeName="datetime")]
        public DateTime? created_date { get; set; }
 
@@ -465,25 +465,25 @@ namespace VIAT.Entity.DomainModels
        public DateTime? last_deal_date { get; set; }
 
        /// <summary>
-       ///
+       ///Created Client
        /// </summary>
-       [Display(Name ="created_clientusername")]
+       [Display(Name ="Created Client")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string created_clientusername { get; set; }
 
        /// <summary>
-       ///
+       ///Modified User
        /// </summary>
-       [Display(Name ="modified_username")]
+       [Display(Name ="Modified User")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_username { get; set; }
 
        /// <summary>
-       ///
+       ///Modified Client
        /// </summary>
-       [Display(Name ="modified_clientusername")]
+       [Display(Name ="Modified Client")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_clientusername { get; set; }
@@ -497,18 +497,18 @@ namespace VIAT.Entity.DomainModels
        public string delv_group_cust_name { get; set; }
 
        /// <summary>
-       ///Owned Hospitalname
+       ///Owned Hospital
        /// </summary>
-       [Display(Name ="Owned Hospitalname")]
+       [Display(Name ="Owned Hospital")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
        public string own_hospital_cust_id { get; set; }
 
        /// <summary>
-       ///
+       ///Owned Hospital Name
        /// </summary>
-       [Display(Name ="own_hospital_cust_name")]
+       [Display(Name ="Owned Hospital Name")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        public string own_hospital_cust_name { get; set; }

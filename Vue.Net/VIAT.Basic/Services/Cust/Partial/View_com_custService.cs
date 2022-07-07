@@ -119,5 +119,15 @@ namespace VIAT.Basic.Services
         {
             return _viat_com_custService.Del(keys, delList);
         }
+
+        public override WebResponseContent Export(PageDataOptions pageData)
+        {
+            ExportColumns = x => new {x.territory_id,x.cust_id,x.cust_name,x.cust_zip_id,x.cust_address,x.invoice_zip_id,x.invoice_name,x.invoice_address,
+            x.owner,x.tax_id,x.contact,x.tel_no,x.fax_no,x.email,x.doh_institute_no,x.ctrl_drug_no,x.ctrl_drug_contact,x.doh_type,x.margin_type,
+            x.is_contract,x.is_private,x.own_by_hospital,x.own_hospital_cust_id,x.own_hospital_cust_name,x.med_group_cust_id,x,x.delv_group_cust_id,
+           x.new_cust_id,x.inactive_date,x.status,x.remarks,x.source,x.created_username,x.created_clientusername,x.created_date,x.modified_username,
+                x.modified_clientusername,x.modified_date,x.entity,x.division };
+            return base.Export(pageData);
+        }
     }
 }
