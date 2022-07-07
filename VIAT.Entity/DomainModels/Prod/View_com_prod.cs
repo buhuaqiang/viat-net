@@ -16,14 +16,7 @@ namespace VIAT.Entity.DomainModels
     [Entity(TableCnName = "產品信息",TableName = "View_com_prod")]
     public partial class View_com_prod:BaseEntity
     {
-        /// <summary>
-       ///列名dbid
-       /// </summary>
-       [Display(Name ="列名dbid")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
+       
        /// <summary>
        ///Entity
        /// </summary>
