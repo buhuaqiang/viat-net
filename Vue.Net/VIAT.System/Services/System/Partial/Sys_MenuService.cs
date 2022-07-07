@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using VIAT.Core.Enums;
 using VIAT.Core.Extensions;
 using VIAT.Core.ManageUser;
 using VIAT.Core.Services;
@@ -177,8 +178,8 @@ namespace VIAT.System.Services
         public async Task<WebResponseContent> Save(Sys_Menu menu)
         {
             WebResponseContent webResponse = new WebResponseContent();
-            if (menu == null) return webResponse.Error("没有获取到提交的参数");
-            if (menu.Menu_Id > 0 && menu.Menu_Id == menu.ParentId) return webResponse.Error("父级ID不能是当前菜单的ID");
+            if (menu == null) return webResponse.Error("The submitted parameters were not obtained");
+            if (menu.Menu_Id > 0 && menu.Menu_Id == menu.ParentId) return webResponse.Error("The parent ID cannot be the ID of the current menu");
             try
             {
                 webResponse = menu.ValidationEntity(x => new { x.MenuName, x.TableName });
@@ -195,7 +196,7 @@ namespace VIAT.System.Services
                             if ((menu.Menu_Id > 0 && sysMenu.Menu_Id != menu.Menu_Id)
                             || menu.Menu_Id <= 0)
                             {
-                                return webResponse.Error($"视图/表名【{menu.TableName}】已被其他菜单使用");
+                                return webResponse.Error($"View / table name【{ menu.TableName}】Used by other menus");
                             }
                         }
                     }
@@ -210,11 +211,11 @@ namespace VIAT.System.Services
                     //2020.05.07新增禁止选择上级角色为自己
                     if (menu.Menu_Id == menu.ParentId)
                     {
-                        return webResponse.Error($"父级id不能为自己");
+                        return webResponse.Error($"Parent ID cannot be self");
                     }
                     if (repository.Exists(x => x.ParentId == menu.Menu_Id && menu.ParentId == x.Menu_Id))
                     {
-                        return webResponse.Error($"不能选择此父级id，选择的父级id与当前菜单形成依赖关系");
+                        return webResponse.Error($"This parent ID cannot be selected. The selected parent ID forms a dependency with the current menu");
                     }
 
                     _changed = repository.FindAsIQueryable(c => c.Menu_Id == menu.Menu_Id).Select(s => s.Auth).FirstOrDefault() != menu.Auth;
@@ -242,7 +243,7 @@ namespace VIAT.System.Services
                     UserContext.Current.RefreshWithMenuActionChange(menu.Menu_Id);
                 }
                 _menus = null;
-                webResponse.OK("保存成功", menu);
+                webResponse.OK(ResponseType.SaveSuccess); ;
             }
             catch (Exception ex)
             {
@@ -262,14 +263,14 @@ namespace VIAT.System.Services
       
             if (await repository.ExistsAsync(x => x.ParentId == menuId))
             {
-                return webResponse.Error("当前菜单存在子菜单,请先删除子菜单!");
+                return webResponse.Error("There are submenus in the current menu. Please delete the submenus first!");
             }
             repository.Delete(new Sys_Menu()
             {
                 Menu_Id = menuId
             }, true);
             CacheContext.Add(_menuCacheKey, DateTime.Now.ToString("yyyyMMddHHMMssfff"));
-            return webResponse.OK("删除成功");
+            return webResponse.OK(ResponseType.DelSuccess);
         }
         /// <summary>
         /// 编辑菜单时，获取菜单信息

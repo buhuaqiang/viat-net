@@ -10,35 +10,35 @@ namespace VIAT.Core.Extensions
             switch (responseType)
             {
                 case ResponseType.LoginExpiration:
-                    msg = "登陆已过期,请重新登陆"; break;
+                    msg = "Login has expired, please log in again"; break;
                 case ResponseType.TokenExpiration:
-                    msg = "Token已过期,请重新登陆"; break;
+                    msg = "Token has expired, please log in again"; break;
                 case ResponseType.AccountLocked:
-                    msg = "帐号已被锁定"; break;
+                    msg = "Account is locked"; break;
                 case ResponseType.LoginSuccess:
-                    msg = "登陆成功"; break;
+                    msg = "Login successfully"; break;
                 case ResponseType.ParametersLack:
-                    msg = "参数不完整"; break;
+                    msg = "Incomplete parameters"; break;
                 case ResponseType.NoPermissions:
-                    msg = "没有权限操作"; break;
+                    msg = "No permission to operate"; break;
                 case ResponseType.NoRolePermissions:
-                    msg = "角色没有权限操作"; break;
+                    msg = "Role does not have permission to operate"; break;
                 case ResponseType.ServerError:
-                    msg = "服务器好像出了点问题....."; break;
+                    msg = "The server responded Exception"; break;
                 case ResponseType.LoginError:
-                    msg = "用户名或密码错误"; break;
+                    msg = "wrong user name or password"; break;
                 case ResponseType.SaveSuccess:
-                    msg = "保存成功"; break;
+                    msg = "Saved successfully"; break;
                 case ResponseType.NoKey:
-                    msg = "没有主键不能编辑"; break;
+                    msg = "Cannot edit without primary key"; break;
                 case ResponseType.NoKeyDel:
-                    msg = "没有主键不能删除"; break;
+                    msg = "Cannot delete without primary key"; break;
                 case ResponseType.KeyError:
-                    msg = "主键不正确或没有传入主键"; break;
+                    msg = "Incorrect primary key or no primary key passed in"; break;
                 case ResponseType.EidtSuccess:
-                    msg = "编辑成功"; break;
+                    msg = "Edited successfully"; break;
                 case ResponseType.DelSuccess:
-                    msg = "删除成功"; break;
+                    msg = "Deleted successfully"; break;
                 case ResponseType.RegisterSuccess:
                     msg = "注册成功"; break;
                 case ResponseType.AuditSuccess:
