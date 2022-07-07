@@ -13,13 +13,13 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "地區信息",TableName = "Viat_com_zip_city")]
+    [Entity(TableCnName = "Zip City Setting",TableName = "Viat_com_zip_city")]
     public partial class Viat_com_zip_city:BaseEntity
     {
         /// <summary>
-       ///地區編碼
+       ///Zip Code
        /// </summary>
-       [Display(Name ="地區編碼")]
+       [Display(Name ="Zip Code")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
@@ -27,9 +27,9 @@ namespace VIAT.Entity.DomainModels
        public string zip_id { get; set; }
 
        /// <summary>
-       ///地區名稱
+       ///Area Name
        /// </summary>
-       [Display(Name ="地區名稱")]
+       [Display(Name ="Area Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
@@ -37,9 +37,9 @@ namespace VIAT.Entity.DomainModels
        public string zip_name { get; set; }
 
        /// <summary>
-       ///城市代碼
+       ///City ID
        /// </summary>
-       [Display(Name ="城市代碼")]
+       [Display(Name ="City ID")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
@@ -47,9 +47,9 @@ namespace VIAT.Entity.DomainModels
        public string city_id { get; set; }
 
        /// <summary>
-       ///城市名稱
+       ///City Name
        /// </summary>
-       [Display(Name ="城市名稱")]
+       [Display(Name ="City Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
@@ -57,9 +57,9 @@ namespace VIAT.Entity.DomainModels
        public string city_name { get; set; }
 
        /// <summary>
-       ///是否有效
+       ///status
        /// </summary>
-       [Display(Name ="是否有效")]
+       [Display(Name ="status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
@@ -67,9 +67,9 @@ namespace VIAT.Entity.DomainModels
        public string status { get; set; }
 
        /// <summary>
-       ///建立用戶
+       ///Created User
        /// </summary>
-       [Display(Name ="建立用戶")]
+       [Display(Name ="Created User")]
        [Column(TypeName="int")]
        public int? created_user { get; set; }
 
@@ -82,31 +82,31 @@ namespace VIAT.Entity.DomainModels
        public string created_username { get; set; }
 
        /// <summary>
-       ///建立時間
+       ///Created Date
        /// </summary>
-       [Display(Name ="建立時間")]
+       [Display(Name ="Created Date")]
        [Column(TypeName="datetime")]
        public DateTime? created_date { get; set; }
 
        /// <summary>
-       ///最後修改用戶
+       ///
        /// </summary>
-       [Display(Name ="最後修改用戶")]
+       [Display(Name ="modified_user")]
        [Column(TypeName="int")]
        public int? modified_user { get; set; }
 
        /// <summary>
-       ///
+       ///Last Modified
        /// </summary>
-       [Display(Name ="modified_username")]
+       [Display(Name ="Last Modified")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_username { get; set; }
 
        /// <summary>
-       ///最後修改時間
+       ///Modified Date
        /// </summary>
-       [Display(Name ="最後修改時間")]
+       [Display(Name ="Modified Date")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 

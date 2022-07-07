@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "本地產品群組",TableName = "View_com_local_mpg")]
+    [Entity(TableCnName = "Local MPG Maintain",TableName = "View_com_local_mpg")]
     public partial class View_com_local_mpg:BaseEntity
     {
         /// <summary>
@@ -26,25 +26,25 @@ namespace VIAT.Entity.DomainModels
        public Guid localmpg_dbid { get; set; }
 
        /// <summary>
-       ///globalmpg_dbid
+       ///Global Mpg
        /// </summary>
-       [Display(Name ="globalmpg_dbid")]
+       [Display(Name ="Global Mpg")]
        [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
        public Guid? globalmpg_dbid { get; set; }
 
        /// <summary>
-       ///entity
+       ///Entity
        /// </summary>
-       [Display(Name ="entity")]
+       [Display(Name ="Entity")]
        [MaxLength(3)]
        [Column(TypeName="varchar(3)")]
        public string entity { get; set; }
 
        /// <summary>
-       ///mpg_id
+       ///Mpg ID
        /// </summary>
-       [Display(Name ="mpg_id")]
+       [Display(Name ="Mpg ID")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
@@ -52,54 +52,54 @@ namespace VIAT.Entity.DomainModels
        public string mpg_id { get; set; }
 
        /// <summary>
-       ///mpg_name
+       ///Mpg Name
        /// </summary>
-       [Display(Name ="mpg_name")]
+       [Display(Name ="Mpg Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
        public string mpg_name { get; set; }
 
        /// <summary>
-       ///bu_id
+       ///Bu ID
        /// </summary>
-       [Display(Name ="bu_id")]
+       [Display(Name ="Bu ID")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
        public string bu_id { get; set; }
 
        /// <summary>
-       ///category
+       ///Category
        /// </summary>
-       [Display(Name ="category")]
+       [Display(Name ="Category")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
        public string category { get; set; }
 
        /// <summary>
-       ///ta
+       ///Ta
        /// </summary>
-       [Display(Name ="ta")]
+       [Display(Name ="Ta")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
        public string ta { get; set; }
 
        /// <summary>
-       ///maUserName
+       ///Ma
        /// </summary>
-       [Display(Name ="maUserName")]
+       [Display(Name ="Ma")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
        [Editable(true)]
        public string maUserName { get; set; }
 
        /// <summary>
-       ///supervisorUserName
+       ///Supervisor
        /// </summary>
-       [Display(Name ="supervisorUserName")]
+       [Display(Name ="Supervisor")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
        [Editable(true)]
@@ -117,7 +117,7 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="Global Mpg Name")]
        [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
+       [Column(TypeName="nvarchar(15)")]
        public string globalMpgName { get; set; }
 
        /// <summary>
@@ -182,9 +182,9 @@ namespace VIAT.Entity.DomainModels
        public int? modified_user { get; set; }
 
        /// <summary>
-       ///modified_username
+       ///Last Modified
        /// </summary>
-       [Display(Name ="modified_username")]
+       [Display(Name ="Last Modified")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_username { get; set; }
@@ -205,9 +205,9 @@ namespace VIAT.Entity.DomainModels
        public string modified_clientusername { get; set; }
 
        /// <summary>
-       ///modified_date
+       ///Modified Date
        /// </summary>
-       [Display(Name ="modified_date")]
+       [Display(Name ="Modified Date")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 

@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "健保類別",TableName = "Viat_com_doh_type")]
+    [Entity(TableCnName = "DOH Type Maintain",TableName = "Viat_com_doh_type")]
     public partial class Viat_com_doh_type:BaseEntity
     {
         /// <summary>
@@ -26,33 +26,25 @@ namespace VIAT.Entity.DomainModels
        public Guid doh_dbid { get; set; }
 
        /// <summary>
-       ///ID
+       ///公司別
        /// </summary>
-       /*[Display(Name ="ID")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }*/
-
-       /// <summary>
-       ///公司別,舊版SUN_DB
-       /// </summary>
-       [Display(Name ="公司別,舊版SUN_DB")]
+       [Display(Name ="公司別")]
        [MaxLength(3)]
        [Column(TypeName="varchar(3)")]
        public string entity { get; set; }
 
        /// <summary>
-       ///所屬事業單位,01:PH;03:AH;05:CH;06:NU
+       ///所屬事業單位
        /// </summary>
-       [Display(Name ="所屬事業單位,01:PH;03:AH;05:CH;06:NU")]
+       [Display(Name ="所屬事業單位")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        public string division { get; set; }
 
        /// <summary>
-       ///健保類別
+       ///DOH Type
        /// </summary>
-       [Display(Name ="健保類別")]
+       [Display(Name ="DOH Type")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
@@ -60,36 +52,36 @@ namespace VIAT.Entity.DomainModels
        public string doh_type { get; set; }
 
        /// <summary>
-       ///健保局類別名稱
+       ///DOH Type Name
        /// </summary>
-       [Display(Name ="健保局類別名稱")]
+       [Display(Name ="DOH Type Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
        public string doh_type_name { get; set; }
 
        /// <summary>
-       ///健保局類別英文名稱
+       ///DOH English Name
        /// </summary>
-       [Display(Name ="健保局類別英文名稱")]
+       [Display(Name ="DOH English Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
        public string doh_type_ename { get; set; }
 
        /// <summary>
-       ///報表顯示類別
+       ///Margin Report Type
        /// </summary>
-       [Display(Name ="報表顯示類別")]
+       [Display(Name ="Margin Report Type")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        [Editable(true)]
        public string report_type { get; set; }
 
        /// <summary>
-       ///是否有效,True:生效;False:失效
+       ///Status
        /// </summary>
-       [Display(Name ="是否有效,True:生效;False:失效")]
+       [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
@@ -101,7 +93,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="健保類別對照碼")]
        [MaxLength(1)]
        [Column(TypeName="char(1)")]
-       [Editable(true)]
        public string doh_map_type { get; set; }
 
        /// <summary>
@@ -110,6 +101,14 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="建立用戶")]
        [Column(TypeName="int")]
        public int? created_user { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="created_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
 
        /// <summary>
        ///建立者的委託人
@@ -133,6 +132,14 @@ namespace VIAT.Entity.DomainModels
        public int? modified_user { get; set; }
 
        /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="modified_username")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
+
+       /// <summary>
        ///最後修改者的委託人
        /// </summary>
        [Display(Name ="最後修改者的委託人")]
@@ -149,26 +156,10 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="created_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string created_username { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
        [Display(Name ="created_clientusername")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string created_clientusername { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_username")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string modified_username { get; set; }
 
        /// <summary>
        ///
