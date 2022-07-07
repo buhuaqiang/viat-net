@@ -9,6 +9,11 @@ namespace VIAT.Entity.DomainModels
     {
         public Dictionary<string, object> MainData { get; set; }
 
+        /// <summary>
+        /// 主表一次性保存多条
+        /// </summary>
+        public List<Dictionary<string, object>> MainDatas { get; set; }
+
         public List<Dictionary<string, object>> DetailData { get; set; }
 
 

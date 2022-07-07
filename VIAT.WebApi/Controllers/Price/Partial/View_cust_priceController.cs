@@ -117,9 +117,9 @@ namespace VIAT.Price.Controllers
         //批量新增价格群组商品
         [ApiActionPermission]
         [HttpPost, Route("bathSaveCustPrice")]
-        public ActionResult bathSaveCustPrice([FromBody] SaveModel saveModel)
+        public ActionResult bathSaveCustPrice([FromBody] object saveModel)
         {
-            return Json(_baseWebResponseContent);
+            return Json(_service.bathSaveCustPrice(saveModel));
         }
     }
     }

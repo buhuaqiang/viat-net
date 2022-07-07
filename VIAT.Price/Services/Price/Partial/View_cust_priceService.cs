@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using VIAT.Price.IRepositories;
 using VIAT.Price.IServices;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace VIAT.Price.Services
 {
@@ -43,6 +44,39 @@ namespace VIAT.Price.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
             _cust_priceService = cust_priceService;
+        }
+
+
+        /// <summary>
+        /// 2.	取得新的Bid No
+        /// Filter條件為系統日 example :20220601
+        ///10碼，取得最大碼序號+1，帶入Bid No欄位
+        /// </summary>
+        /// <returns></returns>
+        public string getMaxBindNo()
+        {
+
+            //取得当前日期
+            string sCurrentDate = System.DateTime.Now.ToString("yyyyMMdd");
+            string sSql = @"SELECT MAX (bid_no) AS max_bidno 
+                            FROM viat_app_cust_price
+                            WHERE LEN(bid_no) = 10
+                                  AND bid_no LIKE '"+ sCurrentDate  + @"%'
+                            ";
+            object obj = _repository.DapperContext.ExecuteScalar(sSql, null);
+            if (obj == null)
+            {
+                //当天第一个号码
+                return sCurrentDate + "01";
+            }
+            else
+            {
+                //取得当前最大序号 
+                string sSerial = obj.ToString().Substring(9, 2);
+                int nSerial = 0;
+                int.TryParse(sSerial, out nSerial);
+                return sCurrentDate + (nSerial + 1).ToString().PadLeft(2,'0');
+            }
         }
 
         /// <summary>
@@ -90,6 +124,38 @@ namespace VIAT.Price.Services
                     }
                 }
             };
+        }
+
+
+        /// <summary>
+        /// 保存方法
+        /// </summary>
+        /// <param name="saveData">该参数为前端传过来的json，需要转为dictinary</param>
+        /// <returns></returns>
+        public WebResponseContent bathSaveCustPrice(object saveData)
+        {
+            SaveModel saveModel = new SaveModel();
+            //构造需要保存的saveModel
+            //计算表体和实体的值
+            string sRowDatas = saveData.ToString();
+            if (string.IsNullOrEmpty(sRowDatas) == false)
+            {
+             
+                List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(typeof(Viat_app_cust_price), sRowDatas);
+                saveModel.MainDatas = entityDic;
+                saveModel.mainOptionType = SaveModel.MainOptionType.add;
+                saveModel.MainFacType = typeof(Viat_app_cust_price);
+            }
+            else
+            {
+                webResponse.Error("no data save");
+            }
+
+            AddOnExecute = (saveModel) => {
+                return base.CustomUpdateMains(saveModel);
+            };
+
+            return base.Add(saveModel);
         }
 
         public override WebResponseContent Add(SaveModel saveDataModel)

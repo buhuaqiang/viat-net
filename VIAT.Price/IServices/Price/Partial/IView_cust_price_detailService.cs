@@ -9,5 +9,6 @@ namespace VIAT.Price.IServices
 {
     public partial interface IView_cust_price_detailService
     {
+       
     }
  }

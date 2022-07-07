@@ -1188,6 +1188,142 @@ namespace VIAT.Core.BaseProvider
             return dictionaryResult;
         }
 
+
+        /// <summary>
+        /// 将数据转换成对象后最终保存
+        /// </summary>
+        /// <typeparam name="DetailT"></typeparam>
+        /// <param name="saveModel"></param>
+        /// <param name="mainKeyProperty"></param>
+        /// <param name="detailKeyInfo"></param>
+        /// <param name="keyDefaultVal"></param>
+        /// <returns></returns>
+        public WebResponseContent CustomUpdateMains(SaveModel saveModel)
+        {
+            try
+            {
+                if (saveModel == null)
+                    return Response.Error(ResponseType.ParametersLack);
+
+                if (saveModel.mainOptionType == SaveModel.MainOptionType.None)
+                {
+                    return Response.Error("please setting main table optionType");
+                }
+
+                #region 表头校验 
+                Type type = typeof(T);
+                #region 表头真实类型处理
+                if (type.Name.ToLower() != type.GetEntityTableName().ToLower() && saveModel.MainFacType != null)
+                {
+                    type = saveModel.MainFacType;
+                }
+                #endregion
+
+                //设置修改时间,修改人的默认值
+                UserInfo userInfo = UserContext.Current.UserInfo;
+                //saveModel.SetDefaultVal(AppSetting.ModifyMember, userInfo);                
+
+
+                //循环处理每一条
+                foreach (Dictionary<string, object> dic in saveModel.MainDatas)
+                {
+                    saveModel.MainData = dic;
+                    //判断提交的数据与实体格式是否一致
+                    string result = type.ValidateDicInEntity(saveModel.MainData, true, false, UserIgnoreFields);
+                    if (result != string.Empty)
+                        return Response.Error(result);
+
+                    //主键处理新增时
+                    if (saveModel.mainOptionType == SaveModel.MainOptionType.add)
+                    {
+                        PropertyInfo keyPro = type.GetKeyProperty();
+                        if (keyPro.PropertyType == typeof(Guid))
+                        {
+                            if (saveModel.MainData.ContainsKey(keyPro.Name) == true)
+                            {
+                                saveModel.MainData[keyPro.Name] = System.Guid.NewGuid();
+                            }
+                            else
+                            {
+                                saveModel.MainData.Add(keyPro.Name, System.Guid.NewGuid());
+                            }
+                        }
+                        else
+                        {
+                            saveModel.MainData.Remove(keyPro.Name);
+                        }
+                    }
+                    //获取主建类型的默认值用于判断后面数据是否正确,int long默认值为0,guid :0000-000....
+                    PropertyInfo mainKeyProperty = type.GetKeyProperty();
+                    object keyDefaultVal = mainKeyProperty.PropertyType.Assembly.CreateInstance(mainKeyProperty.PropertyType.FullName);//.ToString();
+                                                                                                                                       //判断是否包含主键
+                    if (mainKeyProperty == null
+                        || !saveModel.MainData.ContainsKey(mainKeyProperty.Name)
+                        || saveModel.MainData[mainKeyProperty.Name] == null
+                        )
+                    {
+                        return Response.Error(ResponseType.NoKey);
+                    }
+
+                    object mainKeyVal = saveModel.MainData[mainKeyProperty.Name];
+                    //判断主键类型是否正确
+                    (bool, string, object) validation = mainKeyProperty.ValidationValueForDbType(mainKeyVal).FirstOrDefault();
+                    if (!validation.Item1)
+                        return Response.Error(ResponseType.KeyError);
+
+
+                    object valueType = mainKeyVal.ToString().ChangeType(mainKeyProperty.PropertyType);
+                    //判断主键值是不是当前类型的默认值
+                    if (valueType == null ||
+                        (!valueType.GetType().Equals(mainKeyProperty.PropertyType)
+                        || valueType.ToString() == keyDefaultVal.ToString()
+                        ))
+                        return Response.Error(ResponseType.KeyError);
+
+                    if (saveModel.MainData.Count <= 1) return Response.Error("系统没有配置好编辑的数据，请检查model!");
+
+                    #endregion
+
+
+                    #region 操作数据库
+
+                    #region 更新表头
+                    if (saveModel.mainOptionType == SaveModel.MainOptionType.add)
+                    {
+                        saveModel.SetDefaultVal(AppSetting.CreateMember, userInfo);
+                    }
+
+                    #region
+
+                    #endregion
+                    WebResponseContent webMainResponseResult = this.GetType().GetMethod("UpdateMainToEntity")
+                           .MakeGenericMethod(new Type[] { type })
+                           .Invoke(this, new object[] { saveModel, mainKeyProperty })
+                           as WebResponseContent;
+
+                    if (webMainResponseResult.Status == false)
+                    {
+                        return webMainResponseResult.Error("save failed。");
+                    }
+                }
+                #endregion
+
+                /*更新数据库*/
+                repository.SaveChanges();
+                #endregion
+
+                return Response.OK("OK");
+            }
+            catch (Exception error)
+            {
+                return Response.Error("save failed：" + error.Message);
+            }
+            finally
+            {
+                Response.Code = "-1";
+            }
+        }
+
         /// <summary>
         /// 将数据转换成对象后最终保存
         /// </summary>

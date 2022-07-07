@@ -67,5 +67,67 @@ namespace VIAT.Price.Services
             DownLoadTemplateColumns = x => new { x.cust_id, x.group_id, x.prod_id, x.nhi_price, x.net_price, x.gross_price, x.min_qty, x.start_date, x.end_date, x.remarks };
             return base.Import(files);
         }
+
+        /// <summary>
+        /// 2.	取得新的Bid No
+        /// Filter條件為系統日 example :20220601
+        ///10碼，取得最大碼序號+1，帶入Bid No欄位
+        /// </summary>
+        /// <returns></returns>
+        public string getMaxBindNo()
+        {
+
+            //取得当前日期
+            string sCurrentDate = System.DateTime.Now.ToString("yyyyMMdd");
+            string sSql = @"SELECT MAX (bid_no) AS max_bidno 
+                                FROM viat_app_cust_price_detail
+                                WHERE LEN(bid_no) = 10
+                                  AND bid_no LIKE '" + sCurrentDate + @"%'
+                            ";
+            object obj = _repository.DapperContext.ExecuteScalar(sSql, null);
+            if (obj == null)
+            {
+                //当天第一个号码
+                return sCurrentDate + "01";
+            }
+            else
+            {
+                //取得当前最大序号 
+                string sSerial = obj.ToString().Substring(9, 2);
+                int nSerial = 0;
+                int.TryParse(sSerial, out nSerial);
+                return sCurrentDate + (nSerial + 1).ToString().PadLeft(2, '0');
+            }
+        }
+
+
+        /*
+         判斷Cust Id是否為Expfizer Cust Id         
+         */
+        public bool IsExpfizer(string sCustID)
+        {
+            string sSql = @"SELECT COUNT(*)
+                            FROM
+	                            viat_com_dist AS comDist
+	                            INNER JOIN viat_com_system_value AS sysValue ON comDist.dist_id = sysValue.sys_key
+	                            INNER JOIN viat_com_cust AS cust ON comDist.cust_dbid = cust.cust_dbid 
+                            WHERE
+	                            sysValue.status = 'Y'
+	                            AND sysValue.category_id = 'DistID'
+                            AND LOWER ( cust.cust_id ) = '" + sCustID + @"'";
+            object obj = _repository.DapperContext.ExecuteScalar(sSql, null);
+            if (obj == null || obj.ToString() == "0")
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+
+         
+
     }
 }
