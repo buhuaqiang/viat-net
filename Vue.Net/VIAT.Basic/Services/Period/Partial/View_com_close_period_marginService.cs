@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
 using VIAT.Basic.IServices;
 using System.Collections.Generic;
+using System;
 
 namespace VIAT.Basic.Services
 {
@@ -47,8 +48,15 @@ namespace VIAT.Basic.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
+        public string getPeriodCode()
+        {
+            string rule = "P" + $"D{DateTime.Now.GetHashCode()}";
+            return rule.Substring(0, 10);
+        }
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
+            string code = getPeriodCode();
+            saveDataModel.MainData["period_dbid"] = code;
             // 在保存数据库前的操作，所有数据都验证通过了，这一步执行完就执行数据库保存
             return _viat_com_close_period.Add(saveDataModel);
         }
