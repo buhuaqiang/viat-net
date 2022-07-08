@@ -17,6 +17,33 @@ namespace VIAT.Entity.DomainModels
     public partial class View_price_distributor_mapping:BaseEntity
     {
         /// <summary>
+       ///Product
+       /// </summary>
+       [Display(Name ="Product")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
+       public string prods { get; set; }
+
+       /// <summary>
+       ///Customer
+       /// </summary>
+       [Display(Name ="Customer")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
+       public string custs { get; set; }
+
+       /// <summary>
+       ///Group ID
+       /// </summary>
+       [Display(Name ="Group ID")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
+       public string groups { get; set; }
+
+       /// <summary>
        ///
        /// </summary>
        [Key]
@@ -38,7 +65,6 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="prod_dbid")]
        [Column(TypeName="uniqueidentifier")]
-       [Editable(true)]
        public Guid? prod_dbid { get; set; }
 
        /// <summary>
@@ -46,7 +72,6 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="cust_dbid")]
        [Column(TypeName="uniqueidentifier")]
-       [Editable(true)]
        public Guid? cust_dbid { get; set; }
 
        /// <summary>
@@ -54,7 +79,6 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="pricegroup_dbid")]
        [Column(TypeName="uniqueidentifier")]
-       [Editable(true)]
        public Guid? pricegroup_dbid { get; set; }
 
        /// <summary>
@@ -123,6 +147,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product ID")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
+       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string prod_id { get; set; }
 
@@ -132,6 +157,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product Name")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
+       [Editable(true)]
        public string prod_ename { get; set; }
 
        /// <summary>
@@ -155,6 +181,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Group ID")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
+       [Editable(true)]
        public string group_id { get; set; }
 
        /// <summary>
@@ -163,6 +190,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Group Name")]
        [MaxLength(100)]
        [Column(TypeName="varchar(100)")]
+       [Editable(true)]
        public string group_name { get; set; }
 
        /// <summary>
@@ -187,6 +215,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Customer ID")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
+       [Editable(true)]
        public string cust_id { get; set; }
 
        /// <summary>
@@ -195,6 +224,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Customer Name")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
+       [Editable(true)]
        public string cust_name { get; set; }
 
        /// <summary>
@@ -291,7 +321,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Customer")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
-       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string cust_dbidname { get; set; }
 
@@ -299,9 +328,8 @@ namespace VIAT.Entity.DomainModels
        ///Product
        /// </summary>
        [Display(Name ="Product")]
-       [MaxLength(111)]
-       [Column(TypeName="nvarchar(111)")]
-       [Editable(true)]
+       [MaxLength(66)]
+       [Column(TypeName="nvarchar(66)")]
        [Required(AllowEmptyStrings=false)]
        public string prod_dbidname { get; set; }
 
@@ -311,7 +339,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Group ID")]
        [MaxLength(121)]
        [Column(TypeName="varchar(121)")]
-       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string pricegroup_dbidname { get; set; }
 
