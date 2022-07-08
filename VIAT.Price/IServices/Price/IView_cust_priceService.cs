@@ -14,5 +14,9 @@ namespace VIAT.Price.IServices
         void setQueryParameters();
 
         WebResponseContent bathSaveCustPrice(object saveData);
+
+        string getMaxBindNo();
+
+        decimal getNetPriceByProdID(string prod_id);
     }
 }

@@ -121,5 +121,23 @@ namespace VIAT.Price.Controllers
         {
             return Json(_service.bathSaveCustPrice(saveModel));
         }
+
+        //取得bindno
+        [ApiActionPermission]
+        [HttpPost, Route("getMaxBindNo")]
+        public string getMaxBindNo()
+        {
+            return _service.getMaxBindNo();
+        }
+
+        /// <summary>
+        /// 取得Gross Price
+        /// </summary>
+        /// <param name="sProdID"></param>
+        /// <returns></returns>
+        public decimal getNetPriceByProdID(string prod_id)
+        {
+            return _service.getNetPriceByProdID(prod_id);
+        }
     }
-    }
+}

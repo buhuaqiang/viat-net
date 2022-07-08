@@ -20,6 +20,9 @@ using VIAT.Price.IRepositories;
 using VIAT.Price.IServices;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System;
+using System.Globalization;
+using System.Text;
 
 namespace VIAT.Price.Services
 {
@@ -145,6 +148,10 @@ namespace VIAT.Price.Services
                 saveModel.MainDatas = entityDic;
                 saveModel.mainOptionType = SaveModel.MainOptionType.add;
                 saveModel.MainFacType = typeof(Viat_app_cust_price);
+
+                //逻辑检查
+                
+
             }
             else
             {
@@ -157,6 +164,95 @@ namespace VIAT.Price.Services
 
             return base.Add(saveModel);
         }
+
+        #region 对前台数据校验
+        /// <summary>
+        /// //◆檢查 Group + Product / Customer + Product 在Add DataGrid中是否有重覆資料
+        //◆	檢查日期區間                起日需 <= 迄日
+        //◆	檢查nhi price、invoice price、net price、gross price關係
+        //其他金額檢查
+        //◆	檢查是否有未來價格資料
+        /// </summary>
+        /// <returns></returns>
+        public WebResponseContent checkData(List<Dictionary<string, object>> entityDic)
+        {
+
+            StringBuilder sMessage = new StringBuilder();
+            foreach(Dictionary<string, object> dic in entityDic)
+            {
+                //◆檢查 Group + Product / Customer + Product 在Add DataGrid中是否有重覆資料
+                string sPriceGroupDBID = dic["pricegroup_dbid"].ToString();
+                string sProdDBID = dic["prod_dbid"].ToString();
+                string sStartDate = dic["start_date"].ToString();
+                string sEndDate = dic["end_date"].ToString();
+                string sNhiPrice = dic["nhi_price"].ToString();
+                string sInvoicePrice = dic["invoice_price"].ToString();
+                string sNetPrice = dic["net_price"].ToString();
+         
+                if (CheckPriceBookExists(sPriceGroupDBID,sProdDBID) == true)
+                {
+                    //后台数据库已存在
+                    return webResponse.Error("Prod already exists in database");
+                }
+
+                //檢查日期區間 起日需 <= 迄日
+                DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
+                dtFormat.ShortDatePattern = "yyyy/MM/dd";
+                DateTime dtStart = Convert.ToDateTime(sStartDate, dtFormat);
+                DateTime dtEnd = Convert.ToDateTime(sEndDate, dtFormat);
+                if (dtStart >= dtEnd)
+                {
+                    return webResponse.Error("start date should <= end date");
+                }
+
+                //檢查nhi price、invoice price、net price、gross price關係
+                decimal dNhiPrice = 0;
+                decimal dInvoicePrice = 0;
+                decimal dNetPrice = 0;
+                decimal.TryParse(sNhiPrice, out dNhiPrice);
+                decimal.TryParse(sInvoicePrice, out dInvoicePrice);
+                decimal.TryParse(sNetPrice, out dNetPrice);
+                if(dInvoicePrice<dNetPrice)
+                {
+                   return webResponse.Error("Invoice Price < Net Price,can’t be saved. Please check.");
+                }
+
+                if(dInvoicePrice>dNhiPrice && dInvoicePrice == dNetPrice)
+                {
+                    sMessage.AppendLine("Invoice Price > NHI.");
+                    sMessage.AppendLine("Invoice Price ≠ Nhi Price but Invoice Price = Net Price.");
+                    sMessage.AppendLine("Do you want to add? ");
+
+                   
+                }
+                else if(dInvoicePrice > dNhiPrice)
+                {
+                    sMessage.AppendLine("Invoice Price > NHI.");                
+                    sMessage.AppendLine("Do you want to add? ");
+                }
+
+
+            }
+
+            return webResponse.OK();
+        }
+
+        /// <summary>
+        /// 檢查 Group + Product / Customer + Product 在Add DataGrid中是否有重覆資料
+        /// </summary>
+        /// <param name="sPriceGroupDBID"></param>
+        /// <param name="sProdDBID"></param>
+        /// <returns></returns>
+        private bool CheckPriceBookExists(string sPriceGroupDBID, string sProdDBID)
+        {
+            string sSql = "select count(*) from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid";
+            object obj = _repository.DapperContext.ExecuteScalar(sSql, new { pricegroup_dbid=sPriceGroupDBID, prod_dbid =sProdDBID});
+
+            return (((int)obj) == 0) ? false : true;
+
+        }
+
+        #endregion
 
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
@@ -184,6 +280,41 @@ namespace VIAT.Price.Services
         {
             DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price,x.net_price,x.min_qty,x.start_date,x.end_date,x.remarks };
             return base.DownLoadTemplate();
+        }
+
+
+
+        /// <summary>
+        /// 取得Gross Price
+        /// </summary>
+        /// <param name="sProdID">产品ID</param>
+        /// <returns></returns>
+        public decimal getNetPriceByProdID(string sProdID)
+        {
+            string sSql = @"SELECT
+	                    custprice.net_price 
+                    FROM
+	                    viat_app_cust_price AS custprice
+	                    INNER JOIN viat_app_cust_price_group AS pricegroup ON custprice.pricegroup_dbid = pricegroup.pricegroup_dbid
+	                    INNER JOIN viat_com_prod AS prod ON custprice.prod_dbid = prod.prod_dbid 
+                    WHERE
+	                    ( 1 = 1 ) 
+	                    AND ( pricegroup.group_id = 'GROSS' ) 
+	                    AND ( custprice.status =  'Y' ) 
+	                    AND (CONVERT(Date,  SysDateTime ( )) >= CONVERT(Date, custprice.start_date))
+	                    AND (CONVERT(Date,  SysDateTime ( )) <= CONVERT(Date, custprice.end_date))
+	                    AND prod.prod_id =  '" + sProdID + "'";
+            object obj = _repository.DapperContext.ExecuteScalar(sSql, null);
+            if (obj == null)
+            {
+                //当天第一个号码
+                return 0;
+            }
+            else
+            {
+                return (decimal)obj;
+            }
+
         }
 
         public override WebResponseContent Import(List<IFormFile> files)
