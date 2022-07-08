@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Entity.DomainModels;
 using VIAT.Price.IServices;
+using VIAT.Core.Filters;
 
 namespace VIAT.Price.Controllers
 {
@@ -36,6 +37,8 @@ namespace VIAT.Price.Controllers
         /// <param name="cust_id"></param>
         /// <returns></returns>
 
+        [ApiActionPermission]
+        [HttpGet, Route("IsExpfizer")]
         public bool IsExpfizer(string cust_id)
         {
             return _service.IsExpfizer(cust_id);
