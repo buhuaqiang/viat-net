@@ -26,14 +26,6 @@ namespace VIAT.Entity.DomainModels
        public Guid period_dbid { get; set; }
 
        /// <summary>
-       ///識別碼, PK, Identity
-       /// </summary>
-       [Display(Name ="識別碼, PK, Identity")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
-       /// <summary>
        ///公司別,舊版SUN_DB
        /// </summary>
        [Display(Name ="公司別,舊版SUN_DB")]
@@ -42,67 +34,67 @@ namespace VIAT.Entity.DomainModels
        public string entity { get; set; }
 
        /// <summary>
-       ///年度
+       ///Year
        /// </summary>
-       [Display(Name ="年度")]
+       [Display(Name ="Year")]
        [Column(TypeName="int")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public int year { get; set; }
 
        /// <summary>
-       ///期間
+       ///Period
        /// </summary>
-       [Display(Name ="期間")]
+       [Display(Name ="Period")]
        [Column(TypeName="int")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public int period { get; set; }
 
        /// <summary>
-       ///會計帳起始日期
+       ///Start Date
        /// </summary>
-       [Display(Name ="會計帳起始日期")]
+       [Display(Name ="Start Date")]
        [Column(TypeName="datetime")]
        [Editable(true)]
        public DateTime? start_date { get; set; }
 
        /// <summary>
-       ///會計帳結束日期
+       ///End Date
        /// </summary>
-       [Display(Name ="會計帳結束日期")]
+       [Display(Name ="End Date")]
        [Column(TypeName="datetime")]
        [Editable(true)]
        public DateTime? end_date { get; set; }
 
        /// <summary>
-       ///Sales 會計帳起始日期
+       ///Sales Start Date
        /// </summary>
-       [Display(Name ="Sales 會計帳起始日期")]
+       [Display(Name ="Sales Start Date")]
        [Column(TypeName="datetime")]
+       [Editable(true)]
        public DateTime? sales_start_date { get; set; }
 
        /// <summary>
-       ///Sales 會計帳結束日期
+       ///Sales End Date
        /// </summary>
-       [Display(Name ="Sales 會計帳結束日期")]
+       [Display(Name ="Sales End Date")]
        [Column(TypeName="datetime")]
+       [Editable(true)]
        public DateTime? sales_end_date { get; set; }
 
        /// <summary>
-       ///Margin起始日期
+       ///m_Start_Date
        /// </summary>
-       [Display(Name ="Margin起始日期")]
+       [Display(Name ="m_Start_Date")]
        [Column(TypeName="datetime")]
-       [Editable(true)]
        public DateTime? m_start_date { get; set; }
 
        /// <summary>
-       ///Margin結束日期
+       ///m_End_Date
        /// </summary>
-       [Display(Name ="Margin結束日期")]
+       [Display(Name ="m_End_Date")]
        [Column(TypeName="datetime")]
-       [Editable(true)]
        public DateTime? m_end_date { get; set; }
 
        /// <summary>
