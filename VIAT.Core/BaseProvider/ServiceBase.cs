@@ -1213,7 +1213,7 @@ namespace VIAT.Core.BaseProvider
                 #region 表头校验 
                 Type type = typeof(T);
                 #region 表头真实类型处理
-                if (type.Name.ToLower() != type.GetEntityTableName().ToLower() && saveModel.MainFacType != null)
+                if (saveModel.MainFacType != null)
                 {
                     type = saveModel.MainFacType;
                 }
