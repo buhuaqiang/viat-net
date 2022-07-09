@@ -1094,7 +1094,7 @@ namespace VIAT.Core.BaseProvider
 
 
 
-        #region 多表体批量保存
+        #region 多表体批量保存 
 
         /// <summary>
         /// 直接用sql语句进行批量更新操作，支持事务
