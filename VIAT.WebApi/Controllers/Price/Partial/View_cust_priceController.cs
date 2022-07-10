@@ -114,6 +114,16 @@ namespace VIAT.Price.Controllers
         }
 
 
+
+        //批量新增价格群组商品
+        [ApiActionPermission]
+        [HttpPost, Route("bathSaveCheckData")]
+        public ActionResult bathSaveCheckData([FromBody] object saveModel)
+        {
+            return Json(_service.bathSaveCheckData(saveModel));
+        }
+
+
         //批量新增价格群组商品
         [ApiActionPermission]
         [HttpPost, Route("bathSaveCustPrice")]
@@ -122,6 +132,8 @@ namespace VIAT.Price.Controllers
             return Json(_service.bathSaveCustPrice(saveModel));
         }
 
+
+        
         //取得bindno
         [ApiActionPermission]
         [HttpPost, Route("getMaxBindNo")]
