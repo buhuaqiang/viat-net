@@ -77,7 +77,7 @@ namespace VIAT.Price.Controllers
         [HttpPost, Route("invalidData")]
         public ActionResult invalidData([FromBody] SaveModel saveModel)
         {
-            return Json(_baseWebResponseContent);
+            return Json(_service.invalidData(saveModel));
         }
 
 

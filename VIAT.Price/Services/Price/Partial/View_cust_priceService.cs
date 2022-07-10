@@ -64,7 +64,7 @@ namespace VIAT.Price.Services
             string sSql = @"SELECT MAX (bid_no) AS max_bidno 
                             FROM viat_app_cust_price
                             WHERE LEN(bid_no) = 10
-                                  AND bid_no LIKE '"+ sCurrentDate  + @"%'
+                                  AND bid_no LIKE '" + sCurrentDate + @"%'
                             ";
             object obj = _repository.DapperContext.ExecuteScalar(sSql, null);
             if (obj == null)
@@ -78,7 +78,7 @@ namespace VIAT.Price.Services
                 string sSerial = obj.ToString().Substring(9, 2);
                 int nSerial = 0;
                 int.TryParse(sSerial, out nSerial);
-                return sCurrentDate + (nSerial + 1).ToString().PadLeft(2,'0');
+                return sCurrentDate + (nSerial + 1).ToString().PadLeft(2, '0');
             }
         }
 
@@ -106,14 +106,14 @@ namespace VIAT.Price.Services
 
                         break;
                     }
-                    if(item.Name== "QueryStatus")
+                    if (item.Name == "QueryStatus")
                     {
                         searchParametersList.Remove(item);
                         //Valid(Current)
                         if (item.Value == "1")
                         {
 
-                        } 
+                        }
                         //InValid History
                         else if (item.Value == "2")
                         {
@@ -132,7 +132,39 @@ namespace VIAT.Price.Services
 
         #region 更新保存方法
 
-        
+        public override WebResponseContent Update(SaveModel saveModel)
+        {
+    /*        UpdateOnExecute = (saveModel) =>
+            {
+                Viat_app_cust_price entity = JsonConvert.DeserializeObject<Viat_app_cust_price>(JsonConvert.SerializeObject(saveModel.MainData));
+                DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
+                dtFormat.ShortDatePattern = "yyyy-MM-dd";
+                if (Convert.ToDateTime(entity.end_date.ToString(), dtFormat) < Convert.ToDateTime(System.DateTime.Now.ToString(), dtFormat))
+                {
+                    entity.status = "N";
+                }
+
+                //处理NHI逻辑
+                UpdateCustPrice(entity, saveModel);
+
+                //最新计算方法
+                *//*
+                 1、当前界面记录为无效数据，则接end_date最小日期且end_date>界面的start_date,create_date升序，，end_date=界面的start_date-1,再走modify2方法
+                 2、当前界面记录为有效数据，则接end_date最小日期且end_date>界面的start_date，create_date升序，end_date=界面的start_date-1,再走modify2方法
+                 3、当前界面记录为未来数据，则接end_date最大日期，create_date升序，end_date=界面的start_date-1,不走modify2方法
+                 *//*
+                // List<Viat_app_cust_price> priceList = getPriceEndDateLessStartDate(entity.pricegroup_dbid.ToString(), entity.prod_dbid.ToString(), entity.start_date, entity.end_date);
+                ProcessPriceData(entity, saveModel);
+
+                base.CustomBatchProcessEntity(saveModel);    
+
+                webResponse.Code = "-1";
+                return webResponse.OK();
+            };*/
+
+            return base.Update(saveModel);
+        }
+
 
         #endregion
 
@@ -152,7 +184,7 @@ namespace VIAT.Price.Services
 
                 //逻辑检查
                 webResponse = checkData(entityDic);
-                if(webResponse.Status ==false)
+                if (webResponse.Status == false)
                 {
                     return webResponse;
                 }
@@ -190,7 +222,7 @@ namespace VIAT.Price.Services
                 List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(typeof(Viat_app_cust_price), sRowDatas);
                 saveModel.MainDatas = entityDic;
                 saveModel.mainOptionType = SaveModel.MainOptionType.add;
-                saveModel.MainFacType = typeof(Viat_app_cust_price); 
+                saveModel.MainFacType = typeof(Viat_app_cust_price);
             }
             else
             {
@@ -201,9 +233,9 @@ namespace VIAT.Price.Services
             {
                 string sPriceGroupDBID = dic["pricegroup_dbid"].ToString();
                 string sProdDBID = dic["prod_dbid"].ToString();
-               /* string sStartDate = dic["start_date"].ToString();
-                string sEndDate = dic["end_date"].ToString();*/
-                
+                /* string sStartDate = dic["start_date"].ToString();
+                 string sEndDate = dic["end_date"].ToString();*/
+
                 Viat_app_cust_price entity = JsonConvert.DeserializeObject<Viat_app_cust_price>(JsonConvert.SerializeObject(dic));
                 entity.custprice_dbid = System.Guid.NewGuid();
                 DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
@@ -215,11 +247,11 @@ namespace VIAT.Price.Services
                 //取得结束日期小于
                 //List<Viat_app_cust_price> oldPrice = getOldPrice(sPriceGroupDBID, sProdDBID);
                 //取得当前价格
-                Viat_app_cust_price currentPrice = getCurrentPrice(sPriceGroupDBID, sProdDBID);
+               /* Viat_app_cust_price currentPrice = getCurrentPrice(sPriceGroupDBID, sProdDBID);
                 //取得未来价格
                 Viat_app_cust_price futurePrice = getFuturePrice(sPriceGroupDBID, sProdDBID);
-               
-               
+
+*/
                 //处理NHI逻辑
                 AddCustPrice(entity, saveModel);
 
@@ -235,67 +267,79 @@ namespace VIAT.Price.Services
                  3、当前界面记录为未来数据，则接end_date最大日期，create_date升序，end_date=界面的start_date-1,不走modify2方法
                  */
                 // List<Viat_app_cust_price> priceList = getPriceEndDateLessStartDate(entity.pricegroup_dbid.ToString(), entity.prod_dbid.ToString(), entity.start_date, entity.end_date);
-                if (entity.start_date<System.DateTime.Now)
-                {
-                    //不是未来价格数据
-                    Viat_app_cust_price entityPrice = getPrice(entity.pricegroup_dbid.ToString(), entity.prod_dbid.ToString(),entity.start_date);
-                    if(entityPrice != null)
-                    {
-                        entityPrice.end_date = entity.start_date.AddDays(-1);
-                        if(entityPrice.start_date > entityPrice.end_date)
-                        {
-                            entityPrice.start_date = entityPrice.end_date;
-                        }
-                        if(entityPrice.end_date<DateTime.Now)
-                        {
-                            entityPrice.status = "N";
-                        }
+                ProcessPriceData(entity, saveModel);
 
-                        //更新price数据
-                        Dictionary<string, object> dicPrice = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entityPrice));
-                        SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
-                        dataResult.optionType = SaveModel.MainOptionType.update;
-                        dataResult.detailType = typeof(Viat_app_cust_price);
-                        dataResult.DetailData = new List<Dictionary<string, object>> { dicPrice };
-                        saveModel.DetailListData.Add(dataResult);
-                    }
-
-                    //取得过斯价格
-                    List<Viat_app_cust_price> expirePrice = getExpirePrice(sPriceGroupDBID, sProdDBID, entity.start_date);
-                    ModifyOldCustPrice(entity, expirePrice, saveModel);
-                }
-                else  
-                {
-                    //未来价格数据
-                    //处理目前最大的一条数据
-                    Viat_app_cust_price maxEndDatePrice = getMaxEndDataPrice(entity.pricegroup_dbid.ToString(), entity.prod_dbid.ToString());
-                    if(maxEndDatePrice != null)
-                    {
-                        maxEndDatePrice.end_date = entity.start_date.AddDays(-1);
-                        if (maxEndDatePrice.start_date > maxEndDatePrice.end_date)
-                        {
-                            maxEndDatePrice.start_date = maxEndDatePrice.end_date;
-                        }
-                        if (maxEndDatePrice.end_date < DateTime.Now)
-                        {
-                            maxEndDatePrice.status = "N";
-                        }
-                        //更新price数据
-                        Dictionary<string, object> dicMaxEndPrice = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(maxEndDatePrice));
-                        SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
-                        dataResult.optionType = SaveModel.MainOptionType.update;
-                        dataResult.detailType = typeof(Viat_app_cust_price);
-                        dataResult.DetailData = new List<Dictionary<string, object>> { dicMaxEndPrice };
-                        saveModel.DetailListData.Add(dataResult);
-                    }
-                }           
+                base.CustomBatchProcessEntity(saveModel);               
             }
-
-            base.CustomBatchProcessEntity(saveModel);
-
             return webResponse.OK();
         }
 
+        /// <summary>
+        /// 处理价格方法
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="saveModel"></param>
+        private void ProcessPriceData(Viat_app_cust_price entity, SaveModel saveModel)
+        {
+
+            if (entity.start_date < System.DateTime.Now)
+            {
+                //不是未来价格数据
+                Viat_app_cust_price entityPrice = getPrice(entity.pricegroup_dbid.ToString(), entity.prod_dbid.ToString(), entity.start_date, entity.custprice_dbid.ToString());
+                if (entityPrice != null)
+                {
+                    entityPrice.end_date = entity.start_date.AddDays(-1);
+                    if (entityPrice.start_date > entityPrice.end_date)
+                    {
+                        entityPrice.start_date = entityPrice.end_date;
+                    }
+                    if (entityPrice.end_date < DateTime.Now)
+                    {
+                        entityPrice.status = "N";
+                    }
+
+                    //更新price数据
+                    Dictionary<string, object> dicPrice = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entityPrice));
+                    SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+                    dataResult.optionType = SaveModel.MainOptionType.update;
+                    dataResult.detailType = typeof(Viat_app_cust_price);
+                    dataResult.DetailData = new List<Dictionary<string, object>> { dicPrice };
+                    saveModel.DetailListData.Add(dataResult);
+                }
+
+                //取得过斯价格
+                List<Viat_app_cust_price> expirePrice = getExpirePrice(entity.pricegroup_dbid.ToString(), entity.prod_dbid.ToString(), entity.start_date, entity.custprice_dbid.ToString());
+                ModifyOldCustPrice(entity, expirePrice, saveModel);
+            }
+            else
+            {
+                //未来价格数据
+                //处理目前最大的一条数据
+                Viat_app_cust_price maxEndDatePrice = getMaxEndDataPrice(entity.pricegroup_dbid.ToString(), entity.prod_dbid.ToString(), entity.custprice_dbid.ToString());
+                if (maxEndDatePrice != null)
+                {
+                    maxEndDatePrice.end_date = entity.start_date.AddDays(-1);
+                    if (maxEndDatePrice.start_date > maxEndDatePrice.end_date)
+                    {
+                        maxEndDatePrice.start_date = maxEndDatePrice.end_date;
+                    }
+                    if (maxEndDatePrice.end_date < DateTime.Now)
+                    {
+                        maxEndDatePrice.status = "N";
+                    }
+                    //更新price数据
+                    Dictionary<string, object> dicMaxEndPrice = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(maxEndDatePrice));
+                    SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+                    dataResult.optionType = SaveModel.MainOptionType.update;
+                    dataResult.detailType = typeof(Viat_app_cust_price);
+                    dataResult.DetailData = new List<Dictionary<string, object>> { dicMaxEndPrice };
+                    saveModel.DetailListData.Add(dataResult);
+                }
+            }
+        }
+    
+
+         
 
         /// <summary>
         /// 取得需要处理的第一条数据
@@ -304,9 +348,10 @@ namespace VIAT.Price.Services
         /// <param name="sProdDBID"></param>
         /// <param name="sStartDate"></param>
         /// <returns></returns>
-        private Viat_app_cust_price getPrice(string sPriceGroupDBID, string sProdDBID,DateTime dStartDate)
+        private Viat_app_cust_price getPrice(string sPriceGroupDBID, string sProdDBID,DateTime dStartDate, string sGuiD)
         {
             string sSql = "select top(1) *  from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid " +
+                " and custprice_dbid <> '" + sGuiD +　"'" +
                 " and end_date >'" + dStartDate + "' ORDER BY end_date,created_date ";
             Viat_app_cust_price entiryrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
 
@@ -320,9 +365,10 @@ namespace VIAT.Price.Services
         /// <param name="sProdDBID"></param>
         /// <param name="sStartDate"></param>
         /// <returns></returns>
-        private Viat_app_cust_price getMaxEndDataPrice(string sPriceGroupDBID, string sProdDBID)
+        private Viat_app_cust_price getMaxEndDataPrice(string sPriceGroupDBID, string sProdDBID, string sGuiD)
         {
             string sSql = "select top(1) *  from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid " +
+               " and custprice_dbid <> '" + sGuiD + "'" +
                 " ORDER BY end_date desc";
             Viat_app_cust_price entiryrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
 
@@ -421,10 +467,11 @@ namespace VIAT.Price.Services
         /// <param name="sPriceGroupDBID"></param>
         /// <param name="sProdDBID"></param>
         /// <returns></returns>
-        private List<Viat_app_cust_price> getExpirePrice(string sPriceGroupDBID, string sProdDBID, DateTime dStartDate)
+        private List<Viat_app_cust_price> getExpirePrice(string sPriceGroupDBID, string sProdDBID, DateTime dStartDate, string sGuiD)
         {
             string sSql = "select *  from viat_app_cust_price where   pricegroup_dbid='"+sPriceGroupDBID+"' and prod_dbid='"+sProdDBID+"' " +
                 "AND end_date > '"+dStartDate+"'" +
+                " and custprice_dbid <> '" + sGuiD + "'" +
                 " ORDER BY end_date DESC";
             List<Viat_app_cust_price> entiryExpirePriceLst = _repository.DapperContext.QueryList<Viat_app_cust_price>(sSql, null);
 
@@ -442,6 +489,24 @@ namespace VIAT.Price.Services
             Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
             SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
             dataResult.optionType = SaveModel.MainOptionType.add;
+            dataResult.detailType = typeof(Viat_app_cust_price);
+            dataResult.DetailData = new List<Dictionary<string, object>> { dic };
+            saveModel.DetailListData.Add(dataResult);
+
+        }
+
+        /// <summary>
+        /// 保存价格新增数据
+        /// </summary>
+        private void UpdateCustPrice(Viat_app_cust_price entity, SaveModel saveModel)
+        {
+            //处理NHI
+            ProcessNHI(entity, saveModel);
+
+            //增加price数据
+            Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
+            SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+            dataResult.optionType = SaveModel.MainOptionType.update;
             dataResult.detailType = typeof(Viat_app_cust_price);
             dataResult.DetailData = new List<Dictionary<string, object>> { dic };
             saveModel.DetailListData.Add(dataResult);
@@ -670,15 +735,55 @@ namespace VIAT.Price.Services
             return _cust_priceService.Add(saveDataModel);
         }
 
+ 
 
-        public override WebResponseContent Update(SaveModel saveModel)
+        public WebResponseContent invalidData(SaveModel saveData)
         {
-            return _cust_priceService.Update(saveModel);
-        }
+            SaveModel saveModel = new SaveModel();
+            string sSelectType = saveData.MainData["selectType"].ToString();
+            string sRowsData = saveData.MainData["rows"].ToString();
+            DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
+            dtFormat.ShortDatePattern = "yyyy-MM-dd";
+            DateTime dEndData = Convert.ToDateTime(saveData.MainData["invalid_date"].ToString(), dtFormat);
+            string sRemarks = saveData.MainData["remark"].ToString();
 
-        public WebResponseContent invalidData(SaveModel saveModel)
-        {
-            return null;
+            if (sSelectType == "0")
+            {
+                //取得主界面值
+           
+                //取得列表勾选的值
+                List<Viat_app_cust_price> entityList = JsonConvert.DeserializeObject<List<Viat_app_cust_price>>(sRowsData);
+                foreach(Viat_app_cust_price price in entityList)
+                {
+                    price.status = "N";
+                    price.end_date = dEndData;
+                    price.remarks = sRemarks;
+
+                    Dictionary<string,object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(price));
+                    SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+                    dataResult.optionType = SaveModel.MainOptionType.update;
+                    dataResult.detailType = typeof(Viat_app_cust_price);
+                    dataResult.DetailData = new List<Dictionary<string, object>> { dic };
+                    saveModel.DetailListData.Add(dataResult);
+                }
+
+            }
+            else if (sSelectType == "1")
+            {
+
+            }
+            else if (sSelectType == "2")
+            {
+
+            }
+            else if(sSelectType == "3")
+            {
+
+            }
+
+            base.CustomBatchProcessEntity(saveModel);
+            return webResponse.OK();
+ 
         }
 
         public WebResponseContent detachProducts(SaveModel saveModel)
