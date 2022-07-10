@@ -20,5 +20,7 @@ namespace VIAT.Price.IServices
         string getMaxBindNo();
 
         decimal getNetPriceByProdID(string prod_id);
+
+        WebResponseContent invalidData(SaveModel saveData);
     }
 }
