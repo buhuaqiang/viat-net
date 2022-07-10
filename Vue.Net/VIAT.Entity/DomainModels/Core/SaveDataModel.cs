@@ -55,6 +55,9 @@ namespace VIAT.Entity.DomainModels
 
             //删除key记录
             public List<object> detailDelKeys = new List<object>();
+
+            //多实类操作 新增，修改
+            public MainOptionType optionType; 
         }
 
         /// <summary>

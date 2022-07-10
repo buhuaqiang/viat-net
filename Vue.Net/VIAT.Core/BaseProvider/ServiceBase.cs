@@ -1126,6 +1126,63 @@ namespace VIAT.Core.BaseProvider
             return Response.OK(sMessage);
         }
 
+
+        #region 没有任务校验，直接批量保存多类型实体
+        public virtual WebResponseContent CustomBatchProcessEntity(SaveModel saveModel)
+        {
+            foreach(SaveModel.DetailListDataResult entityFac in  saveModel.DetailListData)
+            {
+                WebResponseContent webMainResponseResult = this.GetType().GetMethod("BatchProcessEntity")
+                          .MakeGenericMethod(new Type[] { entityFac.detailType })
+                          .Invoke(this, new object[] { entityFac })
+                          as WebResponseContent;
+
+                if (webMainResponseResult.Status == false)
+                {
+                    return Response.Error("save failed。");
+                }
+            }
+
+            /*更新数据库*/
+            repository.SaveChanges();
+            return Response.OK();
+        }
+
+
+        /// <summary>
+        /// 处理多实体方法
+        /// </summary>
+        /// <typeparam name="DetailT"></typeparam>
+        /// <param name="entityFac"></param>
+        /// <returns></returns>
+        public WebResponseContent BatchProcessEntity<DetailT>(SaveModel.DetailListDataResult entityFac) where DetailT : class
+        {
+            List<DetailT> detailList = entityFac.DetailData?.DicToList<DetailT>();
+            if (entityFac.optionType == SaveModel.MainOptionType.add)
+            {
+                detailList.ForEach(x=>
+                {
+                    //設置默認值
+                    x.SetCreateDefaultVal();
+                    repository.DbContext.Entry<DetailT>(x).State = EntityState.Added;
+                });
+                  
+            }
+            else if(entityFac.optionType == SaveModel.MainOptionType.update)
+            {
+                detailList.ForEach(x =>
+                {
+                    //設置默認值
+                    x.SetModifyDefaultVal();
+                    repository.Update<DetailT>(x);
+                });
+            }
+
+            return Response.OK();
+        }
+
+        #endregion
+
         /// <summary>
         /// 
         /// </summary>
@@ -1596,7 +1653,7 @@ namespace VIAT.Core.BaseProvider
         }
 
 
-            public WebResponseContent UpdateDetailsToEntity<DetailT>(SaveModel saveModel, PropertyInfo mainKeyProperty, PropertyInfo detailKeyInfo, object keyDefaultVal) where DetailT : class
+       public WebResponseContent UpdateDetailsToEntity<DetailT>(SaveModel saveModel, PropertyInfo mainKeyProperty, PropertyInfo detailKeyInfo, object keyDefaultVal) where DetailT : class
         {
             List<DetailT> detailList = saveModel.DetailsData?.DicToList<DetailT>();
 
