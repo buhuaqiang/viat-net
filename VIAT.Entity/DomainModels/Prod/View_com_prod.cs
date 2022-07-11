@@ -26,35 +26,8 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public string entity { get; set; }
 
-       /// <summary>
-       ///Division
-       /// </summary>
-       [Display(Name ="Division")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       public string division { get; set; }
 
-       /// <summary>
-       ///Sales MPG
-       /// </summary>
-       [Display(Name ="Sales MPG")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string lmpg_mpg_id { get; set; }
-
-       /// <summary>
-       ///Finance MPG
-       /// </summary>
-       [Display(Name ="Finance MPG")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       public string global_mpg { get; set; }
-
-       /// <summary>
+         /// <summary>
        ///Item Code
        /// </summary>
        [Display(Name ="Item Code")]
@@ -63,6 +36,15 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string prod_id { get; set; }
+
+         /// <summary>
+       ///Item Description(English)
+       /// </summary>
+       [Display(Name ="Item Description(English)")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       [Editable(true)]
+       public string prod_ename { get; set; }
 
        /// <summary>
        ///Item Description(Chinese)
@@ -73,30 +55,6 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public string prod_sname { get; set; }
 
-       /// <summary>
-       ///Item Description(English)
-       /// </summary>
-       [Display(Name ="Item Description(English)")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       [Editable(true)]
-       public string prod_ename { get; set; }
-
-       /// <summary>
-       ///列名prod_cname
-       /// </summary>
-       [Display(Name ="列名prod_cname")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
-       public string prod_cname { get; set; }
-
-       /// <summary>
-       ///列名std_cost
-       /// </summary>
-       [Display(Name ="列名std_cost")]
-       [DisplayFormat(DataFormatString="12,5")]
-       [Column(TypeName="decimal")]
-       public decimal? std_cost { get; set; }
 
        /// <summary>
        ///Unit Of Stock
@@ -116,7 +74,28 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public string unit_sale { get; set; }
 
+      
+
        /// <summary>
+       ///Sales MPG
+       /// </summary>
+       [Display(Name ="Local Mpg")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public string lmpg_mpg_id { get; set; }
+
+       /// <summary>
+       ///Finance MPG
+       /// </summary>
+       [Display(Name ="Global Mpg")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       [Editable(true)]
+       public string global_mpg { get; set; }
+
+         /// <summary>
        ///NHI Product Code
        /// </summary>
        [Display(Name ="NHI Product Code")]
@@ -125,23 +104,16 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public string nhi_id { get; set; }
 
-       /// <summary>
-       ///列名prod_type
+        /// <summary>
+       ///Default Distributor
        /// </summary>
-       [Display(Name ="列名prod_type")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       public string prod_type { get; set; }
+       [Display(Name ="Default Distributor")]
+       [MaxLength(5)]
+       [Column(TypeName="varchar(5)")]
+       [Editable(true)]
+       public string default_dist_id { get; set; }
 
-       /// <summary>
-       ///Inv Type
-       /// </summary>
-       [Display(Name ="Inv Type")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       public string inv_type { get; set; }
-
-       /// <summary>
+        /// <summary>
        ///NHI Fact/Dis Percent
        /// </summary>
        [Display(Name ="NHI Fact/Dis Percent")]
@@ -159,24 +131,7 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public decimal? pack_size_pri { get; set; }
 
-       /// <summary>
-       ///列名new_prod_id
-       /// </summary>
-       [Display(Name ="列名new_prod_id")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       public string new_prod_id { get; set; }
-
-       /// <summary>
-       ///Is Control Drug
-       /// </summary>
-       [Display(Name ="Is Control Drug")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       [Editable(true)]
-       public string is_ctrl_drug { get; set; }
-
-       /// <summary>
+        /// <summary>
        ///NHI Price
        /// </summary>
        [Display(Name ="NHI Price")]
@@ -185,7 +140,25 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public decimal? nhi_price { get; set; }
 
-       /// <summary>
+        /// <summary>
+       ///Division
+       /// </summary>
+       [Display(Name ="Division")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       [Editable(true)]
+       public string division { get; set; }
+
+         /// <summary>
+       ///Product Short Name
+       /// </summary>
+       [Display(Name ="Product Short Name")]
+       [MaxLength(30)]
+       [Column(TypeName="varchar(30)")]
+       [Editable(true)]
+       public string prod_short_name { get; set; }
+
+        /// <summary>
        ///License Product No
        /// </summary>
        [Display(Name ="License Product No")]
@@ -203,21 +176,34 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public string license_name { get; set; }
 
-       /// <summary>
-       ///列名stock_market
+         /// <summary>
+       ///Form
        /// </summary>
-       [Display(Name ="列名stock_market")]
-       [Column(TypeName="int")]
-       public int? stock_market { get; set; }
+       [Display(Name ="Form")]
+       [MaxLength(30)]
+       [Column(TypeName="varchar(30)")]
+       [Editable(true)]
+       public string prod_form { get; set; }
 
        /// <summary>
-       ///列名stock_pfizer
+       ///Strength
        /// </summary>
-       [Display(Name ="列名stock_pfizer")]
-       [Column(TypeName="int")]
-       public int? stock_pfizer { get; set; }
+       [Display(Name ="Strength")]
+       [MaxLength(30)]
+       [Column(TypeName="varchar(30)")]
+       [Editable(true)]
+       public string prod_strength { get; set; }
 
-       /// <summary>
+         /// <summary>
+       ///Is Control Drug
+       /// </summary>
+       [Display(Name ="Is Control Drug")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Editable(true)]
+       public string is_ctrl_drug { get; set; }
+
+        /// <summary>
        ///Sample Safty Stock
        /// </summary>
        [Display(Name ="Sample Safty Stock")]
@@ -225,7 +211,7 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public int? safty_stock { get; set; }
 
-       /// <summary>
+         /// <summary>
        ///Status
        /// </summary>
        [Display(Name ="Status")]
@@ -252,6 +238,7 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public string status_bid { get; set; }
 
+        
        /// <summary>
        ///No Stock(Pfizer)
        /// </summary>
@@ -270,23 +257,71 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public string status_stock_dist { get; set; }
 
-       /// <summary>
-       ///Default Distributor
-       /// </summary>
-       [Display(Name ="Default Distributor")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       [Editable(true)]
-       public string default_dist_id { get; set; }
+
+
+
+      
 
        /// <summary>
-       ///Product Short Name
+       ///列名prod_cname
        /// </summary>
-       [Display(Name ="Product Short Name")]
-       [MaxLength(30)]
-       [Column(TypeName="varchar(30)")]
+       [Display(Name ="列名prod_cname")]
+       [MaxLength(50)]
        [Editable(true)]
-       public string prod_short_name { get; set; }
+       [Column(TypeName="nvarchar(50)")]
+       public string prod_cname { get; set; }
+
+       /// <summary>
+       ///列名std_cost
+       /// </summary>
+       [Display(Name ="列名std_cost")]
+       [DisplayFormat(DataFormatString="12,5")]
+       [Column(TypeName="decimal")]
+       [Editable(true)]
+       public decimal? std_cost { get; set; }
+
+       /// <summary>
+       ///列名prod_type
+       /// </summary>
+       [Display(Name ="列名prod_type")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       [Editable(true)]
+       public string prod_type { get; set; }
+
+       /// <summary>
+       ///Inv Type
+       /// </summary>
+       [Display(Name ="Inv Type")]
+       [MaxLength(15)]
+       [Editable(true)]
+       [Column(TypeName="varchar(15)")]
+       public string inv_type { get; set; }
+
+       /// <summary>
+       ///列名new_prod_id
+       /// </summary>
+       [Display(Name ="列名new_prod_id")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       [Editable(true)]
+       public string new_prod_id { get; set; }
+
+       /// <summary>
+       ///列名stock_market
+       /// </summary>
+       [Display(Name ="列名stock_market")]
+       [Column(TypeName="int")]
+       [Editable(true)]
+       public int? stock_market { get; set; }
+
+       /// <summary>
+       ///列名stock_pfizer
+       /// </summary>
+       [Display(Name ="列名stock_pfizer")]
+       [Column(TypeName="int")]
+       [Editable(true)]
+       public int? stock_pfizer { get; set; }
 
        /// <summary>
        ///列名prod_category
@@ -295,24 +330,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
        public string prod_category { get; set; }
-
-       /// <summary>
-       ///Form
-       /// </summary>
-       [Display(Name ="Form")]
-       [MaxLength(30)]
-       [Column(TypeName="varchar(30)")]
-       [Editable(true)]
-       public string prod_form { get; set; }
-
-       /// <summary>
-       ///Strength
-       /// </summary>
-       [Display(Name ="Strength")]
-       [MaxLength(30)]
-       [Column(TypeName="varchar(30)")]
-       [Editable(true)]
-       public string prod_strength { get; set; }
 
        /// <summary>
        ///Packed
