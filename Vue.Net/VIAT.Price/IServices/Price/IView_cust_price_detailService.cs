@@ -9,5 +9,7 @@ namespace VIAT.Price.IServices
     public partial interface IView_cust_price_detailService : IService<View_cust_price_detail>
     {
         bool IsExpfizer(string sCustID);
+        void setQueryParameters();
+
     }
 }

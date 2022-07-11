@@ -19,6 +19,9 @@ using Microsoft.AspNetCore.Http;
 using VIAT.Price.IRepositories;
 using VIAT.Price.IServices;
 using System.Collections.Generic;
+using System;
+using Newtonsoft.Json;
+using System.Globalization;
 
 namespace VIAT.Price.Services
 {
@@ -50,11 +53,191 @@ namespace VIAT.Price.Services
             return _viat_app_cust_price_detailService.Add(saveDataModel);
         }
 
-        public override WebResponseContent Update(SaveModel saveModel)
+
+        /// <summary>
+        /// 查询条件：产品可以多选查询，把查询列表中的prods换成prod_dbid
+        /// </summary>
+        /// <param name="options"></param>
+        public void setQueryParameters()
         {
-            return _viat_app_cust_price_detailService.Update(saveModel);
+            QueryRelativeList = (searchParametersList) =>
+            {
+                for (int i = searchParametersList.Count - 1; i >= 0; i--)
+                {
+                    SearchParameters item = searchParametersList[i];
+
+                    if (item.Name == "prods")
+                    {
+                        //替换成prod_id 
+                        //先移除再添加
+                        searchParametersList.Remove(item);
+
+                        SearchParameters paraTmp = new SearchParameters();
+                        paraTmp.Name = "prod_dbid";
+                        paraTmp.Value = item.Value;
+                        paraTmp.DisplayType = item.DisplayType;
+                        searchParametersList.Add(paraTmp);
+
+                        break;
+                    }
+                    if (item.Name == "QueryStatus")
+                    {
+                        searchParametersList.Remove(item);
+                        //Valid(Current) 开始日期小于等于系统日期，结束日期大于等于系统日期
+                        if (item.Value == "1")
+                        {
+                            SearchParameters paraTmpStartDate = new SearchParameters();
+                            paraTmpStartDate.Name = "start_date";
+                            paraTmpStartDate.Value = System.DateTime.Now.ToString("yyyy-MM-dd");
+                            paraTmpStartDate.DisplayType = "lessorequal";
+                            searchParametersList.Add(paraTmpStartDate);
+
+                            SearchParameters paraTmpEndDate = new SearchParameters();
+                            paraTmpEndDate.Name = "end_date";
+                            paraTmpEndDate.Value = System.DateTime.Now.ToString("yyyy-MM-dd");
+                            paraTmpEndDate.DisplayType = "thanorequal";
+                            searchParametersList.Add(paraTmpEndDate);
+
+                            SearchParameters paraTmpStatus = new SearchParameters();
+                            paraTmpStatus.Name = "status";
+                            paraTmpStatus.Value = "Y";
+                            paraTmpStatus.DisplayType = "";
+                            searchParametersList.Add(paraTmpStatus);
+                        }
+                        //InValid History
+                        else if (item.Value == "2")
+                        {
+                            SearchParameters paraTmpStatus = new SearchParameters();
+                            paraTmpStatus.Name = "status";
+                            paraTmpStatus.Value = "N";
+                            paraTmpStatus.DisplayType = "";
+                            searchParametersList.Add(paraTmpStatus);
+                        }
+                        //Valid future
+                        else if (item.Value == "3")
+                        {
+                            SearchParameters paraTmpStartDate = new SearchParameters();
+                            paraTmpStartDate.Name = "start_date";
+                            paraTmpStartDate.Value = System.DateTime.Now.ToString("yyyy-MM-dd");
+                            paraTmpStartDate.DisplayType = "thanorequal";
+                            searchParametersList.Add(paraTmpStartDate);
+
+                            SearchParameters paraTmpStatus = new SearchParameters();
+                            paraTmpStatus.Name = "status";
+                            paraTmpStatus.Value = "Y";
+                            paraTmpStatus.DisplayType = "";
+                            searchParametersList.Add(paraTmpStatus);
+                        }
+                    }
+                }
+            };
         }
 
+        #region update
+        public override WebResponseContent Update(SaveModel saveModel)
+        {
+
+            UpdateOnExecute = (saveModel) =>
+            {
+                DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
+                dtFormat.ShortDatePattern = "yyyy-MM-dd";
+                //把编辑的数据转成实体
+                Viat_app_cust_price_detail entity = JsonConvert.DeserializeObject<Viat_app_cust_price_detail>(JsonConvert.SerializeObject(saveModel.MainData));
+                if (Convert.ToDateTime(entity.end_date.ToString("yyyy-MM-dd"), dtFormat) < Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
+                {
+                    entity.status = "N";
+                }
+                else
+                {
+                    entity.status = "Y";
+                }
+
+
+                //◆	判斷是否有過去的價格資料
+                Viat_app_cust_price_detail oldPrice = getOldPriceForEdit(entity);
+                if (oldPrice != null)
+                {
+                    //有旧数据
+                    if (entity.status == "Y" && entity.start_date < oldPrice.start_date)
+                    {
+                        webResponse.Code = "-1";
+                        return webResponse.Error("Start date can't not less than " + oldPrice.start_date.ToString("yyyy/MM/dd"));
+
+                    }
+
+                    if (entity.start_date < oldPrice.end_date)
+                    {
+                        if (entity.start_date.AddDays(-1) < oldPrice.start_date)
+                        {
+                            oldPrice.end_date = entity.start_date;
+                        }
+                        else
+                        {
+                            oldPrice.end_date = entity.start_date.AddDays(-1);
+                        }
+
+                        if (oldPrice.end_date < Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat) == true)
+                        {
+                            entity.status = "N";
+                        }
+
+                        //把实休转为dictionary
+                        Dictionary<string, object> dicOldPrice = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(oldPrice));
+
+                        //修改旧数据
+                        SaveModel.DetailListDataResult dataOldResult = new SaveModel.DetailListDataResult();
+                        dataOldResult.optionType = SaveModel.MainOptionType.update;
+                        dataOldResult.detailType = typeof(Viat_app_cust_price_detail);
+                        dataOldResult.DetailData = new List<Dictionary<string, object>> { dicOldPrice };
+                        saveModel.DetailListData.Add(dataOldResult);
+                    }
+                }
+
+                //◆	更新本次修改價格資料
+                //把实休转为dictionary
+                Dictionary<string, object> dicEntity = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
+
+                //更新本身的数据
+                SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+                dataResult.optionType = SaveModel.MainOptionType.update;
+                dataResult.detailType = typeof(Viat_app_cust_price_detail);
+                dataResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
+                saveModel.DetailListData.Add(dataResult);
+
+
+                base.CustomBatchProcessEntity(saveModel);
+
+                webResponse.Code = "-1";
+                return webResponse.OK();
+            };
+
+            return base.Update(saveModel);
+        }
+
+        /// <summary>
+        /// 過去的價格資料,开始日期最接近编辑的开始日期
+        /// </summary>
+        /// <param name="entityParameter"></param>
+        /// <returns></returns>
+        private Viat_app_cust_price_detail getOldPriceForEdit(Viat_app_cust_price_detail entityParameter)
+        {
+
+            string sSql = @"SELECT TOP(1) *
+                                FROM viat_app_cust_price_detail
+	                               WHERE cust_dbid = '" + entityParameter.cust_dbid + @"'
+　　　                            AND prod_dbid =  '" + entityParameter.prod_dbid + @"' 
+                            AND (CONVERT(Date, start_date)  <= CONVERT(Date, GETDATE()))
+                            AND  pricedetail_dbid <>  '" + entityParameter.pricedetail_dbid + @"' 
+                                ORDER BY start_date DESC
+                            ";
+
+            return _repository.DapperContext.QueryFirst<Viat_app_cust_price_detail>(sSql, null);
+
+        }
+
+         
+
+        #endregion
         public override WebResponseContent DownLoadTemplate()
         {
             DownLoadTemplateColumns = x => new {x.cust_id, x.group_id, x.prod_id, x.nhi_price, x.net_price,x.gross_price, x.min_qty, x.start_date, x.end_date, x.remarks };
@@ -93,7 +276,7 @@ namespace VIAT.Price.Services
             else
             {
                 //取得当前最大序号 
-                string sSerial = obj.ToString().Substring(9, 2);
+                string sSerial = obj.ToString().Substring(8, 2);
                 int nSerial = 0;
                 int.TryParse(sSerial, out nSerial);
                 return sCurrentDate + (nSerial + 1).ToString().PadLeft(2, '0');
