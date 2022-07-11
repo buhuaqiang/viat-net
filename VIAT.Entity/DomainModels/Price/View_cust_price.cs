@@ -311,7 +311,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="pricegroup_dbidname")]
        [MaxLength(121)]
        [Column(TypeName="varchar(121)")]
-       [Required(AllowEmptyStrings=false)]
        public string pricegroup_dbidname { get; set; }
 
        /// <summary>
@@ -360,7 +359,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product")]
        [MaxLength(66)]
        [Column(TypeName="varchar(66)")]
-       [Required(AllowEmptyStrings=false)]
        public string prod_dbidname { get; set; }
 
        /// <summary>
@@ -369,7 +367,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Products")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
        public string prods { get; set; }
 
        /// <summary>
@@ -378,7 +375,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
        public string QueryStatus { get; set; }
 
        

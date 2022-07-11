@@ -348,13 +348,6 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="last_deal_date")]
-       [Column(TypeName="date")]
-       public DateTime? last_deal_date { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
        [Display(Name ="created_username")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]

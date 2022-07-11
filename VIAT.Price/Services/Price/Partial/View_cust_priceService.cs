@@ -194,7 +194,7 @@ namespace VIAT.Price.Services
                 return webResponse.OK();
             };*/
 
-            return base.Update(saveModel);
+            return _cust_priceService.Update(saveModel);
         }
 
 
