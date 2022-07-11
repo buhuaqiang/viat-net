@@ -75,7 +75,7 @@ namespace VIAT.Price.Services
             else
             {
                 //取得当前最大序号 
-                string sSerial = obj.ToString().Substring(9, 2);
+                string sSerial = obj.ToString().Substring(8, 2);
                 int nSerial = 0;
                 int.TryParse(sSerial, out nSerial);
                 return sCurrentDate + (nSerial + 1).ToString().PadLeft(2, '0');
