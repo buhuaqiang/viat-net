@@ -1177,6 +1177,15 @@ namespace VIAT.Core.BaseProvider
                     repository.Update<DetailT>(x);
                 });
             }
+            else if(entityFac.optionType == SaveModel.MainOptionType.delete)
+            {
+                detailList.ForEach(x =>
+                {
+                    //設置默認值
+                    x.SetModifyDefaultVal();
+                    repository.DbContext.Entry<DetailT>(x).State = EntityState.Deleted;
+                });             
+            }
 
             return Response.OK();
         }

@@ -71,7 +71,9 @@ namespace VIAT.Entity.DomainModels
             //新增
             add =1,
             //更新
-            update=2
+            update=2,
+            //删除
+            delete =3,
         }
     }
 }

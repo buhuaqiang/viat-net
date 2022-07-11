@@ -130,14 +130,14 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public string status { get; set; }
 
-       /// <summary>
+       /*/// <summary>
        ///作廢否,True:作廢;False:不作廢
        /// </summary>
        [Display(Name ="作廢否,True:作廢;False:不作廢")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
-       public string is_used { get; set; }
+       public string is_used { get; set; }*/
 
        /// <summary>
        ///資料來源,0:EBMS;1:Manual;2:Copy;3:Detach
