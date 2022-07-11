@@ -147,6 +147,9 @@ namespace VIAT.Price.Controllers
         /// </summary>
         /// <param name="sProdID"></param>
         /// <returns></returns>
+        ///   //取得bindno
+        [ApiActionPermission]
+        [HttpPost, Route("getNetPriceByProdID")]
         public decimal getNetPriceByProdID(string prod_id)
         {
             return _service.getNetPriceByProdID(prod_id);
