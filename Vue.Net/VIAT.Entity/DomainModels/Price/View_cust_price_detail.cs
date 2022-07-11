@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "客戶價格明細主页面",TableName = "View_cust_price_detail")]
+    [Entity(TableCnName = "Cust Price Book",TableName = "View_cust_price_detail")]
     public partial class View_cust_price_detail:BaseEntity
     {
         /// <summary>
@@ -74,7 +74,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Cust")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
-       [Required(AllowEmptyStrings=false)]
        public string cust_dbidname { get; set; }
 
        /// <summary>
@@ -100,7 +99,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product")]
        [MaxLength(66)]
        [Column(TypeName="varchar(66)")]
-       [Required(AllowEmptyStrings=false)]
        public string prod_dbidname { get; set; }
 
        /// <summary>
@@ -227,7 +225,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Products")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
        public string prods { get; set; }
 
        /// <summary>
@@ -261,7 +258,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
        public string QueryStatus { get; set; }
 
        

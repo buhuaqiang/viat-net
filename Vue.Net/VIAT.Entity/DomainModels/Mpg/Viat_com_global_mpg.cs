@@ -65,7 +65,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string bu_id { get; set; }
 
        /// <summary>
@@ -94,7 +93,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string category { get; set; }
 
        /// <summary>
