@@ -89,9 +89,11 @@ namespace VIAT.Price.Services
         public void setQueryParameters()
         {
             QueryRelativeList = (searchParametersList) =>
-            {
-                foreach (SearchParameters item in searchParametersList)
+            { 
+                for(int i=searchParametersList.Count-1; i>=0; i--)
                 {
+                    SearchParameters item = searchParametersList[i];
+
                     if (item.Name == "prods")
                     {
                         //替换成prod_id 
@@ -109,20 +111,50 @@ namespace VIAT.Price.Services
                     if (item.Name == "QueryStatus")
                     {
                         searchParametersList.Remove(item);
-                        //Valid(Current)
+                        //Valid(Current) 开始日期小于等于系统日期，结束日期大于等于系统日期
                         if (item.Value == "1")
                         {
+                            SearchParameters paraTmpStartDate = new SearchParameters();
+                            paraTmpStartDate.Name = "start_date";
+                            paraTmpStartDate.Value = System.DateTime.Now.ToString("yyyy-MM-dd");
+                            paraTmpStartDate.DisplayType = "lessorequal";
+                            searchParametersList.Add(paraTmpStartDate);
 
+                            SearchParameters paraTmpEndDate = new SearchParameters();
+                            paraTmpEndDate.Name = "end_date";
+                            paraTmpEndDate.Value = System.DateTime.Now.ToString("yyyy-MM-dd");
+                            paraTmpEndDate.DisplayType = "thanorequal";
+                            searchParametersList.Add(paraTmpEndDate);
+
+                            SearchParameters paraTmpStatus = new SearchParameters();
+                            paraTmpStatus.Name = "status";
+                            paraTmpStatus.Value = "Y";
+                            paraTmpStatus.DisplayType = "";
+                            searchParametersList.Add(paraTmpStatus);
                         }
                         //InValid History
                         else if (item.Value == "2")
                         {
-
+                            SearchParameters paraTmpStatus = new SearchParameters();
+                            paraTmpStatus.Name = "status";
+                            paraTmpStatus.Value = "N";
+                            paraTmpStatus.DisplayType = "";
+                            searchParametersList.Add(paraTmpStatus);
                         }
                         //Valid future
                         else if (item.Value == "3")
                         {
+                            SearchParameters paraTmpStartDate = new SearchParameters();
+                            paraTmpStartDate.Name = "start_date";
+                            paraTmpStartDate.Value = System.DateTime.Now.ToString("yyyy-MM-dd");
+                            paraTmpStartDate.DisplayType = "thanorequal";
+                            searchParametersList.Add(paraTmpStartDate); 
 
+                            SearchParameters paraTmpStatus = new SearchParameters();
+                            paraTmpStatus.Name = "status";
+                            paraTmpStatus.Value = "Y";
+                            paraTmpStatus.DisplayType = "";
+                            searchParametersList.Add(paraTmpStatus);
                         }
                     }
                 }
