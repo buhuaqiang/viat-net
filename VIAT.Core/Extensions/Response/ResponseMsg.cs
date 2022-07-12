@@ -46,10 +46,11 @@ namespace VIAT.Core.Extensions
                 case ResponseType.ModifyPwdSuccess:
                     msg = "密码修改成功"; break;
                 case ResponseType.OperSuccess:
-                    msg = "操作成功"; break;
+                    msg = "Operation successful"; break;
                 case ResponseType.PINError:
-                    msg = "验证码不正确"; break;
-                    
+                    msg = "Incorrect verification code"; break;
+
+
                 default: msg = responseType.ToString(); break;
             }
             return msg;
