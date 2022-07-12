@@ -83,7 +83,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
+       //[Required(AllowEmptyStrings=false)]
        public string lmpg_mpg_id { get; set; }
 
        /// <summary>
@@ -345,7 +345,7 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="列名lmpg_dbid")]
        [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
+       //[Required(AllowEmptyStrings=false)]
        public int lmpg_dbid { get; set; }
 
        /// <summary>
