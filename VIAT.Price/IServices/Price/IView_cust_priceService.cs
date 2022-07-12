@@ -22,5 +22,7 @@ namespace VIAT.Price.IServices
         decimal getNetPriceByProdID(string prod_id);
 
         WebResponseContent invalidData(object saveData);
+
+        PageGridData<View_cust_price> GetGroupInvalidPageData(PageDataOptions options);
     }
 }

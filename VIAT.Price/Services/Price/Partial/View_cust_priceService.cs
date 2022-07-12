@@ -51,6 +51,74 @@ namespace VIAT.Price.Services
 
 
         /// <summary>
+        /// 置无效数据查询
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public  PageGridData<View_cust_price> GetGroupInvalidPageData(PageDataOptions options)
+        {
+
+            /*解析查询条件*/
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            if (!string.IsNullOrEmpty(options.Wheres))
+            {
+                searchParametersList = options.Wheres.DeserializeObject<List<SearchParameters>>();
+                if (searchParametersList != null && searchParametersList.Count > 0)
+                {
+                    string sGroupID = "";
+                    string sProdID = "";
+                    foreach (SearchParameters sp in searchParametersList)
+                    {
+                        if (sp.Name.ToLower() == "group_id".ToLower())
+                        {
+                            sGroupID = sp.Value;
+                            continue;
+                        }
+
+                        if (sp.Name.ToLower() == "prod_id".ToLower())
+                        {
+                            sProdID = sp.Value;
+                            continue;
+                        }
+                    }
+
+                    QuerySql = @"SELECT custPrice.* 
+                                FROM
+	                                (
+	                                SELECT custPrice.*,
+		                                priceGroup.group_id, priceGroup.group_name,
+		                                prod.prod_id, prod.prod_ename
+	                                FROM
+		                                viat_app_cust_price AS custPrice
+		                                INNER JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid
+		                                INNER JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid 
+	                                WHERE ( 1 = 1 )
+		                                AND priceGroup.group_id = '" + sGroupID + "'";
+                    if (string.IsNullOrEmpty(sProdID) == false)
+                    {
+                        QuerySql += " AND prod.prod_id = '" + sProdID +"'";
+                    }
+                       QuerySql += @" AND prod.state = '1' 
+                                AND custPrice.status = 'Y'
+                                AND (CONVERT(Date, GETDATE()) >= CONVERT(Date, custPrice.start_date))
+                                AND (CONVERT(Date, GETDATE()) <= CONVERT(Date, custPrice.end_date))
+	                                ) custPrice
+	                                LEFT OUTER JOIN viat_app_dist_mapping AS distMapping ON distMapping.status = 'Y' 
+	                                AND distMapping.pricegroup_dbid = custPrice.pricegroup_dbid 
+	                                AND distMapping.prod_dbid = custPrice.prod_dbid 
+	                                AND (CONVERT(Date, GETDATE( )) >= CONVERT(Date, distMapping.start_date)) 
+	                                AND (CONVERT(Date, GETDATE( )) <= CONVERT(Date, distMapping.end_date)) 
+                                ORDER BY prod_id, modified_date";
+                                                }
+                                            }
+
+
+            return base.GetPageData(options);
+        }
+
+
+
+        /// <summary>
         /// 2.	取得新的Bid No
         /// Filter條件為系統日 example :20220601
         ///10碼，取得最大碼序號+1，帶入Bid No欄位
@@ -708,9 +776,9 @@ namespace VIAT.Price.Services
                     expirePrice.end_date = expirePrice.start_date;
                 }
 
-                if (expirePrice.org_start_date != null && expirePrice.start_date != expirePrice.org_start_date || expirePrice.org_end_date.Value.Year != 2099 && expirePrice.org_end_date != expirePrice.end_date)
+                if ((expirePrice.org_start_date != null && expirePrice.start_date != expirePrice.org_start_date || expirePrice.org_end_date.Value.Year != 2099) && (expirePrice.org_end_date != expirePrice.end_date))
                 {
-                    expirePrice.remarks += entity.remarks + " 原起迄日" + old_start_date + " ~ " + expirePrice.org_end_date.ToString("yyyy/mm/dd");
+                    expirePrice.remarks += entity.remarks  + " 原起迄日" + old_start_date + " ~ " + expirePrice.org_end_date.ToString("yyyy/mm/dd") + "  " + expirePrice.remarks;
                 }
 
                 if (expirePrice.end_date < DateTime.Now)
