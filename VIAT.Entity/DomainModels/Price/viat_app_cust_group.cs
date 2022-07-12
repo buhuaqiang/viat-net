@@ -13,337 +13,99 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "價格群組對應客戶",TableName = "viat_app_cust_group")]
-    public partial class viat_app_cust_group : BaseEntity
+    [Entity(TableCnName = "價格群組客戶關係表",TableName = "Viat_app_cust_group")]
+    public partial class Viat_app_cust_group:BaseEntity
     {
         /// <summary>
-       ///
+       ///PKID
        /// </summary>
        [Key]
-       [Display(Name ="cust_dbid")]
+       [Display(Name ="PKID")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-       public Guid cust_dbid { get; set; }
+       public Guid custgroup_dbid { get; set; }
 
        /// <summary>
-       ///
+       ///所屬事業單位,01:PH;03:AH;05:CH;06:NU
        /// </summary>
-       [Display(Name ="cust_id")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       [Required(AllowEmptyStrings=false)]
-       public string cust_id { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="dbid")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="entity")]
-       [MaxLength(3)]
-       [Column(TypeName="varchar(3)")]
-       public string entity { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="division")]
+       [Display(Name ="所屬事業單位,01:PH;03:AH;05:CH;06:NU")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        public string division { get; set; }
 
        /// <summary>
-       ///
+       ///產品表PKID
        /// </summary>
-       [Display(Name ="cust_name")]
-       [MaxLength(100)]
-       [Column(TypeName="nvarchar(100)")]
-       public string cust_name { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="cust_address")]
-       [MaxLength(200)]
-       [Column(TypeName="nvarchar(200)")]
-       public string cust_address { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="invoice_name")]
-       [MaxLength(100)]
-       [Column(TypeName="nvarchar(100)")]
-       public string invoice_name { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="invoice_address")]
-       [MaxLength(200)]
-       [Column(TypeName="nvarchar(200)")]
-       public string invoice_address { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="owner")]
-       [MaxLength(100)]
-       [Column(TypeName="varchar(100)")]
-       public string owner { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="tax_id")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string tax_id { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="contact")]
-       [MaxLength(100)]
-       [Column(TypeName="varchar(100)")]
-       public string contact { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="tel_no")]
-       [MaxLength(40)]
-       [Column(TypeName="varchar(40)")]
-       public string tel_no { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="fax_no")]
-       [MaxLength(20)]
-       [Column(TypeName="varchar(20)")]
-       public string fax_no { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="email")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string email { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="territory_id")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       public string territory_id { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="doh_institute_no")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string doh_institute_no { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="ctrl_drug_no")]
-       [MaxLength(40)]
-       [Column(TypeName="varchar(40)")]
-       public string ctrl_drug_no { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="ctrl_drug_contact")]
-       [MaxLength(100)]
-       [Column(TypeName="varchar(100)")]
-       public string ctrl_drug_contact { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="cust_zip_id")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       public string cust_zip_id { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="invoice_zip_id")]
-       [MaxLength(5)]
-       [Column(TypeName="varchar(5)")]
-       public string invoice_zip_id { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="doh_type")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string doh_type { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="margin_type")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string margin_type { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="is_contract")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       public string is_contract { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="is_private")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       public string is_private { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="own_by_hospital")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       public string own_by_hospital { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="own_hospital")]
+       [Display(Name ="產品表PKID")]
        [Column(TypeName="uniqueidentifier")]
-       public Guid? own_hospital { get; set; }
+       public Guid? prod_dbid { get; set; }
 
        /// <summary>
-       ///
+       ///客戶表PKID
        /// </summary>
-       [Display(Name ="med_group")]
+       [Display(Name ="客戶表PKID")]
        [Column(TypeName="uniqueidentifier")]
-       public Guid? med_group { get; set; }
+       public Guid? cust_dbid { get; set; }
 
        /// <summary>
-       ///
+       ///pricegroupPKID
        /// </summary>
-       [Display(Name ="delv_group")]
+       [Display(Name ="pricegroupPKID")]
        [Column(TypeName="uniqueidentifier")]
-       public Guid? delv_group { get; set; }
+       public Guid? pricegroup_dbid { get; set; }
 
        /// <summary>
-       ///
+       ///生效日
        /// </summary>
-       [Display(Name ="new_cust_id")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string new_cust_id { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="inactive_date")]
+       [Display(Name ="生效日")]
        [Column(TypeName="datetime")]
-       public DateTime? inactive_date { get; set; }
+       public DateTime? start_date { get; set; }
 
        /// <summary>
-       ///
+       ///結束日
        /// </summary>
-       [Display(Name ="status")]
+       [Display(Name ="結束日")]
+       [Column(TypeName="datetime")]
+       public DateTime? end_date { get; set; }
+
+       /// <summary>
+       ///是否有效
+       /// </summary>
+       [Display(Name ="是否有效")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Editable(true)]
        public string status { get; set; }
 
        /// <summary>
-       ///
+       ///資料來源(0:EBMS,1:Manual,2:Copy,3:Detach)
        /// </summary>
-       [Display(Name ="remarks")]
-       [MaxLength(4000)]
-       [Column(TypeName="nvarchar(4000)")]
-       public string remarks { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="source")]
+       [Display(Name ="資料來源(0:EBMS,1:Manual,2:Copy,3:Detach)")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        public string source { get; set; }
 
        /// <summary>
-       ///
+       ///議價決標單號
        /// </summary>
-       [Display(Name ="accnt_code")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string accnt_code { get; set; }
+       [Display(Name ="議價決標單號")]
+       [MaxLength(16)]
+       [Column(TypeName="varchar(16)")]
+       public string bid_no { get; set; }
 
        /// <summary>
-       ///
+       ///備註
        /// </summary>
-       [Display(Name ="invoice_type")]
-       [MaxLength(2)]
-       [Column(TypeName="varchar(2)")]
-       public string invoice_type { get; set; }
+       [Display(Name ="備註")]
+       [MaxLength(450)]
+       [Column(TypeName="nvarchar(450)")]
+       public string remarks { get; set; }
 
        /// <summary>
-       ///
+       ///建立用戶
        /// </summary>
-       [Display(Name ="created_user")]
+       [Display(Name ="建立用戶")]
        [Column(TypeName="int")]
        public int? created_user { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="created_client")]
-       [Column(TypeName="int")]
-       public int? created_client { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="created_date")]
-       [Column(TypeName="datetime")]
-       public DateTime? created_date { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_user")]
-       [Column(TypeName="int")]
-       public int? modified_user { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_client")]
-       [Column(TypeName="int")]
-       public int? modified_client { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="modified_date")]
-       [Column(TypeName="datetime")]
-       public DateTime? modified_date { get; set; }
 
        /// <summary>
        ///
@@ -354,12 +116,33 @@ namespace VIAT.Entity.DomainModels
        public string created_username { get; set; }
 
        /// <summary>
+       ///建立者的委託人
+       /// </summary>
+       [Display(Name ="建立者的委託人")]
+       [Column(TypeName="int")]
+       public int? created_client { get; set; }
+
+       /// <summary>
        ///
        /// </summary>
        [Display(Name ="created_clientusername")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string created_clientusername { get; set; }
+
+       /// <summary>
+       ///建立時間
+       /// </summary>
+       [Display(Name ="建立時間")]
+       [Column(TypeName="datetime")]
+       public DateTime? created_date { get; set; }
+
+       /// <summary>
+       ///最後修改用戶
+       /// </summary>
+       [Display(Name ="最後修改用戶")]
+       [Column(TypeName="int")]
+       public int? modified_user { get; set; }
 
        /// <summary>
        ///
@@ -370,6 +153,13 @@ namespace VIAT.Entity.DomainModels
        public string modified_username { get; set; }
 
        /// <summary>
+       ///最後修改者的委託人
+       /// </summary>
+       [Display(Name ="最後修改者的委託人")]
+       [Column(TypeName="int")]
+       public int? modified_client { get; set; }
+
+       /// <summary>
        ///
        /// </summary>
        [Display(Name ="modified_clientusername")]
@@ -378,21 +168,25 @@ namespace VIAT.Entity.DomainModels
        public string modified_clientusername { get; set; }
 
        /// <summary>
-       ///
+       ///最後修改時間
        /// </summary>
-       [Display(Name ="custGroupStatus")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       [Editable(true)]
-       public string custGroupStatus { get; set; }
+       [Display(Name ="最後修改時間")]
+       [Column(TypeName="datetime")]
+       public DateTime? modified_date { get; set; }
 
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="priceGroudId")]
-       [MaxLength(20)]
-       [Column(TypeName="varchar(20)")]
-       public string priceGroudId { get; set; }
+       [Display(Name ="updated_date")]
+       [Column(TypeName="datetime")]
+       public DateTime? updated_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="updated_user")]
+       [Column(TypeName="int")]
+       public int? updated_user { get; set; }
 
        
     }
