@@ -154,5 +154,22 @@ namespace VIAT.Price.Controllers
         {
             return _service.getNetPriceByProdID(prod_id);
         }
+
+
+
+        //GetGroupInvalidPageData
+        /// <summary>
+        /// 取得Gross Price
+        /// </summary>
+        /// <param name="sProdID"></param>
+        /// <returns></returns>
+        ///   //取得bindno
+        [ApiActionPermission]
+        [HttpPost, Route("GetGroupInvalidPageData")]
+        public ActionResult GetGroupInvalidPageData(PageDataOptions options)
+        {
+            return Json(_service.GetGroupInvalidPageData(options));
+        }
+
     }
 }
