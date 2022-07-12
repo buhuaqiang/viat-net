@@ -11,7 +11,7 @@ namespace VIAT.Price.IServices
         bool IsExpfizer(string sCustID);
         void setQueryParameters();
 
-        PageGridData<View_cust_price> GetCustInvalidPageData(PageDataOptions options);
+        PageGridData<View_cust_price_detail> GetCustInvalidPageData(PageDataOptions options);
 
     }
 }

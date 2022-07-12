@@ -59,27 +59,29 @@ namespace VIAT.Price.Services
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        public PageGridData<View_cust_price_detail> GetCustInvalidPageData(PageDataOptions options)
+        public PageGridData<View_cust_price_detail> GetCustInvalidPageData(PageDataOptions pageData)
         {
+
+            PageGridData<View_cust_price_detail> pageGridData = new PageGridData<View_cust_price_detail>();
 
             /*解析查询条件*/
             List<SearchParameters> searchParametersList = new List<SearchParameters>();
-            if (!string.IsNullOrEmpty(options.Wheres))
+            if (!string.IsNullOrEmpty(pageData.Wheres))
             {
-                searchParametersList = options.Wheres.DeserializeObject<List<SearchParameters>>();
+                searchParametersList = pageData.Wheres.DeserializeObject<List<SearchParameters>>();
                 if (searchParametersList != null && searchParametersList.Count > 0)
                 {
                     string sCustID = "";
                     string sProdID = "";
                     foreach (SearchParameters sp in searchParametersList)
                     {
-                        if (sp.Name.ToLower() == "cust_id".ToLower())
+                        if (sp.Name.ToLower() == "cust_dbid".ToLower())
                         {
                             sCustID = sp.Value;
                             continue;
                         }
 
-                        if (sp.Name.ToLower() == "prod_id".ToLower())
+                        if (sp.Name.ToLower() == "prod_dbid".ToLower())
                         {
                             sProdID = sp.Value;
                             continue;
@@ -87,31 +89,31 @@ namespace VIAT.Price.Services
                     }
 
                     QuerySql = @"
-                        SELECT
+                        SELECT ROW_NUMBER()over(order by custPrice.pricedetail_dbid desc) as rowId,
                         custPrice.pricedetail_dbid AS custprice_dbid, '1' AS source_type,
 	                        custPrice.prod_dbid , prod.prod_id, prod.prod_ename, custPrice.nhi_price ,
 	                        custPrice.invoice_price ,	custPrice.net_price , custPrice.min_qty ,
 	                        custPrice.start_date , custPrice.end_date , custPrice.status ,
-                            cust.cust_id, cust.cust_name,	'' AS group_id,'' AS group_name
+                            cust.cust_dbid, cust.cust_id, cust.cust_name,	'' AS group_id,'' AS group_name
                         FROM
 	                        viat_app_cust_price_detail AS custPrice
 	                        INNER JOIN viat_com_cust AS cust ON custPrice.cust_dbid = cust.cust_dbid
 	                        INNER JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid 
                         WHERE ( 1 = 1 )
-	                        AND cust.cust_id = '" + sCustID + "' AND custPrice.status = 'Y' ";  /*filter Cust Id 必填 */
+	                        AND cust.cust_dbid = '" + sCustID + "' AND custPrice.status = 'Y' ";  /*filter Cust Id 必填 */
 
                     if (string.IsNullOrEmpty(sProdID) == false)
                     {
-                        QuerySql += " AND prod.prod_id = '"+sProdID+"'";
+                        QuerySql += " AND prod.prod_dbid = '" + sProdID+"'";
                     }
                     QuerySql += @" AND prod.state = '1'	
                         UNION ALL
-                        SELECT
+                        SELECT ROW_NUMBER()over(order by custGroup.custgroup_dbid desc) as rowId,
 	                        custGroup.custgroup_dbid AS custprice_dbid, '2' AS source_type,
 	                        custPrice.prod_dbid , prod.prod_id, prod.prod_ename, custPrice.nhi_price ,
 	                        custPrice.invoice_price ,	custPrice.net_price , custPrice.min_qty ,
 	                        custPrice.start_date , custPrice.end_date , custPrice.status ,
-                            cust.cust_id, cust.cust_name, priceGroup.group_id, priceGroup.group_name
+                            cust.cust_dbid,cust.cust_id, cust.cust_name, priceGroup.group_id, priceGroup.group_name
                         FROM 			
 	                        viat_app_cust_price AS custPrice
 	                        INNER JOIN viat_app_cust_group AS custGroup ON custPrice.pricegroup_dbid = custGroup.pricegroup_dbid 
@@ -120,17 +122,27 @@ namespace VIAT.Price.Services
                           LEFT OUTER JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid
 	                        INNER JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid
 	                        WHERE ( 1 = 1 )
-                            AND cust.cust_id = '" + sCustID + "' AND custPrice.status = 'Y'";
+                            AND cust.cust_dbid = '" + sCustID + "' AND custPrice.status = 'Y'";
                     if (string.IsNullOrEmpty(sProdID) == false)
                     {
-                        QuerySql += " AND prod.prod_id = '" + sProdID + " ' ";
+                        QuerySql += " AND prod.prod_dbid = '" + sProdID + " ' ";
                     }
                     QuerySql += " AND prod.state = '1' AND custGroup.status = 'Y'";
+ 
                 }
             }
 
+         
 
-            return base.GetPageData(options);
+            ////明细表自定义查询方式二：dapper
+            string sql = "select count(1) from (" + QuerySql + ") a";
+            pageGridData.total = repository.DapperContext.ExecuteScalar(sql, null).GetInt();
+
+            sql = @$"select * from (" + 
+                QuerySql + $") as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
+                pageGridData.rows = repository.DapperContext.QueryList<View_cust_price_detail>(sql, null);
+
+            return pageGridData;
         }
 
         /// <summary>
