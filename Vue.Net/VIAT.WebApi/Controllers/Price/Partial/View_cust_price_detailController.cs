@@ -54,7 +54,7 @@ namespace VIAT.Price.Controllers
         ///   //取得bindno
         [ApiActionPermission]
         [HttpPost, Route("GetCustInvalidPageData")]
-        public ActionResult GetCustInvalidPageData(PageDataOptions options)
+        public ActionResult GetCustInvalidPageData([FromBody] PageDataOptions options)
         {
             return Json(_service.GetCustInvalidPageData(options));
         }
