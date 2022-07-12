@@ -335,7 +335,7 @@ namespace VIAT.Price.Services
                    base.CustomBatchProcessEntity(saveModel);
 
                    webResponse.Code = "-1";
-                   return webResponse.OK("update successful");
+                   return webResponse.OK("Update successful");
                };
 
             return base.Update(saveModel);
