@@ -29,6 +29,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VIAT.Price", "VIAT.Price\VI
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VIAT.DataEntry", "VIAT.DataEntry\VIAT.DataEntry.csproj", "{7F24DBAF-1625-4B3D-BC27-8C88968AB630}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VIAT.WorkFlow", "VIAT.WorkFlow\VIAT.WorkFlow.csproj", "{C3AF9F71-539A-4E45-8F6E-28FB0D4B2BD4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -79,6 +81,10 @@ Global
 		{7F24DBAF-1625-4B3D-BC27-8C88968AB630}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F24DBAF-1625-4B3D-BC27-8C88968AB630}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F24DBAF-1625-4B3D-BC27-8C88968AB630}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3AF9F71-539A-4E45-8F6E-28FB0D4B2BD4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3AF9F71-539A-4E45-8F6E-28FB0D4B2BD4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3AF9F71-539A-4E45-8F6E-28FB0D4B2BD4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3AF9F71-539A-4E45-8F6E-28FB0D4B2BD4}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
