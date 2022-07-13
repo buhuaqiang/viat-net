@@ -34,6 +34,7 @@
     <ProjectReference Include="..\VIAT.Core\VIAT.Core.csproj" />
     <ProjectReference Include="..\VIAT.Order\VIAT.Order.csproj" />
     <ProjectReference Include="..\VIAT.System\VIAT.System.csproj" />
+	  <ProjectReference Include="..\VIAT.WorkFlow\VIAT.WorkFlow.csproj" />
   </ItemGroup>
 
   <ItemGroup>
