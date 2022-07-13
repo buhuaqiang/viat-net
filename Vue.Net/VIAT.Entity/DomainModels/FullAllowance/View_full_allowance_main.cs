@@ -196,6 +196,15 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public DateTime created_date { get; set; }
 
+         /// <summary>
+       ///列名hpcont_dbid
+       /// </summary>
+       [Display(Name ="列名hpcont_dbid")]
+       [Column(TypeName="varchar")]
+       [Required(AllowEmptyStrings=false)]
+       public Guid hpcont_dbid { get; set; }
+       
+
        
     }
 }
