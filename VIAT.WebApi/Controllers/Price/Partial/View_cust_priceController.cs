@@ -166,7 +166,7 @@ namespace VIAT.Price.Controllers
         ///   //取得bindno
         [ApiActionPermission]
         [HttpPost, Route("GetGroupInvalidPageData")]
-        public ActionResult GetGroupInvalidPageData(PageDataOptions options)
+        public ActionResult GetGroupInvalidPageData([FromBody]  PageDataOptions options)
         {
             return Json(_service.GetGroupInvalidPageData(options));
         }
