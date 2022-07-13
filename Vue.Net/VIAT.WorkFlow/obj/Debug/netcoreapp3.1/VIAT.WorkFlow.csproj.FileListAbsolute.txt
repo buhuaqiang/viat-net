@@ -1,0 +1,17 @@
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\bin\Debug\netcoreapp3.1\runtimes\win-x64\native\wkhtmltox.dll
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\bin\Debug\netcoreapp3.1\runtimes\win-x86\native\wkhtmltox.dll
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\bin\Debug\netcoreapp3.1\VIAT.WorkFlow.deps.json
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\bin\Debug\netcoreapp3.1\VIAT.WorkFlow.dll
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\bin\Debug\netcoreapp3.1\VIAT.WorkFlow.pdb
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\bin\Debug\netcoreapp3.1\VIAT.Core.dll
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\bin\Debug\netcoreapp3.1\VIAT.Entity.dll
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\bin\Debug\netcoreapp3.1\VIAT.Core.pdb
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\bin\Debug\netcoreapp3.1\VIAT.Entity.pdb
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\obj\Debug\netcoreapp3.1\VIAT.WorkFlow.csproj.AssemblyReference.cache
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\obj\Debug\netcoreapp3.1\VIAT.WorkFlow.GeneratedMSBuildEditorConfig.editorconfig
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\obj\Debug\netcoreapp3.1\VIAT.WorkFlow.AssemblyInfoInputs.cache
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\obj\Debug\netcoreapp3.1\VIAT.WorkFlow.AssemblyInfo.cs
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\obj\Debug\netcoreapp3.1\VIAT.WorkFlow.csproj.CoreCompileInputs.cache
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\obj\Debug\netcoreapp3.1\VIAT.WorkFlow.csproj.CopyComplete
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\obj\Debug\netcoreapp3.1\VIAT.WorkFlow.dll
+D:\workspace\viat\Vue.Net\VIAT.WorkFlow\obj\Debug\netcoreapp3.1\VIAT.WorkFlow.pdb
