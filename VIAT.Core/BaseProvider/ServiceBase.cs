@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using OfficeOpenXml.FormulaParsing.Excel.Functions.Logical;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
@@ -1128,6 +1129,19 @@ namespace VIAT.Core.BaseProvider
 
 
         #region 没有任务校验，直接批量保存多类型实体
+
+        /// <summary>
+        /// 处理日期格式
+        /// </summary>
+        /// <param name="dDate"></param>
+        /// <returns></returns>
+        public DateTime getFormatYYYYMMDD(DateTime dDate)
+        {
+            DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
+            dtFormat.ShortDatePattern = "yyyy-MM-dd";
+            return Convert.ToDateTime(dDate.ToString(), dtFormat);
+        }
+
         public virtual WebResponseContent CustomBatchProcessEntity(SaveModel saveModel)
         {
             foreach(SaveModel.DetailListDataResult entityFac in  saveModel.DetailListData)
