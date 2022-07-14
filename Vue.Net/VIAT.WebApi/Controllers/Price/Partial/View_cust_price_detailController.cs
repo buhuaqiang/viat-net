@@ -58,5 +58,23 @@ namespace VIAT.Price.Controllers
         {
             return Json(_service.GetCustInvalidPageData(options));
         }
+
+        //批量新增价格群组商品
+        [ApiActionPermission]
+        [HttpPost, Route("bathSaveCheckData")]
+        public ActionResult bathSaveCheckData([FromBody] object saveModel)
+        {
+            return Json(_service.bathSaveCheckData(saveModel));
+        }
+
+
+        //批量新增价格群组商品
+        [ApiActionPermission]
+        [HttpPost, Route("bathSaveCustPrice")]
+        public ActionResult bathSaveCustPrice([FromBody] object saveModel)
+        {
+            return Json(_service.bathSaveCustPrice(saveModel));
+        }
+
     }
 }
