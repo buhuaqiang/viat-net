@@ -1181,7 +1181,8 @@ namespace VIAT.Price.Services
                     {
                         //detail
                         Viat_app_cust_price_detail detail = new Viat_app_cust_price_detail();
-                        price.MapValueToEntity(detail);
+                        detail = JsonConvert.DeserializeObject<Viat_app_cust_price_detail>(JsonConvert.SerializeObject(price));
+                        
 
                         detail.status = "N";
                         detail.end_date = dEndData;
@@ -1190,7 +1191,7 @@ namespace VIAT.Price.Services
                         Dictionary<string, object> dicDetail = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(detail));
                         SaveModel.DetailListDataResult dataDetailResult = new SaveModel.DetailListDataResult();
                         dataDetailResult.optionType = SaveModel.MainOptionType.update;
-                        dataDetailResult.detailType = typeof(Viat_app_cust_group);
+                        dataDetailResult.detailType = typeof(Viat_app_cust_price_detail);
                         dataDetailResult.DetailData = new List<Dictionary<string, object>> { dicDetail };
                         saveModel.DetailListData.Add(dataDetailResult);
                     }
