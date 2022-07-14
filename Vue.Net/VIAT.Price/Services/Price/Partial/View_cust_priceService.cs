@@ -1004,21 +1004,20 @@ namespace VIAT.Price.Services
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
             DateTime dEndData = Convert.ToDateTime(dicData["invalid_date"].ToString(), dtFormat);
             string sRemarks = "";
-            if(dicData.ContainsKey("") == true)
+            if(dicData.ContainsKey("remark") == true)
             {
                 sRemarks = dicData["remark"]?.ToString();
             }
-            
+            string sProdDBID = "";
+            if (dicData.ContainsKey("prod_dbid") == true)
+            {
+                sProdDBID = dicData["prod_dbid"]?.ToString();
+            }
             string isAll = dicData["isAll"].ToString();
 
             if (sSelectType == "0")
             {
-                string sPriceGroupDBID = dicData["pricegroup_dbid"].ToString();
-                string sProdDBID = "";
-                if (dicData.ContainsKey("prod_dbid") == true)
-                {
-                    sProdDBID = dicData["prod_dbid"]?.ToString();
-                }
+                string sPriceGroupDBID = dicData["pricegroup_dbid"].ToString();               
                 //取得主界面值
                 List<Viat_app_cust_price> entityList = new List<Viat_app_cust_price>();
                 if (isAll == "0")
@@ -1052,80 +1051,27 @@ namespace VIAT.Price.Services
             else if (sSelectType == "1")
             {
                 /*1 detail    2 cust_price*/
+                //cust price
+                string sCustGroupDBID = dicData["cust_dbid"].ToString();
+              
+                List<View_cust_price_detail> entityList = new List<View_cust_price_detail>();
                 if (isAll == "0")
                 {
-                    //cust price
-                    string sCustGroupDBID = dicData["cust_dbid"].ToString();
-                    string sProdDBID = "";
-                    if (dicData.ContainsKey("prod_dbid") == true)
-                    {
-                        sProdDBID = dicData["prod_dbid"]?.ToString();
-                    }
-                    List<View_cust_price_detail> entityList = new List<View_cust_price_detail>();
-
-
-                    if (isAll == "0")
-                    {
-                        //取得列表勾选的值
-                        entityList = JsonConvert.DeserializeObject<List<View_cust_price_detail>>(sRowsData);
-                    }
-                    else if (isAll == "1")
-                    {
-                        //从后台查数据
-                        entityList = View_cust_price_detailService.Instance.GetCustInvalidList(sCustGroupDBID, sProdDBID);
-                    }
-                    if (entityList != null && entityList.Count > 0)
-                    {
-                        foreach (View_cust_price_detail price in entityList)
-                        {
-                            //拷贝
-                            if (price.source_type == "1")
-                            {
-                                //detail
-                                Viat_app_cust_price_detail detail = new Viat_app_cust_price_detail();
-                                price.MapValueToEntity(detail);
-
-                                detail.status = "N";
-                                detail.end_date = dEndData;
-                                detail.remarks = sRemarks;
-
-                                Dictionary<string, object> dicDetail = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(detail));
-                                SaveModel.DetailListDataResult dataDetailResult = new SaveModel.DetailListDataResult();
-                                dataDetailResult.optionType = SaveModel.MainOptionType.update;
-                                dataDetailResult.detailType = typeof(Viat_app_cust_group);
-                                dataDetailResult.DetailData = new List<Dictionary<string, object>> { dicDetail };
-                                saveModel.DetailListData.Add(dataDetailResult);
-                            }
-                            else if (price.source_type == "2")
-                            {
-                                //group
-                                Viat_app_cust_group detail = new Viat_app_cust_group();
-                                price.MapValueToEntity(detail);
-
-                                detail.status = "N";
-                                detail.end_date = dEndData;
-                                detail.remarks = sRemarks;
-
-                                Dictionary<string, object> dicDetail = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(detail));
-                                SaveModel.DetailListDataResult dataDetailResult = new SaveModel.DetailListDataResult();
-                                dataDetailResult.optionType = SaveModel.MainOptionType.update;
-                                dataDetailResult.detailType = typeof(Viat_app_cust_group);
-                                dataDetailResult.DetailData = new List<Dictionary<string, object>> { dicDetail };
-                                saveModel.DetailListData.Add(dataDetailResult);
-
-                            }
-                        }
-                    }
+                    //取得列表勾选的值
+                    entityList = JsonConvert.DeserializeObject<List<View_cust_price_detail>>(sRowsData);
                 }
+                else if (isAll == "1")
+                {
+                    //从后台查数据
+                    entityList = View_cust_price_detailService.Instance.GetCustInvalidList(sCustGroupDBID, sProdDBID,"");
+                }
+
+                ProcessInvalidCustAndGroup(entityList, saveModel, dEndData, sRemarks);
+              
             }
             else if (sSelectType == "2")
             {
-                //by prod
-                string sProdDBID = "";
-                if (dicData.ContainsKey("prod_dbid") == true)
-                {
-                    sProdDBID = dicData["prod_dbid"]?.ToString();
-                }
+                //by prod              
                 Viat_com_prod prod = getProdByProdID(sProdDBID);
                 if (prod != null)
                 {
@@ -1191,12 +1137,83 @@ namespace VIAT.Price.Services
             }
             else if (sSelectType == "3")
             {
+                //by channel
+                //根据channel,从viat_com_doh_type中取得匹配channel，取得多条信息，信息 包含 doh_type健保類別
+                //根据doh_type匹配表viat_com_cust doh_type,匹配出cust_dbid
+                string sChannel = "";
+                if(dicData.ContainsKey("channel") == true)
+                {
+                    sChannel = dicData["channel"].ToString();
+                }
+                List<View_cust_price_detail> entityList = new List<View_cust_price_detail>();
+                if (isAll == "0")
+                {
+                    //取得列表勾选的值
+                    entityList = JsonConvert.DeserializeObject<List<View_cust_price_detail>>(sRowsData);
+                }
+                else if (isAll == "1")
+                {
+                    //从后台查数据
+                    entityList = View_cust_price_detailService.Instance.GetCustInvalidList("", sProdDBID, sChannel);
+                }
 
+                ProcessInvalidCustAndGroup(entityList, saveModel, dEndData, sRemarks);
             }
 
             base.CustomBatchProcessEntity(saveModel);
             return webResponse.OK("invalid successful");
 
+        }
+
+        /// <summary>
+        /// 需要处理group和detail
+        /// </summary>
+        /// <param name="entityList"></param>
+        /// <param name="saveModel"></param>
+        private void ProcessInvalidCustAndGroup(List<View_cust_price_detail> entityList, SaveModel saveModel, DateTime dEndData, string sRemarks)
+        {
+            if (entityList != null && entityList.Count > 0)
+            {
+                foreach (View_cust_price_detail price in entityList)
+                {
+                    //拷贝
+                    if (price.source_type == "1")
+                    {
+                        //detail
+                        Viat_app_cust_price_detail detail = new Viat_app_cust_price_detail();
+                        price.MapValueToEntity(detail);
+
+                        detail.status = "N";
+                        detail.end_date = dEndData;
+                        detail.remarks = sRemarks;
+
+                        Dictionary<string, object> dicDetail = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(detail));
+                        SaveModel.DetailListDataResult dataDetailResult = new SaveModel.DetailListDataResult();
+                        dataDetailResult.optionType = SaveModel.MainOptionType.update;
+                        dataDetailResult.detailType = typeof(Viat_app_cust_group);
+                        dataDetailResult.DetailData = new List<Dictionary<string, object>> { dicDetail };
+                        saveModel.DetailListData.Add(dataDetailResult);
+                    }
+                    else if (price.source_type == "2")
+                    {
+                        //group
+                        Viat_app_cust_group detail = new Viat_app_cust_group();
+                        price.MapValueToEntity(detail);
+
+                        detail.status = "N";
+                        detail.end_date = dEndData;
+                        detail.remarks = sRemarks;
+
+                        Dictionary<string, object> dicDetail = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(detail));
+                        SaveModel.DetailListDataResult dataDetailResult = new SaveModel.DetailListDataResult();
+                        dataDetailResult.optionType = SaveModel.MainOptionType.update;
+                        dataDetailResult.detailType = typeof(Viat_app_cust_group);
+                        dataDetailResult.DetailData = new List<Dictionary<string, object>> { dicDetail };
+                        saveModel.DetailListData.Add(dataDetailResult);
+
+                    }
+                }
+            }
         }
 
 
