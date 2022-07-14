@@ -1199,7 +1199,8 @@ namespace VIAT.Price.Services
                     {
                         //group
                         Viat_app_cust_group detail = new Viat_app_cust_group();
-                        price.MapValueToEntity(detail);
+                        detail = JsonConvert.DeserializeObject<Viat_app_cust_group>(JsonConvert.SerializeObject(price));
+                        detail.custgroup_dbid = price.pricedetail_dbid;
 
                         detail.status = "N";
                         detail.end_date = dEndData;

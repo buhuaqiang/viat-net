@@ -197,7 +197,7 @@ namespace VIAT.Price.Services
             }
             if(string.IsNullOrEmpty(channel) == false)
             {
-                sSql += "  and cust.cust_dbid in ( select comCust.cust_dbid from viat_com_doh_type doh  inner join viat_com_cust comCust on" +
+                sSql += "  and custPrice.cust_dbid in ( select comCust.cust_dbid from viat_com_doh_type doh  inner join viat_com_cust comCust on" +
                     " doh.doh_type=comCust.doh_type where doh.channel='"+channel+"')";
             }
             sSql += @" AND prod.state = '1'	
@@ -218,7 +218,7 @@ namespace VIAT.Price.Services
 	                        WHERE ( 1 = 1 ) AND custPrice.status = 'Y'";                            
             if (string.IsNullOrEmpty(cust_dbid) == false)
             {
-                sSql += " AND custPrice.cust_id = '" + cust_dbid + "'";
+                sSql += " AND custGroup.cust_id = '" + cust_dbid + "'";
             }
             if (string.IsNullOrEmpty(prod_dbid) == false)
             {
@@ -226,7 +226,7 @@ namespace VIAT.Price.Services
             }
             if (string.IsNullOrEmpty(channel) == false)
             {
-                sSql += "  and cust.cust_dbid in ( select comCust.cust_dbid from viat_com_doh_type doh  inner join viat_com_cust comCust on" +
+                sSql += "  and custGroup.cust_dbid in ( select comCust.cust_dbid from viat_com_doh_type doh  inner join viat_com_cust comCust on" +
                     " doh.doh_type=comCust.doh_type where doh.channel='" + channel + "')";
             }
             sSql += " AND prod.state = '1' AND custGroup.status = 'Y'";
