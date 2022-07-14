@@ -19,7 +19,7 @@ namespace VIAT.Price.IServices
 
         PageGridData<View_cust_price_detail> GetCustInvalidPageData(PageDataOptions options);
 
-        List<View_cust_price_detail> GetCustInvalidList(string cust_dbid, string prod_dbid);
+        List<View_cust_price_detail> GetCustInvalidList(string cust_dbid, string prod_dbid,string channel);
 
     }
 }
