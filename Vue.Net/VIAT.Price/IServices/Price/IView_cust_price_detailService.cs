@@ -3,6 +3,7 @@
  */
 using System.Collections.Generic;
 using VIAT.Core.BaseProvider;
+using VIAT.Core.Utilities;
 using VIAT.Entity.DomainModels;
 
 namespace VIAT.Price.IServices
@@ -11,6 +12,10 @@ namespace VIAT.Price.IServices
     {
         bool IsExpfizer(string sCustID);
         void setQueryParameters();
+
+        WebResponseContent bathSaveCustPrice(object saveData);
+
+        WebResponseContent bathSaveCheckData(object saveData);
 
         PageGridData<View_cust_price_detail> GetCustInvalidPageData(PageDataOptions options);
 
