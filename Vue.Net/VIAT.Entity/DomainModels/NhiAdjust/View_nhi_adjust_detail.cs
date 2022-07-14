@@ -13,13 +13,13 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "健保價調整明細",TableName = "View_nhi_adjust_detail")]
+    [Entity(TableCnName = "NHI Adjust Detail",TableName = "View_nhi_adjust_detail")]
     public partial class View_nhi_adjust_detail:BaseEntity
     {
         /// <summary>
-       ///Product
+       ///Product ID
        /// </summary>
-       [Display(Name ="Product")]
+       [Display(Name ="Product ID")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
@@ -27,9 +27,9 @@ namespace VIAT.Entity.DomainModels
        public string prod_id { get; set; }
 
        /// <summary>
-       ///
+       ///Product Name
        /// </summary>
-       [Display(Name ="prod_ename")]
+       [Display(Name ="Product Name")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        [Editable(true)]
@@ -79,9 +79,9 @@ namespace VIAT.Entity.DomainModels
        public Guid nhiadjust_dbid { get; set; }
 
        /// <summary>
-       ///
+       ///Product
        /// </summary>
-       [Display(Name ="prod_dbid")]
+       [Display(Name ="Product")]
        [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
        public Guid? prod_dbid { get; set; }

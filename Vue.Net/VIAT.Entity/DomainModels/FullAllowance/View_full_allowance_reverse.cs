@@ -138,8 +138,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="列名action_type")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
-       public string action_type { get; set; }
+       [Required(AllowEmptyStrings = false)]
+        public string action_type { get; set; }
 
        /// <summary>
        ///列名allw_type

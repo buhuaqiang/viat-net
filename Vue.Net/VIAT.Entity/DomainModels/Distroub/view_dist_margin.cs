@@ -121,8 +121,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Margin Type")]
        [Column(TypeName="int")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public int margin_value_type { get; set; }
+       public int? margin_value_type { get; set; }
 
        /// <summary>
        ///Margin Rate/Price
@@ -131,8 +130,7 @@ namespace VIAT.Entity.DomainModels
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public decimal margin_value { get; set; }
+       public decimal? margin_value { get; set; }
 
        /// <summary>
        ///Start Date
@@ -140,8 +138,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Start Date")]
        [Column(TypeName="datetime")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public DateTime start_date { get; set; }
+       public DateTime? start_date { get; set; }
 
        /// <summary>
        ///End Date
@@ -149,8 +146,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="End Date")]
        [Column(TypeName="datetime")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public DateTime end_date { get; set; }
+       public DateTime? end_date { get; set; }
 
        /// <summary>
        ///Modified Date
@@ -255,13 +251,6 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="local_mpg_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? local_mpg_dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
        [Display(Name ="remarks")]
        [MaxLength(256)]
        [Column(TypeName="nvarchar(256)")]
@@ -306,6 +295,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string custs { get; set; }
 
        /// <summary>
@@ -315,7 +305,23 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string prods { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="dbid")]
+       [Column(TypeName="int")]
+       [Required(AllowEmptyStrings=false)]
+       public int dbid { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="localmpg_dbid")]
+       [Column(TypeName="uniqueidentifier")]
+       public Guid? localmpg_dbid { get; set; }
 
        
     }
