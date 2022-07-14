@@ -169,6 +169,15 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="varchar(50)")]
        public string modified_clientusername { get; set; }
 
+       /// <summary>
+       ///Channel
+       /// </summary>
+       [Display(Name ="Channel")]
+       [MaxLength(2)]
+       [Column(TypeName="varchar(2)")]
+       [Editable(true)]
+       public string channel { get; set; }
+
        
     }
 }

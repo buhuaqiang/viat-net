@@ -57,7 +57,9 @@ namespace VIAT.Price.Controllers
         public ActionResult GetCustInvalidPageData([FromBody] PageDataOptions options)
         {
             return Json(_service.GetCustInvalidPageData(options));
+
         }
+
 
         //批量新增价格群组商品
         [ApiActionPermission]
@@ -75,6 +77,7 @@ namespace VIAT.Price.Controllers
         {
             return Json(_service.bathSaveCustPrice(saveModel));
         }
+
 
     }
 }
