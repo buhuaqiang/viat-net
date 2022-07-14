@@ -150,11 +150,9 @@ namespace VIAT.Price.Services
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        public List<View_cust_price_detail> GetCustInvalidList(string cust_dbid, string prod_dbid)
+        public List<View_cust_price_detail> GetCustInvalidList(string cust_dbid, string prod_dbid, string channel)
         {
-
-
-          string    sSql = @"
+            string sSql = @"
                         SELECT ROW_NUMBER()over(order by custPrice.pricedetail_dbid desc) as rowId,
                         custPrice.pricedetail_dbid AS custprice_dbid, '1' AS source_type,
 	                        custPrice.prod_dbid , prod.prod_id, prod.prod_ename, custPrice.nhi_price ,
@@ -165,12 +163,19 @@ namespace VIAT.Price.Services
 	                        viat_app_cust_price_detail AS custPrice
 	                        INNER JOIN viat_com_cust AS cust ON custPrice.cust_dbid = cust.cust_dbid
 	                        INNER JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid 
-                        WHERE ( 1 = 1 )
-	                        AND cust.cust_dbid = '" + cust_dbid + "' AND custPrice.status = 'Y' ";  /*filter Cust Id 必填 */
-
+                        WHERE ( 1 = 1 ) ' AND custPrice.status = 'Y' ";
+            if (string.IsNullOrEmpty(cust_dbid) == false)
+            {
+                sSql += " AND custPrice.cust_dbid = '" + cust_dbid + "'";      
+            } 
             if (string.IsNullOrEmpty(prod_dbid) == false)
             {
-                QuerySql += " AND prod.prod_dbid = '" + prod_dbid + "'";
+                sSql += " AND prod.prod_dbid = '" + prod_dbid + "'";
+            }
+            if(string.IsNullOrEmpty(channel) == false)
+            {
+                sSql += "  and cust.cust_dbid in ( select comCust.cust_dbid from viat_com_doh_type doh  inner join viat_com_cust comCust on" +
+                    " doh.doh_type=comCust.doh_type where doh.channel='"+channel+"')";
             }
             sSql += @" AND prod.state = '1'	
                         UNION ALL
@@ -187,11 +192,19 @@ namespace VIAT.Price.Services
 	                        AND custPrice.prod_dbid =custGroup.prod_dbid	
                           LEFT OUTER JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid
 	                        INNER JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid
-	                        WHERE ( 1 = 1 )
-                            AND cust.cust_dbid = '" + cust_dbid + "' AND custPrice.status = 'Y'";
+	                        WHERE ( 1 = 1 ) AND custPrice.status = 'Y'";                            
+            if (string.IsNullOrEmpty(cust_dbid) == false)
+            {
+                sSql += " AND custPrice.cust_id = '" + cust_dbid + "'";
+            }
             if (string.IsNullOrEmpty(prod_dbid) == false)
             {
                 sSql += " AND prod.prod_dbid = '" + prod_dbid + " ' ";
+            }
+            if (string.IsNullOrEmpty(channel) == false)
+            {
+                sSql += "  and cust.cust_dbid in ( select comCust.cust_dbid from viat_com_doh_type doh  inner join viat_com_cust comCust on" +
+                    " doh.doh_type=comCust.doh_type where doh.channel='" + channel + "')";
             }
             sSql += " AND prod.state = '1' AND custGroup.status = 'Y'";
 
