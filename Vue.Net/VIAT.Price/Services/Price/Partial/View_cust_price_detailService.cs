@@ -99,9 +99,12 @@ namespace VIAT.Price.Services
 	                        viat_app_cust_price_detail AS custPrice
 	                        INNER JOIN viat_com_cust AS cust ON custPrice.cust_dbid = cust.cust_dbid
 	                        INNER JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid 
-                        WHERE ( 1 = 1 )
-	                        AND cust.cust_dbid = '" + sCustID + "' AND custPrice.status = 'Y' ";  /*filter Cust Id 必填 */
+                        WHERE ( 1 = 1 )  AND custPrice.status = 'Y' ";  /*filter Cust Id 必填 */
 
+                    if (string.IsNullOrEmpty(sCustID) == false)
+                    {
+                        QuerySql += " AND custPrice.cust_dbid = '" + sCustID + "'";
+                    }
                     if (string.IsNullOrEmpty(sProdID) == false)
                     {
                         QuerySql += " AND prod.prod_dbid = '" + sProdID+"'";
@@ -121,8 +124,11 @@ namespace VIAT.Price.Services
 	                        AND custPrice.prod_dbid =custGroup.prod_dbid	
                           LEFT OUTER JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid
 	                        INNER JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid
-	                        WHERE ( 1 = 1 )
-                            AND cust.cust_dbid = '" + sCustID + "' AND custPrice.status = 'Y'";
+	                        WHERE ( 1 = 1 ) AND custPrice.status = 'Y'";
+                    if (string.IsNullOrEmpty(sCustID) == false)
+                    {
+                        QuerySql += " AND custPrice.cust_dbid = '" + sCustID + "'";
+                    }
                     if (string.IsNullOrEmpty(sProdID) == false)
                     {
                         QuerySql += " AND prod.prod_dbid = '" + sProdID + " ' ";
