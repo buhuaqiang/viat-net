@@ -73,6 +73,7 @@ namespace VIAT.Price.Services
                 {
                     string sCustID = "";
                     string sProdID = "";
+                    string sChannel = "";
                     foreach (SearchParameters sp in searchParametersList)
                     {
                         if (sp.Name.ToLower() == "cust_dbid".ToLower())
@@ -84,6 +85,12 @@ namespace VIAT.Price.Services
                         if (sp.Name.ToLower() == "prod_dbid".ToLower())
                         {
                             sProdID = sp.Value;
+                            continue;
+                        }
+                        //channelValue
+                        if (sp.Name.ToLower() == "channelValue".ToLower())
+                        {
+                            sChannel = sp.Value;
                             continue;
                         }
                     }
@@ -109,6 +116,11 @@ namespace VIAT.Price.Services
                     {
                         QuerySql += " AND prod.prod_dbid = '" + sProdID+"'";
                     }
+                    if (string.IsNullOrEmpty(sChannel) == false)
+                    {
+                        QuerySql += "  and custPrice.cust_dbid in ( select comCust.cust_dbid from viat_com_doh_type doh  inner join viat_com_cust comCust on" +
+                    " doh.doh_type=comCust.doh_type where doh.channel='" + sChannel + "')";
+                    }
                     QuerySql += @" AND prod.state = '1'	
                         UNION ALL
                         SELECT ROW_NUMBER()over(order by custGroup.custgroup_dbid desc) as rowId,
@@ -127,11 +139,16 @@ namespace VIAT.Price.Services
 	                        WHERE ( 1 = 1 ) AND custPrice.status = 'Y'";
                     if (string.IsNullOrEmpty(sCustID) == false)
                     {
-                        QuerySql += " AND custPrice.cust_dbid = '" + sCustID + "'";
+                        QuerySql += " AND custGroup.cust_dbid = '" + sCustID + "'";
                     }
                     if (string.IsNullOrEmpty(sProdID) == false)
                     {
                         QuerySql += " AND prod.prod_dbid = '" + sProdID + " ' ";
+                    }
+                    if (string.IsNullOrEmpty(sChannel) == false)
+                    {
+                        QuerySql += "  and custPrice.cust_dbid in ( select comCust.cust_dbid from viat_com_doh_type doh  inner join viat_com_cust comCust on" +
+                    " doh.doh_type=comCust.doh_type where doh.channel='" + sChannel + "')";
                     }
                     QuerySql += " AND prod.state = '1' AND custGroup.status = 'Y'";
  
