@@ -210,6 +210,7 @@ namespace VIAT.Price.Services
         {
             QueryRelativeList = (searchParametersList) =>
             {
+                Boolean isShowInvalidProd = false;
                 for (int i = searchParametersList.Count - 1; i >= 0; i--)
                 {
                     SearchParameters item = searchParametersList[i];
@@ -277,6 +278,23 @@ namespace VIAT.Price.Services
                             searchParametersList.Add(paraTmpStatus);
                         }
                     }
+                    if(item.Name== "ShowInvalidProd")
+                    {
+                        if (item.Value == "1")
+                        {
+                            isShowInvalidProd = true;
+                           
+                        }
+                    }
+                }
+                //如果没有勾选页面的show invalid products则默认查询 产品的state=1
+                if (!isShowInvalidProd)
+                {
+                    SearchParameters paraTmpStatus = new SearchParameters();
+                    paraTmpStatus.Name = "state";
+                    paraTmpStatus.Value = "1";
+                    paraTmpStatus.DisplayType = "";
+                    searchParametersList.Add(paraTmpStatus);
                 }
             };
         }
