@@ -25,10 +25,10 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public Guid pricedetail_dbid { get; set; }
 
-
+/*
         [Display(Name = "custprice_dbid")]
         [Column(TypeName = "uniqueidentifier")]
-        public Guid custprice_dbid { get; set; }
+        public Guid custprice_dbid { get; set; }*/
 
         /// <summary>
         ///Cust ID
@@ -265,12 +265,12 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="varchar(1)")]
        public string QueryStatus { get; set; }
 
-        /// <summary>
+       /* /// <summary>
         ///Status
         /// </summary>
         [Display(Name = "remark")]
         public string remark { get; set; }
-
+*/
 
     }
 }
