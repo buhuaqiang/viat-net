@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "客戶送貨地址信息視圖",TableName = "View_com_cust_delivery")]
+    [Entity(TableCnName = "Delivery Address",TableName = "View_com_cust_delivery")]
     public partial class View_com_cust_delivery:BaseEntity
     {
         /// <summary>
@@ -57,53 +57,62 @@ namespace VIAT.Entity.DomainModels
        public Guid? cust_dbid { get; set; }
 
        /// <summary>
-       ///
+       ///Seq NO
        /// </summary>
-       [Display(Name ="zip_id")]
+       [Display(Name ="Seq NO")]
+       [Column(TypeName="decimal")]
+       [Editable(true)]
+       public decimal? seq_no { get; set; }
+
+       /// <summary>
+       ///City Name
+       /// </summary>
+       [Display(Name ="City Name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       [Editable(true)]
+       public string city_name { get; set; }
+
+       /// <summary>
+       ///Zip777777
+       /// </summary>
+       [Display(Name ="Zip777777")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
        public string zip_id { get; set; }
 
        /// <summary>
-       ///
+       ///Delivery Name
        /// </summary>
-       [Display(Name ="seq_no")]
-       [Column(TypeName="decimal")]
-       [Editable(true)]
-       public decimal? seq_no { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="delivery_name")]
+       [Display(Name ="Delivery Name")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
        public string delivery_name { get; set; }
 
        /// <summary>
-       ///
+       ///Contact
        /// </summary>
-       [Display(Name ="delivery_contact")]
+       [Display(Name ="Contact")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
        public string delivery_contact { get; set; }
 
        /// <summary>
-       ///
+       ///Telephone
        /// </summary>
-       [Display(Name ="delivery_tel_no")]
+       [Display(Name ="Telephone")]
        [MaxLength(60)]
        [Column(TypeName="varchar(60)")]
        [Editable(true)]
        public string delivery_tel_no { get; set; }
 
        /// <summary>
-       ///
+       ///Delivery Address
        /// </summary>
-       [Display(Name ="delivery_addr")]
+       [Display(Name ="Delivery Address")]
        [MaxLength(200)]
        [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
@@ -150,15 +159,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="modified_date")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="city_name")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
-       [Editable(true)]
-       public string city_name { get; set; }
 
        /// <summary>
        ///

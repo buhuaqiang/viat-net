@@ -13,57 +13,57 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "客戶運送轉移",TableName = "View_app_cust_delivery_transfer")]
+    [Entity(TableCnName = "Import Customer Maintain Detail",TableName = "View_app_cust_delivery_transfer")]
     public partial class View_app_cust_delivery_transfer:BaseEntity
     {
         /// <summary>
-       ///
+       ///SeqNo
        /// </summary>
-       [Display(Name ="seq_no")]
+       [Display(Name ="SeqNo")]
        [Column(TypeName="decimal")]
        [Editable(true)]
        public decimal? seq_no { get; set; }
 
        /// <summary>
-       ///
+       ///Delivery Name
        /// </summary>
-       [Display(Name ="delivery_name")]
+       [Display(Name ="Delivery Name")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
        public string delivery_name { get; set; }
 
        /// <summary>
-       ///
+       ///Zip
        /// </summary>
-       [Display(Name ="delivery_zip_id")]
+       [Display(Name ="Zip")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
        public string delivery_zip_id { get; set; }
 
        /// <summary>
-       ///
+       ///Delivery Address
        /// </summary>
-       [Display(Name ="delivery_addr")]
+       [Display(Name ="Delivery Address")]
        [MaxLength(200)]
        [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
        public string delivery_addr { get; set; }
 
        /// <summary>
-       ///
+       ///Delivery Contact
        /// </summary>
-       [Display(Name ="delivery_contact")]
+       [Display(Name ="Delivery Contact")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
        public string delivery_contact { get; set; }
 
        /// <summary>
-       ///
+       ///Telephone
        /// </summary>
-       [Display(Name ="delivery_tel_no")]
+       [Display(Name ="Telephone")]
        [MaxLength(60)]
        [Column(TypeName="varchar(60)")]
        [Editable(true)]
