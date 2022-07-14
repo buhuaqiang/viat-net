@@ -501,7 +501,7 @@ namespace VIAT.Price.Services
             if (string.IsNullOrEmpty(sRowDatas) == false)
             {
 
-                List<Dictionary<string, object>> entityDic = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(JsonConvert.SerializeObject(sRowDatas)); //base.CalcSameEntiryProperties(typeof(Viat_app_cust_price), sRowDatas);
+                List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(typeof(Viat_app_cust_price), sRowDatas); // JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(JsonConvert.SerializeObject(sRowDatas)); //base.CalcSameEntiryProperties(typeof(Viat_app_cust_price), sRowDatas);
                 saveModel.MainDatas = entityDic;
                 saveModel.mainOptionType = SaveModel.MainOptionType.add;
                 saveModel.MainFacType = typeof(Viat_app_cust_price);
