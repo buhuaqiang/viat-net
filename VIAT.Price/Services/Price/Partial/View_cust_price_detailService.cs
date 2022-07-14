@@ -59,7 +59,7 @@ namespace VIAT.Price.Services
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        public PageGridData<View_cust_price_detail> GetCustInvalidPageData(PageDataOptions pageData)
+        public  PageGridData<View_cust_price_detail> GetCustInvalidPageData(PageDataOptions pageData)
         {
 
             PageGridData<View_cust_price_detail> pageGridData = new PageGridData<View_cust_price_detail>();
@@ -548,8 +548,8 @@ namespace VIAT.Price.Services
                 return false;
             }
 
-            string sSql = "select TOP(1) *  from viat_app_cust_price_detail where cust_dbid=@sCustDBID and prod_dbid=@prod_dbid AND status = 'Y'ORDER BY end_date DESC";
-            Viat_app_cust_price entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sCustDBID, prod_dbid = sProdDBID });
+            string sSql = "select TOP(1) *  from viat_app_cust_price_detail where cust_dbid=@cust_dbid and prod_dbid=@prod_dbid AND status = 'Y'ORDER BY end_date DESC";
+            Viat_app_cust_price_detail entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price_detail>(sSql, new { cust_dbid = sCustDBID, prod_dbid = sProdDBID });
 
             if (entiryCustPrice == null)
             {
@@ -616,7 +616,7 @@ namespace VIAT.Price.Services
             if (string.IsNullOrEmpty(sRowDatas) == false)
             {
 
-                List<Dictionary<string, object>> entityDic = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(JsonConvert.SerializeObject(sRowDatas)); //base.CalcSameEntiryProperties(typeof(Viat_app_cust_price), sRowDatas);
+                List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(typeof(Viat_app_cust_price_detail), sRowDatas); //JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(JsonConvert.SerializeObject(sRowDatas)); //base.CalcSameEntiryProperties(typeof(Viat_app_cust_price), sRowDatas);
                 saveModel.MainDatas = entityDic;
                 saveModel.mainOptionType = SaveModel.MainOptionType.add;
                 saveModel.MainFacType = typeof(Viat_app_cust_price_detail);
