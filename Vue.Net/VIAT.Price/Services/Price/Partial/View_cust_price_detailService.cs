@@ -147,7 +147,7 @@ namespace VIAT.Price.Services
                     }
                     if (string.IsNullOrEmpty(sChannel) == false)
                     {
-                        QuerySql += "  and custPrice.cust_dbid in ( select comCust.cust_dbid from viat_com_doh_type doh  inner join viat_com_cust comCust on" +
+                        QuerySql += "  and custGroup.cust_dbid in ( select comCust.cust_dbid from viat_com_doh_type doh  inner join viat_com_cust comCust on" +
                     " doh.doh_type=comCust.doh_type where doh.channel='" + sChannel + "')";
                     }
                     QuerySql += " AND prod.state = '1' AND custGroup.status = 'Y'";
