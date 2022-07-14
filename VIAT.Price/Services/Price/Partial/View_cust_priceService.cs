@@ -1003,13 +1003,22 @@ namespace VIAT.Price.Services
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
             DateTime dEndData = Convert.ToDateTime(dicData["invalid_date"].ToString(), dtFormat);
-            string sRemarks = "";// dicData["remark"]?.ToString();
+            string sRemarks = "";
+            if(dicData.ContainsKey("") == true)
+            {
+                sRemarks = dicData["remark"]?.ToString();
+            }
+            
             string isAll = dicData["isAll"].ToString();
 
             if (sSelectType == "0")
             {
                 string sPriceGroupDBID = dicData["pricegroup_dbid"].ToString();
-                string sProdDBID = dicData["prod_dbid"].ToString();
+                string sProdDBID = "";
+                if (dicData.ContainsKey("prod_dbid") == true)
+                {
+                    sProdDBID = dicData["prod_dbid"]?.ToString();
+                }
                 //取得主界面值
                 List<Viat_app_cust_price> entityList = new List<Viat_app_cust_price>();
                 if (isAll == "0")
@@ -1047,7 +1056,11 @@ namespace VIAT.Price.Services
                 {
                     //cust price
                     string sCustGroupDBID = dicData["cust_dbid"].ToString();
-                    string sProdDBID = dicData["prod_dbid"].ToString();
+                    string sProdDBID = "";
+                    if (dicData.ContainsKey("prod_dbid") == true)
+                    {
+                        sProdDBID = dicData["prod_dbid"]?.ToString();
+                    }
                     List<View_cust_price_detail> entityList = new List<View_cust_price_detail>();
 
 
@@ -1108,7 +1121,11 @@ namespace VIAT.Price.Services
             else if (sSelectType == "2")
             {
                 //by prod
-                string sProdDBID = dicData["prod_dbid"].ToString();
+                string sProdDBID = "";
+                if (dicData.ContainsKey("prod_dbid") == true)
+                {
+                    sProdDBID = dicData["prod_dbid"]?.ToString();
+                }
                 Viat_com_prod prod = getProdByProdID(sProdDBID);
                 if (prod != null)
                 {
