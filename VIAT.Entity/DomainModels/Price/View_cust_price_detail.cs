@@ -265,12 +265,7 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="varchar(1)")]
        public string QueryStatus { get; set; }
 
-       /* /// <summary>
-        ///Status
-        /// </summary>
-        [Display(Name = "remark")]
-        public string remark { get; set; }
-*/
+
 
     }
 }
