@@ -177,7 +177,7 @@ namespace VIAT.Price.Services
         {
             string sSql = @"
                         SELECT ROW_NUMBER()over(order by custPrice.pricedetail_dbid desc) as rowId,
-                        custPrice.pricedetail_dbid AS custprice_dbid, '1' AS source_type,
+                        custPrice.pricedetail_dbid AS pricedetail_dbid, '1' AS source_type,
 	                        custPrice.prod_dbid , prod.prod_id, prod.prod_ename, custPrice.nhi_price ,
 	                        custPrice.invoice_price ,	custPrice.net_price , custPrice.min_qty ,
 	                        custPrice.start_date , custPrice.end_date , custPrice.status ,
@@ -203,7 +203,7 @@ namespace VIAT.Price.Services
             sSql += @" AND prod.state = '1'	
                         UNION ALL
                         SELECT ROW_NUMBER()over(order by custGroup.custgroup_dbid desc) as rowId,
-	                        custGroup.custgroup_dbid AS custprice_dbid, '2' AS source_type,
+	                        custGroup.custgroup_dbid AS pricedetail_dbid, '2' AS source_type,
 	                        custPrice.prod_dbid , prod.prod_id, prod.prod_ename, custPrice.nhi_price ,
 	                        custPrice.invoice_price ,	custPrice.net_price , custPrice.min_qty ,
 	                        custPrice.start_date , custPrice.end_date , custPrice.status ,
@@ -218,7 +218,7 @@ namespace VIAT.Price.Services
 	                        WHERE ( 1 = 1 ) AND custPrice.status = 'Y'";                            
             if (string.IsNullOrEmpty(cust_dbid) == false)
             {
-                sSql += " AND custGroup.cust_id = '" + cust_dbid + "'";
+                sSql += " AND custGroup.cust_dbid = '" + cust_dbid + "'";
             }
             if (string.IsNullOrEmpty(prod_dbid) == false)
             {
