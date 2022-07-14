@@ -163,7 +163,7 @@ namespace VIAT.Price.Services
 	                        viat_app_cust_price_detail AS custPrice
 	                        INNER JOIN viat_com_cust AS cust ON custPrice.cust_dbid = cust.cust_dbid
 	                        INNER JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid 
-                        WHERE ( 1 = 1 ) ' AND custPrice.status = 'Y' ";
+                        WHERE ( 1 = 1 )  AND custPrice.status = 'Y' ";
             if (string.IsNullOrEmpty(cust_dbid) == false)
             {
                 sSql += " AND custPrice.cust_dbid = '" + cust_dbid + "'";      
@@ -199,7 +199,7 @@ namespace VIAT.Price.Services
             }
             if (string.IsNullOrEmpty(prod_dbid) == false)
             {
-                sSql += " AND prod.prod_dbid = '" + prod_dbid + " ' ";
+                sSql += " AND prod.prod_dbid = '" + prod_dbid + "' ";
             }
             if (string.IsNullOrEmpty(channel) == false)
             {

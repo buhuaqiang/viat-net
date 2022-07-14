@@ -1141,9 +1141,9 @@ namespace VIAT.Price.Services
                 //根据channel,从viat_com_doh_type中取得匹配channel，取得多条信息，信息 包含 doh_type健保類別
                 //根据doh_type匹配表viat_com_cust doh_type,匹配出cust_dbid
                 string sChannel = "";
-                if(dicData.ContainsKey("channel") == true)
+                if(dicData.ContainsKey("channelValue") == true)
                 {
-                    sChannel = dicData["channel"].ToString();
+                    sChannel = dicData["channelValue"].ToString();
                 }
                 List<View_cust_price_detail> entityList = new List<View_cust_price_detail>();
                 if (isAll == "0")
