@@ -230,7 +230,7 @@ namespace VIAT.Price.Services
                     " doh.doh_type=comCust.doh_type where doh.channel='" + channel + "')";
             }
             sSql += " AND prod.state = '1' AND custGroup.status = 'Y'";
-
+             
 
             return repository.DapperContext.QueryList<View_cust_price_detail>(sSql, null);
 
