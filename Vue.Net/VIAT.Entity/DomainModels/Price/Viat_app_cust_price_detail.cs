@@ -128,16 +128,8 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
-
-       /*/// <summary>
-       ///作廢否,True:作廢;False:不作廢
-       /// </summary>
-       [Display(Name ="作廢否,True:作廢;False:不作廢")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       [Editable(true)]
-       public string is_used { get; set; }*/
 
        /// <summary>
        ///資料來源,0:EBMS;1:Manual;2:Copy;3:Detach
@@ -268,6 +260,15 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="最後修改時間")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
+
+       /// <summary>
+       ///淨售價
+       /// </summary>
+       [Display(Name ="淨售價")]
+       [DisplayFormat(DataFormatString="18,5")]
+       [Column(TypeName="decimal")]
+       [Editable(true)]
+       public decimal? reserv_price { get; set; }
 
        
     }
