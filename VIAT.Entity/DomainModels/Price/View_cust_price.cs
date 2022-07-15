@@ -71,8 +71,8 @@ namespace VIAT.Entity.DomainModels
        ///Bid NO
        /// </summary>
        [Display(Name ="Bid NO")]
-       [MaxLength(16)]
-       [Column(TypeName="varchar(16)")]
+       [MaxLength(20)]
+       [Column(TypeName="varchar(20)")]
        [Editable(true)]
        public string bid_no { get; set; }
 
@@ -126,6 +126,15 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="decimal")]
        [Editable(true)]
        public decimal? net_price { get; set; }
+
+       /// <summary>
+       ///Reser Price
+       /// </summary>
+       [Display(Name ="Reser Price")]
+       [DisplayFormat(DataFormatString="18,5")]
+       [Column(TypeName="decimal")]
+       [Editable(true)]
+       public decimal? reserv_price { get; set; }
 
        /// <summary>
        ///Min Qty
@@ -311,6 +320,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="pricegroup_dbidname")]
        [MaxLength(121)]
        [Column(TypeName="varchar(121)")]
+       [Required(AllowEmptyStrings=false)]
        public string pricegroup_dbidname { get; set; }
 
        /// <summary>
@@ -359,6 +369,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product")]
        [MaxLength(66)]
        [Column(TypeName="varchar(66)")]
+       [Required(AllowEmptyStrings=false)]
        public string prod_dbidname { get; set; }
 
        /// <summary>
@@ -367,6 +378,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Products")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
        public string prods { get; set; }
 
        /// <summary>
@@ -375,7 +387,25 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
        public string QueryStatus { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="dbid")]
+       [Column(TypeName="int")]
+       [Required(AllowEmptyStrings=false)]
+       public int dbid { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="ShowInvalidProd")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
+       public string ShowInvalidProd { get; set; }
 
        
     }
