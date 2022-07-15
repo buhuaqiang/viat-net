@@ -96,7 +96,7 @@ namespace VIAT.Price.Services
                     }
 
                     QuerySql = @"
-                        SELECT ROW_NUMBER()over(order by custPrice.pricedetail_dbid desc) as rowId,
+                        SELECT 
                         custPrice.pricedetail_dbid AS pricedetail_dbid, '1' AS source_type,
 	                        custPrice.prod_dbid , prod.prod_id, prod.prod_ename, custPrice.nhi_price ,
 	                        custPrice.invoice_price ,	custPrice.net_price , custPrice.min_qty ,
@@ -123,7 +123,7 @@ namespace VIAT.Price.Services
                     }
                     QuerySql += @" AND prod.state = '1'	
                         UNION ALL
-                        SELECT ROW_NUMBER()over(order by custGroup.custgroup_dbid desc) as rowId,
+                        SELECT  
 	                        custGroup.custgroup_dbid AS pricedetail_dbid, '2' AS source_type,
 	                        custPrice.prod_dbid , prod.prod_id, prod.prod_ename, custPrice.nhi_price ,
 	                        custPrice.invoice_price ,	custPrice.net_price , custPrice.min_qty ,
@@ -158,8 +158,8 @@ namespace VIAT.Price.Services
             string sql = "select count(1) from (" + QuerySql + ") a";
             pageGridData.total = repository.DapperContext.ExecuteScalar(sql, null).GetInt();
 
-            sql = @$"select * from (" + 
-                QuerySql + $") as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
+            sql = @$" select * from ( select d.*,ROW_NUMBER()over(order by d.pricedetail_dbid desc) as rowId from (" + 
+                QuerySql + $") as d )as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
                 pageGridData.rows = repository.DapperContext.QueryList<View_cust_price_detail>(sql, null);
 
             return pageGridData;
