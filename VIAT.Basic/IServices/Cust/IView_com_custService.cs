@@ -8,6 +8,5 @@ namespace VIAT.Basic.IServices
 {
     public partial interface IView_com_custService : IService<View_com_cust>
     {
-        void setQueryParameters();
     }
 }
