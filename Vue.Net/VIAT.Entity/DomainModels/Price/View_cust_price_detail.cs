@@ -25,15 +25,10 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public Guid pricedetail_dbid { get; set; }
 
-/*
-        [Display(Name = "custprice_dbid")]
-        [Column(TypeName = "uniqueidentifier")]
-        public Guid custprice_dbid { get; set; }*/
-
-        /// <summary>
-        ///Cust ID
-        /// </summary>
-        [Display(Name ="Cust ID")]
+       /// <summary>
+       ///Cust ID
+       /// </summary>
+       [Display(Name ="Cust ID")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
@@ -79,6 +74,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Cust")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
+       [Required(AllowEmptyStrings=false)]
        public string cust_dbidname { get; set; }
 
        /// <summary>
@@ -104,6 +100,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product")]
        [MaxLength(66)]
        [Column(TypeName="varchar(66)")]
+       [Required(AllowEmptyStrings=false)]
        public string prod_dbidname { get; set; }
 
        /// <summary>
@@ -141,6 +138,15 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="decimal")]
        [Editable(true)]
        public decimal? gross_price { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="reserv_price")]
+       [DisplayFormat(DataFormatString="18,5")]
+       [Column(TypeName="decimal")]
+       [Editable(true)]
+       public decimal? reserv_price { get; set; }
 
        /// <summary>
        ///Min Qty
@@ -230,14 +236,15 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Products")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
        public string prods { get; set; }
 
        /// <summary>
        ///Bid NO
        /// </summary>
        [Display(Name ="Bid NO")]
-       [MaxLength(16)]
-       [Column(TypeName="varchar(16)")]
+       [MaxLength(20)]
+       [Column(TypeName="varchar(20)")]
        [Editable(true)]
        public string bid_no { get; set; }
 
@@ -263,9 +270,18 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
        public string QueryStatus { get; set; }
 
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="ShowInvalidProd")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
+       public string ShowInvalidProd { get; set; }
 
-
+       
     }
 }
