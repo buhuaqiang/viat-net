@@ -343,18 +343,18 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///列名lmpg_dbid
        /// </summary>
-       [Display(Name ="列名lmpg_dbid")]
+       /*[Display(Name ="列名lmpg_dbid")]
        [Column(TypeName="int")]
        //[Required(AllowEmptyStrings=false)]
-       public int lmpg_dbid { get; set; }
+       public int lmpg_dbid { get; set; }*/
 
        /// <summary>
        ///列名lmpg_entity
        /// </summary>
-       [Display(Name ="列名lmpg_entity")]
+      /* [Display(Name ="列名lmpg_entity")]
        [MaxLength(3)]
        [Column(TypeName="varchar(3)")]
-       public string lmpg_entity { get; set; }
+       public string lmpg_entity { get; set; }*/
 
        /// <summary>
        ///localmpgid
