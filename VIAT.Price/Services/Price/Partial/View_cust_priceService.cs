@@ -1007,6 +1007,12 @@ namespace VIAT.Price.Services
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
             DateTime dEndData = Convert.ToDateTime(dicData["invalid_date"].ToString(), dtFormat);
+            string sStatus = "Y";
+            if(base.getFormatYYYYMMDD(dEndData) < base.getFormatYYYYMMDD(System.DateTime.Now))
+            {
+                sStatus = "N";
+            }
+
             string sRemarks = "";
             if(dicData.ContainsKey("remark") == true)
             {
@@ -1038,7 +1044,8 @@ namespace VIAT.Price.Services
                 {
                     foreach (Viat_app_cust_price price in entityList)
                     {
-                        price.status = "N";
+
+                        price.status = sStatus;
                         price.end_date = dEndData;
                         price.remarks = sRemarks;
 
@@ -1070,7 +1077,7 @@ namespace VIAT.Price.Services
                     entityList = View_cust_price_detailService.Instance.GetCustInvalidList(sCustGroupDBID, sProdDBID,"");
                 }
 
-                ProcessInvalidCustAndGroup(entityList, saveModel, dEndData, sRemarks);
+                ProcessInvalidCustAndGroup(entityList, saveModel, dEndData, sRemarks, sStatus);
               
             }
             else if (sSelectType == "2")
@@ -1087,7 +1094,7 @@ namespace VIAT.Price.Services
                         foreach (Viat_app_cust_group groupPrice in custGroupPriceList)
                         {
                             groupPrice.end_date = dEndData;
-                            groupPrice.status = "N";
+                            groupPrice.status = sStatus;
                             groupPrice.remarks = sRemarks;
 
                             Dictionary<string, object> dicGroupPrice = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(groupPrice));
@@ -1106,7 +1113,7 @@ namespace VIAT.Price.Services
                         foreach (Viat_app_cust_price groupPrice in groupPriceList)
                         {
                             groupPrice.end_date = dEndData;
-                            groupPrice.status = "N";
+                            groupPrice.status = sStatus;
                             groupPrice.remarks = sRemarks;
 
                             Dictionary<string, object> dicGroupPrice = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(groupPrice));
@@ -1125,7 +1132,7 @@ namespace VIAT.Price.Services
                         foreach (Viat_app_cust_price_detail groupPrice in custPriceList)
                         {
                             groupPrice.end_date = dEndData;
-                            groupPrice.status = "N";
+                            groupPrice.status = sStatus;
                             groupPrice.remarks = sRemarks;
 
                             Dictionary<string, object> dicGroupPrice = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(groupPrice));
@@ -1161,7 +1168,7 @@ namespace VIAT.Price.Services
                     entityList = View_cust_price_detailService.Instance.GetCustInvalidList("", sProdDBID, sChannel);
                 }
 
-                ProcessInvalidCustAndGroup(entityList, saveModel, dEndData, sRemarks);
+                ProcessInvalidCustAndGroup(entityList, saveModel, dEndData, sRemarks,sStatus);
             }
 
             base.CustomBatchProcessEntity(saveModel);
@@ -1174,7 +1181,7 @@ namespace VIAT.Price.Services
         /// </summary>
         /// <param name="entityList"></param>
         /// <param name="saveModel"></param>
-        private void ProcessInvalidCustAndGroup(List<View_cust_price_detail> entityList, SaveModel saveModel, DateTime dEndData, string sRemarks)
+        private void ProcessInvalidCustAndGroup(List<View_cust_price_detail> entityList, SaveModel saveModel, DateTime dEndData, string sRemarks, string sStatus)
         {
             if (entityList != null && entityList.Count > 0)
             {
@@ -1188,7 +1195,7 @@ namespace VIAT.Price.Services
                         detail = JsonConvert.DeserializeObject<Viat_app_cust_price_detail>(JsonConvert.SerializeObject(price));
                         
 
-                        detail.status = "N";
+                        detail.status = sStatus;
                         detail.end_date = dEndData;
                         detail.remarks = sRemarks;
 
@@ -1206,7 +1213,7 @@ namespace VIAT.Price.Services
                         detail = JsonConvert.DeserializeObject<Viat_app_cust_group>(JsonConvert.SerializeObject(price));
                         detail.custgroup_dbid = price.pricedetail_dbid;
 
-                        detail.status = "N";
+                        detail.status = sStatus;
                         detail.end_date = dEndData;
                         detail.remarks = sRemarks;
 
