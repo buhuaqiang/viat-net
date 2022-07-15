@@ -1206,13 +1206,36 @@ namespace VIAT.Price.Services
                         detail.end_date = dEndData;
                         detail.remarks = sRemarks;
 
-                        Dictionary<string, object> dicDetail = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(detail));
-                        SaveModel.DetailListDataResult dataDetailResult = new SaveModel.DetailListDataResult();
-                        dataDetailResult.optionType = SaveModel.MainOptionType.update;
-                        dataDetailResult.detailType = typeof(Viat_app_cust_group);
-                        dataDetailResult.DetailData = new List<Dictionary<string, object>> { dicDetail };
-                        saveModel.DetailListData.Add(dataDetailResult);
+                        bool bFind = false;
+                        foreach(SaveModel.DetailListDataResult resutl in saveModel.DetailListData)
+                        {
+                            foreach(Dictionary<string, object> dic in resutl.DetailData)
+                            {
+                                if(dic.ContainsKey("custgroup_dbid") == true)
+                                {
+                                    if(dic["custgroup_dbid"].ToString() == detail.custgroup_dbid.ToString())
+                                    {
+                                        bFind = true;
+                                        break;
+                                    }
+                                }
+                            }
 
+                            if(bFind == true)
+                            {
+                                break;
+                            }
+                        }
+
+                        if (bFind == false)
+                        {
+                            Dictionary<string, object> dicDetail = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(detail));
+                            SaveModel.DetailListDataResult dataDetailResult = new SaveModel.DetailListDataResult();
+                            dataDetailResult.optionType = SaveModel.MainOptionType.update;
+                            dataDetailResult.detailType = typeof(Viat_app_cust_group);
+                            dataDetailResult.DetailData = new List<Dictionary<string, object>> { dicDetail };
+                            saveModel.DetailListData.Add(dataDetailResult);
+                        }
                     }
                 }
             }
