@@ -743,7 +743,7 @@ namespace VIAT.Price.Services
                 Dictionary<string, object> dicCurrent = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(currentPriceEntity));
                 SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
                 dataResult.optionType = SaveModel.MainOptionType.update;
-                dataResult.detailType = typeof(Viat_app_cust_price);
+                dataResult.detailType = typeof(Viat_app_cust_price_detail);
                 dataResult.DetailData = new List<Dictionary<string, object>> { dicCurrent };
                 saveModel.DetailListData.Add(dataResult);
 
@@ -935,7 +935,7 @@ namespace VIAT.Price.Services
         /// <returns></returns>
         private Viat_app_cust_price_detail getFuturePriceData(string sCustDBID, string sProdDBID)
         {
-            string sSql = "select TOP(1) *  from viat_app_cust_price where cust_dbid=@cust_dbid and prod_dbid=@prod_dbid " +
+            string sSql = "select TOP(1) *  from viat_app_cust_price_detail where cust_dbid=@cust_dbid and prod_dbid=@prod_dbid " +
                 "AND CONVERT(VARCHAR(100), start_date, 112) >CONVERT(VARCHAR(100), GETDATE(),112)  ORDER BY end_date ";
             Viat_app_cust_price_detail entiryFuture = _repository.DapperContext.QueryFirst<Viat_app_cust_price_detail>(sSql, new { cust_dbid = sCustDBID, prod_dbid = sProdDBID });
 
@@ -950,7 +950,7 @@ namespace VIAT.Price.Services
         /// <returns></returns>
         private List<Viat_app_cust_price_detail> getInValidPriceData(string sCustDBID, string sProdDBID, DateTime dStartDate)
         {
-            string sSql = "select *  from viat_app_cust_price where   cust_dbid='" + sCustDBID + "' and prod_dbid='" + sProdDBID + "' " +
+            string sSql = "select *  from viat_app_cust_price_detail where   cust_dbid='" + sCustDBID + "' and prod_dbid='" + sProdDBID + "' " +
                 "   and status='N' " +
                 "AND  CONVERT(VARCHAR(100), end_date, 112) > '" + getFormatYYYYMMDD(dStartDate) + "'" +
                 " ORDER BY end_date DESC";
