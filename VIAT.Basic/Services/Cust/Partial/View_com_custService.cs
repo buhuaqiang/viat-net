@@ -49,6 +49,32 @@ namespace VIAT.Basic.Services
             //base.Init(dbRepository);
         }
 
+        public void setQueryParameters()
+        {
+            QueryRelativeList = (searchParametersList) =>
+            {
+                for (int i = searchParametersList.Count - 1; i >= 0; i--)
+                {
+                    SearchParameters item = searchParametersList[i];
+
+                    if (item.Name == "channelValue")
+                    {
+                        searchParametersList.Remove(item);
+
+                        SearchParameters paraTmp = new SearchParameters();
+                        paraTmp.Name = "doh_type";
+                        paraTmp.Value = item.Value;
+                        paraTmp.DisplayType = item.DisplayType;
+                        searchParametersList.Add(paraTmp);
+                        break;
+                    }
+                   
+                }
+                
+            };
+        }
+
+
         public string getCustCode()
         {
             string rule = "C" + $"D{DateTime.Now.GetHashCode()}";

@@ -999,7 +999,11 @@ namespace VIAT.Price.Services
             SaveModel saveModel = new SaveModel();
             Dictionary<string, object> dicData = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(saveData));
             string sSelectType = dicData["selectType"].ToString();
-            string sRowsData = dicData["rows"].ToString();
+            string sRowsData = "";
+            if (dicData.ContainsKey("rows") == true)
+            {
+                sRowsData = dicData["rows"].ToString();
+            }
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
             DateTime dEndData = Convert.ToDateTime(dicData["invalid_date"].ToString(), dtFormat);
