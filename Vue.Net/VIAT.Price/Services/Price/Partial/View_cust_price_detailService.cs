@@ -874,6 +874,7 @@ namespace VIAT.Price.Services
                     if (futurePriceEntity != null)
                     {
                         entity.end_date = futurePriceEntity.start_date.AddDays(-1);
+                        
                        
                     }
                     AddCustPriceData(entity, saveModel);

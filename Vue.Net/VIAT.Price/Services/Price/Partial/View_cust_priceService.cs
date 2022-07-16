@@ -649,6 +649,7 @@ namespace VIAT.Price.Services
             {
                 entity.status = "Y";
             }
+            entity.SetModifyDefaultVal();
             Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
             SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
             dataResult.optionType = SaveModel.MainOptionType.add;
@@ -1209,7 +1210,7 @@ namespace VIAT.Price.Services
                         Viat_app_cust_price_detail detail = new Viat_app_cust_price_detail();
                         detail = JsonConvert.DeserializeObject<Viat_app_cust_price_detail>(JsonConvert.SerializeObject(price));
                         
-
+                         
                         detail.status = sStatus;
                         detail.end_date = dEndData;
                         detail.remarks = sRemarks;
