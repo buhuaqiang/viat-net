@@ -23,6 +23,7 @@ using Newtonsoft.Json;
 using System;
 using System.Globalization;
 using System.Text;
+using VIAT.Core.Enums;
 
 namespace VIAT.Price.Services
 {
@@ -122,6 +123,13 @@ namespace VIAT.Price.Services
                 QuerySql + $" ) as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
             pageGridData.rows = repository.DapperContext.QueryList<View_cust_price>(sql, null);
 
+            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() { {
+                    x.prod_id,QueryOrderBy.Asc
+                },
+                {
+                    x.modified_date,QueryOrderBy.Asc
+                }
+            };
             return pageGridData;
         }
 
