@@ -53,11 +53,11 @@ namespace VIAT.Price.Services
 
         public override PageGridData<View_cust_price> GetPageData(PageDataOptions options)
         {
-            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() { 
+            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {
                 {
-                    x.modified_date,QueryOrderBy.Asc
-                },{
                     x.prod_id,QueryOrderBy.Asc
+                },{
+                    x.modified_date,QueryOrderBy.Asc
                 }
             };
             return base.GetPageData(options);
