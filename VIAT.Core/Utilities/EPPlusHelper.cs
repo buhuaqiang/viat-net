@@ -26,7 +26,7 @@ namespace VIAT.Core.Utilities
         /// <param name="ignoreColumns">忽略不导出的列(如果设置了exportColumns,ignoreColumns不会生效)</param>
         /// <returns></returns>
 
-        public static WebResponseContent ReadToDataTable<T>(string path, Expression<Func<T, object>> exportColumns = null, List<string> ignoreTemplate = null)
+        public static WebResponseContent ReadToDataTable<T>(bool bCheckImportCustom, string path, Expression<Func<T, object>> exportColumns = null, List<string> ignoreTemplate = null)
         {
             WebResponseContent responseContent = new WebResponseContent();
 
@@ -88,6 +88,9 @@ namespace VIAT.Core.Utilities
                 for (int m = sheet.Dimension.Start.Row + 1, n = sheet.Dimension.End.Row; m <= n; m++)
                 {
                     T entity = Activator.CreateInstance<T>();
+
+
+                    //如果不是自定义校验，则走框架
                     for (int j = sheet.Dimension.Start.Column, k = sheet.Dimension.End.Column; j <= k; j++)
                     {
                         string value = sheet.Cells[m, j].Value?.ToString();
@@ -116,7 +119,7 @@ namespace VIAT.Core.Utilities
                             string key = options.KeyValues.Where(x => x.Value == value)
                                   .Select(s => s.Key)
                                   .FirstOrDefault();
-                            if (key == null)//&& options.Requierd
+                            if (key == null && bCheckImportCustom == false)//&& options.Requierd
                             {
                                 //小于20个字典项，直接提示所有可选value
                                 string values = options.KeyValues.Count < 20 ? (string.Join(',', options.KeyValues.Select(s => s.Value))) : options.ColumnCNName;
@@ -142,7 +145,7 @@ namespace VIAT.Core.Utilities
                         //验证导入与实体数据类型是否相同
                         (bool, string, object) result = property.ValidationProperty(value, options.Requierd);
 
-                        if (!result.Item1)
+                        if (!result.Item1 && bCheckImportCustom==false)
                         {
                             return responseContent.Error($"第{m}行[{options.ColumnCNName}]验证未通过,{result.Item2}");
                         }

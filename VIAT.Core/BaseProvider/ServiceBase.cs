@@ -423,13 +423,18 @@ namespace VIAT.Core.BaseProvider
             if (!Directory.Exists(dicPath)) Directory.CreateDirectory(dicPath);
             dicPath = $"{dicPath}{Guid.NewGuid().ToString()}_{formFile.FileName}";
 
+            if(ImportOnExecutBefore != null)
+            {
+                ImportOnExecutBefore.Invoke();
+            }
+
             using (var stream = new FileStream(dicPath, FileMode.Create))
             {
                 formFile.CopyTo(stream);
             }
             try
             {
-                Response = EPPlusHelper.ReadToDataTable<T>(dicPath, DownLoadTemplateColumns, GetIgnoreTemplate());
+                Response = EPPlusHelper.ReadToDataTable<T>(bCheckImportCustom, dicPath, DownLoadTemplateColumns, GetIgnoreTemplate());
             }
             catch (Exception ex)
             {
