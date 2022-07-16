@@ -51,6 +51,18 @@ namespace VIAT.Price.Services
         }
 
 
+        public override PageGridData<View_cust_price> GetPageData(PageDataOptions options)
+        {
+            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() { {
+                    x.prod_id,QueryOrderBy.Desc
+                },
+                {
+                    x.modified_date,QueryOrderBy.Asc
+                }
+            };
+            return base.GetPageData(options);
+        }
+
         /// <summary>
         /// 置无效数据查询
         /// </summary>
@@ -118,22 +130,17 @@ namespace VIAT.Price.Services
             string sql = "select count(1) from (" + QuerySql + ") a";
             pageGridData.total = repository.DapperContext.ExecuteScalar(sql, null).GetInt();
 
-           // QuerySql += "  ORDER BY prod_id, modified_date"; 
+          // QuerySql += "  ORDER BY prod_id, modified_date"; 
             sql = @$"select * from (" +
                 QuerySql + $" ) as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
             pageGridData.rows = repository.DapperContext.QueryList<View_cust_price>(sql, null);
 
-            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() { {
-                    x.prod_id,QueryOrderBy.Asc
-                },
-                {
-                    x.modified_date,QueryOrderBy.Asc
-                }
-            };
+            
             return pageGridData;
         }
 
 
+       
 
         /// <summary>
         /// 置无效数据查询
