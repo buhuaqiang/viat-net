@@ -1142,7 +1142,168 @@ namespace VIAT.Core.BaseProvider
             return Convert.ToDateTime(dDate.ToString(), dtFormat);
         }
 
-        public virtual WebResponseContent CustomBatchProcessEntity(SaveModel saveModel)
+        /// <summary>
+        /// 处理日期格式
+        /// </summary>
+        /// <param name="dDate"></param>
+        /// <returns></returns>
+        public DateTime getFormatYYYYMMDD(string dDate)
+        {
+            DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
+            dtFormat.ShortDatePattern = "yyyy-MM-dd";
+            return Convert.ToDateTime(dDate, dtFormat);
+        }
+
+
+        /// <summary>
+        /// 拼sql where conditon
+        /// </summary>
+        /// <returns></returns>
+        public string getWhereCondition(List<SearchParameters> searchParametersList, Dictionary<string, string> sColumnAliasDic)
+        {
+            string sWerheCondition = "";
+            for (int i = 0; i < searchParametersList.Count; i++)
+            {
+                SearchParameters x = searchParametersList[i];
+                x.DisplayType = x.DisplayType.GetDBCondition();
+                if (string.IsNullOrEmpty(x.Value))
+                {
+                    continue;
+                }
+
+                //取得条件的别名
+                string sAlias = "";
+                foreach (string keyData in sColumnAliasDic.Keys)
+                {
+                    if (x.Name.ToLower() == keyData.ToLower())
+                    {
+                        sAlias = sColumnAliasDic[keyData];
+                        break;
+                    }
+                }
+
+
+                PropertyInfo property = TProperties.Where(c => c.Name.ToUpper() == x.Name.ToUpper()).FirstOrDefault();
+                //2020.06.25增加字段null处理
+                if (property == null) continue;
+                // property
+                //移除查询的值与数据库类型不匹配的数据
+                object[] values = property.ValidationValueForDbType(x.Value.Split(',')).Where(q => q.Item1).Select(s => s.Item3).ToArray();
+                if (values == null || values.Length == 0)
+                {
+                    continue;
+                }
+                if (x.DisplayType == HtmlElementType.Contains)
+                {
+                    string sIn = "";
+                    for (int m = 0; m <= values.Length - 1; m++)
+                    {
+                        sIn += "'" + values[m].ToString() + "',";
+                    }
+                    if (string.IsNullOrEmpty(sIn) == false)
+                    {
+                        sIn = sIn.Substring(0, sIn.Length - 1);
+                    }
+
+                    x.Value = sIn;
+                }
+
+
+                if (x.DisplayType.ToLower() == "in")
+                {
+                    sWerheCondition += " and " + sAlias + "." + x.Name + " in (" + x.Value + ")";
+                }
+                else
+                {
+                    //字符串
+                    sWerheCondition += " and " + sAlias + "." + x.Name + x.DisplayType + "'" + x.Value + "'";
+                }
+
+            }
+            return sWerheCondition;
+        }
+
+
+        /// <summary>
+        /// 拼sql where conditon
+        /// </summary>
+        /// <returns></returns>
+        public string getWhereCondition(string sConfition,Dictionary<string,string> sColumnAliasDic)
+        {
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            string sWerheCondition = "";
+            if (!string.IsNullOrEmpty(sConfition))
+            {
+                try
+                {
+                    searchParametersList = sConfition.DeserializeObject<List<SearchParameters>>();
+                }
+                catch { }
+            }
+
+
+            for (int i = 0; i < searchParametersList.Count; i++)
+            {
+                SearchParameters x = searchParametersList[i];
+                x.DisplayType = x.DisplayType.GetDBCondition();
+                if (string.IsNullOrEmpty(x.Value))
+                {
+                    continue;
+                }
+
+                //取得条件的别名
+                string sAlias = "";
+                foreach(string keyData in sColumnAliasDic.Keys)
+                {
+                    if(x.Name.ToLower() == keyData.ToLower())
+                    {
+                        sAlias = sColumnAliasDic[keyData];
+                        break;
+                    }
+                }
+
+
+                PropertyInfo property = TProperties.Where(c => c.Name.ToUpper() == x.Name.ToUpper()).FirstOrDefault();
+               //2020.06.25增加字段null处理
+                if (property == null) continue;
+                // property
+                //移除查询的值与数据库类型不匹配的数据
+                object[] values = property.ValidationValueForDbType(x.Value.Split(',')).Where(q => q.Item1).Select(s => s.Item3).ToArray();
+                if (values == null || values.Length == 0)
+                {
+                    continue;
+                }
+                if (x.DisplayType == HtmlElementType.Contains)
+                {
+                    string sIn = "";
+                    for(int m=0; m<=values.Length-1; m++)
+                    {
+                        sIn += "'" + values[m].ToString() + "',";
+                    }
+                    if(string.IsNullOrEmpty(sIn) ==false)
+                    {
+                        sIn = sIn.Substring(0, sIn.Length - 1);
+                    }
+
+                    x.Value = sIn;
+                }
+                 
+
+                if (x.DisplayType.ToLower() == "in")
+                {
+                    sWerheCondition += " and " + sAlias + "." + x.Name  + " in (" + x.Value + ")";
+                }
+                else
+                {
+                    //字符串
+                    sWerheCondition += " and " + sAlias + "." + x.Name + x.DisplayType + "'" + x.Value + "'";
+                }
+              
+            } 
+            return sWerheCondition;
+        }
+
+    public virtual WebResponseContent CustomBatchProcessEntity(SaveModel saveModel)
         {
             foreach(SaveModel.DetailListDataResult entityFac in  saveModel.DetailListData)
             {
@@ -1184,6 +1345,15 @@ namespace VIAT.Core.BaseProvider
             }
             else if(entityFac.optionType == SaveModel.MainOptionType.update)
             {
+                //获取编辑的字段
+               /* string[] updateField = entityFac.DetailData
+                    .Where(c => c[detailKeyInfo.Name].ChangeType(detailKeyInfo.PropertyType)
+                    .Equal(detailKeyInfo.GetValue(x)))
+                    .FirstOrDefault()
+                    .Keys.Where(k => k != detailKeyInfo.Name)
+                    .Where(r => !CreateFields.Contains(r))
+                    .ToArray();*/
+
                 detailList.ForEach(x =>
                 {
                     //設置默認值
