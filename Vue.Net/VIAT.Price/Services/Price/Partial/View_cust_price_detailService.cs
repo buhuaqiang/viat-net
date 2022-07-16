@@ -235,12 +235,207 @@ namespace VIAT.Price.Services
             return repository.DapperContext.QueryList<View_cust_price_detail>(sSql, null);
 
         }
-             
-
-         
-        
 
 
+
+        public override PageGridData<View_cust_price_detail> GetPageData(PageDataOptions options)
+        {
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            searchParametersList = options.Wheres.DeserializeObject<List<SearchParameters>>();
+            setQueryParametersNew(searchParametersList);   
+            
+            Dictionary<string, string> detailsAlias = new Dictionary<string, string>() { 
+                { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "modified_date","custPrice"},
+                 { "prod_dbid", "custPrice" },{ "cust_dbid","custPrice"} ,{ "status","custPrice"},
+                { "state","prod"}
+            };
+            Dictionary<string, string> groupAlias = new Dictionary<string, string>() {
+                { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "modified_date","custPrice"},
+                 { "prod_dbid", "custPrice" },{ "cust_dbid","custGroup"} ,{ "status","custPrice"},
+                { "state","prod"}
+            };
+            string sDetailConditon = getWhereCondition(searchParametersList, detailsAlias);            //处理查询条件
+            string sGroupConditon = getWhereCondition(searchParametersList, groupAlias);
+
+            QuerySql = @"SELECT
+	                    custPrice.pricedetail_dbid AS pricedetail_dbid,
+	                    '1' AS source_type,
+	                    '' AS group_id,
+	                    '' AS group_name,
+                      cust.cust_dbid,
+	                    cust.cust_id,
+	                    cust.cust_name,
+                     CONCAT(cust.cust_id,' ',cust.cust_name) AS cust_dbidname,
+	                    '' as prods,
+	                    prod.prod_dbid,
+	                    prod.prod_id,
+	                    prod.prod_ename,
+	                    CONCAT(prod.prod_id,' ',prod.prod_ename) AS prod_dbidname,
+	                    custPrice.nhi_price,
+	                    custPrice.invoice_price,
+	                    custPrice.net_price,
+	                    custPrice.gross_price,
+	                    custPrice.reserv_price,
+	                    custPrice.min_qty,
+	                    custPrice.status,
+	                    custPrice.start_date,
+	                    custPrice.end_date,
+	                    custPrice.modified_date,
+	                    custPrice.remarks,
+	                    custPrice.bid_no,
+	                    prod.state,
+	                    '' AS cust_group_status,
+	                    emp.emp_ename,
+	                    cust.status as custStatus,
+                    '' as ShowInvalidProd,
+                    '' as QueryStatus
+                    FROM
+	                    viat_app_cust_price_detail AS custPrice
+                    LEFT JOIN viat_com_cust AS cust ON custPrice.cust_dbid = cust.cust_dbid
+                    LEFT JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid
+                    LEFT JOIN viat_com_employee AS emp ON custPrice.modified_user = emp.dbid
+                    WHERE 1=1 and  prod.state = '1'";             
+            QuerySql += sDetailConditon;
+            QuerySql += " union  all";
+            QuerySql += @" SELECT
+                        custPrice.custprice_dbid AS pricedetail_dbid,
+	                    '2' AS source_type,
+                        priceGroup.group_id,
+	                    priceGroup.group_name,
+	                    cust.cust_dbid,
+	                    cust.cust_id,
+	                    cust.cust_name,
+                    CONCAT(cust.cust_id, ' ', cust.cust_name) AS cust_dbidname,
+                    '' as prods,
+                      prod.prod_dbid,
+	                    prod.prod_id,
+	                    prod.prod_ename,
+                    CONCAT(prod.prod_id, ' ', prod.prod_ename) AS prod_dbidname,
+                          custPrice.nhi_price,
+	                    custPrice.invoice_price,
+	                    custPrice.net_price,
+	                    0 AS gross_price,
+                        custPrice.reserv_price,
+	                    custPrice.min_qty,
+	                    custPrice.status,
+	                    custGroup.start_date,
+	                    custGroup.end_date,
+	                    custGroup.modified_date,
+	                    custPrice.remarks,
+	                    '' as bid_no,
+	                    prod.state,
+	                    custGroup.status,
+	                    '' AS emp_ename,
+                        cust.status custStatus,
+                    '' as ShowInvalidProd,
+                    '' as QueryStatus
+                    FROM
+                        viat_app_cust_group AS custGroup
+                    JOIN viat_app_cust_price AS custPrice ON custPrice.pricegroup_dbid = custGroup.pricegroup_dbid
+                    AND custPrice.prod_dbid = custGroup.prod_dbid
+                    JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid 
+                    AND priceGroup.status = 'Y'
+                    JOIN viat_com_prod AS prod ON custGroup.prod_dbid = prod.prod_dbid
+                    JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid where 1=1";
+            QuerySql += sGroupConditon;
+            return base.GetPageData(options);
+        }
+
+
+        /// <summary>
+        /// 查询条件：产品可以多选查询，把查询列表中的prods换成prod_dbid
+        /// </summary>
+        /// <param name="options"></param>
+        public void setQueryParametersNew(List<SearchParameters> searchParametersList)
+        {
+
+            Boolean isShowInvalidProd = false;
+            for (int i = searchParametersList.Count - 1; i >= 0; i--)
+            {
+                SearchParameters item = searchParametersList[i];
+
+                if (item.Name == "prods")
+                {
+                    //替换成prod_id 
+                    //先移除再添加
+                    searchParametersList.Remove(item);
+
+                    SearchParameters paraTmp = new SearchParameters();
+                    paraTmp.Name = "prod_dbid";
+                    paraTmp.Value = item.Value;
+                    paraTmp.DisplayType = item.DisplayType;
+                    searchParametersList.Add(paraTmp);
+
+                    break;
+                }
+                if (item.Name == "QueryStatus")
+                {
+                    searchParametersList.Remove(item);
+                    //Valid(Current) 开始日期小于等于系统日期，结束日期大于等于系统日期
+                    if (item.Value == "1")
+                    {
+                        SearchParameters paraTmpStartDate = new SearchParameters();
+                        paraTmpStartDate.Name = "start_date";
+                        paraTmpStartDate.Value = System.DateTime.Now.ToString("yyyy-MM-dd");
+                        paraTmpStartDate.DisplayType = "lessorequal";
+                        searchParametersList.Add(paraTmpStartDate);
+
+                        SearchParameters paraTmpEndDate = new SearchParameters();
+                        paraTmpEndDate.Name = "end_date";
+                        paraTmpEndDate.Value = System.DateTime.Now.ToString("yyyy-MM-dd");
+                        paraTmpEndDate.DisplayType = "thanorequal";
+                        searchParametersList.Add(paraTmpEndDate);
+
+                        SearchParameters paraTmpStatus = new SearchParameters();
+                        paraTmpStatus.Name = "status";
+                        paraTmpStatus.Value = "Y";
+                        paraTmpStatus.DisplayType = "";
+                        searchParametersList.Add(paraTmpStatus);
+                    }
+                    //InValid History
+                    else if (item.Value == "2")
+                    {
+                        SearchParameters paraTmpStatus = new SearchParameters();
+                        paraTmpStatus.Name = "status";
+                        paraTmpStatus.Value = "N";
+                        paraTmpStatus.DisplayType = "";
+                        searchParametersList.Add(paraTmpStatus);
+                    }
+                    //Valid future
+                    else if (item.Value == "3")
+                    {
+                        SearchParameters paraTmpStartDate = new SearchParameters();
+                        paraTmpStartDate.Name = "start_date";
+                        paraTmpStartDate.Value = System.DateTime.Now.ToString("yyyy-MM-dd");
+                        paraTmpStartDate.DisplayType = "thanorequal";
+                        searchParametersList.Add(paraTmpStartDate);
+
+                        SearchParameters paraTmpStatus = new SearchParameters();
+                        paraTmpStatus.Name = "status";
+                        paraTmpStatus.Value = "Y";
+                        paraTmpStatus.DisplayType = "";
+                        searchParametersList.Add(paraTmpStatus);
+                    }
+                }
+                if (item.Name == "ShowInvalidProd")
+                {
+                    if (item.Value == "1")
+                    {
+                        isShowInvalidProd = true;
+
+                    }
+                }
+            }
+            //如果没有勾选页面的show invalid products则默认查询 产品的state=1
+            if (!isShowInvalidProd)
+            {
+                SearchParameters paraTmpStatus = new SearchParameters();
+                paraTmpStatus.Name = "state";
+                paraTmpStatus.Value = "1";
+                paraTmpStatus.DisplayType = "";
+                searchParametersList.Add(paraTmpStatus);
+            }
+        }
 
         /// <summary>
         /// 查询条件：产品可以多选查询，把查询列表中的prods换成prod_dbid
