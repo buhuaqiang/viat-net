@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System;
 using Newtonsoft.Json;
 using System.Globalization;
+using VIAT.Core.Enums;
 
 namespace VIAT.Price.Services
 {
@@ -338,6 +339,13 @@ namespace VIAT.Price.Services
                     JOIN viat_com_prod AS prod ON custGroup.prod_dbid = prod.prod_dbid
                     JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid where 1=1";
             QuerySql += sGroupConditon;
+            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() { {
+                    x.prod_id,QueryOrderBy.Asc
+                },
+                {
+                    x.modified_date,QueryOrderBy.Asc
+                }
+            };
             return base.GetPageData(options);
         }
 
