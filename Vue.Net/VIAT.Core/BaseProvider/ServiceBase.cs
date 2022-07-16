@@ -410,7 +410,7 @@ namespace VIAT.Core.BaseProvider
         }
 
         /// <summary>
-        /// 导入表数据Excel文件夹
+        /// 导入表数据Excel文件夹 
         /// </summary>
         /// <param name="files"></param>
         /// <returns></returns>
