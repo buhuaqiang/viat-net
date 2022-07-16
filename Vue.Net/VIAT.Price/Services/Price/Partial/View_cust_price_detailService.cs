@@ -879,13 +879,14 @@ namespace VIAT.Price.Services
                     //无现行价格
                     //检查是否有未來價格有資料
                     Viat_app_cust_price_detail futurePriceEntity = getFuturePriceData(entity.cust_dbid?.ToString(), entity.prod_dbid?.ToString());
-                    if (futurePriceEntity == null)
+                    if (futurePriceEntity != null)
                     {
                         entity.end_date = futurePriceEntity.start_date.AddDays(-1);
-                        AddCustPriceData(entity, saveModel);
-                        //处理后，直接处理下一条
-                        continue;
+                       
                     }
+                    AddCustPriceData(entity, saveModel);
+                    //处理后，直接处理下一条
+                    continue;
                 }
 
                 //2.2	有現行價格資料
