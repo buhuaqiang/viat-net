@@ -20,6 +20,7 @@ using VIAT.Basic.IRepositories;
 using VIAT.Basic.IServices;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace VIAT.Basic.Services
 {
@@ -48,9 +49,56 @@ namespace VIAT.Basic.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
+       
 
-        
+        public override PageGridData<View_com_cust> GetPageData(PageDataOptions options)
+        {
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            searchParametersList = options.Wheres.DeserializeObject<List<SearchParameters>>();
 
+            string whereConditon = "";
+            for (int i = searchParametersList.Count - 1; i >= 0; i--)
+            {
+                SearchParameters item = searchParametersList[i];
+                if (item.Name == "channelValue")
+                {
+                    whereConditon += "and cust.doh_type in (  select doh_type from viat_com_doh_type where channel = '" + item.Value + "')";
+                }
+               
+            }
+                QuerySql = @"select cust.* ,
+                        own.cust_id as own_hospital_cust_id,
+                        own.cust_name as own_hospital_cust_name,
+                        CONCAT(own.cust_id,' ',own.cust_name) as own_hospitalname,
+                        med.cust_id as med_group_cust_id,
+                        med.cust_name as med_group_cust_name,
+                        CONCAT(med.cust_id,' ',med.cust_name) as med_groupname,
+                        delv.cust_id as delv_group_cust_id,
+                        delv.cust_name as delv_group_cust_name,
+                        CONCAT(delv.cust_id,' ',delv.cust_name) as delv_groupname,
+                        CONCAT(emp3.emp_cname,'-',emp3.mobile) AS C1,
+                        city.city_name as cust_city_name,
+                        city.zip_name as cust_zip_name,
+                        city2.city_name as invoice_city_name,
+                        city2.zip_name as invoice_zip_name
+                        from viat_com_cust cust
+                        left join Sys_User user1 on cust.created_user =user1.User_Id
+                        left join viat_com_employee emp1 on user1.emp_dbid=emp1.emp_dbid
+                        left join Sys_User user2 on cust.modified_user =user2.User_Id
+                        left join viat_com_employee emp2 on user2.emp_dbid=emp2.emp_dbid
+                        left join viat_com_cust  own on cust.own_hospital=own.cust_dbid
+                        left join viat_com_cust  med on cust.med_group=med.cust_dbid
+                        left join viat_com_cust  delv on cust.delv_group=delv.cust_dbid
+                        left join viat_sys_org_level lev on lev.status='Y'
+                        left join viat_sys_org_level_detail det on  cust.territory_id=det.org_id
+																and  lev.sysorg_dbid=det.sysorg_dbid 
+                        left JOIN viat_com_employee emp3 on emp3.emp_dbid=det.emp_dbid
+                        left join viat_com_zip_city city on cust.cust_zip_id=city.zip_id
+                        left join viat_com_zip_city city2 on cust.invoice_zip_id=city2.zip_id
+                           where 1=1  ";
+            QuerySql += whereConditon;
+            return base.GetPageData(options);
+        }
 
         public string getCustCode()
         {
