@@ -162,8 +162,17 @@ namespace VIAT.Core.Configuration
         /// <summary>
         /// 日期
         /// </summary>
-        public string ViatDateField { get; set; }       
-            
+        public string ViatDateField { get; set; }
+
+        /// <summary>
+        /// 更新用户
+        /// </summary>
+        public string ViatUpdateUser { get; set; }
+        /// <summary>
+        /// 更新日期
+        /// </summary>
+        public string ViatUpdateDate { get; set; }
+
     }
     public class GlobalFilter
     {
