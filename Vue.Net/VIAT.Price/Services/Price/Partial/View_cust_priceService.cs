@@ -1545,7 +1545,8 @@ namespace VIAT.Price.Services
                 {
                     sMessageBulider1 += ("column(s):[" + sColumns + "] at row read " + nLoop) + "<br/>";
                 }
-                #endregion              
+                nLoop++;
+                #endregion
             }
 
             if(string.IsNullOrEmpty(sMessageBulider1 )==false)
@@ -1589,14 +1590,33 @@ namespace VIAT.Price.Services
                 {
                     group.pricegroup_dbid = priceGroup.pricegroup_dbid;
                 }
+
+                //检查是否已存在未来价格
+                if (CheckFuturePrice(group.pricegroup_dbid?.ToString(), group.prod_dbid.ToString(), group.start_date.ToString("yyyy-MM-dd")) == true)
+                {
+                    //当前增加为未来价，系统已存在未来价
+                    sMessageBulid4 += "Prod:" + group.prod_id + " Future prices already exists, please Invalid the future price";
+                }
+
+                if ((getFormatYYYYMMDD(DateTime.Now) >= getFormatYYYYMMDD(group.start_date)
+                   && getFormatYYYYMMDD(DateTime.Now) <= getFormatYYYYMMDD(group.end_date)) || getFormatYYYYMMDD(group.start_date) > getFormatYYYYMMDD(DateTime.Now))
+                {
+                    group.status = "Y";
+                }
+                else
+                {
+                    group.status = "N";
+                }
             }
             if(string.IsNullOrEmpty(sMessageBulid4) == false)
             {
                 return webResponse.Error(sMessageBulid4);
             }
 
-            #endregion
             
+
+            #endregion
+
 
             #endregion
 

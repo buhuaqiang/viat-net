@@ -1140,7 +1140,7 @@ namespace VIAT.Core.BaseProvider
         /// </summary>
         /// <param name="dDate"></param>
         /// <returns></returns>
-        public DateTime getFormatYYYYMMDD(DateTime dDate)
+        public DateTime getFormatYYYYMMDD(DateTime? dDate)
         {
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
