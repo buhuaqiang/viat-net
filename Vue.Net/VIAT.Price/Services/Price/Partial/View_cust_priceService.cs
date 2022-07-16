@@ -24,6 +24,8 @@ using System;
 using System.Globalization;
 using System.Text;
 using VIAT.Core.Enums;
+using System.Web;
+using VIAT.Core.Utilities;
 
 namespace VIAT.Price.Services
 {
@@ -546,13 +548,14 @@ namespace VIAT.Price.Services
                     //无现行价格
                     //检查是否有未來價格有資料
                     Viat_app_cust_price futurePriceEntity = getFuturePriceData(entity.pricegroup_dbid?.ToString(), entity.prod_dbid?.ToString());
-                    if (futurePriceEntity == null)
+                    if (futurePriceEntity != null)
                     {
-                        entity.end_date = futurePriceEntity.start_date.AddDays(-1);
-                        AddCustPriceData(entity, saveModel);
-                        //处理后，直接处理下一条
-                        continue;
+                        entity.end_date = futurePriceEntity.start_date.AddDays(-1);                     
+                        //处理后，直接处理下一条                       
                     }
+
+                    AddCustPriceData(entity, saveModel);
+                    continue;
                 }
 
                 //2.2	有現行價格資料
@@ -1367,11 +1370,14 @@ namespace VIAT.Price.Services
 
         private List<Viat_app_cust_price> getAllGroupPriceByProd(string sProdDBID)
         {
-            string sSql = @"select * from Viat_app_cust_price where 1=1 and status = 'Y'";
+            string sSql = @"select * from Viat_app_cust_price custprice where 1=1 and custprice.status = 'Y'";
             if (string.IsNullOrEmpty(sProdDBID) == false)
             {
-                sSql += " and prod_dbid='" + sProdDBID + "'";
+                sSql += " and custprice.prod_dbid='" + sProdDBID + "'";
             }
+            sSql += @" AND NOT EXISTS (SELECT * FROM viat_app_cust_price_group AS pricegroup 
+                        WHERE group_id  IN('NHI', 'GROSS')
+                        AND custprice.pricegroup_dbid = pricegroup.pricegroup_dbid)";
 
             return _repository.DapperContext.QueryList<Viat_app_cust_price>(sSql, null);
         }
@@ -1460,12 +1466,245 @@ namespace VIAT.Price.Services
 
         }
 
+        #region 导入
+
+        /// <summary>
+        /// 导入校验
+        /// </summary>
+        /// <returns></returns>
+        private WebResponseContent checkImport(List<View_cust_price> list)
+        {
+            int nLoop = 1;
+           
+
+            //数据初始化处理
+            foreach (View_cust_price group in list)
+            {
+                if (string.IsNullOrEmpty(group.prod_id) == false)
+                {
+                    Viat_com_prod prod = getProd(group.prod_id,"");
+                    if (prod != null)
+                    {
+                        group.nhi_price = prod.nhi_price;
+                    }
+                }
+
+                if (group.end_date == null)
+                {
+                    group.end_date = getFormatYYYYMMDD("2099-12-31");
+                }
+            }
+
+            #region check1
+            string sMessageBulider1 = "";
+            foreach (View_cust_price group in list)
+            {
+                string sColumns = "";
+                #region 非空校验  check1
+                //逐筆檢查Import內容Cust Id, Group Id, Inovie Price, Net Price, Min Qty, Start Date不可空白Msg為所有筆數檢查後結果
+                if (group.group_id == null)
+                {
+                    sColumns += "group_id ID empty,";
+                }
+                if (group.prod_id == null)
+                {
+                    sColumns += "Prod ID empty,";
+                }
+                if (group.invoice_price == null)
+                {
+                    sColumns += "invoice_price empty,";
+                }
+                if (group.net_price == null)
+                {
+                    sColumns += "net_price empty,";
+                }
+                if (group.min_qty == null || group.min_qty<1)
+                {
+                    sColumns += "Min Qty empty or Min Qty <1,";
+                }
+                if (group.start_date == null || group.start_date == DateTime.MinValue)
+                {
+                    sColumns += "Start Date format error,";
+                }
+                if (group.end_date == null || group.end_date == DateTime.MinValue)
+                {
+                    sColumns += "End Date format error,";
+                }
+
+                if(group.start_date>group.end_date)
+                {
+                    sColumns += "End Date < Start Date,";
+                }
+
+                if(group.group_id == "NHI" && group.nhi_price == null)
+                {
+                    sColumns += " Can’t not get NHI Price by prod:'" + group.prod_id;
+                }                
+               
+                if(string.IsNullOrEmpty(sColumns) == false)
+                {
+                    sMessageBulider1 += ("column(s):[" + sColumns + "] at row read " + nLoop) + "<br/>";
+                }
+                #endregion              
+            }
+
+            if(string.IsNullOrEmpty(sMessageBulider1 )==false)
+            {
+                return webResponse.Error(sMessageBulider1);
+            }
+            #endregion
+            #region check2 逐筆檢查NHI Price , Invoice Price , Net price, Gross Price關係
+
+            webResponse = checkConfirmData(list);
+
+            #region check3 判斷Cust Id是否為Expfizer Cust Id                   
+
+
+            #endregion
+
+            #region Check4 逐筆判斷Cust Id、Group Id、Prod Id是否存在
+
+            string sMessageBulid4 = "";
+            foreach (View_cust_price group in list)
+            {
+                
+                //判斷產品是否存在
+                Viat_com_prod prod = getProd(group.prod_id,"1");
+                if(prod == null)
+                {
+                    sMessageBulid4 += "ItemCode:" + group.prod_id + " is not exist" + "<br/>";
+                }
+                else
+                {
+                    group.prod_dbid = prod.prod_dbid;
+                }
+
+                //判斷群組是否存在
+                Viat_app_cust_price_group priceGroup = getGroup(group.group_id);
+                if(priceGroup == null)
+                {
+                    sMessageBulid4+="ItemCode:" + group.group_id + " is not exist" + "<br/>";
+                }
+                else
+                {
+                    group.pricegroup_dbid = priceGroup.pricegroup_dbid;
+                }
+            }
+            if(string.IsNullOrEmpty(sMessageBulid4) == false)
+            {
+                return webResponse.Error(sMessageBulid4);
+            }
+
+            #endregion
+            
+
+            #endregion
+
+            return webResponse.OK();
+        }
+
+        private WebResponseContent checkConfirmData(List<View_cust_price> list)
+        {
+            foreach (View_cust_price group in list)
+            {
+                string sMessage1 = "";
+                string sMessage2 = "";
+                string sMessage3 = "";
+                string sMessage4 = "";
+                if (group.invoice_price > group.nhi_price)
+                {
+                    sMessage1 += "Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br/>";
+                }
+                if (group.nhi_price != group.invoice_price && group.net_price == group.invoice_price)
+                {
+                    sMessage2 += "Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br/>";
+                }
+
+                if (string.IsNullOrEmpty(sMessage1) == false)
+                {
+                    sMessage1 = "Invoice price > NHI price.<br/><p>" + sMessage1 + "<br/>";
+                }
+                if (string.IsNullOrEmpty(sMessage2) == false)
+                {
+                    sMessage2 = "Invoice price ≠ NHI price but Invoice Price = Net Price.<br/><p>" + sMessage2 + "<br/>";
+                }
+
+                if (string.IsNullOrEmpty(sMessage1) == false || string.IsNullOrEmpty(sMessage2) == false)
+                {
+                    string sConfirmMessage = sMessage1 + sMessage2 + "'</p>Do you want to import data?";
+
+                    webResponse.Code = "-2";
+                    return webResponse.Error(sConfirmMessage);                   
+                }
+            }
+
+            return webResponse.OK();
+        }
+
+        /// <summary>
+        /// ◆	判斷本次修改group id是否為NHI
+        /// </summary>
+        /// <param name="prod_id"></param>
+        /// <returns></returns>
+        private Viat_com_prod getProd(string prod_id, string state)
+        {
+            string sSql = @"SELECT TOP(1) *
+                            FROM viat_com_prod
+                            WHERE prod_id = '" + prod_id + "'";
+            if(string.IsNullOrEmpty(state) ==false)
+            {
+                sSql += " and state='" + state + "'";
+            }
+
+            Viat_com_prod prod = _repository.DapperContext.QueryFirst<Viat_com_prod>(sSql, null);
+            return prod;
+        }
+
+        /// <summary>
+        /// ◆	判斷本次修改group id是否為NHI
+        /// </summary>
+        /// <param name="prod_id"></param>
+        /// <returns></returns>
+        private Viat_app_cust_price_group getGroup(string group_id)
+        {
+            string sSql = @"SELECT TOP(1) *
+                            FROM viat_app_cust_price_group
+                            WHERE  LOWER ( group_id )  = '" + group_id + "'";
+            
+
+            Viat_app_cust_price_group group = _repository.DapperContext.QueryFirst<Viat_app_cust_price_group>(sSql, null);
+            return group;
+        }
+
         public override WebResponseContent Import(List<IFormFile> files)
         {
             //如果下載模板指定了DownLoadTemplate,則在Import方法必須也要指定,並且字段要和下載模板裡指定的一致
-            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price, x.net_price, x.min_qty, x.start_date, x.end_date, x.remarks };
+            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price, x.invoice_price, x.net_price, x.min_qty, x.start_date, x.end_date, x.remarks };
+
+            ImportOnExecutBefore = () =>
+             {
+                 bCheckImportCustom = true;
+                 return webResponse.OK();
+             };
+
+            ImportOnExecuting = (list) =>
+            {
+                webResponse = checkImport(list);
+                if(webResponse.Status == false)
+                {
+                    return webResponse;
+                }
+
+                //新增
+                //进行数据处理
+                webResponse = this.bathSaveCustPrice(JsonConvert.SerializeObject(list));                
+                webResponse.Code = "-1";
+                return webResponse;
+            };
             return base.Import(files);
         }
+
+        #endregion
 
         /*public override WebResponseContent Export(PageDataOptions pageData)
         {

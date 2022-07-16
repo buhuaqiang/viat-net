@@ -198,5 +198,15 @@ namespace VIAT.Core.Filters
         /// </summary>
         protected Func<List<T>, WebResponseContent> ImportOnExecuting;
 
+        /// <summary>
+        /// 导入保存前
+        /// </summary>
+        protected Func<WebResponseContent> ImportOnExecutBefore;
+
+        /// <summary>
+        /// 导入时默认走框架，如果自定义，则false,不走框架校验
+        /// </summary>
+        public bool bCheckImportCustom = false;
+
     }
 }
