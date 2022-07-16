@@ -546,14 +546,14 @@ namespace VIAT.Price.Services
                 dtFormat.ShortDatePattern = "yyyy-MM-dd";
                 //把编辑的数据转成实体
                 Viat_app_cust_price_detail entity = JsonConvert.DeserializeObject<Viat_app_cust_price_detail>(JsonConvert.SerializeObject(saveModel.MainData));
-                if (Convert.ToDateTime(entity.end_date.ToString("yyyy-MM-dd"), dtFormat) < Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
+                /*if (Convert.ToDateTime(entity.end_date.ToString("yyyy-MM-dd"), dtFormat) < Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
                 {
                     entity.status = "N";
                 }
                 else
                 {
                     entity.status = "Y";
-                }
+                }*/
 
 
                 //◆	判斷是否有過去的價格資料
@@ -581,7 +581,7 @@ namespace VIAT.Price.Services
 
                         if (oldPrice.end_date < Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat) == true)
                         {
-                            entity.status = "N";
+                            oldPrice.status = "N";
                         }
 
                         //把实休转为dictionary
@@ -1162,7 +1162,6 @@ namespace VIAT.Price.Services
         private WebResponseContent checkImport(List<View_cust_price_detail> list)
         {
             int nLoop = 1;
-
             //数据初始化处理
             foreach (View_cust_price_detail group in list)
             {
@@ -1243,8 +1242,10 @@ namespace VIAT.Price.Services
             }
             #endregion
             #region check2 逐筆檢查NHI Price , Invoice Price , Net price, Gross Price關係
-
-            webResponse = checkConfirmData(list);
+             webResponse.Code = "-2";
+             webResponse = checkConfirmData(list);
+                 
+           
 
             #region check3 判斷Cust Id是否為Expfizer Cust Id                   
             //判斷Cust Id是否為Expfizer Cust Id
@@ -1316,6 +1317,7 @@ namespace VIAT.Price.Services
             {
                 return webResponse.Error(sMessageBulid4);
             }
+
 
            
 

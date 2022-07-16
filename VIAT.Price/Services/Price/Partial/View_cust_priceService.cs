@@ -328,14 +328,14 @@ namespace VIAT.Price.Services
                    dtFormat.ShortDatePattern = "yyyy-MM-dd";
                    //把编辑的数据转成实体
                    Viat_app_cust_price entity = JsonConvert.DeserializeObject<Viat_app_cust_price>(JsonConvert.SerializeObject(saveModel.MainData));
-                   if (Convert.ToDateTime(entity.end_date.ToString("yyyy-MM-dd"), dtFormat) < Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
+                   /*if (Convert.ToDateTime(entity.end_date.ToString("yyyy-MM-dd"), dtFormat) < Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
                    {
                        entity.status = "N";
                    }
                    else
                    {
                        entity.status = "Y";
-                   }
+                   }*/
 
 
                    //◆	判斷是否有過去的價格資料
@@ -363,7 +363,7 @@ namespace VIAT.Price.Services
 
                            if (oldPrice.end_date < Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat) == true)
                            {
-                               entity.status = "N";
+                               oldPrice.status = "N";
                            }
 
                            //把实休转为dictionary

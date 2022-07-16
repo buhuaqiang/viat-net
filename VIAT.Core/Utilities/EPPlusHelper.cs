@@ -365,7 +365,7 @@ namespace VIAT.Core.Utilities
                         Color backgroundColor = Color.Gray;
                         //字体颜色
                         Color fontColor = Color.White;
-                        //下载模板并且是必填项，将表格设置为黄色
+                        //下载模板并且是必填项，将表格设置为黄色 
                         if (template)
                         {
                             fontColor = Color.Black;
