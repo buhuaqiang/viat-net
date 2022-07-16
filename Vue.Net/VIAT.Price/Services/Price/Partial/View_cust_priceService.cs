@@ -24,8 +24,6 @@ using System;
 using System.Globalization;
 using System.Text;
 using VIAT.Core.Enums;
-using System.Web;
-using VIAT.Core.Utilities;
 
 namespace VIAT.Price.Services
 {
@@ -336,8 +334,7 @@ namespace VIAT.Price.Services
                    {
                        entity.status = "Y";
                    }*/
-
-
+                  
                    //◆	判斷是否有過去的價格資料
                    Viat_app_cust_price oldPrice = getOldPriceForEdit(entity);
                    if (oldPrice != null)
@@ -1475,8 +1472,8 @@ namespace VIAT.Price.Services
         private WebResponseContent checkImport(List<View_cust_price> list)
         {
             int nLoop = 1;
-           
 
+             
             //数据初始化处理
             foreach (View_cust_price group in list)
             {
@@ -1556,8 +1553,8 @@ namespace VIAT.Price.Services
             #endregion
             #region check2 逐筆檢查NHI Price , Invoice Price , Net price, Gross Price關係
 
-            webResponse = checkConfirmData(list);
-
+      
+           
             #region check3 判斷Cust Id是否為Expfizer Cust Id                   
 
 
@@ -1613,7 +1610,7 @@ namespace VIAT.Price.Services
                 return webResponse.Error(sMessageBulid4);
             }
 
-            
+            checkConfirmData(list);
 
             #endregion
 

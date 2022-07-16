@@ -1242,9 +1242,8 @@ namespace VIAT.Price.Services
             }
             #endregion
             #region check2 逐筆檢查NHI Price , Invoice Price , Net price, Gross Price關係
-             webResponse.Code = "-2";
-             webResponse = checkConfirmData(list);
-                 
+             
+              
            
 
             #region check3 判斷Cust Id是否為Expfizer Cust Id                   
@@ -1319,7 +1318,8 @@ namespace VIAT.Price.Services
             }
 
 
-           
+            checkConfirmData(list);
+
 
             #endregion
 
@@ -1371,13 +1371,28 @@ namespace VIAT.Price.Services
                     sMessage4 = "Gross price > NHI price<br/><p>" + sMessage4 + "<br/>";
                 }
 
+                string sConfirmMessage = "";
                 if (string.IsNullOrEmpty(sMessage1) == false || string.IsNullOrEmpty(sMessage2) == false)
                 {
-                    string sConfirmMessage = sMessage1 + sMessage2 + "'</p>Do you want to import data?";
-
-                    webResponse.Code = "-2";
-                    return webResponse.Error(sConfirmMessage);
+                    sConfirmMessage += sMessage1 + sMessage2 + "'</br></p>";                    
                 }
+
+                if (string.IsNullOrEmpty(sMessage3) == false)
+                {
+                      sConfirmMessage += sMessage3 + "'</br></p>";
+                   
+                }
+                if (string.IsNullOrEmpty(sMessage4) == false)
+                {
+                    sConfirmMessage = sMessage4 + "'</br></p>";
+
+                }
+                if(string.IsNullOrEmpty(sConfirmMessage) == false)
+                {
+                    webResponse.Code = "-2";
+                 return   webResponse.OK(sConfirmMessage);
+                }
+
             }
 
             return webResponse.OK();
