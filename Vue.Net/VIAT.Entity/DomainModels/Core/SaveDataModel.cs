@@ -57,9 +57,15 @@ namespace VIAT.Entity.DomainModels
             public List<object> detailDelKeys = new List<object>();
 
             //多实类操作 新增，修改
-            public MainOptionType optionType; 
+            public MainOptionType optionType;
+
+            /// <summary>
+            /// 默认更新时，更新modify等信息
+            /// </summary>
+            public bool bUpdateModifyInformation = true;
         }
 
+        
         /// <summary>
         /// 记录表头新增修改操作
         /// </summary>
