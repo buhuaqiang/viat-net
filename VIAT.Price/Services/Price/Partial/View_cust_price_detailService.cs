@@ -1111,7 +1111,7 @@ namespace VIAT.Price.Services
         private Viat_app_cust_price_detail getCurrentPriceData(string sCustDBID, string sProdDBID)
         {
             string sSql = "select TOP(1) *  from viat_app_cust_price_detail where cust_dbid=@cust_dbid and prod_dbid=@prod_dbid " +
-                "AND start_date   <=  '" + getFormatYYYYMMDD(DateTime.Now) + "' AND  end_date >=" + getFormatYYYYMMDD(DateTime.Now) + "' ORDER BY end_date DESC";
+                "AND start_date   <=  '" + getFormatYYYYMMDD(DateTime.Now) + "' AND  end_date >='" + getFormatYYYYMMDD(DateTime.Now) + "' ORDER BY end_date DESC";
             Viat_app_cust_price_detail entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price_detail>(sSql, new { cust_dbid = sCustDBID, prod_dbid = sProdDBID });
 
             return entiryCustPrice;
