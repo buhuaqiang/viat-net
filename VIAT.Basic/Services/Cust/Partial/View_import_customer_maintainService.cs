@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using System;
 
 namespace VIAT.Basic.Services
 {
@@ -56,11 +57,11 @@ namespace VIAT.Basic.Services
              *  当cust_id为空时，新增cust表头和表体
              *  当cust_id不为空时，更新cust表头，表体判断是否新增
              */
-            AddOnExecute = (saveModel) => {
+            UpdateOnExecute = (saveModel) => {
                 //处理表头[viat_app_cust_transfer]
                 SaveModel.DetailListDataResult transfer = new SaveModel.DetailListDataResult();
                 transfer.detailType = typeof(Viat_app_cust_transfer);
-                transfer.DetailData = saveModel.MainDatas;
+                transfer.DetailData = new List<Dictionary<string, object>> { saveModel.MainData };
                 transfer.optionType = SaveModel.MainOptionType.update;
                 saveModel.DetailListData.Add(transfer);
 
@@ -69,34 +70,129 @@ namespace VIAT.Basic.Services
                 deliveryResult.detailType = typeof(Viat_app_cust_delivery_transfer);
                 deliveryResult.DetailData = saveModel.DetailData;
 
-                //处理cust
+                //处理cust表头
                 Viat_app_cust_transfer transferEntity = JsonConvert.DeserializeObject<Viat_app_cust_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
                 if(string.IsNullOrEmpty(transferEntity.cust_id)==true)
                 {
+                    Guid custGuid = System.Guid.NewGuid();
+
                     //当cust_id为空时，需要同步cust
-                    //string sCustID = 
+                    string sCustID = View_com_custService.Instance.getCustID();
+                    transferEntity.cust_id = sCustID;
+                    Viat_com_cust cust = JsonConvert.DeserializeObject<Viat_com_cust>(JsonConvert.SerializeObject(transferEntity));
+                    cust.cust_dbid = custGuid;
+                    cust.cust_id = sCustID;
+                    SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
+                    custResult.detailType = typeof(Viat_com_cust);
+                    custResult.optionType = SaveModel.MainOptionType.add;
+                    custResult.DetailData = JsonConvert.DeserializeObject<List<Dictionary<string,object>>>(JsonConvert.SerializeObject(cust));
+                    saveModel.DetailListData.Add(custResult);
+
+                    //表体新增
+                    foreach(Dictionary<string,object> custDelivery in saveModel.DetailData)
+                    {
+                        Viat_com_cust_delivery custDeliveryEntity = JsonConvert.DeserializeObject<Viat_com_cust_delivery>(JsonConvert.SerializeObject(custDelivery));
+                        custDeliveryEntity.cust_dbid = custGuid;
+                        custDeliveryEntity.delivery_dbid = System.Guid.NewGuid();
+                        SaveModel.DetailListDataResult custDeliveryResult = new SaveModel.DetailListDataResult();
+                        custDeliveryResult.detailType = typeof(Viat_com_cust_delivery);
+                        custDeliveryResult.optionType = SaveModel.MainOptionType.add;
+                        custDeliveryResult.DetailData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(JsonConvert.SerializeObject(custDeliveryEntity));
+                        saveModel.DetailListData.Add(custDeliveryResult);
+                    }
+
+                }
+                else
+                {
+                    //更新
+                    Viat_com_cust cust = new Viat_com_cust();
+                    transferEntity.MapValueToEntity(cust);
+                    //Viat_com_cust cust = JsonConvert.DeserializeObject<Viat_com_cust>(JsonConvert.SerializeObject(custDic));
+                    //根据cust_id取得实体，目的是拿到cust_dbid,表头表体都可以用
+                    View_com_cust custFac = View_com_custService.Instance.getCustByCustID(cust.cust_id);
+                    cust.cust_dbid = custFac.cust_dbid;
+
+                    SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
+                    custResult.detailType = typeof(Viat_com_cust);
+                    custResult.optionType = SaveModel.MainOptionType.update;
+                    Dictionary<string,object> dicCustResult = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(cust));
+                    custResult.DetailData = new List<Dictionary<string, object>> { dicCustResult };
+                    saveModel.DetailListData.Add(custResult);
+
+
+                    //表体处理
+                    decimal dSeq = View_com_cust_deliveryService.Instance.getMaxSeq(cust.cust_dbid.ToString());
+                    foreach (Dictionary<string, object> custDelivery in saveModel.DetailData)
+                    {
+                        Viat_app_cust_delivery_transfer appDeliveryEntity = JsonConvert.DeserializeObject<Viat_app_cust_delivery_transfer>(JsonConvert.SerializeObject(custDelivery));
+                        Viat_com_cust_delivery custDeliveryEntity = new Viat_com_cust_delivery();
+                        appDeliveryEntity.MapValueToEntity(custDeliveryEntity);
+                        //zip 不一样，需要单独 处理
+                        custDeliveryEntity.zip_id = custDelivery["delivery_zip_id"]?.ToString();
+                        custDeliveryEntity.cust_dbid = cust.cust_dbid;
+
+                        //判断是否为新增还是修改
+                        View_com_cust_delivery custDeliveryFac = View_com_cust_deliveryService.Instance.getCustDelivery(custDeliveryEntity.delivery_name,
+                                                              custDeliveryEntity.delivery_contact, custDeliveryEntity.delivery_tel_no, custDeliveryEntity.zip_id, custDeliveryEntity.delivery_addr, cust.cust_id);
+
+                        SaveModel.DetailListDataResult custDeliveryResult = new SaveModel.DetailListDataResult();
+                        custDeliveryResult.detailType = typeof(Viat_com_cust_delivery);                       
+                        Dictionary<string, object> dicDeliveryResult = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custDeliveryEntity));
+                        custDeliveryResult.DetailData = new List<Dictionary<string, object>> { dicDeliveryResult };
+                        saveModel.DetailListData.Add(custDeliveryResult);
+                        if (custDeliveryFac == null)
+                        {
+                            //新增
+                            custDeliveryEntity.seq_no = dSeq;
+                            dSeq++;                          
+                            custDeliveryEntity.delivery_dbid = System.Guid.NewGuid();
+                            custDeliveryResult.optionType = SaveModel.MainOptionType.add;
+                        }
+                        else
+                        {
+                            //编辑                           
+                            custDeliveryResult.optionType = SaveModel.MainOptionType.update;                 ;
+                        }
+                     
+                    }
 
                 }
 
 
-                return webResponse.OK();
+                
+                base.CustomBatchProcessEntity(saveModel);
 
+                webResponse.Code = "-1";
+                return webResponse.OK("Update successful");
             };
-
            
             return base.Update(saveModel);
         }
 
+        private int List<T>()
+        {
+            throw new NotImplementedException();
+        }
+
 
         /// <summary>
-        /// 关联处理cust
+        /// 
         /// </summary>
-        /// <returns></returns>
-        private WebResponseContent processCust(Viat_app_cust_transfer transfer, List<Viat_app_cust_delivery_transfer> deliveryLst)
+        /// <param name="custtransfer_dbid"></param>
+        public WebResponseContent processIngore(string[] custtransfer_dbid)
         {
-            
+            string sCondition = "";
+            for(int i=0;i<custtransfer_dbid.Length; i++)
+            {
+                sCondition += "'" + custtransfer_dbid[i].ToString() + "',";
+            }
+            if(string.IsNullOrEmpty(sCondition)==false)
+            {
+                sCondition = sCondition.Substring(0, sCondition.Length - 1);
+            }
 
-            return webResponse.OK();
+            string sSql = "update viat_app_cust_transfer set state='2' where custtransfer_dbid in (" + sCondition + ")";
+            return  base.CustomExcuteBySql(new List<string> { sSql }, "");
         }
 
 

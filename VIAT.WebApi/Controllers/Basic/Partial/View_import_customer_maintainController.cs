@@ -29,5 +29,16 @@ namespace VIAT.Basic.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        /// <summary>
+        /// 3.	判斷是否為ExpfizerCust
+        /// </summary>
+        /// <param name="cust_id"></param>
+        /// <returns></returns>         
+        [HttpPost, Route("ignore")]
+        public ActionResult ignore([FromBody] string[] custtransfer_dbid)
+        {
+            return Json(_service.processIngore(custtransfer_dbid));
+        }
     }
 }
