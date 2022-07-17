@@ -1366,11 +1366,10 @@ namespace VIAT.Core.BaseProvider
 
                 detailList.ForEach(x =>
                 {
-                    if (entityFac.bUpdateModifyInformation == true)
-                    {
+                   
                         //設置默認值
-                        x.SetModifyDefaultVal();
-                    }
+                    x.SetModifyDefaultVal();
+                    
                     repository.Update<DetailT>(x);
                 });
             }
