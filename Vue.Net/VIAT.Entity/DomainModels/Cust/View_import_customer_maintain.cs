@@ -442,7 +442,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="cust_zip_id_zip_name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
-       [Required(AllowEmptyStrings=false)]
+       /*[Required(AllowEmptyStrings=true)]*/
        public string cust_zip_id_zip_name { get; set; }
 
        /// <summary>
@@ -469,7 +469,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="invoice_zip_id_zip_name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
-       [Required(AllowEmptyStrings=false)]
+       /*[Required(AllowEmptyStrings=false)]*/
        public string invoice_zip_id_zip_name { get; set; }
 
        /// <summary>
@@ -871,14 +871,14 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="nvarchar(56)")]
        public string C1 { get; set; }
 
-       /// <summary>
+       /*/// <summary>
        ///
        /// </summary>
        [Display(Name ="dbid")]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
        public int dbid { get; set; }
-
+*/
        [Display(Name ="客戶運送轉移")]
        [ForeignKey("custtransfer_dbid")]
        public List<View_app_cust_delivery_transfer> View_app_cust_delivery_transfer { get; set; }

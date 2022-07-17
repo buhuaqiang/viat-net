@@ -705,6 +705,12 @@ namespace VIAT.Price.Services
                         continue;
                     }
 
+                    // 結束日 > 新增數據起始日
+                    if(getFormatYYYYMMDD(currentEntity.start_date) > getFormatYYYYMMDD(processEntity.end_date))
+                    {
+                        continue;
+                    }
+
                     /**
                      * 舊價格起始日 = 價格起始日
                         舊價格結束日 = 價格結束日
@@ -733,10 +739,7 @@ namespace VIAT.Price.Services
                         processEntity.remarks = " 原起迄日" + getFormatYYYYMMDD(dProcessStartData).ToString("yyyy-MM-dd") + " ~ " + getFormatYYYYMMDD(dProcessEndData).ToString("yyyy-MM-dd") + "  " +  processEntity.remarks ;
                     }
 
-                   
-                     processEntity.status = "N";
-                 
-
+                    processEntity.status = "N";
                     //更新数据
                     Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(processEntity));
                     SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
@@ -744,6 +747,7 @@ namespace VIAT.Price.Services
                     dataResult.detailType = typeof(Viat_app_cust_price);
                     dataResult.DetailData = new List<Dictionary<string, object>> { dic };
                     saveModel.DetailListData.Add(dataResult);
+
 
                 }
             } 
@@ -879,7 +883,7 @@ namespace VIAT.Price.Services
                 if (entityProd != null)
                 {
                     entityProd.nhi_id = entity.nhi_id;
-                    entityProd.nhi_price = entity.nhi_price;
+                    entityProd.nhi_price = entity.net_price;
                 }
 
                 Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entityProd));

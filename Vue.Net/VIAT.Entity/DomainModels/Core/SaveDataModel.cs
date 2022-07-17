@@ -14,6 +14,7 @@ namespace VIAT.Entity.DomainModels
         /// </summary>
         public List<Dictionary<string, object>> MainDatas { get; set; }
 
+        //多表体数据，每条数据的实体是一致的
         public List<Dictionary<string, object>> DetailData { get; set; }
 
 
@@ -30,7 +31,7 @@ namespace VIAT.Entity.DomainModels
 
         #region 多表体对像
         /// <summary>
-        /// 多表体对像
+        /// 多表体对像,可包含不同类型的实体
         /// </summary>
         public List<DetailListDataResult> DetailListData = new List<DetailListDataResult>();
 

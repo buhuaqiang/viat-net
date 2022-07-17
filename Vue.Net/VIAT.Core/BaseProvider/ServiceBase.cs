@@ -1355,22 +1355,24 @@ namespace VIAT.Core.BaseProvider
             }
             else if(entityFac.optionType == SaveModel.MainOptionType.update)
             {
-                //获取编辑的字段
-               /* string[] updateField = entityFac.DetailData
-                    .Where(c => c[detailKeyInfo.Name].ChangeType(detailKeyInfo.PropertyType)
-                    .Equal(detailKeyInfo.GetValue(x)))
-                    .FirstOrDefault()
-                    .Keys.Where(k => k != detailKeyInfo.Name)
-                    .Where(r => !CreateFields.Contains(r))
-                    .ToArray();*/
+                PropertyInfo detailKeyInfo = typeof(DetailT).GetKeyProperty();
+                
 
                 detailList.ForEach(x =>
                 {
-                   
-                        //設置默認值
+                    //获取编辑的字段
+                    string[] updateField = entityFac.DetailData
+                        .Where(c => c[detailKeyInfo.Name].ChangeType(detailKeyInfo.PropertyType)
+                        .Equal(detailKeyInfo.GetValue(x)))
+                        .FirstOrDefault()
+                        .Keys.Where(k => k != detailKeyInfo.Name)
+                        .Where(r => !CreateFields.Contains(r))
+                        .ToArray();
+
+                    //設置默認值
                     x.SetModifyDefaultVal();
-                    
-                    repository.Update<DetailT>(x);
+                    repository.Update(x, updateField);
+
                 });
             }
             else if(entityFac.optionType == SaveModel.MainOptionType.delete)

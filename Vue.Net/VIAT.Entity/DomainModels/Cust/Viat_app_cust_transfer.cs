@@ -25,13 +25,13 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public Guid custtransfer_dbid { get; set; }
 
-       /// <summary>
+ /*      /// <summary>
        ///識別碼, PK, Identity
        /// </summary>
        [Display(Name ="識別碼, PK, Identity")]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
+       public int dbid { get; set; }*/
 
        /// <summary>
        ///議價決標單號
