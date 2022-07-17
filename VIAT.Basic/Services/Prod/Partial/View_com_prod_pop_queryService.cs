@@ -17,6 +17,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
+using System.Collections.Generic;
+using VIAT.Core.Enums;
 
 namespace VIAT.Basic.Services
 {
@@ -37,5 +39,20 @@ namespace VIAT.Basic.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public override PageGridData<View_com_prod_pop_query> GetPageData(PageDataOptions options)
+        {
+            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {
+                {
+                    x.prod_ename,QueryOrderBy.Asc
+                } 
+            };
+            return base.GetPageData(options);
+        }
+    }
 }

@@ -17,6 +17,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Price.IRepositories;
+using System.Collections.Generic;
+using VIAT.Core.Enums;
 
 namespace VIAT.Price.Services
 {
@@ -47,6 +49,21 @@ namespace VIAT.Price.Services
         {
 
             return repository.FindAsIQueryable(x => x.group_id == group_id).FirstOrDefault();
+        }
+
+        /// <summary>
+        /// 查询
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        public override PageGridData<Viat_app_cust_price_group> GetPageData(PageDataOptions options)
+        {
+            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {
+                {
+                    x.group_id,QueryOrderBy.Asc
+                } 
+            };
+            return base.GetPageData(options);
         }
     }
 }
