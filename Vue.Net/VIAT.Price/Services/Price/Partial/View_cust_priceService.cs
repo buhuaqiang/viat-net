@@ -876,6 +876,7 @@ namespace VIAT.Price.Services
             }
             else
             {
+                entity.nhi_price = entity.net_price;
                 string sProd = @"SELECT TOP(1) *
                                     FROM viat_com_prod 
                                     WHERE prod_dbid = '" + entity.prod_dbid + "'";
@@ -883,7 +884,7 @@ namespace VIAT.Price.Services
                 if (entityProd != null)
                 {
                     entityProd.nhi_id = entity.nhi_id;
-                    entityProd.nhi_price = entity.net_price;
+                    entityProd.nhi_price = entity.net_price;                  
                 }
 
                 Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entityProd));
