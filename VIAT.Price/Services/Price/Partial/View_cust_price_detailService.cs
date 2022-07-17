@@ -1026,6 +1026,12 @@ namespace VIAT.Price.Services
                         continue;
                     }
 
+                    // 結束日 > 新增數據起始日
+                    if (getFormatYYYYMMDD(currentEntity.start_date) > getFormatYYYYMMDD(processEntity.end_date))
+                    {
+                        continue;
+                    }
+
                     /**
                      * 舊價格起始日 = 價格起始日
                         舊價格結束日 = 價格結束日
@@ -1035,8 +1041,6 @@ namespace VIAT.Price.Services
                     //若 價格起始日 > 新增數據起始日
                     if (getFormatYYYYMMDD(processEntity.start_date) > getFormatYYYYMMDD(currentEntity.start_date))
                     {
-
-
                         //價格起始日 = 新增數據起始日
                         processEntity.start_date = currentEntity.start_date;
                     }
@@ -1057,7 +1061,7 @@ namespace VIAT.Price.Services
                     }
 
                   
-                        processEntity.status = "N";
+                    processEntity.status = "N";
                 
 
                     //更新数据

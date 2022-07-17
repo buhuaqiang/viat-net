@@ -78,14 +78,14 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public Guid custdeltransfer_dbid { get; set; }
 
-       /// <summary>
+    /*   /// <summary>
        ///
        /// </summary>
        [Display(Name ="dbid")]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
        public int dbid { get; set; }
-
+*/
        /// <summary>
        ///
        /// </summary>

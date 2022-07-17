@@ -17,6 +17,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
+using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace VIAT.Basic.Services
 {
@@ -37,5 +39,67 @@ namespace VIAT.Basic.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+
+        WebResponseContent webResponse = new WebResponseContent();
+
+        /// <summary>
+        /// 保存处理
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <returns></returns>
+        public override WebResponseContent Update(SaveModel saveModel)
+        {
+            //保存处理
+            /*
+             *  处理表头表体
+             *  处理cust表头，表体
+             *  当cust_id为空时，新增cust表头和表体
+             *  当cust_id不为空时，更新cust表头，表体判断是否新增
+             */
+            AddOnExecute = (saveModel) => {
+                //处理表头[viat_app_cust_transfer]
+                SaveModel.DetailListDataResult transfer = new SaveModel.DetailListDataResult();
+                transfer.detailType = typeof(Viat_app_cust_transfer);
+                transfer.DetailData = saveModel.MainDatas;
+                transfer.optionType = SaveModel.MainOptionType.update;
+                saveModel.DetailListData.Add(transfer);
+
+                //处理表体
+                SaveModel.DetailListDataResult deliveryResult = new SaveModel.DetailListDataResult();
+                deliveryResult.detailType = typeof(Viat_app_cust_delivery_transfer);
+                deliveryResult.DetailData = saveModel.DetailData;
+
+                //处理cust
+                Viat_app_cust_transfer transferEntity = JsonConvert.DeserializeObject<Viat_app_cust_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
+                if(string.IsNullOrEmpty(transferEntity.cust_id)==true)
+                {
+                    //当cust_id为空时，需要同步cust
+                    //string sCustID = 
+
+                }
+
+
+                return webResponse.OK();
+
+            };
+
+           
+            return base.Update(saveModel);
+        }
+
+
+        /// <summary>
+        /// 关联处理cust
+        /// </summary>
+        /// <returns></returns>
+        private WebResponseContent processCust(Viat_app_cust_transfer transfer, List<Viat_app_cust_delivery_transfer> deliveryLst)
+        {
+            
+
+            return webResponse.OK();
+        }
+
+
+
+    }
 }
