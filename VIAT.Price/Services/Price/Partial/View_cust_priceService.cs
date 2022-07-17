@@ -558,14 +558,14 @@ namespace VIAT.Price.Services
                 //2.2	有現行價格資料
                 //2.2.1	找出價格資料內，符合Group+Prod價格資料 且 結束日 > 新增數據起始日 且 狀態為無效的資料(多筆)
                 List<Viat_app_cust_price> invalidPriceData = getInValidPriceData(entity.pricegroup_dbid?.ToString(), entity.prod_dbid?.ToString(), entity.start_date);
-                if (invalidPriceData != null)
+                if (invalidPriceData != null && invalidPriceData.Count>0)
                 {
                     ProcessPriceData(entity, invalidPriceData, saveModel);
                 }
 
                 //2.2.2	判斷過去價格資料
                 List<Viat_app_cust_price> oldPriceData = getOldPriceData(entity.pricegroup_dbid?.ToString(), entity.prod_dbid?.ToString());
-                if (oldPriceData != null)
+                if (oldPriceData != null && oldPriceData.Count>0)
                 {
                     ProcessPriceData(entity, oldPriceData, saveModel);
                 }
@@ -733,14 +733,9 @@ namespace VIAT.Price.Services
                         processEntity.remarks = " 原起迄日" + getFormatYYYYMMDD(dProcessStartData).ToString("yyyy-MM-dd") + " ~ " + getFormatYYYYMMDD(dProcessEndData).ToString("yyyy-MM-dd") + "  " +  processEntity.remarks ;
                     }
 
-                    if (getFormatYYYYMMDD(processEntity.end_date) < getFormatYYYYMMDD(DateTime.Now))
-                    {
-                        processEntity.status = "N";
-                    }
-                    else
-                    {
-                        processEntity.status = "Y";
-                    }
+                   
+                     processEntity.status = "N";
+                 
 
                     //更新数据
                     Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(processEntity));
@@ -778,8 +773,7 @@ namespace VIAT.Price.Services
         private List<Viat_app_cust_price> getOldPriceData(string sPriceGroupDBID, string sProdDBID)
         {
             string sSql = "select *  from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid " +
-                "AND CONVERT(VARCHAR(100), end_date, 112) <= CONVERT(VARCHAR(100), GETDATE(),112)" +
-                " ORDER BY end_date DESC";
+                "AND  end_date  <= '"+ getFormatYYYYMMDD(DateTime.Now) + "' ORDER BY end_date DESC";
             List<Viat_app_cust_price> entiryOldPriceLst = _repository.DapperContext.QueryList<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
 
             return entiryOldPriceLst;
@@ -795,8 +789,7 @@ namespace VIAT.Price.Services
         private Viat_app_cust_price getCurrentPriceData(string sPriceGroupDBID, string sProdDBID)
         {
             string sSql = "select TOP(1) *  from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid " +
-                "AND CONVERT(VARCHAR(100), start_date, 112)  <=  CONVERT(VARCHAR(100), GETDATE(),112) AND " +
-                "CONVERT(VARCHAR(100), end_date, 112) >= CONVERT(VARCHAR(100), GETDATE(),112) ORDER BY end_date DESC";
+                "AND   start_date   <=  '" + getFormatYYYYMMDD(DateTime.Now) +  "' AND  end_date >='" + getFormatYYYYMMDD(DateTime.Now) + "' ORDER BY end_date DESC";
             Viat_app_cust_price entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
 
             return entiryCustPrice;
@@ -812,7 +805,7 @@ namespace VIAT.Price.Services
         private Viat_app_cust_price getFuturePriceData(string sPriceGroupDBID, string sProdDBID)
         {
             string sSql = "select TOP(1) *  from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid " +
-                "AND CONVERT(VARCHAR(100), start_date, 112) >CONVERT(VARCHAR(100), GETDATE(),112)  ORDER BY end_date ";
+                "AND start_date > '"+ getFormatYYYYMMDD(DateTime.Now) + "' ORDER BY end_date ";
             Viat_app_cust_price entiryFuture = _repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
 
             return entiryFuture;
@@ -823,12 +816,12 @@ namespace VIAT.Price.Services
         /// </summary>
         /// <param name="sPriceGroupDBID"></param>
         /// <param name="sProdDBID"></param>
-        /// <returns></returns>
+        /// <returns></returns> 
         private List<Viat_app_cust_price> getInValidPriceData(string sPriceGroupDBID, string sProdDBID, DateTime dStartDate)
         {
             string sSql = "select *  from viat_app_cust_price where   pricegroup_dbid='" + sPriceGroupDBID + "' and prod_dbid='" + sProdDBID + "' " +
                 "   and status='N' " +
-                "AND  CONVERT(VARCHAR(100), end_date, 112) > '" + getFormatYYYYMMDD(dStartDate) + "'" +            
+                "AND  end_date > '" + getFormatYYYYMMDD(dStartDate) + "'" +            
                 " ORDER BY end_date DESC";
             List<Viat_app_cust_price> entiryExpirePriceLst = _repository.DapperContext.QueryList<Viat_app_cust_price>(sSql, null);
 
