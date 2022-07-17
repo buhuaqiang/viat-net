@@ -210,5 +210,17 @@ namespace VIAT.Basic.Services
                 return sCustID + (nSerial + 1).ToString().PadLeft(5, '0');
             }
         }
+
+        /// <summary>
+        /// 根据cust_id获取唯一的实体
+        /// </summary>
+        /// <param name="cust_id"></param>
+        /// <returns></returns>
+        public View_com_cust getCustByCustID(string cust_id)
+        {
+            string sSql = " select  * from viat_com_cust where cust_id='" + cust_id + "'";
+
+            return _repository.DapperContext.QueryFirst<View_com_cust>(sSql, null);
+        }
     }
 }
