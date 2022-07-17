@@ -180,5 +180,35 @@ namespace VIAT.Basic.Services
                 x.modified_clientusername,x.modified_date,x.entity,x.division };
             return base.Export(pageData);
         }
+
+
+        /// <summary>
+        /// 取得用户ID
+        /// </summary>
+        /// <returns></returns>
+        public string getCustID()
+        {
+            string sCustID = "C00";
+            //取得当前日期
+            string sSql = @"SELECT top 1 from bmph_com_cust
+                                where cust_id like 'C00%'
+                                and LEN(cust_id) = 8
+                                order by cust_id desc";
+                            
+            object obj = _repository.DapperContext.ExecuteScalar(sSql, null);
+            if (obj == null)
+            {
+                //当天第一个号码
+                return sCustID + "00001";
+            }
+            else
+            {
+                //取得当前最大序号 
+                string sSerial = obj.ToString().Substring(3, 5);
+                int nSerial = 0;
+                int.TryParse(sSerial, out nSerial);
+                return sCustID + (nSerial + 1).ToString().PadLeft(5, '0');
+            }
+        }
     }
 }
