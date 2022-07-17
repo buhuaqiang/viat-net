@@ -1045,7 +1045,7 @@ namespace VIAT.Price.Services
                         if ((dProcessStartData != null && getFormatYYYYMMDD(dProcessStartData) != getFormatYYYYMMDD(processEntity.start_date) || dProcessEndData.Year != 2099) &&
                              (getFormatYYYYMMDD(dProcessEndData) != getFormatYYYYMMDD(processEntity.end_date)))
                         {
-                            processEntity.remarks += currentEntity.remarks + " 原起迄日" + getFormatYYYYMMDD(dProcessStartData) + " ~ " + getFormatYYYYMMDD(dProcessEndData) + "  " + processEntity.remarks;
+                            processEntity.remarks += currentEntity.remarks + " 原起迄日" + getFormatYYYYMMDD(dProcessStartData).ToString("yyyy-MM-dd") + " ~ " + getFormatYYYYMMDD(dProcessEndData).ToString("yyyy-MM-dd") + "  " + processEntity.remarks;
                         }
 
                         if (getFormatYYYYMMDD(processEntity.end_date) < getFormatYYYYMMDD(DateTime.Now))
