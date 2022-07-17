@@ -1310,8 +1310,13 @@ namespace VIAT.Core.BaseProvider
 
     public virtual WebResponseContent CustomBatchProcessEntity(SaveModel saveModel)
         {
+            //检查所有数据中是否有相同的实体
+             
+
             foreach(SaveModel.DetailListDataResult entityFac in  saveModel.DetailListData)
             {
+               // PropertyInfo keyPro = entityFac.detailType.GetKeyProperty(); 
+
                 WebResponseContent webMainResponseResult = this.GetType().GetMethod("BatchProcessEntity")
                           .MakeGenericMethod(new Type[] { entityFac.detailType })
                           .Invoke(this, new object[] { entityFac })
@@ -1361,8 +1366,11 @@ namespace VIAT.Core.BaseProvider
 
                 detailList.ForEach(x =>
                 {
-                    //設置默認值
-                    x.SetModifyDefaultVal();
+                    if (entityFac.bUpdateModifyInformation == true)
+                    {
+                        //設置默認值
+                        x.SetModifyDefaultVal();
+                    }
                     repository.Update<DetailT>(x);
                 });
             }

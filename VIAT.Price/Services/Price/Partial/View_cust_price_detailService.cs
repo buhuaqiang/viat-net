@@ -928,22 +928,24 @@ namespace VIAT.Price.Services
                 {
                     currentPriceEntity.status = "N";
                     currentPriceEntity.end_date = currentPriceEntity.start_date;
-                }
-
-                //更新价格
-                Dictionary<string, object> dicCurrent = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(currentPriceEntity));
-                SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
-                dataResult.optionType = SaveModel.MainOptionType.update;
-                dataResult.detailType = typeof(Viat_app_cust_price_detail);
-                dataResult.DetailData = new List<Dictionary<string, object>> { dicCurrent };
-                saveModel.DetailListData.Add(dataResult);
+                }                
 
                 //現行價格起始日> 新增數據起始日
-                if (getFormatYYYYMMDD(currentPriceEntity.end_date) > getFormatYYYYMMDD(entity.start_date))
+                if (getFormatYYYYMMDD(currentPriceEntity.start_date) > getFormatYYYYMMDD(entity.start_date))
                 {
                     ProcessPriceData(entity, new List<Viat_app_cust_price_detail> { currentPriceEntity }, saveModel);
                 }
 
+                //更新价格
+                if (isExistData(currentPriceEntity, saveModel) == false)
+                {
+                    Dictionary<string, object> dicCurrent = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(currentPriceEntity));
+                    SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+                    dataResult.optionType = SaveModel.MainOptionType.update;
+                    dataResult.detailType = typeof(Viat_app_cust_price_detail);
+                    dataResult.DetailData = new List<Dictionary<string, object>> { dicCurrent };
+                    saveModel.DetailListData.Add(dataResult);
+                }
                 //如果没有特殊情况，新增本身资料
                 //处理后，直接处理下一条
                 AddCustPriceData(entity, saveModel);
@@ -953,6 +955,30 @@ namespace VIAT.Price.Services
             return webResponse.OK("save successfule");
         }
 
+        /// <summary>
+        /// 存在的数据不再增加处理
+        /// </summary>
+        /// <param name="entity"></param>
+        /// <param name="saveModel"></param>
+        /// <returns></returns>
+        private bool isExistData(Viat_app_cust_price_detail entity, SaveModel saveModel)
+        {
+            //如果数据已处理，则跳过，因为框架对于同一条更新，会报错
+
+            foreach (SaveModel.DetailListDataResult dResult in saveModel?.DetailListData)
+            {
+                if (dResult.detailType == typeof(Viat_app_cust_price_detail))
+                {
+                    foreach (Dictionary<string, object> dicResult in dResult?.DetailData)
+                        if (dicResult["pricedetail_dbid"].ToString() == entity.pricedetail_dbid.ToString())
+                        {
+                            return true;
+                        }
+                }
+            }
+
+            return false;
+        }
 
 
 
@@ -995,26 +1021,7 @@ namespace VIAT.Price.Services
                 foreach (Viat_app_cust_price_detail processEntity in processEntityList)
                 {
 
-                    //如果数据已处理，则跳过，因为框架对于同一条更新，会报错
-                    bool bFind = false;
-                    foreach (SaveModel.DetailListDataResult dResult in saveModel?.DetailListData)
-                    {
-                        if (dResult.detailType == typeof(Viat_app_cust_price))
-                        {
-                            foreach (Dictionary<string, object> dicResult in dResult?.DetailData)
-                                if (dicResult["pricedetail_dbid"].ToString() == processEntity.pricedetail_dbid.ToString())
-                                {
-                                    //第一条已处理
-                                    bFind = true;
-                                    break;
-                                }
-                            if (bFind == true)
-                            {
-                                break;
-                            }
-                        }
-                    }
-                    if (bFind == true)
+                   if(isExistData(processEntity,saveModel)==true)
                     {
                         continue;
                     }
@@ -1032,39 +1039,39 @@ namespace VIAT.Price.Services
 
                         //價格起始日 = 新增數據起始日
                         processEntity.start_date = currentEntity.start_date;
-                        //價格起始日 = 新增數據起始日
-                        processEntity.end_date = currentEntity.start_date.AddDays(-1);
-
-                        //若 價格結束日 < 價格起始日 價格結束日 = 價格起始日
-                        if (getFormatYYYYMMDD(processEntity.end_date) < getFormatYYYYMMDD(processEntity.start_date))
-                        {
-                            processEntity.end_date = processEntity.start_date;
-                        }
-
-                        //若 舊價格起始日<> 價格起始日 且 舊價格結束日<> 價格結束日, 需標記價格舊價格起始日及舊價格結束日及更新備註,更新價格資枓檔
-                        if ((dProcessStartData != null && getFormatYYYYMMDD(dProcessStartData) != getFormatYYYYMMDD(processEntity.start_date) || dProcessEndData.Year != 2099) &&
-                             (getFormatYYYYMMDD(dProcessEndData) != getFormatYYYYMMDD(processEntity.end_date)))
-                        {
-                            processEntity.remarks += currentEntity.remarks + " 原起迄日" + getFormatYYYYMMDD(dProcessStartData).ToString("yyyy-MM-dd") + " ~ " + getFormatYYYYMMDD(dProcessEndData).ToString("yyyy-MM-dd") + "  " + processEntity.remarks;
-                        }
-
-                        if (getFormatYYYYMMDD(processEntity.end_date) < getFormatYYYYMMDD(DateTime.Now))
-                        {
-                            processEntity.status = "N";
-                        }
-                        else
-                        {
-                            processEntity.status = "Y";
-                        }
-
-                        //更新数据
-                        Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(processEntity));
-                        SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
-                        dataResult.optionType = SaveModel.MainOptionType.update;
-                        dataResult.detailType = typeof(Viat_app_cust_price_detail);
-                        dataResult.DetailData = new List<Dictionary<string, object>> { dic };
-                        saveModel.DetailListData.Add(dataResult);
                     }
+                    //價格起始日 = 新增數據起始日
+                    processEntity.end_date = currentEntity.start_date.AddDays(-1);
+
+                    //若 價格結束日 < 價格起始日 價格結束日 = 價格起始日
+                    if (getFormatYYYYMMDD(processEntity.end_date) < getFormatYYYYMMDD(processEntity.start_date))
+                    {
+                        processEntity.end_date = processEntity.start_date;
+                    }
+
+                    //若 舊價格起始日<> 價格起始日 且 舊價格結束日<> 價格結束日, 需標記價格舊價格起始日及舊價格結束日及更新備註,更新價格資枓檔
+                    if ((dProcessStartData != null && getFormatYYYYMMDD(dProcessStartData) != getFormatYYYYMMDD(processEntity.start_date) || dProcessEndData.Year != 2099) &&
+                         (getFormatYYYYMMDD(dProcessEndData) != getFormatYYYYMMDD(processEntity.end_date)))
+                    {
+                        processEntity.remarks = " 原起迄日" + getFormatYYYYMMDD(dProcessStartData).ToString("yyyy-MM-dd") + " ~ " + getFormatYYYYMMDD(dProcessEndData).ToString("yyyy-MM-dd") + "  " + processEntity.remarks;
+                    }
+
+                    if (getFormatYYYYMMDD(processEntity.end_date) < getFormatYYYYMMDD(DateTime.Now))
+                    {
+                        processEntity.status = "N";
+                    }
+                    else
+                    {
+                        processEntity.status = "Y";
+                    }
+
+                    //更新数据
+                    Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(processEntity));
+                    SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+                    dataResult.optionType = SaveModel.MainOptionType.update;
+                    dataResult.detailType = typeof(Viat_app_cust_price_detail);
+                    dataResult.DetailData = new List<Dictionary<string, object>> { dic };
+                    saveModel.DetailListData.Add(dataResult);
                 }
             }
 
