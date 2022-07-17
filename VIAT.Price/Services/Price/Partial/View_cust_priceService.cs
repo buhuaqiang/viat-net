@@ -706,7 +706,7 @@ namespace VIAT.Price.Services
                     }
 
                     // 結束日 > 新增數據起始日
-                    if(getFormatYYYYMMDD(currentEntity.start_date) > getFormatYYYYMMDD(processEntity.end_date))
+                    if(getFormatYYYYMMDD(currentEntity.start_date) >= getFormatYYYYMMDD(processEntity.end_date))
                     {
                         continue;
                     }
@@ -737,6 +737,8 @@ namespace VIAT.Price.Services
                          (getFormatYYYYMMDD(dProcessEndData) != getFormatYYYYMMDD(processEntity.end_date)))
                     {
                         processEntity.remarks = " 原起迄日" + getFormatYYYYMMDD(dProcessStartData).ToString("yyyy-MM-dd") + " ~ " + getFormatYYYYMMDD(dProcessEndData).ToString("yyyy-MM-dd") + "  " +  processEntity.remarks ;
+                        processEntity.org_start_date = dProcessStartData;
+                        processEntity.org_end_date = dProcessEndData;
                     }
 
                     processEntity.status = "N";
