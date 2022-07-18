@@ -190,7 +190,7 @@ namespace VIAT.Basic.Services
         {
             string sCustID = "C00";
             //取得当前日期
-            string sSql = @"SELECT top 1 from bmph_com_cust
+            string sSql = @"SELECT top(1) cust_id from viat_com_cust
                                 where cust_id like 'C00%'
                                 and LEN(cust_id) = 8
                                 order by cust_id desc";

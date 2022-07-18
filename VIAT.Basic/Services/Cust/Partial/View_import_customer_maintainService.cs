@@ -20,6 +20,7 @@ using VIAT.Basic.IRepositories;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
+using System.Reflection;
 
 namespace VIAT.Basic.Services
 {
@@ -58,46 +59,79 @@ namespace VIAT.Basic.Services
              *  当cust_id不为空时，更新cust表头，表体判断是否新增
              */
             UpdateOnExecute = (saveModel) => {
-                //处理表头[viat_app_cust_transfer]
+
+                Viat_app_cust_transfer transferEntity = JsonConvert.DeserializeObject<Viat_app_cust_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
+                string sCustID = "";              
+                if (string.IsNullOrEmpty(transferEntity.cust_id) == true)
+                {
+           
+                    //当cust_id为空时，需要同步cust
+                    sCustID = View_com_custService.Instance.getCustID();                   
+                    saveModel.MainData["cust_id"] = sCustID;
+                }
+                    //处理表头[viat_app_cust_transfer]
                 SaveModel.DetailListDataResult transfer = new SaveModel.DetailListDataResult();
-                transfer.detailType = typeof(Viat_app_cust_transfer);
+                transfer.detailType = typeof(Viat_app_cust_transfer);               
                 transfer.DetailData = new List<Dictionary<string, object>> { saveModel.MainData };
                 transfer.optionType = SaveModel.MainOptionType.update;
                 saveModel.DetailListData.Add(transfer);
 
                 //处理表体
-                SaveModel.DetailListDataResult deliveryResult = new SaveModel.DetailListDataResult();
-                deliveryResult.detailType = typeof(Viat_app_cust_delivery_transfer);
-                deliveryResult.DetailData = saveModel.DetailData;
+                PropertyInfo mainKeyProperty = typeof(Viat_app_cust_delivery_transfer).GetKeyProperty();
+                object keyDefaultVal = mainKeyProperty.PropertyType.Assembly.CreateInstance(mainKeyProperty.PropertyType.FullName);
+                foreach (Dictionary<string,object> detail in saveModel.DetailData)
+                {
+                    Viat_app_cust_delivery_transfer custDeliveryEntity = JsonConvert.DeserializeObject<Viat_app_cust_delivery_transfer>(JsonConvert.SerializeObject(detail));
+                    SaveModel.DetailListDataResult custDeliveryResult = new SaveModel.DetailListDataResult();
+                    custDeliveryResult.detailType = typeof(Viat_app_cust_delivery_transfer);                    
+                    custDeliveryEntity.custtransfer_dbid= transferEntity.custtransfer_dbid;
+                    if (custDeliveryEntity.custdeltransfer_dbid.ToString() == keyDefaultVal.ToString())
+                    {
+                        custDeliveryResult.optionType = SaveModel.MainOptionType.add;
+                        custDeliveryEntity.custdeltransfer_dbid = System.Guid.NewGuid();
+                    }
+                    else
+                    {
+                        custDeliveryResult.optionType = SaveModel.MainOptionType.update;
+                    }
 
-                //处理cust表头
-                Viat_app_cust_transfer transferEntity = JsonConvert.DeserializeObject<Viat_app_cust_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
+                    custDeliveryResult.DetailData = new List<Dictionary<string, object>> { JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custDeliveryEntity)) };
+                    saveModel.DetailListData.Add(custDeliveryResult);
+
+                }
+               
+
+                //处理cust表头               
                 if(string.IsNullOrEmpty(transferEntity.cust_id)==true)
                 {
-                    Guid custGuid = System.Guid.NewGuid();
 
-                    //当cust_id为空时，需要同步cust
-                    string sCustID = View_com_custService.Instance.getCustID();
-                    transferEntity.cust_id = sCustID;
-                    Viat_com_cust cust = JsonConvert.DeserializeObject<Viat_com_cust>(JsonConvert.SerializeObject(transferEntity));
+                    Guid custGuid = System.Guid.NewGuid();
+                    //当cust_id为空时，需要同步cust                    
+                    transferEntity.cust_id = sCustID;                     
+                    Viat_com_cust cust = new Viat_com_cust();
+                    transferEntity.MapValueToEntity(cust);
                     cust.cust_dbid = custGuid;
                     cust.cust_id = sCustID;
                     SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
                     custResult.detailType = typeof(Viat_com_cust);
                     custResult.optionType = SaveModel.MainOptionType.add;
-                    custResult.DetailData = JsonConvert.DeserializeObject<List<Dictionary<string,object>>>(JsonConvert.SerializeObject(cust));
+                    custResult.DetailData = new List<Dictionary<string, object>> { JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(cust)) };
                     saveModel.DetailListData.Add(custResult);
 
                     //表体新增
                     foreach(Dictionary<string,object> custDelivery in saveModel.DetailData)
                     {
-                        Viat_com_cust_delivery custDeliveryEntity = JsonConvert.DeserializeObject<Viat_com_cust_delivery>(JsonConvert.SerializeObject(custDelivery));
+                        Viat_app_cust_delivery_transfer appDeliveryEntity = JsonConvert.DeserializeObject<Viat_app_cust_delivery_transfer>(JsonConvert.SerializeObject(custDelivery));
+
+                        Viat_com_cust_delivery custDeliveryEntity = new Viat_com_cust_delivery();
+                        appDeliveryEntity.MapValueToEntity(custDeliveryEntity);
                         custDeliveryEntity.cust_dbid = custGuid;
-                        custDeliveryEntity.delivery_dbid = System.Guid.NewGuid();
+                        custDeliveryEntity.delivery_dbid = System.Guid.NewGuid();                       
                         SaveModel.DetailListDataResult custDeliveryResult = new SaveModel.DetailListDataResult();
                         custDeliveryResult.detailType = typeof(Viat_com_cust_delivery);
                         custDeliveryResult.optionType = SaveModel.MainOptionType.add;
-                        custDeliveryResult.DetailData = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(JsonConvert.SerializeObject(custDeliveryEntity));
+                        custDeliveryResult.DetailData = custDeliveryResult.DetailData = new List<Dictionary<string, object>> { JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custDeliveryEntity)) };
+
                         saveModel.DetailListData.Add(custDeliveryResult);
                     }
 
@@ -105,7 +139,7 @@ namespace VIAT.Basic.Services
                 else
                 {
                     //更新
-                    Viat_com_cust cust = new Viat_com_cust();
+                    Viat_com_cust_save cust = new Viat_com_cust_save();
                     transferEntity.MapValueToEntity(cust);
                     //Viat_com_cust cust = JsonConvert.DeserializeObject<Viat_com_cust>(JsonConvert.SerializeObject(custDic));
                     //根据cust_id取得实体，目的是拿到cust_dbid,表头表体都可以用
@@ -152,16 +186,10 @@ namespace VIAT.Basic.Services
                         {
                             //编辑                           
                             custDeliveryResult.optionType = SaveModel.MainOptionType.update;                 ;
-                        }
-                     
+                        }                     
                     }
-
                 }
-
-
-                
                 base.CustomBatchProcessEntity(saveModel);
-
                 webResponse.Code = "-1";
                 return webResponse.OK("Update successful");
             };

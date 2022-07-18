@@ -1315,7 +1315,8 @@ namespace VIAT.Core.BaseProvider
 
             foreach(SaveModel.DetailListDataResult entityFac in  saveModel.DetailListData)
             {
-               // PropertyInfo keyPro = entityFac.detailType.GetKeyProperty(); 
+                // PropertyInfo keyPro = entityFac.detailType.GetKeyProperty(); 
+                //处理实体多作的栏位 
 
                 WebResponseContent webMainResponseResult = this.GetType().GetMethod("BatchProcessEntity")
                           .MakeGenericMethod(new Type[] { entityFac.detailType })

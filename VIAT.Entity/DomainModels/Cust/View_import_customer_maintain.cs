@@ -775,7 +775,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="com_med_group")]
        [Column(TypeName="uniqueidentifier")]
        public Guid? com_med_group { get; set; }
-
+      
        /// <summary>
        ///
        /// </summary>
