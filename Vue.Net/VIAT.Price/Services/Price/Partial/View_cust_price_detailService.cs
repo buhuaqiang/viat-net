@@ -246,14 +246,13 @@ namespace VIAT.Price.Services
             setQueryParametersNew(searchParametersList);
 
             Dictionary<string, string> detailsAlias = new Dictionary<string, string>() {
-                { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "modified_date","custPrice"},
-                 { "prod_dbid", "custPrice" },{ "cust_dbid","custPrice"} ,{ "status","custPrice"},
+                { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "updated_date","custPrice"},
+                 { "prod_dbid", "custPrice" },{ "cust_dbid","custPrice"} ,{ "status","custPrice"} ,{"ShowInvalidProd","custPrice" },
                 { "state","prod"}
             };
             Dictionary<string, string> groupAlias = new Dictionary<string, string>() {
-                { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "modified_date","custPrice"},
-                 { "prod_dbid", "custPrice" },{ "cust_dbid","custGroup"} ,{ "status","custPrice"},
-                { "state","prod"}
+                { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "updated_date","custPrice"},
+                 { "prod_dbid", "custPrice" },{ "cust_dbid","custGroup"} ,{ "status","custPrice"},{"ShowInvalidProd","custPrice" }, { "state","prod"}
             };
             string sDetailConditon = getWhereCondition(searchParametersList, detailsAlias);            //处理查询条件
             string sGroupConditon = getWhereCondition(searchParametersList, groupAlias);
@@ -282,6 +281,7 @@ namespace VIAT.Price.Services
 	                    custPrice.start_date,
 	                    custPrice.end_date,
 	                    custPrice.modified_date,
+                        custPrice.updated_date,
 	                    custPrice.remarks,
 	                    custPrice.bid_no,
 	                    prod.state,
@@ -295,7 +295,7 @@ namespace VIAT.Price.Services
                     LEFT JOIN viat_com_cust AS cust ON custPrice.cust_dbid = cust.cust_dbid
                     LEFT JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid
                     LEFT JOIN viat_com_employee AS emp ON custPrice.modified_user = emp.dbid
-                    WHERE 1=1 and  prod.state = '1'";
+                    WHERE 1=1  ";
             QuerySql += sDetailConditon;
             QuerySql += " union  all";
             QuerySql += @" SELECT
@@ -322,6 +322,7 @@ namespace VIAT.Price.Services
 	                    custGroup.start_date,
 	                    custGroup.end_date,
 	                    custGroup.modified_date,
+                        custGroup.updated_date,
 	                    custPrice.remarks,
 	                    '' as bid_no,
 	                    prod.state,
@@ -424,6 +425,7 @@ namespace VIAT.Price.Services
                     if (item.Value == "1")
                     {
                         isShowInvalidProd = true;
+                        searchParametersList.Remove(item);
 
                     }
                 }
