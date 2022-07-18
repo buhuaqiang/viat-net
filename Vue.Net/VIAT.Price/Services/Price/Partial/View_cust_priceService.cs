@@ -1549,7 +1549,7 @@ namespace VIAT.Price.Services
                     sColumns += "End Date < Start Date,";
                 }
 
-                if(group.group_id == "NHI" && group.nhi_price == null)
+                if(group.group_id != "NHI" && group.nhi_price == null)
                 {
                     sColumns += " Can’t not get NHI Price by prod:'" + group.prod_id;
                 }                
