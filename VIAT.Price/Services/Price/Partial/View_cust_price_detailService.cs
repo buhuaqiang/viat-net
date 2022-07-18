@@ -246,12 +246,12 @@ namespace VIAT.Price.Services
             setQueryParametersNew(searchParametersList);   
             
             Dictionary<string, string> detailsAlias = new Dictionary<string, string>() { 
-                { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "modified_date","custPrice"},
+                { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "updated_date","custPrice"},
                  { "prod_dbid", "custPrice" },{ "cust_dbid","custPrice"} ,{ "status","custPrice"},
                 { "state","prod"}
             };
             Dictionary<string, string> groupAlias = new Dictionary<string, string>() {
-                { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "modified_date","custPrice"},
+                { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "updated_date","custPrice"},
                  { "prod_dbid", "custPrice" },{ "cust_dbid","custGroup"} ,{ "status","custPrice"},
                 { "state","prod"}
             };
@@ -282,6 +282,7 @@ namespace VIAT.Price.Services
 	                    custPrice.start_date,
 	                    custPrice.end_date,
 	                    custPrice.modified_date,
+                        custPrice.updated_date,
 	                    custPrice.remarks,
 	                    custPrice.bid_no,
 	                    prod.state,
@@ -322,6 +323,7 @@ namespace VIAT.Price.Services
 	                    custGroup.start_date,
 	                    custGroup.end_date,
 	                    custGroup.modified_date,
+                        custGroup.updated_date,
 	                    custPrice.remarks,
 	                    '' as bid_no,
 	                    prod.state,
