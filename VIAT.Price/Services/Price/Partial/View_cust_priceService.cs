@@ -1604,13 +1604,16 @@ namespace VIAT.Price.Services
                     group.pricegroup_dbid = priceGroup.pricegroup_dbid;
                 }
 
-                //检查是否已存在未来价格
-                if (CheckFuturePrice(group.pricegroup_dbid?.ToString(), group.prod_dbid.ToString(), group.start_date.ToString("yyyy-MM-dd")) == true)
-                {
-                    //当前增加为未来价，系统已存在未来价
-                    sMessageBulid4 += "Prod:" + group.prod_id + " Future prices already exists, please Invalid the future price";
-                }
 
+                if (string.IsNullOrEmpty(sMessageBulid4) == true)
+                {
+                    //检查是否已存在未来价格
+                    if (CheckFuturePrice(group.pricegroup_dbid?.ToString(), group.prod_dbid.ToString(), group.start_date.ToString("yyyy-MM-dd")) == true)
+                    {
+                        //当前增加为未来价，系统已存在未来价
+                        sMessageBulid4 += "Prod:" + group.prod_id + " Future prices already exists, please Invalid the future price";
+                    }
+                }
                 if ((getFormatYYYYMMDD(DateTime.Now) >= getFormatYYYYMMDD(group.start_date)
                    && getFormatYYYYMMDD(DateTime.Now) <= getFormatYYYYMMDD(group.end_date)) || getFormatYYYYMMDD(group.start_date) > getFormatYYYYMMDD(DateTime.Now))
                 {
