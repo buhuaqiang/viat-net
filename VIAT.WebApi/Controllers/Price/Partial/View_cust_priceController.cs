@@ -73,7 +73,7 @@ namespace VIAT.Price.Controllers
         }
 
 
-        [ApiActionPermission("View_cust_price", VIAT.Core.Enums.ActionPermissionOptions.Invalid)]
+        [ApiActionPermission]
         [HttpPost, Route("invalidData")]
         public ActionResult invalidData([FromBody] object saveModel)
         {
