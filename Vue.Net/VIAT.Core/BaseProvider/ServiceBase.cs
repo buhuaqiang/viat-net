@@ -1170,7 +1170,7 @@ namespace VIAT.Core.BaseProvider
             for (int i = 0; i < searchParametersList.Count; i++)
             {
                 SearchParameters x = searchParametersList[i];
-                x.DisplayType = x.DisplayType.GetDBCondition();
+                string sDisplayType = x.DisplayType.GetDBCondition();
                 if (string.IsNullOrEmpty(x.Value))
                 {
                     continue;
@@ -1214,14 +1214,14 @@ namespace VIAT.Core.BaseProvider
                 }
 
 
-                if (x.DisplayType.ToLower() == "in")
+                if (sDisplayType.ToLower() == "in")
                 {
                     sWerheCondition += " and " + sAlias + "." + x.Name + " in (" + x.Value + ")";
                 }
                 else
                 {
                     //字符串
-                    sWerheCondition += " and " + sAlias + "." + x.Name + x.DisplayType + "'" + x.Value + "'";
+                    sWerheCondition += " and " + sAlias + "." + x.Name + sDisplayType + "'" + x.Value + "'";
                 }
 
             }
