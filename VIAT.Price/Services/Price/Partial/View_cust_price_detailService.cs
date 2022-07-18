@@ -247,13 +247,11 @@ namespace VIAT.Price.Services
             
             Dictionary<string, string> detailsAlias = new Dictionary<string, string>() { 
                 { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "updated_date","custPrice"},
-                 { "prod_dbid", "custPrice" },{ "cust_dbid","custPrice"} ,{ "status","custPrice"},
-                { "state","prod"}
+                 { "prod_dbid", "custPrice" },{ "cust_dbid","custPrice"} ,{ "status","custPrice"} ,{"ShowInvalidProd","custPrice" }
             };
             Dictionary<string, string> groupAlias = new Dictionary<string, string>() {
                 { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "updated_date","custPrice"},
-                 { "prod_dbid", "custPrice" },{ "cust_dbid","custGroup"} ,{ "status","custPrice"},
-                { "state","prod"}
+                 { "prod_dbid", "custPrice" },{ "cust_dbid","custGroup"} ,{ "status","custPrice"},{"ShowInvalidProd","custPrice" }
             };
             string sDetailConditon = getWhereCondition(searchParametersList, detailsAlias);            //处理查询条件
             string sGroupConditon = getWhereCondition(searchParametersList, groupAlias);
@@ -534,7 +532,7 @@ namespace VIAT.Price.Services
                     paraTmpStatus.Value = "1";
                     paraTmpStatus.DisplayType = "";
                     searchParametersList.Add(paraTmpStatus);
-                }
+                }              
             };
         }
 
@@ -1001,6 +999,7 @@ namespace VIAT.Price.Services
             {
                 entity.status = "Y";
             }
+            entity.SetModifyDefaultVal();
             Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
             SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
             dataResult.optionType = SaveModel.MainOptionType.add;
@@ -1121,7 +1120,13 @@ namespace VIAT.Price.Services
             string sSql = "select TOP(1) *  from viat_app_cust_price_detail where cust_dbid=@cust_dbid and prod_dbid=@prod_dbid " +
                 "AND start_date   <=  '" + getFormatYYYYMMDD(DateTime.Now) + "' AND  end_date >='" + getFormatYYYYMMDD(DateTime.Now) + "' ORDER BY end_date DESC";
             Viat_app_cust_price_detail entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price_detail>(sSql, new { cust_dbid = sCustDBID, prod_dbid = sProdDBID });
+            if (entiryCustPrice == null)
+            {
+                sSql = "select TOP(1) *  from viat_app_cust_price_detail where cust_dbid=@cust_dbid and prod_dbid=@prod_dbid  ORDER BY end_date ";
 
+                entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price_detail>(sSql, new { cust_dbid = sCustDBID, prod_dbid = sProdDBID });
+
+            }
             return entiryCustPrice;
         }
 
@@ -1231,9 +1236,9 @@ namespace VIAT.Price.Services
                     sColumns += "End Date < Start Date,";
                 }
 
-                if (group.group_id == "NHI" && group.nhi_price == null)
+                if (group.nhi_price == null)
                 {
-                    sColumns += " Can’t not get NHI Price by prod:'" + group.prod_id;
+                    sColumns += " Can't  get NHI Price by prod:'" + group.prod_id;
                 }
 
                 if (string.IsNullOrEmpty(sColumns) == false)
@@ -1304,11 +1309,15 @@ namespace VIAT.Price.Services
                 {
                     group.cust_dbid = cust.cust_dbid;
                 }
-                //检查是否已存在未来价格
-                if (CheckFuturePrice(group.cust_dbid?.ToString(), group.prod_dbid?.ToString(), group.start_date.ToString("yyyy-MM-dd")) == true)
+
+                if (string.IsNullOrEmpty(sMessageBulid4) == true)
                 {
-                    //当前增加为未来价，系统已存在未来价
-                    sMessageBulid4 += "Prod:" + group.prod_id + " Future prices already exists, please Invalid the future price";
+                    //检查是否已存在未来价格
+                    if (CheckFuturePrice(group.cust_dbid?.ToString(), group.prod_dbid?.ToString(), group.start_date.ToString("yyyy-MM-dd")) == true)
+                    {
+                        //当前增加为未来价，系统已存在未来价
+                        sMessageBulid4 += "Prod:" + group.prod_id + " Future prices already exists, please Invalid the future price";
+                    }
                 }
 
                 if ((getFormatYYYYMMDD(DateTime.Now) >= getFormatYYYYMMDD(group.start_date) 
