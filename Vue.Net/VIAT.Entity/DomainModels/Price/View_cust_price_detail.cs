@@ -282,6 +282,22 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public string ShowInvalidProd { get; set; }
 
-       
+/*
+
+        /// <summary>
+        ///修改人
+        /// </summary>
+        [Display(Name = "修改人")]
+        [Column(TypeName = "int")]
+        public int? updated_user { get; set; }
+*/
+        /// <summary>
+        ///修改時間
+        /// </summary>
+        [Display(Name = "修改時間")]
+        [Column(TypeName = "datetime")]
+        public DateTime? updated_date { get; set; }
+
+
     }
 }
