@@ -1551,7 +1551,7 @@ namespace VIAT.Price.Services
 
                 if(group.group_id != "NHI" && group.nhi_price == null)
                 {
-                    sColumns += " Can’t not get NHI Price by prod:'" + group.prod_id;
+                    sColumns += " Can't  get NHI Price by prod:'" + group.prod_id;
                 }                
                
                 if(string.IsNullOrEmpty(sColumns) == false)
