@@ -1300,10 +1300,10 @@ DISTINCT
         /// <returns></returns>
         public object LoadTable(int parentId, string tableName, string columnCNName, string nameSpace, string foldername, int tableId, bool isTreeLoad)
         {
-            if (!UserContext.Current.IsSuperAdmin && !isTreeLoad)
+           /* if (!UserContext.Current.IsSuperAdmin && !isTreeLoad)
             {
                 return new WebResponseContent().Error("只有超级管理员才能进行此操作");
-            }
+            }*/
             tableId = InitTable(parentId, tableName?.Trim(), columnCNName, nameSpace, foldername, tableId, isTreeLoad);
             Sys_TableInfo tableInfo = repository
                 .FindAsIQueryable(x => x.Table_Id == tableId)
