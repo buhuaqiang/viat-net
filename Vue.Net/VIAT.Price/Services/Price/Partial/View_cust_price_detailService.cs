@@ -343,6 +343,15 @@ namespace VIAT.Price.Services
                     JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid where 1=1";
             QuerySql += sGroupConditon;
 
+
+            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {
+                {
+                    x.prod_id,QueryOrderBy.Asc
+                },{
+                    x.updated_date,QueryOrderBy.Asc
+                }
+            };
+
             return base.GetPageData(options);
         }
 
@@ -603,14 +612,25 @@ namespace VIAT.Price.Services
                 //◆	更新本次修改價格資料
                 //把实休转为dictionary
                 Dictionary<string, object> dicEntity = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
-
-                //更新本身的数据
-                SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
-                dataResult.optionType = SaveModel.MainOptionType.update;
-                dataResult.detailType = typeof(Viat_app_cust_price_detail);
-                dataResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
-                saveModel.DetailListData.Add(dataResult);
-
+                if (entity.status == "N" && Convert.ToDateTime(entity.start_date.ToString("yyyy-MM-dd"), dtFormat) > Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
+                {
+                    //如果本次修改為未來價格且Status = Invalid，自動刪除該筆資料              
+                    //增加修改
+                    SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+                    dataResult.optionType = SaveModel.MainOptionType.delete;
+                    dataResult.detailType = typeof(Viat_app_cust_price_detail);
+                    dataResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
+                    saveModel.DetailListData.Add(dataResult);
+                }
+                else
+                {
+                    //更新本身的数据
+                    SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+                    dataResult.optionType = SaveModel.MainOptionType.update;
+                    dataResult.detailType = typeof(Viat_app_cust_price_detail);
+                    dataResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
+                    saveModel.DetailListData.Add(dataResult);
+                }
 
                 base.CustomBatchProcessEntity(saveModel);
 
