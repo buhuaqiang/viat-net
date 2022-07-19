@@ -68,6 +68,7 @@ namespace VIAT.Basic.Services
                     //当cust_id为空时，需要同步cust
                     sCustID = View_com_custService.Instance.getCustID();                   
                     saveModel.MainData["cust_id"] = sCustID;
+                    saveModel.MainData["state"] = "1";
                 }
                     //处理表头[viat_app_cust_transfer]
                 SaveModel.DetailListDataResult transfer = new SaveModel.DetailListDataResult();
