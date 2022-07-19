@@ -168,25 +168,27 @@ namespace VIAT.Basic.Services
                         //判断是否为新增还是修改
                         View_com_cust_delivery custDeliveryFac = View_com_cust_deliveryService.Instance.getCustDelivery(custDeliveryEntity.delivery_name,
                                                               custDeliveryEntity.delivery_contact, custDeliveryEntity.delivery_tel_no, custDeliveryEntity.zip_id, custDeliveryEntity.delivery_addr, cust.cust_id);
-
                         SaveModel.DetailListDataResult custDeliveryResult = new SaveModel.DetailListDataResult();
-                        custDeliveryResult.detailType = typeof(Viat_com_cust_delivery);                       
-                        Dictionary<string, object> dicDeliveryResult = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custDeliveryEntity));
-                        custDeliveryResult.DetailData = new List<Dictionary<string, object>> { dicDeliveryResult };
-                        saveModel.DetailListData.Add(custDeliveryResult);
                         if (custDeliveryFac == null)
                         {
                             //新增
                             custDeliveryEntity.seq_no = dSeq;
-                            dSeq++;                          
+                            dSeq++;
                             custDeliveryEntity.delivery_dbid = System.Guid.NewGuid();
                             custDeliveryResult.optionType = SaveModel.MainOptionType.add;
                         }
                         else
                         {
-                            //编辑                           
-                            custDeliveryResult.optionType = SaveModel.MainOptionType.update;                 ;
-                        }                     
+                            custDeliveryEntity.delivery_dbid = custDeliveryFac.delivery_dbid;
+                            //编辑                         
+                            custDeliveryResult.optionType = SaveModel.MainOptionType.update; ;
+                        }
+                        
+                        custDeliveryResult.detailType = typeof(Viat_com_cust_delivery);                       
+                        Dictionary<string, object> dicDeliveryResult = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custDeliveryEntity));
+                        custDeliveryResult.DetailData = new List<Dictionary<string, object>> { dicDeliveryResult };
+                        saveModel.DetailListData.Add(custDeliveryResult);
+                                
                     }
                 }
                 base.CustomBatchProcessEntity(saveModel);
