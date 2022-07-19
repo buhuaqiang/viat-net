@@ -299,5 +299,11 @@ namespace VIAT.Entity.DomainModels
         public DateTime? updated_date { get; set; }
 
 
+        [Display(Name = "modified_username")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(50)")]
+        public string modified_username { get; set; }
+
+
     }
 }
