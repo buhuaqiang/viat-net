@@ -1841,14 +1841,14 @@ namespace VIAT.Core.BaseProvider
 
             if (saveModel.mainOptionType == SaveModel.MainOptionType.add)
             {
-                Response = repository.DbContextBeginTransaction(() =>
-                {
+               /* Response = repository.DbContextBeginTransaction(() =>
+                {*/
                     repository.Add(mainEntity);
                     saveModel.MainData[keyPro.Name] = keyPro.GetValue(mainEntity);
                     Response.OK(ResponseType.SaveSuccess);                    
-                    return Response;
-                });
-                if (Response.Status) Response.Data = new { data = saveModel.MainData };
+                    /*return Response;
+               // });
+                if (Response.Status) Response.Data = new { data = saveModel.MainData };*/
                 return Response;
             }
             else if (saveModel.mainOptionType == SaveModel.MainOptionType.update)

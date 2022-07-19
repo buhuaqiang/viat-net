@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\VIAT.Basic\VIAT.Basic.csproj" />
     <ProjectReference Include="..\VIAT.Core\VIAT.Core.csproj" />
     <ProjectReference Include="..\VIAT.Entity\VIAT.Entity.csproj" />
   </ItemGroup>
