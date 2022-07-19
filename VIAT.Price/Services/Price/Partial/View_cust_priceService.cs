@@ -57,7 +57,7 @@ namespace VIAT.Price.Services
                 {
                     x.prod_id,QueryOrderBy.Asc
                 },{
-                    x.modified_date,QueryOrderBy.Asc
+                    x.updated_date,QueryOrderBy.Asc
                 }
             };
             return base.GetPageData(options);
