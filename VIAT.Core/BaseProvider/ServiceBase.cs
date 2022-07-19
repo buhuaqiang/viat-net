@@ -1198,7 +1198,7 @@ namespace VIAT.Core.BaseProvider
                 {
                     continue;
                 }
-                if (x.DisplayType == HtmlElementType.Contains)
+                if (x.DisplayType == HtmlElementType.Contains || x.DisplayType.ToLower() == HtmlElementType.selectlist.ToLower())
                 {
                     string sIn = "";
                     for (int m = 0; m <= values.Length - 1; m++)
