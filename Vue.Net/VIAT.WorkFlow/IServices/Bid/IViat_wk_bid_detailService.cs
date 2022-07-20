@@ -6,7 +6,7 @@ using VIAT.Entity.DomainModels;
 
 namespace VIAT.WorkFlow.IServices
 {
-    public partial interface IViat_wk_bid_detailService : IService<Viat_wk_bid_detail>
+    public partial interface IViat_wk_bid_detailService : IService<Viat_wk_bid_detail_select>
     {
     }
 }

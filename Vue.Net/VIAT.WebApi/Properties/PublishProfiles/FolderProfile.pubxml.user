@@ -6,7 +6,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <TimeStampOfAssociatedLegacyPublishXmlFile />
-    <_PublishTargetUrl>D:\workspace_viat\Vue.Net\VOL.WebApi\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
-    <History>True|2022-06-17T02:17:56.3648695Z;</History>
+    <_PublishTargetUrl>D:\workspace_viat\Vue.Net\VIAT.WebApi\bin\Release\netcoreapp3.1\publish\</_PublishTargetUrl>
+    <History>True|2022-07-14T02:31:45.8395766Z;True|2022-06-17T10:17:56.3648695+08:00;</History>
   </PropertyGroup>
 </Project>

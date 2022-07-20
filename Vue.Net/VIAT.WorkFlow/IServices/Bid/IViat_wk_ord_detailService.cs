@@ -6,7 +6,7 @@ using VIAT.Entity.DomainModels;
 
 namespace VIAT.WorkFlow.IServices
 {
-    public partial interface IViat_wk_ord_detailService : IService<Viat_wk_ord_detail>
+    public partial interface IViat_wk_ord_detailService : IService<Viat_wk_ord_detail_select>
     {
     }
 }

@@ -20,10 +20,9 @@ namespace VIAT.Entity.DomainModels
        ///Bid NO
        /// </summary>
        [Display(Name ="Bid NO")]
-       [MaxLength(10)]
-       [Column(TypeName="char(10)")]
+       [MaxLength(20)]
+       [Column(TypeName="char(20)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string bid_no { get; set; }
 
        /// <summary>
@@ -286,6 +285,22 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string isgroup { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="cont_stretagy_name")]
+       [MaxLength(100)]
+       [Column(TypeName="varchar(100)")]
+       public string cont_stretagy_name { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="cont_stretagy_id")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       public string cont_stretagy_id { get; set; }
 
        
     }

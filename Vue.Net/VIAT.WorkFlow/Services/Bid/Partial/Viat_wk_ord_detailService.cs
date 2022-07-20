@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.WorkFlow.IRepositories;
+using System.Collections.Generic;
 
 namespace VIAT.WorkFlow.Services
 {
@@ -37,5 +38,39 @@ namespace VIAT.WorkFlow.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+
+
+        public override PageGridData<Viat_wk_ord_detail_select> GetPageData(PageDataOptions options)
+        {
+
+            /*解析查询条件*/
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            if (!string.IsNullOrEmpty(options.Wheres))
+            {
+                searchParametersList = options.Wheres.DeserializeObject<List<SearchParameters>>();
+                if (searchParametersList != null && searchParametersList.Count > 0)
+                {
+                    string bidmast_dbid = "";
+                    foreach (SearchParameters sp in searchParametersList)
+                    {
+                        if (sp.Name.ToLower() == "bidmast_dbid".ToLower())
+                        {
+                            bidmast_dbid = sp.Value ?? System.Guid.NewGuid().ToString() ?? sp.Value;
+                            continue;
+                        }
+                    }
+
+                    QuerySql = @"select a.*,b.prod_id,b.prod_ename from viat_wk_ord_detail a, viat_com_prod b where a.prod_dbid = b.prod_dbid" +
+                " and  a.bidmast_dbid='" + bidmast_dbid + "'";
+                }
+            }
+
+
+
+
+            return base.GetPageData(options);
+        }
+
+
+    }
 }
