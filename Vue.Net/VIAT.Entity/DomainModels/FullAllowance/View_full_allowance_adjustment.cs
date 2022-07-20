@@ -17,81 +17,6 @@ namespace VIAT.Entity.DomainModels
     public partial class View_full_allowance_adjustment:BaseEntity
     {
         /// <summary>
-       ///Customer ID
-       /// </summary>
-       [Display(Name ="Customer ID")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       [Editable(true)]
-       public string cust_id { get; set; }
-
-       /// <summary>
-       ///Customer
-       /// </summary>
-       [Display(Name ="Customer")]
-       [MaxLength(100)]
-       [Column(TypeName="nvarchar(100)")]
-       public string cust_name { get; set; }
-
-       /// <summary>
-       ///Product ID
-       /// </summary>
-       [Display(Name ="Product ID")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       public string prod_id { get; set; }
-
-       /// <summary>
-       ///Product
-       /// </summary>
-       [Display(Name ="Product")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       public string prod_ename { get; set; }
-
-       /// <summary>
-       ///Amount(W/T)
-       /// </summary>
-       [Display(Name ="Amount(W/T)")]
-       [DisplayFormat(DataFormatString="18,5")]
-       [Column(TypeName="decimal")]
-       [Editable(true)]
-       public decimal? amount { get; set; }
-
-       /// <summary>
-       ///Remarks
-       /// </summary>
-       [Display(Name ="Remarks")]
-       [MaxLength(256)]
-       [Column(TypeName="nvarchar(256)")]
-       [Editable(true)]
-       public string remarks { get; set; }
-
-       /// <summary>
-       ///Modify User
-       /// </summary>
-       [Display(Name ="Modify User")]
-       [Column(TypeName="int")]
-       public int? modified_user { get; set; }
-
-       /// <summary>
-       ///Modify Date
-       /// </summary>
-       [Display(Name ="Modify Date")]
-       [Column(TypeName="datetime")]
-       public DateTime? modified_date { get; set; }
-
-       /// <summary>
-       ///列名allw_sum_dbid
-       /// </summary>
-       [Key]
-       [Display(Name ="列名allw_sum_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       [Required(AllowEmptyStrings=false)]
-       public Guid allw_sum_dbid { get; set; }
-
-       /// <summary>
        ///列名entity
        /// </summary>
        [Display(Name ="列名entity")]
@@ -182,11 +107,10 @@ namespace VIAT.Entity.DomainModels
        public string invoice_no { get; set; }
 
        /// <summary>
-       ///TransDate
+       ///列名trans_date
        /// </summary>
-       [Display(Name ="TransDate")]
+       [Display(Name ="列名trans_date")]
        [Column(TypeName="datetime")]
-       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public DateTime trans_date { get; set; }
 
@@ -197,6 +121,22 @@ namespace VIAT.Entity.DomainModels
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
        public decimal? qty { get; set; }
+
+       /// <summary>
+       ///列名amount
+       /// </summary>
+       [Display(Name ="列名amount")]
+       [DisplayFormat(DataFormatString="18,5")]
+       [Column(TypeName="decimal")]
+       public decimal? amount { get; set; }
+
+       /// <summary>
+       ///列名remarks
+       /// </summary>
+       [Display(Name ="列名remarks")]
+       [MaxLength(256)]
+       [Column(TypeName="nvarchar(256)")]
+       public string remarks { get; set; }
 
        /// <summary>
        ///列名status
@@ -251,6 +191,13 @@ namespace VIAT.Entity.DomainModels
        public DateTime? created_date { get; set; }
 
        /// <summary>
+       ///列名modified_user
+       /// </summary>
+       [Display(Name ="列名modified_user")]
+       [Column(TypeName="int")]
+       public int? modified_user { get; set; }
+
+       /// <summary>
        ///列名modified_username
        /// </summary>
        [Display(Name ="列名modified_username")]
@@ -274,12 +221,53 @@ namespace VIAT.Entity.DomainModels
        public string modified_clientusername { get; set; }
 
        /// <summary>
+       ///列名cust_id
+       /// </summary>
+       [Display(Name ="列名cust_id")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       public string cust_id { get; set; }
+
+       /// <summary>
+       ///列名cust_name
+       /// </summary>
+       [Display(Name ="列名cust_name")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
+       public string cust_name { get; set; }
+
+       /// <summary>
+       ///列名prod_id
+       /// </summary>
+       [Display(Name ="列名prod_id")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       public string prod_id { get; set; }
+
+       /// <summary>
+       ///列名prod_ename
+       /// </summary>
+       [Display(Name ="列名prod_ename")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       public string prod_ename { get; set; }
+
+       /// <summary>
        ///列名percent
        /// </summary>
        [Display(Name ="列名percent")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
        public decimal? percent { get; set; }
+
+       /// <summary>
+       ///hpallw_dbid
+       /// </summary>
+       [Key]
+       [Display(Name ="hpallw_dbid")]
+       [Column(TypeName="uniqueidentifier")]
+       [Required(AllowEmptyStrings=false)]
+       public Guid hpallw_dbid { get; set; }
 
        
     }

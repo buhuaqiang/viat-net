@@ -39,15 +39,6 @@ namespace VIAT.Entity.DomainModels
        public decimal? A1 { get; set; }
 
        /// <summary>
-       ///sum_hpcont_dbid
-       /// </summary>
-       [Key]
-       [Display(Name ="sum_hpcont_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       [Required(AllowEmptyStrings=false)]
-       public Guid sum_hpcont_dbid { get; set; }
-
-       /// <summary>
        ///Customer ID
        /// </summary>
        [Display(Name ="Customer ID")]
@@ -117,6 +108,15 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="hpcont_dbid")]
        [Column(TypeName="uniqueidentifier")]
        public Guid? hpcont_dbid { get; set; }
+
+       /// <summary>
+       ///hpallw_dbid
+       /// </summary>
+       [Key]
+       [Display(Name ="hpallw_dbid")]
+       [Column(TypeName="uniqueidentifier")]
+       [Required(AllowEmptyStrings=false)]
+       public Guid hpallw_dbid { get; set; }
 
        
     }
