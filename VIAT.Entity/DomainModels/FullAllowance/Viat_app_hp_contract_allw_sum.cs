@@ -16,21 +16,25 @@ namespace VIAT.Entity.DomainModels
     [Entity(TableCnName = "全額折讓分配交易",TableName = "Viat_app_hp_contract_allw_sum")]
     public partial class Viat_app_hp_contract_allw_sum:BaseEntity
     {
-        /// <summary>
-       ///PKID
-       /// </summary>
-       [Key]
-       [Display(Name ="PKID")]
-       [Column(TypeName="uniqueidentifier")]
-       [Required(AllowEmptyStrings=false)]
-       public Guid allw_sum_dbid { get; set; }
 
-       /// <summary>
-       ///公司別
-       /// </summary>
-       [Display(Name ="公司別")]
+        /// <summary>
+        ///PKID
+        /// </summary>
+        [Key]
+        [Display(Name = "PKID")]
+        [Column(TypeName = "uniqueidentifier")]
+        [Required(AllowEmptyStrings = false)]
+        public Guid hpallw_dbid { get; set; }
+
+
+
+        /// <summary>
+        ///公司別
+        /// </summary>
+        [Display(Name ="公司別")]
        [MaxLength(3)]
        [Column(TypeName="varchar(3)")]
+       [Editable(true)]
        public string entity { get; set; }
 
        /// <summary>
@@ -39,6 +43,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="所屬事業單位,01:PH;03:AH;05:CH;06:NU")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
+       [Editable(true)]
        public string division { get; set; }
 
        /// <summary>
@@ -167,6 +172,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="是否結案,True:結案/False:未結案")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Editable(true)]
        public string status { get; set; }
 
        /// <summary>
@@ -174,6 +180,7 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="LocalAddon Contractno")]
        [Column(TypeName="int")]
+       [Editable(true)]
        public int? o_contract_no { get; set; }
 
        /// <summary>
@@ -242,13 +249,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_clientusername { get; set; }
-
-       /// <summary>
-       ///最後修改時間
-       /// </summary>
-       [Display(Name ="最後修改時間")]
-       [Column(TypeName="datetime")]
-       public DateTime? modified_date { get; set; }
 
        
     }

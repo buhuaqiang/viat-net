@@ -101,22 +101,6 @@ namespace VIAT.Entity.DomainModels
        public int? modified_user { get; set; }
 
        /// <summary>
-       ///Modify Date
-       /// </summary>
-       [Display(Name ="Modify Date")]
-       [Column(TypeName="datetime")]
-       public DateTime? modified_date { get; set; }
-
-       /// <summary>
-       ///列名allw_sum_dbid
-       /// </summary>
-       [Key]
-       [Display(Name ="列名allw_sum_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       [Required(AllowEmptyStrings=false)]
-       public Guid allw_sum_dbid { get; set; }
-
-       /// <summary>
        ///列名entity
        /// </summary>
        [Display(Name ="列名entity")]
@@ -138,8 +122,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="列名action_type")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings = false)]
-        public string action_type { get; set; }
+       [Required(AllowEmptyStrings=false)]
+       public string action_type { get; set; }
 
        /// <summary>
        ///列名allw_type
@@ -282,6 +266,15 @@ namespace VIAT.Entity.DomainModels
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
        public decimal? percent { get; set; }
+
+       /// <summary>
+       ///hpallw_dbid
+       /// </summary>
+       [Key]
+       [Display(Name ="hpallw_dbid")]
+       [Column(TypeName="uniqueidentifier")]
+       [Required(AllowEmptyStrings=false)]
+       public Guid hpallw_dbid { get; set; }
 
        
     }
