@@ -18,6 +18,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.DataEntry.IRepositories;
 using VIAT.DataEntry.IServices;
+using System.Collections.Generic;
 
 namespace VIAT.DataEntry.Services
 {
@@ -27,7 +28,8 @@ namespace VIAT.DataEntry.Services
         private readonly IView_full_allowance_reverseRepository _repository;//访问数据库
         private readonly IViat_app_hp_contract_allw_sumRepository _viat_app_hp_contract_allw_sumRepository;
         private readonly IViat_app_hp_contract_allw_sumService _viat_app_hp_contract_allw_sumService;
-        
+
+        WebResponseContent webResponse = new WebResponseContent();
 
         [ActivatorUtilitiesConstructor]
         public View_full_allowance_reverseService(
@@ -51,8 +53,16 @@ namespace VIAT.DataEntry.Services
               saveDataModel.MainData["action_type"] = '2';
             return _viat_app_hp_contract_allw_sumService.Add(saveDataModel);
         }
+        public override WebResponseContent Update(SaveModel saveModel)
+        {
+            UpdateOnExecuting = (View_full_allowance_reverse order, object addList, object updateList, List<object> delKeys) =>
+            {
+                return webResponse.OK();
+            };
+            return _viat_app_hp_contract_allw_sumService.Update(saveModel);
+        }
         //刪除
-         public override WebResponseContent Del(object[] keys, bool delList = true)
+        public override WebResponseContent Del(object[] keys, bool delList = true)
         {
             return _viat_app_hp_contract_allw_sumService.Del(keys, delList);
         }
