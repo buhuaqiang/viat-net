@@ -22,6 +22,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Product")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
+       [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string prods { get; set; }
 
@@ -31,16 +32,16 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Customer")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
+       [Editable(true)]
        public string custs { get; set; }
 
        /// <summary>
-       ///Group ID
+       ///Group
        /// </summary>
-       [Display(Name ="Group ID")]
+       [Display(Name ="Group")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
+       [Editable(true)]
        public string groups { get; set; }
 
        /// <summary>
@@ -66,20 +67,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="prod_dbid")]
        [Column(TypeName="uniqueidentifier")]
        public Guid? prod_dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="cust_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? cust_dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="pricegroup_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? pricegroup_dbid { get; set; }
 
        /// <summary>
        ///
@@ -148,7 +135,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string prod_id { get; set; }
 
        /// <summary>
@@ -174,6 +160,13 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_clientusername { get; set; }
+
+       /// <summary>
+       ///Group ID
+       /// </summary>
+       [Display(Name ="Group ID")]
+       [Column(TypeName="uniqueidentifier")]
+       public Guid? pricegroup_dbid { get; set; }
 
        /// <summary>
        ///Group ID
@@ -208,6 +201,13 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        public string state { get; set; }
+
+       /// <summary>
+       ///Customer ID
+       /// </summary>
+       [Display(Name ="Customer ID")]
+       [Column(TypeName="uniqueidentifier")]
+       public Guid? cust_dbid { get; set; }
 
        /// <summary>
        ///Customer ID
@@ -316,31 +316,12 @@ namespace VIAT.Entity.DomainModels
        public string remarks { get; set; }
 
        /// <summary>
-       ///Customer
+       ///
        /// </summary>
-       [Display(Name ="Customer")]
-       [MaxLength(111)]
-       [Column(TypeName="nvarchar(111)")]
+       [Display(Name ="dbid")]
+       [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
-       public string cust_dbidname { get; set; }
-
-       /// <summary>
-       ///Product
-       /// </summary>
-       [Display(Name ="Product")]
-       [MaxLength(66)]
-       [Column(TypeName="nvarchar(66)")]
-       [Required(AllowEmptyStrings=false)]
-       public string prod_dbidname { get; set; }
-
-       /// <summary>
-       ///Group ID
-       /// </summary>
-       [Display(Name ="Group ID")]
-       [MaxLength(121)]
-       [Column(TypeName="varchar(121)")]
-       [Required(AllowEmptyStrings=false)]
-       public string pricegroup_dbidname { get; set; }
+       public int dbid { get; set; }
 
        
     }
