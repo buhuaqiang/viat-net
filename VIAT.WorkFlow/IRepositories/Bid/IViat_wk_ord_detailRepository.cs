@@ -12,7 +12,7 @@ using VIAT.Entity.DomainModels;
 using VIAT.Core.Extensions.AutofacManager;
 namespace VIAT.WorkFlow.IRepositories
 {
-    public partial interface IViat_wk_ord_detailRepository : IDependency,IRepository<Viat_wk_ord_detail>
+    public partial interface IViat_wk_ord_detailRepository : IDependency,IRepository<Viat_wk_ord_detail_select>
     {
     }
 }

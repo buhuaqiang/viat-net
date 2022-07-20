@@ -10,7 +10,7 @@ using VIAT.Entity.DomainModels;
 
 namespace VIAT.WorkFlow.Repositories
 {
-    public partial class Viat_wk_ord_detailRepository : RepositoryBase<Viat_wk_ord_detail> , IViat_wk_ord_detailRepository
+    public partial class Viat_wk_ord_detailRepository : RepositoryBase<Viat_wk_ord_detail_select> , IViat_wk_ord_detailRepository
     {
     public Viat_wk_ord_detailRepository(VOLContext dbContext)
     : base(dbContext)

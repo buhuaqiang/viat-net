@@ -12,7 +12,7 @@ using VIAT.Entity.DomainModels;
 
 namespace VIAT.WorkFlow.Services
 {
-    public partial class Viat_wk_ord_detailService : ServiceBase<Viat_wk_ord_detail, IViat_wk_ord_detailRepository>
+    public partial class Viat_wk_ord_detailService : ServiceBase<Viat_wk_ord_detail_select, IViat_wk_ord_detailRepository>
     , IViat_wk_ord_detailService, IDependency
     {
     public Viat_wk_ord_detailService(IViat_wk_ord_detailRepository repository)

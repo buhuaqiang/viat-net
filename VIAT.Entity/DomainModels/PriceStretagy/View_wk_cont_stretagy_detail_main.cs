@@ -17,6 +17,22 @@ namespace VIAT.Entity.DomainModels
     public partial class View_wk_cont_stretagy_detail_main:BaseEntity
     {
         /// <summary>
+       ///Stretagy ID
+       /// </summary>
+       [Display(Name ="Stretagy ID")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       public string cont_stretagy_id { get; set; }
+
+       /// <summary>
+       ///Stretagy Name
+       /// </summary>
+       [Display(Name ="Stretagy Name")]
+       [MaxLength(100)]
+       [Column(TypeName="varchar(100)")]
+       public string cont_stretagy_name { get; set; }
+
+       /// <summary>
        ///列名prod_id
        /// </summary>
        [Display(Name ="列名prod_id")]
