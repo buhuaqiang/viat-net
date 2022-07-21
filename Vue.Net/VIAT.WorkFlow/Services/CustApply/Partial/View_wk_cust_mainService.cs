@@ -51,7 +51,7 @@ namespace VIAT.WorkFlow.Services
 
         public string getCustCode()
         {
-            string rule = "WK" + $"D{DateTime.Now.GetHashCode()}";
+            string rule = "C" + $"D{DateTime.Now.GetHashCode()}";
             return rule.Substring(0, 10);
         }
 
@@ -61,7 +61,11 @@ namespace VIAT.WorkFlow.Services
             Guid wkcust_dbid = Guid.NewGuid();
 
             saveDataModel.MainData["wkcust_dbid"] = wkcust_dbid;
-            saveDataModel.MainData["cust_id"] = code;
+
+            if (saveDataModel.MainData.GetValue("apply_type")?.ToString()=="01") {
+                saveDataModel.MainData["cust_id"] = code;
+            }
+           // saveDataModel.MainData["cust_id"] = code;
 
             return _viat_wk_custService.Add(saveDataModel);
         }
