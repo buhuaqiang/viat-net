@@ -235,8 +235,11 @@ namespace VIAT.Price.Services
         public override WebResponseContent Update(SaveModel saveModel)
         {
 
-             
-            return base.Update(saveModel);
+            UpdateOnExecuting = (View_price_distributor_mapping order, object addList, object updateList, List<object> delKeys) =>
+            {
+                return webResponse.OK();
+            };
+            return _viat_app_dist_mappingService.Update(saveModel);
         }
         public override WebResponseContent Del(object[] keys, bool delList = true)
         {
