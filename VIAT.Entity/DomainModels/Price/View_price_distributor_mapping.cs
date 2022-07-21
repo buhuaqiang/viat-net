@@ -33,16 +33,18 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string custs { get; set; }
 
        /// <summary>
-       ///Group
+       ///
        /// </summary>
-       [Display(Name ="Group")]
+       [Display(Name ="pricegroups")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
-       public string groups { get; set; }
+       [Required(AllowEmptyStrings=false)]
+       public string pricegroups { get; set; }
 
        /// <summary>
        ///
@@ -166,6 +168,7 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="Group ID")]
        [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
        public Guid? pricegroup_dbid { get; set; }
 
        /// <summary>
