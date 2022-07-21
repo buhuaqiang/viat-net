@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "經銷商客戶對應",TableName = "View_com_dist")]
+    [Entity(TableCnName = "Distributor Mapping Customer Code Setting",TableName = "View_com_dist")]
     public partial class View_com_dist:BaseEntity
     {
         /// <summary>
@@ -53,9 +53,9 @@ namespace VIAT.Entity.DomainModels
        public string dist_id { get; set; }
 
        /// <summary>
-       ///Distributor
+       ///Dist Name
        /// </summary>
-       [Display(Name ="Distributor")]
+       [Display(Name ="Dist Name")]
        [MaxLength(255)]
        [Column(TypeName="nvarchar(255)")]
        public string sys_value { get; set; }
@@ -76,7 +76,18 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="cust_dbid")]
        [Column(TypeName="uniqueidentifier")]
        [Editable(true)]
-       public Guid? cust_dbid { get; set; }
+       [Required(AllowEmptyStrings=false)]
+       public Guid cust_dbid { get; set; }
+
+       /// <summary>
+       ///Viatris CustID
+       /// </summary>
+       [Display(Name ="Viatris CustID")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
+       public string cust_id { get; set; }
 
        /// <summary>
        ///Cust Name
@@ -84,6 +95,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Cust Name")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
+       [Editable(true)]
        public string cust_name { get; set; }
 
        /// <summary>
@@ -169,22 +181,21 @@ namespace VIAT.Entity.DomainModels
        public int? modified_client { get; set; }
 
        /// <summary>
+       ///Distributor
+       /// </summary>
+       [Display(Name ="Distributor")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Required(AllowEmptyStrings=false)]
+       public string dist_id2 { get; set; }
+
+       /// <summary>
        ///
        /// </summary>
        [Display(Name ="dbid")]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
        public int dbid { get; set; }
-
-       /// <summary>
-       ///Viatris CustID
-       /// </summary>
-       [Display(Name ="Viatris CustID")]
-       [MaxLength(55)]
-       [Column(TypeName="varchar(55)")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string cust_id { get; set; }
 
        
     }
