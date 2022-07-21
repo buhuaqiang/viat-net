@@ -403,10 +403,17 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="uniqueidentifier")]
        public Guid? own_hospital { get; set; }
 
-       /// <summary>
-       ///列名med_group
-       /// </summary>
-       [Display(Name ="列名med_group")]
+        /// <summary>
+        ///列名cust_dbid
+        /// </summary>
+        [Display(Name = "列名cust_dbid")]
+        [Column(TypeName = "uniqueidentifier")]
+        public Guid? cust_dbid { get; set; }
+
+        /// <summary>
+        ///列名med_group
+        /// </summary>
+        [Display(Name ="列名med_group")]
        [Column(TypeName="uniqueidentifier")]
        public Guid? med_group { get; set; }
 
