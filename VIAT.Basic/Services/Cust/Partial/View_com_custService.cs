@@ -108,7 +108,7 @@ namespace VIAT.Basic.Services
 
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
-            string code = getCustCode();
+            string code = getCustID();
             Guid cust_dbid = Guid.NewGuid();
 
             // 在保存数据库前的操作，所有数据都验证通过了，这一步执行完就执行数据库保存
