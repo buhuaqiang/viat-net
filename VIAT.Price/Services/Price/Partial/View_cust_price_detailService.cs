@@ -1505,7 +1505,174 @@ namespace VIAT.Price.Services
 
         #endregion
 
+        public PageGridData<View_cust_price_detail> GetPriceDataForTransfer(PageDataOptions pageData)
+        {
+            PageGridData<View_cust_price_detail> pageGridData = new PageGridData<View_cust_price_detail>();
+            string prod_id = "";
+            string cust_id = "";
+            /*解析查询条件*/
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            if (!string.IsNullOrEmpty(pageData.Wheres))
+            {
+                searchParametersList = pageData.Wheres.DeserializeObject<List<SearchParameters>>();
+                if (searchParametersList != null && searchParametersList.Count > 0)
+                {
+                    foreach (SearchParameters sp in searchParametersList)
+                    {
+                        if (sp.Name.ToLower() == "prod_id".ToLower())
+                        {
+                            prod_id = sp.Value;
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "cust_id".ToLower())
+                        {
+                            cust_id = sp.Value;
+                            continue;
+                        }
 
+                    }
+                }
+            }
+            string where = "";
+            if (string.IsNullOrEmpty(prod_id) == false)
+            {
+                where += " and  prod.prod_id ='" + prod_id + "'";
+            }
+            if (string.IsNullOrEmpty(cust_id) == false)
+            {
+                where += " and  cust.cust_id ='" + cust_id + "'";
+            }
+
+            QuerySql = @"SELECT
+	row_number () OVER (ORDER BY price.prod_ename ASC) AS rowId,
+	price.*
+FROM
+	(
+		(
+			SELECT
+				*
+			FROM
+				(
+					SELECT
+						'1' AS source_type,
+						MAX (custPrice_d.dbid) AS dbid,
+						MAX (custPrice_d.created_user) AS created_user,
+						MAX (custPrice_d.created_client) AS created_client,
+						MAX (custPrice_d.created_date) AS created_date,
+						MAX (custPrice_d.modified_user) AS modified_user,
+						MAX (
+							custPrice_d.modified_client
+						) AS modified_client,
+						MAX (custPrice_d.modified_date) AS modified_date,
+						MAX (custPrice_d.division) AS division,
+						
+						'' AS group_id,
+						'' AS group_name,
+						custPrice_d.prod_dbid,
+						MAX (prod.prod_id) AS prod_id,
+						MAX (prod.prod_ename) AS prod_ename,
+						MAX (custPrice_d.nhi_price) AS nhi_price,
+						MAX (custPrice_d.invoice_price) AS invoice_price,
+						MAX (custPrice_d.net_price) AS net_price,
+						MAX (custPrice_d.min_qty) AS min_qty,
+						MAX (custPrice_d.start_date) AS start_date,
+						MAX (custPrice_d.end_date) AS end_date,
+						custPrice_d.status,
+						MAX (custPrice_d.source) AS source,
+						MAX (custPrice_d.remarks) AS remarks,
+						MAX (cust.cust_id) AS cust_id,
+						MAX (cust.cust_name) AS cust_name,
+						MAX (prod.state) AS prod_status,
+						custPrice_d.cust_dbid
+					FROM
+						viat_app_cust_price_detail AS custPrice_d
+					LEFT JOIN viat_com_prod AS prod ON custPrice_d.prod_dbid = prod.prod_dbid
+					LEFT JOIN viat_com_cust AS cust ON custPrice_d.cust_dbid = cust.cust_dbid
+					WHERE
+						custPrice_d.status = 'Y'
+                    
+					GROUP BY
+						custPrice_d.prod_dbid,
+						custPrice_d.cust_dbid,
+						custPrice_d.status
+				) AS cp_d
+		)
+		UNION
+			(
+				SELECT
+					*
+				FROM
+					(
+						SELECT
+							'0' AS source_type,
+							MAX (custPrice.dbid) AS dbid,
+							MAX (custPrice.created_user) AS created_user,
+							MAX (custPrice.created_client) AS created_client,
+							MAX (custPrice.created_date) AS created_date,
+							MAX (custPrice.modified_user) AS modified_user,
+							MAX (custPrice.modified_client) AS modified_client,
+							MAX (custPrice.modified_date) AS modified_date,
+							MAX (custPrice.division) AS division,
+							
+							priceGroup.group_id,
+							priceGroup.group_name,
+							custPrice.prod_dbid,
+							MAX (prod.prod_id) AS prod_id,
+							MAX (prod.prod_ename) AS prod_ename,
+							MAX (custPrice.nhi_price) AS nhi_price,
+							MAX (custPrice.invoice_price) AS invoice_price,
+							MAX (custPrice.net_price) AS net_price,
+							MAX (custPrice.min_qty) AS min_qty,
+							MAX (custPrice.start_date) AS start_date,
+							MAX (custPrice.end_date) AS end_date,
+							custPrice.status,
+							MAX (custPrice.source) AS source,
+							MAX (custPrice.remarks) AS remarks,
+							MAX (cust.cust_id) AS cust_id,
+							MAX (cust.cust_name) AS cust_name,
+							MAX (prod.state) AS prod_status,
+							custGroup.cust_dbid
+						FROM
+							viat_app_cust_price AS custPrice
+						JOIN viat_app_cust_group AS custGroup ON custPrice.pricegroup_dbid = custGroup.pricegroup_dbid
+						AND custPrice.prod_dbid = custGroup.prod_dbid
+						LEFT JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid
+						LEFT JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid
+						LEFT JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid
+						LEFT JOIN viat_com_dist AS dist ON cust.cust_dbid = dist.cust_dbid
+						WHERE
+							custGroup.status = 'Y'
+						AND prod.prod_dbid NOT IN (
+							SELECT
+								priceDetail.prod_dbid
+							FROM
+								viat_app_cust_price_detail AS priceDetail
+							WHERE
+								priceDetail.cust_dbid = custGroup.cust_dbid
+							AND priceDetail.status = 'Y'
+						)
+						AND custPrice.status = 'Y'
+						GROUP BY
+							custPrice.pricegroup_dbid,
+							group_id,
+							group_name,
+							custPrice.prod_dbid,
+							custGroup.cust_dbid,
+							custPrice.status
+					) AS cp
+			)
+	) AS price";
+
+
+            string sql = "select count(1) from (" + QuerySql + ") a";
+            pageGridData.total = repository.DapperContext.ExecuteScalar(sql, null).GetInt();
+
+            // QuerySql += "  ORDER BY prod_id, modified_date"; 
+            sql = @$"select * from (" +
+                QuerySql + $" ) as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
+            pageGridData.rows = repository.DapperContext.QueryList<View_cust_price_detail>(sql, null);
+            return pageGridData;
+        }
 
     }
 }
