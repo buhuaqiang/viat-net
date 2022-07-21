@@ -34,7 +34,7 @@ namespace VIAT.WorkFlow.Controllers
         //根據bid no查詢當前批次訂單信息
         [ApiActionPermission]
         [HttpPost, Route("getOrderDataByBidNo")]
-        public ActionResult getPriceGroupProducts([FromBody] PageDataOptions loadData)
+        public ActionResult getOrderDataByBidNo([FromBody] PageDataOptions loadData)
         {
             return Json(_service.GetPageDataByOrderNO(loadData));
         }
