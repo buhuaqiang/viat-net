@@ -79,5 +79,14 @@ namespace VIAT.Price.Controllers
         }
 
 
+        //查詢價格for transfer彈窗
+        [ApiActionPermission]
+        [HttpPost, Route("GetPriceDataForTransfer")]
+        public ActionResult GetPriceDataForTransfer([FromBody] PageDataOptions options)
+        {
+            return Json(_service.GetPriceDataForTransfer(options));
+
+        }
+
     }
 }
