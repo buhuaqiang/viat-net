@@ -59,7 +59,7 @@ namespace VIAT.Price.Services
             
             Viat_app_dist_mapping dist = JsonConvert.DeserializeObject<Viat_app_dist_mapping>(JsonConvert.SerializeObject(saveDataModel.MainData));
             string sProds = saveDataModel.MainData["prods"].ToString();
-            string sGroups = saveDataModel.MainData["groups"].ToString();
+            string sGroups = saveDataModel.MainData["pricegroups"].ToString();
             string sCusts = saveDataModel.MainData["custs"].ToString();
 
             string[] sProdArray = sProds.Split(',');
