@@ -235,17 +235,7 @@ namespace VIAT.Price.Services
         public override WebResponseContent Update(SaveModel saveModel)
         {
 
-            UpdateOnExecute = (saveModel) =>
-            {
-                //接收前端数据
-
-
-                //处理数据
-
-
-
-                return null;
-            };
+             
             return base.Update(saveModel);
         }
         public override WebResponseContent Del(object[] keys, bool delList = true)
