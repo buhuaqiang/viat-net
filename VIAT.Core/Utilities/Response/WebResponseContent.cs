@@ -18,6 +18,11 @@ namespace VIAT.Core.Utilities
         //public string Message { get; set; }
         public object Data { get; set; }
 
+        /// <summary>
+        /// 二次请求url
+        /// </summary>
+        public string Url { get; set; }
+
         public WebResponseContent OK()
         {
             this.Status = true;

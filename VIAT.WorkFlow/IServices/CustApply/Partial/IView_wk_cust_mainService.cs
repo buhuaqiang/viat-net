@@ -9,5 +9,16 @@ namespace VIAT.WorkFlow.IServices
 {
     public partial interface IView_wk_cust_mainService
     {
+        /// <summary>
+        /// 批量退回
+        /// </summary>
+        /// <param name="bidmast_dbidLst"></param>
+        /// <returns></returns>
+        WebResponseContent processBack(string[] bidmast_dbidLst);
+
+        WebResponseContent addSubmit(object saveModel);
+
+        WebResponseContent Submit(object saveModel);
+
     }
- }
+}

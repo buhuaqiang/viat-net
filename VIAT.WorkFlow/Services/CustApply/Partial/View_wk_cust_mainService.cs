@@ -21,6 +21,7 @@ using VIAT.WorkFlow.IServices;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Newtonsoft.Json;
 
 namespace VIAT.WorkFlow.Services
 {
@@ -49,38 +50,230 @@ namespace VIAT.WorkFlow.Services
             //base.Init(dbRepository);
         }
 
+        WebResponseContent webRespose = new WebResponseContent();
+
         public string getCustCode()
         {
             string rule = "C" + $"D{DateTime.Now.GetHashCode()}";
             return rule.Substring(0, 10);
         }
 
+        /// <summary>
+        /// add
+        /// </summary>
+        /// <param name="saveDataModel"></param>
+        /// <returns></returns>
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
-            string code = getCustCode();
-            Guid wkcust_dbid = Guid.NewGuid();
+            addWKMaster(saveDataModel);
 
-            saveDataModel.MainData["wkcust_dbid"] = wkcust_dbid;
-
-            if (saveDataModel.MainData.GetValue("apply_type")?.ToString()=="01") {
-                saveDataModel.MainData["cust_id"] = code;
-            }
-           // saveDataModel.MainData["cust_id"] = code;
-
-            return _viat_wk_custService.Add(saveDataModel);
+            return base.CustomBatchProcessEntity(saveDataModel);          
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <returns></returns>
 
         public override WebResponseContent Update(SaveModel saveModel)
         {
-           
-            return _viat_wk_custService.Update(saveModel);
+
+            updateWKMaster(saveModel);
+            return base.CustomBatchProcessEntity(saveModel);
         }
         public override WebResponseContent Del(object[] keys, bool delList = true)
         {
-            return _viat_wk_custService.Del(keys, delList);
+            List<string> delLst = new List<string>();
+            foreach(string bidmast_dbid in keys)
+            {
+                string sDelWKMaster = "delete from viat_wk_master where bidmast_dbidLst='" + bidmast_dbid + "'";
+                string sDelWKCust = "delete from viat_wk_cust where bidmast_dbidLst='" + bidmast_dbid + "'";
+                delLst.Add(sDelWKMaster);
+                delLst.Add(sDelWKCust);
+            }
+
+            return base.CustomExcuteBySql(delLst, "");
+        }
+
+        /// <summary>
+        /// 提交邏輯
+        /// </summary>
+        /// <returns></returns>
+        public WebResponseContent Submit(object saveModelData)
+        {
+            /*    //修改master為03
+                //根據主鍵取得master數據,只更新狀態
+                string sbidmast_dbid = "A3C7E352-3507-49A9-93D4-8596355B37EE";// saveModel.MainData["bidmast_dbid"].ToString();           
+                Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(sbidmast_dbid);
+                if (master == null)
+                {
+                    return webRespose.Error("no match master data");
+                }
+                master.status = "03";
+                //修改master数据
+                SaveModel.DetailListDataResult masterResult = new SaveModel.DetailListDataResult();
+                masterResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(master)));
+                masterResult.optionType = SaveModel.MainOptionType.update;
+                masterResult.detailType = typeof(Viat_wk_master);
+                saveModel.DetailListData.Add(masterResult);*/
+
+            SaveModel saveModel = new SaveModel();
+            saveModel.MainData = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(saveModelData));
+
+            updateWKMaster(saveModel);
+            processCustTransferAndDelivery(saveModel);
+            return base.CustomBatchProcessEntity(saveModel);
+        }
+
+        /// <summary>
+        /// addsubmit
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <returns></returns>
+        public WebResponseContent addSubmit(object saveModelData)
+        {
+            SaveModel saveModel = new SaveModel();
+            saveModel.MainData = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(saveModelData));
+
+            //判断是否为新增还是编辑
+            string sbidmast_dbid =  saveModel.MainData["bidmast_dbid"].ToString();
+            if(string.IsNullOrEmpty(sbidmast_dbid) == false)
+            {
+                updateWKMaster(saveModel);
+            }
+            else
+            {
+                addWKMaster(saveModel);
+            }
+
+            processCustTransferAndDelivery(saveModel);
+
+
+            return base.CustomBatchProcessEntity(saveModel);
         }
 
 
-       
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <returns></returns>
+        public WebResponseContent processBack(string[] bidmast_dbidLst)
+        {
+
+            SaveModel saveModel = new SaveModel();            
+            SaveModel.DetailListDataResult backResult = new SaveModel.DetailListDataResult();
+            saveModel.DetailListData.Add(backResult);
+            foreach (string bidmast_dbid in bidmast_dbidLst)
+            {
+                Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bidmast_dbid);
+                master.status = "02";
+
+                backResult.optionType = SaveModel.MainOptionType.update;
+                backResult.detailType = typeof(Viat_wk_master);
+                backResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(master)));                
+            }
+
+            return base.CustomBatchProcessEntity(saveModel);
+        }
+
+        #region 
+
+        /// <summary>
+        /// add master
+        /// </summary>
+        /// <param name="saveModel"></param>
+        private void addWKMaster(SaveModel saveDataModel)
+        {
+            string code = getCustCode();
+            string sBinNo = Viat_wk_masterService.Instance.getBidNO();
+            Guid bidMastDBID = Guid.NewGuid();
+            saveDataModel.MainData["bidmast_dbid"] = bidMastDBID;
+            saveDataModel.MainData["bid_no"] = sBinNo;
+            saveDataModel.MainData["status"] = "00";
+            saveDataModel.MainData["start_date"] = getFormatYYYYMMDD(DateTime.Now);
+            if (saveDataModel.MainData.GetValue("apply_type")?.ToString() == "01")
+            {
+                saveDataModel.MainData["cust_id"] = code;
+            }
+
+            //增加master数据
+            SaveModel.DetailListDataResult masterResult = new SaveModel.DetailListDataResult();
+            masterResult.DetailData.Add(saveDataModel.MainData);
+            masterResult.optionType = SaveModel.MainOptionType.add;
+            masterResult.detailType = typeof(Viat_wk_master);
+            saveDataModel.DetailListData.Add(masterResult);
+
+            //增加cust
+            Viat_wk_cust cust = JsonConvert.DeserializeObject<Viat_wk_cust>(JsonConvert.SerializeObject(saveDataModel.MainData));
+            cust.wkcust_dbid = Guid.NewGuid();
+            cust.bidmast_dbid = bidMastDBID;
+            SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
+            custResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(cust)));
+            custResult.optionType = SaveModel.MainOptionType.add;
+            custResult.detailType = typeof(Viat_wk_cust);
+            saveDataModel.DetailListData.Add(custResult);
+        }
+
+        /// <summary>
+        /// add master
+        /// </summary>
+        /// <param name="saveModel"></param>
+        private void updateWKMaster(SaveModel saveModel)
+        {
+            //根據主鍵取得master數據,只更新狀態
+            string sbidmast_dbid = saveModel.MainData["bidmast_dbid"].ToString();
+            string sApplyType = saveModel.MainData["apply_type"].ToString();
+            Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(sbidmast_dbid);             
+            master.apply_type = sApplyType;
+            //修改master数据
+            SaveModel.DetailListDataResult masterResult = new SaveModel.DetailListDataResult();
+            masterResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(master)));
+            masterResult.optionType = SaveModel.MainOptionType.update;
+            masterResult.detailType = typeof(Viat_wk_master);
+            saveModel.DetailListData.Add(masterResult);
+
+            //更新cust表數據
+            Viat_wk_cust cust = JsonConvert.DeserializeObject<Viat_wk_cust>(JsonConvert.SerializeObject(saveModel.MainData));
+            cust.bidmast_dbid = master.bidmast_dbid;
+            SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
+            custResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(cust)));
+            custResult.optionType = SaveModel.MainOptionType.update;
+            custResult.detailType = typeof(Viat_wk_cust);
+            saveModel.DetailListData.Add(custResult);
+        }
+
+  
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="saveModel"></param>
+        private void processCustTransferAndDelivery(SaveModel saveModel)
+        {
+
+            //把cust記錄寫入transfer, delivery transfer
+            Viat_app_cust_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
+            transfer.custtransfer_dbid = System.Guid.NewGuid();
+            transfer.state = "0";
+            SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
+            transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
+            transferResult.optionType = SaveModel.MainOptionType.add;
+            transferResult.detailType = typeof(Viat_app_cust_transfer);
+            saveModel.DetailListData.Add(transferResult);
+
+            // 把cust記錄寫入 delivery transfer
+            Viat_app_cust_delivery_transfer delivery = JsonConvert.DeserializeObject<Viat_app_cust_delivery_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
+            delivery.custtransfer_dbid = transfer.custtransfer_dbid;
+            delivery.custdeltransfer_dbid = System.Guid.NewGuid();
+            SaveModel.DetailListDataResult deliveryResult = new SaveModel.DetailListDataResult();
+            deliveryResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(delivery)));
+            deliveryResult.optionType = SaveModel.MainOptionType.add;
+            deliveryResult.detailType = typeof(Viat_app_cust_delivery_transfer);
+            saveModel.DetailListData.Add(deliveryResult);
+        }
+
+        #endregion
+
     }
 }

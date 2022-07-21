@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Entity.DomainModels;
 using VIAT.WorkFlow.IServices;
+using VIAT.Core.Filters;
 
 namespace VIAT.WorkFlow.Controllers
 {
@@ -29,5 +30,30 @@ namespace VIAT.WorkFlow.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
+
+
+        [ApiActionPermission]
+        [HttpPost, Route("processBack")]
+        public ActionResult processBack(string[] bidmast_dbidLst)
+        {
+            return Json(_service.processBack(bidmast_dbidLst));
+        }
+
+        [ApiActionPermission]
+        [HttpPost, Route("addSubmit")]
+        public ActionResult addSubmit([FromBody] object saveModel)
+        {
+            return Json(_service.addSubmit(saveModel));
+        }
+
+
+        [ApiActionPermission]
+        [HttpPost, Route("Submit")]
+        public ActionResult Submit([FromBody] object saveModel)
+        {
+            return Json(_service.Submit(saveModel));
+        }
+
+
     }
 }
