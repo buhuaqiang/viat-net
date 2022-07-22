@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using Newtonsoft.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace VIAT.WorkFlow.Services
 {
@@ -100,26 +101,16 @@ namespace VIAT.WorkFlow.Services
         /// 提交邏輯
         /// </summary>
         /// <returns></returns>
-        public WebResponseContent Submit(object saveModelData)
+        public WebResponseContent Submit([FromBody] object saveModelData)
         {
-            /*    //修改master為03
-                //根據主鍵取得master數據,只更新狀態
-                string sbidmast_dbid = "A3C7E352-3507-49A9-93D4-8596355B37EE";// saveModel.MainData["bidmast_dbid"].ToString();           
-                Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(sbidmast_dbid);
-                if (master == null)
-                {
-                    return webRespose.Error("no match master data");
-                }
-                master.status = "03";
-                //修改master数据
-                SaveModel.DetailListDataResult masterResult = new SaveModel.DetailListDataResult();
-                masterResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(master)));
-                masterResult.optionType = SaveModel.MainOptionType.update;
-                masterResult.detailType = typeof(Viat_wk_master);
-                saveModel.DetailListData.Add(masterResult);*/
-
+           
+            List<Dictionary<string,object>> lst = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(saveModelData.ToString());
+            if(lst == null || lst.Count==0)
+            {
+                return webRespose.Error("no data");
+            }
             SaveModel saveModel = new SaveModel();
-            saveModel.MainData = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(saveModelData));
+            saveModel.MainData = lst[0];
 
             updateWKMaster(saveModel);
             processCustTransferAndDelivery(saveModel);
@@ -131,10 +122,15 @@ namespace VIAT.WorkFlow.Services
         /// </summary>
         /// <param name="saveModel"></param>
         /// <returns></returns>
-        public WebResponseContent addSubmit(object saveModelData)
+        public WebResponseContent addSubmit([FromBody]  object saveModelData)
         {
+            List<Dictionary<string, object>> lst = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(saveModelData.ToString());
+            if (lst == null || lst.Count == 0)
+            {
+                return webRespose.Error("no data");
+            }
             SaveModel saveModel = new SaveModel();
-            saveModel.MainData = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(saveModelData));
+            saveModel.MainData = lst[0];
 
             //判断是否为新增还是编辑
             string sbidmast_dbid =  saveModel.MainData["bidmast_dbid"].ToString();
@@ -256,6 +252,8 @@ namespace VIAT.WorkFlow.Services
             Viat_app_cust_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
             transfer.custtransfer_dbid = System.Guid.NewGuid();
             transfer.state = "0";
+            transfer.status = "Y";
+            transfer.bid_no = transfer.bid_no.Trim();
             SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
             transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
             transferResult.optionType = SaveModel.MainOptionType.add;
@@ -265,7 +263,7 @@ namespace VIAT.WorkFlow.Services
             // 把cust記錄寫入 delivery transfer
             Viat_app_cust_delivery_transfer delivery = JsonConvert.DeserializeObject<Viat_app_cust_delivery_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
             delivery.custtransfer_dbid = transfer.custtransfer_dbid;
-            delivery.custdeltransfer_dbid = System.Guid.NewGuid();
+            delivery.custdeltransfer_dbid = System.Guid.NewGuid();            
             SaveModel.DetailListDataResult deliveryResult = new SaveModel.DetailListDataResult();
             deliveryResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(delivery)));
             deliveryResult.optionType = SaveModel.MainOptionType.add;
