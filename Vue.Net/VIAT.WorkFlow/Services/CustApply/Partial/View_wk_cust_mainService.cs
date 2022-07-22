@@ -87,8 +87,8 @@ namespace VIAT.WorkFlow.Services
             List<string> delLst = new List<string>();
             foreach(string bidmast_dbid in keys)
             {
-                string sDelWKMaster = "delete from viat_wk_master where bidmast_dbidLst='" + bidmast_dbid + "'";
-                string sDelWKCust = "delete from viat_wk_cust where bidmast_dbidLst='" + bidmast_dbid + "'";
+                string sDelWKMaster = "delete from viat_wk_master where bidmast_dbid='" + bidmast_dbid + "'";
+                string sDelWKCust = "delete from viat_wk_cust where bidmast_dbid='" + bidmast_dbid + "'";
                 delLst.Add(sDelWKMaster);
                 delLst.Add(sDelWKCust);
             }
