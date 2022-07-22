@@ -944,7 +944,8 @@ namespace VIAT.Price.Services
                 dtFormat.ShortDatePattern = "yyyy-MM-dd";
                 DateTime dSysDate = Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd"), dtFormat);
                 DateTime dPageDate = Convert.ToDateTime(sStartDate, dtFormat);
-                if (CheckFuturePrice(sPriceGroupDBID, sProdDBID, sStartDate) == true)
+                Viat_app_cust_price futurePrice = CheckFuturePrice(sPriceGroupDBID, sProdDBID, sStartDate);
+                if (futurePrice != null && futurePrice.status=="Y")
                 {
                     //当前增加为未来价，系统已存在未来价
                     webResponse.Code = "-1";
@@ -981,7 +982,7 @@ namespace VIAT.Price.Services
         /// <param name="sStartDate"></param>
         /// <param name="sEnddate"></param>
         /// <returns></returns>
-        private bool CheckFuturePrice(string sPriceGroupDBID, string sProdDBID, string sStartDate)
+        private Viat_app_cust_price CheckFuturePrice(string sPriceGroupDBID, string sProdDBID, string sStartDate)
         {
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
@@ -990,13 +991,13 @@ namespace VIAT.Price.Services
             DateTime dPageDate = Convert.ToDateTime(sStartDate, dtFormat);
             if (dPageDate < dSysDate)
             {
-                return false;
+                return null;
             }
 
-            string sSql = "select TOP(1) *  from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid AND status = 'Y'ORDER BY end_date DESC";
+            string sSql = "select TOP(1) *  from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid ORDER BY end_date DESC";
             Viat_app_cust_price entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
-
-            if (entiryCustPrice == null)
+            return entiryCustPrice;
+            /*if (entiryCustPrice == null)
             {
                 return false;
             }
@@ -1008,7 +1009,7 @@ namespace VIAT.Price.Services
                 return true;
             }
 
-            return false;
+            return null;*/
         }
         #endregion
 
@@ -1607,8 +1608,9 @@ namespace VIAT.Price.Services
 
                 if (string.IsNullOrEmpty(sMessageBulid4) == true)
                 {
+                    Viat_app_cust_price FuturePrice = CheckFuturePrice(group.pricegroup_dbid?.ToString(), group.prod_dbid.ToString(), group.start_date.ToString("yyyy-MM-dd"));
                     //检查是否已存在未来价格
-                    if (CheckFuturePrice(group.pricegroup_dbid?.ToString(), group.prod_dbid.ToString(), group.start_date.ToString("yyyy-MM-dd")) == true)
+                    if (FuturePrice != null && FuturePrice.status == "Y")
                     {
                         //当前增加为未来价，系统已存在未来价
                         sMessageBulid4 += "Prod:" + group.prod_id + " Future prices already exists, please Invalid the future price";
@@ -1626,6 +1628,9 @@ namespace VIAT.Price.Services
             }
             if(string.IsNullOrEmpty(sMessageBulid4) == false)
             {
+                webResponse.Code = "-2";
+                webResponse.Url = "/api/View_cust_price/aaa";
+                webResponse.Data = list;
                 return webResponse.Error(sMessageBulid4);
             }
 
