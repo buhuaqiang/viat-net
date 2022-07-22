@@ -20,7 +20,8 @@ namespace VIAT.Entity.DomainModels
        ///Product
        /// </summary>
        [Display(Name ="Product")]
-       [Column(TypeName="varchar(max)")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string prods { get; set; }
@@ -29,7 +30,8 @@ namespace VIAT.Entity.DomainModels
        ///Customer
        /// </summary>
        [Display(Name ="Customer")]
-       [Column(TypeName="varchar(max)")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
        [Editable(true)]
        public string custs { get; set; }
 
@@ -37,7 +39,8 @@ namespace VIAT.Entity.DomainModels
        ///Group
        /// </summary>
        [Display(Name ="Group")]
-       [Column(TypeName="varchar(max)")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
        [Editable(true)]
        public string pricegroups { get; set; }
 
@@ -314,11 +317,13 @@ namespace VIAT.Entity.DomainModels
        public string remarks { get; set; }
 
        /// <summary>
-       ///
+       ///Group Channel
        /// </summary>
-       [Display(Name ="dbid")]
-       [Column(TypeName="int")]
-       public int? dbid { get; set; }
+       [Display(Name ="Group Channel")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Editable(true)]
+       public string price_channel { get; set; }
 
        
     }

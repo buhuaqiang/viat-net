@@ -196,6 +196,15 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public DateTime? modified_date { get; set; }
 
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="price_channel")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Editable(true)]
+       public string price_channel { get; set; }
+
        
     }
 }
