@@ -287,18 +287,19 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///列名wkcust_dbid
        /// </summary>
-       [Key]
        [Display(Name ="列名wkcust_dbid")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
        public Guid wkcust_dbid { get; set; }
 
-       /// <summary>
-       ///列名bidmast_dbid
-       /// </summary>
-       [Display(Name ="列名bidmast_dbid")]
+        /// <summary>
+        ///列名bidmast_dbid
+        /// </summary>
+        [Key]
+        [Display(Name ="列名bidmast_dbid")]
        [Column(TypeName="uniqueidentifier")]
-       public Guid? bidmast_dbid { get; set; }
+        [Required(AllowEmptyStrings = false)]
+        public Guid? bidmast_dbid { get; set; }
 
        /// <summary>
        ///列名ctype
