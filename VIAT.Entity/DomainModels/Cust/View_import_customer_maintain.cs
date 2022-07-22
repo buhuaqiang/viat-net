@@ -71,8 +71,8 @@ namespace VIAT.Entity.DomainModels
        ///
        /// </summary>
        [Display(Name ="bid_no")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
+       [MaxLength(20)]
+       [Column(TypeName="varchar(20)")]
        public string bid_no { get; set; }
 
        /// <summary>
@@ -284,28 +284,25 @@ namespace VIAT.Entity.DomainModels
        ///
        /// </summary>
        [Display(Name ="own_hospital")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       [Editable(true)]
-       public string own_hospital { get; set; }
+        [Column(TypeName = "uniqueidentifier")]
+        [Editable(true)]
+       public Guid own_hospital { get; set; }
 
        /// <summary>
        ///Medical Group
        /// </summary>
        [Display(Name ="Medical Group")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       [Editable(true)]
-       public string med_group { get; set; }
+        [Column(TypeName = "uniqueidentifier")]
+        [Editable(true)]
+       public Guid med_group { get; set; }
 
        /// <summary>
        ///Price Group
        /// </summary>
        [Display(Name ="Price Group")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       [Editable(true)]
-       public string delv_group { get; set; }
+        [Column(TypeName = "uniqueidentifier")]
+        [Editable(true)]
+       public Guid delv_group { get; set; }
 
        /// <summary>
        ///New Customer
@@ -514,12 +511,12 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="nvarchar(50)")]
        public string com_invoice_city_name { get; set; }
 
-       /// <summary>
+     /*  /// <summary>
        ///
        /// </summary>
        [Display(Name ="cust_dbid")]
        [Column(TypeName="uniqueidentifier")]
-       public Guid? cust_dbid { get; set; }
+       public Guid? cust_dbid { get; set; }*/
 
        /// <summary>
        ///
