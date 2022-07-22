@@ -192,7 +192,7 @@ namespace VIAT.WorkFlow.Services
             saveDataModel.MainData["bidmast_dbid"] = bidMastDBID;
             saveDataModel.MainData["bid_no"] = sBinNo;
             saveDataModel.MainData["status"] = "00";
-            saveDataModel.MainData["start_date"] = getFormatYYYYMMDD(DateTime.Now);
+            saveDataModel.MainData["start_date"] = getFormatYYYYMMDD(DateTime.Now.ToString("yyyy-MM-dd"));
             if (saveDataModel.MainData.GetValue("apply_type")?.ToString() == "01")
             {
                 saveDataModel.MainData["cust_id"] = code;
