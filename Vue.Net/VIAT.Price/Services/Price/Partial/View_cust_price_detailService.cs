@@ -247,15 +247,15 @@ namespace VIAT.Price.Services
 
             Dictionary<string, string> detailsAlias = new Dictionary<string, string>() {
                 { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "updated_date","custPrice"},
-                 { "prod_dbid", "custPrice" },{ "cust_dbid","custPrice"} ,{ "status","custPrice"} ,{"ShowInvalidProd","custPrice" },
+                 { "prod_id", "prod" },{ "cust_dbid","custPrice"} ,{ "status","custPrice"} ,
                 { "state","prod"}
             };
             Dictionary<string, string> groupAlias = new Dictionary<string, string>() {
                 { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "updated_date","custPrice"},
-                 { "prod_dbid", "custPrice" },{ "cust_dbid","custGroup"} ,{ "status","custPrice"},{"ShowInvalidProd","custPrice" }, { "state","prod"}
+                 { "prod_id", "prod" },{ "cust_dbid","custGroup"} ,{ "status","custPrice"},{ "state","prod"}
             };
             string sDetailConditon = getWhereCondition(searchParametersList, detailsAlias);            //处理查询条件
-            string sGroupConditon = getWhereCondition(searchParametersList, groupAlias);
+            string sGroupConditon = sDetailConditon;//查詢條件是一樣的,所以直接拿這個拼接好的sql,如果查詢條件不一樣需要重新 getWhereCondition(in的時候字符串會再多一層'')    getWhereCondition(searchParametersList, groupAlias);
 
             QuerySql = @"SELECT
 	                    custPrice.pricedetail_dbid AS pricedetail_dbid,
@@ -343,16 +343,17 @@ namespace VIAT.Price.Services
                     JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid where 1=1";
             QuerySql += sGroupConditon;
 
+            
 
-            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {
-                {
-                    x.prod_id,QueryOrderBy.Asc
-                },{
-                    x.updated_date,QueryOrderBy.Asc
-                }
-            };
+                /*base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {
+                    {
+                        x.prod_id,QueryOrderBy.Asc
+                    },{
+                        x.updated_date,QueryOrderBy.Asc
+                    }
+                };*/
 
-            return base.GetPageData(options);
+                return base.GetPageData(options);
         }
 
 
@@ -375,12 +376,11 @@ namespace VIAT.Price.Services
                     searchParametersList.Remove(item);
 
                     SearchParameters paraTmp = new SearchParameters();
-                    paraTmp.Name = "prod_dbid";
+                    paraTmp.Name = "prod_id";
                     paraTmp.Value = item.Value;
-                    paraTmp.DisplayType = item.DisplayType;
+                    paraTmp.DisplayType = "selectList";
                     searchParametersList.Add(paraTmp);
 
-                    break;
                 }
                 if (item.Name == "QueryStatus")
                 {
@@ -433,22 +433,27 @@ namespace VIAT.Price.Services
                 }
                 if (item.Name == "ShowInvalidProd")
                 {
+                    searchParametersList.Remove(item);
                     if (item.Value == "1")
                     {
-                        isShowInvalidProd = true;
-                        searchParametersList.Remove(item);
-
+                        //isShowInvalidProd = true;                           
                     }
+                    else
+                    {
+                        SearchParameters paraTmpStatus = new SearchParameters();
+                        paraTmpStatus.Name = "state";
+                        paraTmpStatus.Value = "1";
+                        paraTmpStatus.DisplayType = "";
+                        searchParametersList.Add(paraTmpStatus);
+                    }
+
+
                 }
             }
             //如果没有勾选页面的show invalid products则默认查询 产品的state=1
             if (!isShowInvalidProd)
             {
-                SearchParameters paraTmpStatus = new SearchParameters();
-                paraTmpStatus.Name = "state";
-                paraTmpStatus.Value = "1";
-                paraTmpStatus.DisplayType = "";
-                searchParametersList.Add(paraTmpStatus);
+                
             }
         }
 
@@ -472,9 +477,9 @@ namespace VIAT.Price.Services
                         searchParametersList.Remove(item);
 
                         SearchParameters paraTmp = new SearchParameters();
-                        paraTmp.Name = "prod_dbid";
+                        paraTmp.Name = "prod_id";
                         paraTmp.Value = item.Value;
-                        paraTmp.DisplayType = item.DisplayType;
+                        paraTmp.DisplayType = "selectList";
                         searchParametersList.Add(paraTmp);
 
                         break;
@@ -530,6 +535,7 @@ namespace VIAT.Price.Services
                     }
                     if (item.Name == "ShowInvalidProd")
                     {
+                        searchParametersList.Remove(item);
                         if (item.Value == "1")
                         {
                             isShowInvalidProd = true;
