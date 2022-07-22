@@ -53,13 +53,15 @@ namespace VIAT.Price.Services
 
         public override PageGridData<View_cust_price> GetPageData(PageDataOptions options)
         {
-            base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {
-                {
-                    x.prod_id,QueryOrderBy.Asc
-                },{
-                    x.updated_date,QueryOrderBy.Asc
-                }
-            };
+            //指定多个字段进行排序
+            /* base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {*//**//*
+                 {
+                     x.prod_id,QueryOrderBy.Asc
+                 },{
+                     x.updated_date,QueryOrderBy.Asc
+                 }
+             };*/
+
             return base.GetPageData(options);
         }
 
@@ -237,12 +239,11 @@ namespace VIAT.Price.Services
                         searchParametersList.Remove(item);
 
                         SearchParameters paraTmp = new SearchParameters();
-                        paraTmp.Name = "prod_dbid";
+                        paraTmp.Name = "prod_id";
                         paraTmp.Value = item.Value;
-                        paraTmp.DisplayType = item.DisplayType;
+                        paraTmp.DisplayType = "selectList";
                         searchParametersList.Add(paraTmp);
 
-                        break;
                     }
                     if (item.Name == "QueryStatus")
                     {
@@ -295,11 +296,17 @@ namespace VIAT.Price.Services
                     }
                     if(item.Name== "ShowInvalidProd")
                     {
+                        searchParametersList.Remove(item);
                         if (item.Value == "1")
-                        {
-                            isShowInvalidProd = true;
-                           
+                        { 
+                            isShowInvalidProd = true;                           
                         }
+                        else
+                        {
+                            
+                        }
+                       
+                        
                     }
                 }
                 //如果没有勾选页面的show invalid products则默认查询 产品的state=1
