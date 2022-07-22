@@ -66,7 +66,7 @@ namespace VIAT.WorkFlow.Services
         /// <returns></returns>
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
-            addWKMaster(saveDataModel);
+            addWKMaster(saveDataModel,"00");
 
             return base.CustomBatchProcessEntity(saveDataModel);          
         }
@@ -80,7 +80,7 @@ namespace VIAT.WorkFlow.Services
         public override WebResponseContent Update(SaveModel saveModel)
         {
 
-            updateWKMaster(saveModel);
+            updateWKMaster(saveModel,"00");
             return base.CustomBatchProcessEntity(saveModel);
         }
         public override WebResponseContent Del(object[] keys, bool delList = true)
@@ -112,8 +112,9 @@ namespace VIAT.WorkFlow.Services
             SaveModel saveModel = new SaveModel();
             saveModel.MainData = lst[0];
 
-            updateWKMaster(saveModel);
+            updateWKMaster(saveModel,"03");
             processCustTransferAndDelivery(saveModel);
+            
             return base.CustomBatchProcessEntity(saveModel);
         }
 
@@ -136,11 +137,11 @@ namespace VIAT.WorkFlow.Services
             string sbidmast_dbid =  saveModel.MainData["bidmast_dbid"].ToString();
             if(string.IsNullOrEmpty(sbidmast_dbid) == false)
             {
-                updateWKMaster(saveModel);
+                updateWKMaster(saveModel,"03");
             }
             else
             {
-                addWKMaster(saveModel);
+                addWKMaster(saveModel,"03");
             }
 
             processCustTransferAndDelivery(saveModel);
@@ -180,14 +181,14 @@ namespace VIAT.WorkFlow.Services
         /// add master
         /// </summary>
         /// <param name="saveModel"></param>
-        private void addWKMaster(SaveModel saveDataModel)
+        private void addWKMaster(SaveModel saveDataModel, string sStatus)
         {
             string code = getCustCode();
             string sBinNo = Viat_wk_masterService.Instance.getBidNO();
             Guid bidMastDBID = Guid.NewGuid();
             saveDataModel.MainData["bidmast_dbid"] = bidMastDBID;
             saveDataModel.MainData["bid_no"] = sBinNo;
-            saveDataModel.MainData["status"] = "00";
+            saveDataModel.MainData["status"] = sStatus;
             saveDataModel.MainData["start_date"] = getFormatYYYYMMDD(DateTime.Now.ToString("yyyy-MM-dd"));
             if (saveDataModel.MainData.GetValue("apply_type")?.ToString() == "01")
             {
@@ -216,13 +217,14 @@ namespace VIAT.WorkFlow.Services
         /// add master
         /// </summary>
         /// <param name="saveModel"></param>
-        private void updateWKMaster(SaveModel saveModel)
+        private void updateWKMaster(SaveModel saveModel,string sStatus)
         {
             //根據主鍵取得master數據,只更新狀態
             string sbidmast_dbid = saveModel.MainData["bidmast_dbid"].ToString();
             string sApplyType = saveModel.MainData["apply_type"].ToString();
             Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(sbidmast_dbid);             
             master.apply_type = sApplyType;
+            master.status = sStatus;
             //修改master数据
             SaveModel.DetailListDataResult masterResult = new SaveModel.DetailListDataResult();
             masterResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(master)));
@@ -270,6 +272,8 @@ namespace VIAT.WorkFlow.Services
             deliveryResult.detailType = typeof(Viat_app_cust_delivery_transfer);
             saveModel.DetailListData.Add(deliveryResult);
         }
+
+        
 
         #endregion
 
