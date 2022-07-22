@@ -81,7 +81,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Requestor")]
        [MaxLength(56)]
        [Column(TypeName="nvarchar(56)")]
-       [Required(AllowEmptyStrings=false)]
        public string requestorName { get; set; }
 
        /// <summary>
@@ -115,7 +114,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string cust_id { get; set; }
 
        /// <summary>
@@ -396,7 +394,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Pending Reason")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       [Required(AllowEmptyStrings=false)]
        public string pendingReason { get; set; }
 
        /// <summary>

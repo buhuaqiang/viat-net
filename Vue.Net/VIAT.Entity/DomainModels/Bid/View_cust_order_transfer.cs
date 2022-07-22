@@ -17,6 +17,15 @@ namespace VIAT.Entity.DomainModels
     public partial class View_cust_order_transfer:BaseEntity
     {
         /// <summary>
+       ///Bid NO
+       /// </summary>
+       [Display(Name ="Bid NO")]
+       [MaxLength(20)]
+       [Column(TypeName="varchar(20)")]
+       [Editable(true)]
+       public string bid_no { get; set; }
+
+       /// <summary>
        ///Status
        /// </summary>
        [Display(Name ="Status")]
@@ -40,15 +49,6 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="datetime")]
        [Editable(true)]
        public DateTime? created_date { get; set; }
-
-       /// <summary>
-       ///Bid NO
-       /// </summary>
-       [Display(Name ="Bid NO")]
-       [MaxLength(20)]
-       [Column(TypeName="varchar(20)")]
-       [Editable(true)]
-       public string bid_no { get; set; }
 
        /// <summary>
        ///Cust ID
@@ -242,7 +242,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Requstor")]
        [MaxLength(56)]
        [Column(TypeName="nvarchar(56)")]
-       [Required(AllowEmptyStrings=false)]
        public string requestorName { get; set; }
 
        

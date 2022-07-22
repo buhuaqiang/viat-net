@@ -1589,8 +1589,8 @@ FROM
 					LEFT JOIN viat_com_prod AS prod ON custPrice_d.prod_dbid = prod.prod_dbid
 					LEFT JOIN viat_com_cust AS cust ON custPrice_d.cust_dbid = cust.cust_dbid
 					WHERE
-						custPrice_d.status = 'Y'
-                    
+						custPrice_d.status = 'Y' 
+        "+where + @"
 					GROUP BY
 						custPrice_d.prod_dbid,
 						custPrice_d.cust_dbid,
@@ -1652,6 +1652,7 @@ FROM
 							AND priceDetail.status = 'Y'
 						)
 						AND custPrice.status = 'Y'
+"+where +@"
 						GROUP BY
 							custPrice.pricegroup_dbid,
 							group_id,
