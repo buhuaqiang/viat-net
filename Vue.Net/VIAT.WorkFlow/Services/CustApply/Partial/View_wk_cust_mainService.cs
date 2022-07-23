@@ -80,8 +80,10 @@ namespace VIAT.WorkFlow.Services
 
        public override WebResponseContent Update(SaveModel saveModel)
         {
+            string _status = saveModel.MainData.GetValue("status")?.ToString();
+        
+            updateWKMaster(saveModel, _status);
 
-            updateWKMaster(saveModel,"00");
             return base.CustomBatchProcessEntity(saveModel);
         }
         public override WebResponseContent Del(object[] keys, bool delList = true)
