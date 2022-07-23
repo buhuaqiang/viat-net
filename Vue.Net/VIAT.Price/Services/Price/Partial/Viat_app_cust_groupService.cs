@@ -37,5 +37,16 @@ namespace VIAT.Price.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
+
+        /// <summary>
+        /// 取得group信息
+        /// </summary>
+        /// <param name="sCustDBID"></param>
+        /// <returns></returns>
+        public Viat_app_cust_group getCustGroupByCustDBID(string sCustDBID)
+        {
+            string sSql = " select top(1) * from viat_app_cust_group where cust_dbid = '"+ sCustDBID+"' order by created_date desc";
+            return _repository.DapperContext.QueryFirst<Viat_app_cust_group>(sSql, null);
+        }
   }
 }

@@ -222,5 +222,7 @@ namespace VIAT.Basic.Services
 
             return _repository.DapperContext.QueryFirst<View_com_cust>(sSql, null);
         }
+
+       
     }
 }

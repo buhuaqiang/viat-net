@@ -9,5 +9,6 @@ namespace VIAT.Price.IServices
 {
     public partial interface IViat_app_cust_groupService
     {
+        Viat_app_cust_group getCustGroupByCustDBID(string sCustDBID);
     }
  }

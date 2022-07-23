@@ -71,6 +71,18 @@ namespace VIAT.WorkFlow.Services
             return base.GetPageData(options);
         }
 
+        /// <summary>
+        /// 根据Viat_wk_bid_detail取得所有信息
+        /// </summary>
+        /// <param name="bidmast_dbid"></param>
+        /// <returns></returns>
+        public List<Viat_wk_ord_detail> getDataByBidMasterDBID(string bidmast_dbid)
+        {
+            string sSql = "select * from viat_wk_ord_detail  where bidmast_dbid='" + bidmast_dbid + "'";
+
+            return _repository.DapperContext.QueryList<Viat_wk_ord_detail>(sSql, null);
+        }
+
 
     }
 }

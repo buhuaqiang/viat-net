@@ -8,5 +8,6 @@ namespace VIAT.Basic.IServices
 {
     public partial interface IViat_com_custService : IService<Viat_com_cust>
     {
+        Viat_com_cust getCustByCustDBID(string cust_dbid);
     }
 }
