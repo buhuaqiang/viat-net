@@ -155,7 +155,11 @@ namespace VIAT.Basic.Services
                     //Viat_com_cust cust = JsonConvert.DeserializeObject<Viat_com_cust>(JsonConvert.SerializeObject(custDic));
                     //根据cust_id取得实体，目的是拿到cust_dbid,表头表体都可以用
                     View_com_cust custFac = View_com_custService.Instance.getCustByCustID(cust.cust_id);
-                    cust.cust_dbid = custFac.cust_dbid;
+                    if(custFac != null)
+                    {
+                        cust.cust_dbid = custFac.cust_dbid;
+                    }
+                   
 
                     SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
                     custResult.detailType = typeof(Viat_com_cust);
