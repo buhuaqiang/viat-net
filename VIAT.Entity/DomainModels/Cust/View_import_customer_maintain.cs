@@ -23,7 +23,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
+       //[Required(AllowEmptyStrings=false)]
        public string territory_id { get; set; }
 
        /// <summary>
@@ -196,7 +196,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(40)]
        [Column(TypeName="varchar(40)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
+       //[Required(AllowEmptyStrings=false)]
        public string tel_no { get; set; }
 
        /// <summary>
@@ -261,7 +261,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
+       //[Required(AllowEmptyStrings=false)]
        public string margin_type { get; set; }
 
        /// <summary>
@@ -289,7 +289,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
+       //[Required(AllowEmptyStrings=false)]
        public string own_by_hospital { get; set; }
 
        /// <summary>
