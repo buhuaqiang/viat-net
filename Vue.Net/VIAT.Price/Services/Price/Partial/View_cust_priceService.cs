@@ -392,24 +392,23 @@ namespace VIAT.Price.Services
                        Dictionary<string, object> dicProd = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(prod));
 
                        //增加修改
-                       SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
-                       dataResult.optionType = SaveModel.MainOptionType.update;
-                       dataResult.detailType = typeof(Viat_com_prod);
-                       dataResult.DetailData = new List<Dictionary<string, object>> { dicProd };
-                       saveModel.DetailListData.Add(dataResult);
+                       SaveModel.DetailListDataResult dicProdResult = new SaveModel.DetailListDataResult();
+                       dicProdResult.optionType = SaveModel.MainOptionType.update;
+                       dicProdResult.detailType = typeof(Viat_com_prod);
+                       dicProdResult.DetailData = new List<Dictionary<string, object>> { dicProd };
+                       saveModel.DetailListData.Add(dicProdResult);
 
                    }
 
                    //◆	更新本次修改價格資料
                    //把实休转为dictionary
-
                    Dictionary<string, object> dicEntity = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
                    //更新本身的数据
-                   SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
-                   dataResult.optionType = SaveModel.MainOptionType.update;
-                   dataResult.detailType = typeof(Viat_app_cust_price);
-                   dataResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
-                   saveModel.DetailListData.Add(dataResult);
+                   SaveModel.DetailListDataResult dataCurrResult = new SaveModel.DetailListDataResult();
+                   dataCurrResult.optionType = SaveModel.MainOptionType.update;
+                   dataCurrResult.detailType = typeof(Viat_app_cust_price);
+                   dataCurrResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
+                   saveModel.DetailListData.Add(dataCurrResult);
 
                   /* if (entity.status == "N" && Convert.ToDateTime(entity.start_date.ToString("yyyy-MM-dd"), dtFormat) > Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
                    {
