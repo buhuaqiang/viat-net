@@ -21,7 +21,7 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="Bid No")]
        [MaxLength(20)]
-       [Column(TypeName="char(20)")]
+       [Column(TypeName= "varchar(20)")]
        [Editable(true)]
        public string bid_no { get; set; }
 
@@ -290,7 +290,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="列名wkcust_dbid")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-       public Guid wkcust_dbid { get; set; }
+        public Guid wkcust_dbid { get; set; }
 
         /// <summary>
         ///列名bidmast_dbid
