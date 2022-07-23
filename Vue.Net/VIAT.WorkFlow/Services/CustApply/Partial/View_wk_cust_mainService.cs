@@ -68,6 +68,7 @@ namespace VIAT.WorkFlow.Services
         {
             addWKMaster(saveDataModel,"00");
 
+            
             return base.CustomBatchProcessEntity(saveDataModel);          
         }
 
@@ -125,13 +126,10 @@ namespace VIAT.WorkFlow.Services
         /// <returns></returns>
         public WebResponseContent addSubmit([FromBody]  object saveModelData)
         {
-            List<Dictionary<string, object>> lst = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(saveModelData.ToString());
-            if (lst == null || lst.Count == 0)
-            {
-                return webRespose.Error("no data");
-            }
+            Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(saveModelData.ToString());
+            
             SaveModel saveModel = new SaveModel();
-            saveModel.MainData = lst[0];
+            saveModel.MainData = dic;
 
             //判断是否为新增还是编辑
             string sbidmast_dbid =  saveModel.MainData["bidmast_dbid"].ToString();
