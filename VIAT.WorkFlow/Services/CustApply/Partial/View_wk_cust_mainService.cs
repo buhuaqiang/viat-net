@@ -77,7 +77,7 @@ namespace VIAT.WorkFlow.Services
         /// <param name="saveModel"></param>
         /// <returns></returns>
 
-        public override WebResponseContent Update(SaveModel saveModel)
+       public override WebResponseContent Update(SaveModel saveModel)
         {
 
             updateWKMaster(saveModel,"00");
@@ -186,6 +186,8 @@ namespace VIAT.WorkFlow.Services
             string code = getCustCode();
             string sBinNo = Viat_wk_masterService.Instance.getBidNO();
             Guid bidMastDBID = Guid.NewGuid();
+            Guid wkCustDBID = Guid.NewGuid();
+            saveDataModel.MainData["wkcust_dbid"] = wkCustDBID;
             saveDataModel.MainData["bidmast_dbid"] = bidMastDBID;
             saveDataModel.MainData["bid_no"] = sBinNo;
             saveDataModel.MainData["status"] = sStatus;
@@ -204,7 +206,7 @@ namespace VIAT.WorkFlow.Services
 
             //增加cust
             Viat_wk_cust cust = JsonConvert.DeserializeObject<Viat_wk_cust>(JsonConvert.SerializeObject(saveDataModel.MainData));
-            cust.wkcust_dbid = Guid.NewGuid();
+            cust.wkcust_dbid = wkCustDBID;
             cust.bidmast_dbid = bidMastDBID;
             SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
             custResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(cust)));
