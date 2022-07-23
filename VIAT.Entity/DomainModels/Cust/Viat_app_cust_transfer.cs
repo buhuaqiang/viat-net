@@ -241,26 +241,24 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///門前藥局/診所隸屬醫院代碼
        /// </summary>
-       [Display(Name ="門前藥局/診所隸屬醫院代碼")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string own_hospital { get; set; }
+       [Display(Name ="門前藥局/診所隸屬醫院代碼")]      
+        [Column(TypeName = "uniqueidentifier")]
+        public Guid? own_hospital { get; set; }
 
        /// <summary>
        ///隸屬體系主院代碼
        /// </summary>
-       [Display(Name ="隸屬體系主院代碼")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string med_group { get; set; }
+       [Display(Name ="隸屬體系主院代碼")]       
+        [Column(TypeName = "uniqueidentifier")]
+        public Guid? med_group { get; set; }
 
        /// <summary>
        ///統一寄送至醫院代碼
        /// </summary>
        [Display(Name ="統一寄送至醫院代碼")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       public string delv_group { get; set; }
+       
+        [Column(TypeName = "uniqueidentifier")]
+        public Guid? delv_group { get; set; }
 
        /// <summary>
        ///新客戶代碼
