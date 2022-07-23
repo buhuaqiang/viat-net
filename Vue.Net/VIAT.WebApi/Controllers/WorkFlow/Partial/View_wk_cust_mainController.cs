@@ -34,7 +34,7 @@ namespace VIAT.WorkFlow.Controllers
 
         [ApiActionPermission]
         [HttpPost, Route("processBack")]
-        public ActionResult processBack(string[] bidmast_dbidLst)
+        public ActionResult processBack([FromBody] string[] bidmast_dbidLst)
         {
             return Json(_service.processBack(bidmast_dbidLst));
         }
