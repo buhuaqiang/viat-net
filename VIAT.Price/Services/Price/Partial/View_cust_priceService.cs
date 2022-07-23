@@ -402,8 +402,16 @@ namespace VIAT.Price.Services
 
                    //◆	更新本次修改價格資料
                    //把实休转为dictionary
+
                    Dictionary<string, object> dicEntity = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
-                   if (entity.status == "N" && Convert.ToDateTime(entity.start_date.ToString("yyyy-MM-dd"), dtFormat) > Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
+                   //更新本身的数据
+                   SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+                   dataResult.optionType = SaveModel.MainOptionType.update;
+                   dataResult.detailType = typeof(Viat_app_cust_price);
+                   dataResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
+                   saveModel.DetailListData.Add(dataResult);
+
+                  /* if (entity.status == "N" && Convert.ToDateTime(entity.start_date.ToString("yyyy-MM-dd"), dtFormat) > Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
                    {
                        //如果本次修改為未來價格且Status = Invalid，自動刪除該筆資料              
                        //增加修改
@@ -421,7 +429,7 @@ namespace VIAT.Price.Services
                        dataResult.detailType = typeof(Viat_app_cust_price);
                        dataResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
                        saveModel.DetailListData.Add(dataResult);
-                   }
+                   }*/
 
                    base.CustomBatchProcessEntity(saveModel);
 
@@ -1793,6 +1801,21 @@ namespace VIAT.Price.Services
                 return webResponse;
             };
             return base.Import(files);
+        }
+
+
+        /// <summary>
+        /// 正式导入数据
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public WebResponseContent importData(List<View_cust_price> list)
+        {
+            //新增
+            //进行数据处理
+            webResponse = this.bathSaveCustPrice(JsonConvert.SerializeObject(list));
+            webResponse.Code = "-1";
+            return webResponse;             
         }
 
         #endregion
