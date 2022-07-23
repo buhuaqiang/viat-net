@@ -9,6 +9,8 @@ namespace VIAT.WorkFlow.IServices
 {
     public partial interface IView_wk_cust_mainService
     {
+        
+
         /// <summary>
         /// 批量退回
         /// </summary>
