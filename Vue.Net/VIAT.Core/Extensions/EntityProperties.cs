@@ -1407,7 +1407,7 @@ namespace VIAT.Core.Extensions
                 {
                     property.SetValue(source, DateTime.Now);
                 }
-                //特殊处理updated_user，updated_user
+                /*//特殊处理updated_user，updated_user
                 if(filed == defaultColumns.ViatUpdateUser?.ToLower())
                 {
                     property.SetValue(source, userInfo.User_Id);
@@ -1415,7 +1415,7 @@ namespace VIAT.Core.Extensions
                 if (filed == defaultColumns.ViatUpdateDate?.ToLower())
                 {
                     property.SetValue(source, DateTime.Now);
-                }
+                }*/
                 if (userInfo.ClientID > 0)
                 {
                     /*ClientID大于0，说明有代理用户切换*/
