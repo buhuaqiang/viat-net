@@ -185,7 +185,7 @@ namespace VIAT.WorkFlow.Services
         /// <param name="saveModel"></param>
         private void addWKMaster(SaveModel saveDataModel, string sStatus)
         {
-            string code = getCustCode();
+            //string code = getCustCode();
             string sBinNo = Viat_wk_masterService.Instance.getBidNO();
             Guid bidMastDBID = Guid.NewGuid();
             Guid wkCustDBID = Guid.NewGuid();
@@ -194,10 +194,10 @@ namespace VIAT.WorkFlow.Services
             saveDataModel.MainData["bid_no"] = sBinNo;
             saveDataModel.MainData["status"] = sStatus;
             saveDataModel.MainData["start_date"] = getFormatYYYYMMDD(DateTime.Now.ToString("yyyy-MM-dd"));
-            if (saveDataModel.MainData.GetValue("apply_type")?.ToString() == "01")
+           /* if (saveDataModel.MainData.GetValue("apply_type")?.ToString() == "01")
             {
                 saveDataModel.MainData["cust_id"] = code;
-            }
+            }*/
 
             //增加master数据
             SaveModel.DetailListDataResult masterResult = new SaveModel.DetailListDataResult();
