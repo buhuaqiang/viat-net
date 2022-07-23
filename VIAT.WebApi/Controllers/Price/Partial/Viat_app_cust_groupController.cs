@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Entity.DomainModels;
 using VIAT.Price.IServices;
+using VIAT.Core.Filters;
 
 namespace VIAT.Price.Controllers
 {
@@ -28,6 +29,20 @@ namespace VIAT.Price.Controllers
         {
             _service = service;
             _httpContextAccessor = httpContextAccessor;
+        }
+
+        //getCustGroupIDAndANmeByCustDBID
+        /// <summary>
+        /// 取得Gross Price
+        /// </summary>
+        /// <param name="sProdID"></param>
+        /// <returns></returns>
+        ///   //取得bindno
+        [ApiActionPermission]
+        [HttpPost, Route("getCustGroupIDAndANmeByCustDBID")]
+        public ActionResult GetGroupInvalidPageData(string cust_dbid)
+        {
+            return Json(_service.getCustGroupIDAndANmeByCustDBID(cust_dbid));
         }
     }
 }
