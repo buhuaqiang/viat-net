@@ -1103,6 +1103,18 @@ namespace VIAT.Core.BaseProvider
         #region 多表体批量保存 
 
         /// <summary>
+        /// 取得默认值
+        /// </summary>
+        /// <returns></returns>
+        public string getDefaultGuid(Type tType)
+        {
+            PropertyInfo mainKey = tType.GetKeyProperty();
+            object keyDefaultVal = mainKey.PropertyType.Assembly.CreateInstance(mainKey.PropertyType.FullName);
+            return keyDefaultVal.ToString();
+
+        }
+
+        /// <summary>
         /// 直接用sql语句进行批量更新操作，支持事务
         /// </summary>
         /// <param name="sSqls"></param>
@@ -1347,6 +1359,19 @@ namespace VIAT.Core.BaseProvider
         /// <returns></returns>
         public WebResponseContent BatchProcessEntity<DetailT>(SaveModel.DetailListDataResult entityFac) where DetailT : class
         {
+
+            if(entityFac.detailDelKeys.Count>0)
+            {
+                PropertyInfo detailKeyInfo = typeof(DetailT).GetKeyProperty();
+                entityFac.detailDelKeys.ForEach(x => {
+                    DetailT delT = Activator.CreateInstance<DetailT>();
+                    detailKeyInfo.SetValue(delT, x);
+                    repository.DbContext.Entry<DetailT>(delT).State = EntityState.Deleted;
+                });
+
+                return Response.OK();
+            }
+
             List<DetailT> detailList = entityFac.DetailData?.DicToList<DetailT>();
             if (entityFac.optionType == SaveModel.MainOptionType.add)
             {
@@ -1360,8 +1385,7 @@ namespace VIAT.Core.BaseProvider
             }
             else if(entityFac.optionType == SaveModel.MainOptionType.update)
             {
-                PropertyInfo detailKeyInfo = typeof(DetailT).GetKeyProperty();
-                
+                PropertyInfo detailKeyInfo = typeof(DetailT).GetKeyProperty();         
 
                 detailList.ForEach(x =>
                 {
@@ -1385,7 +1409,7 @@ namespace VIAT.Core.BaseProvider
                 detailList.ForEach(x =>
                 {
                     //設置默認值
-                    x.SetModifyDefaultVal();
+                    //x.SetModifyDefaultVal();
                     repository.DbContext.Entry<DetailT>(x).State = EntityState.Deleted;
                 });             
             }

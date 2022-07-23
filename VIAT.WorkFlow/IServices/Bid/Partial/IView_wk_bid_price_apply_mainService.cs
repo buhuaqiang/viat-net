@@ -9,5 +9,8 @@ namespace VIAT.WorkFlow.IServices
 {
     public partial interface IView_wk_bid_price_apply_mainService
     {
+        WebResponseContent addSubmit(SaveModel saveModel);
+
+        WebResponseContent Submit(object saveModel);
     }
  }

@@ -11,6 +11,7 @@ namespace VIAT.Price.IServices
 {
     public partial interface IView_cust_priceService : IService<View_cust_price>
     {
+        void processData(SaveModel saveModel);
         void setQueryParameters();
 
         WebResponseContent bathSaveCustPrice(object saveData);
@@ -20,6 +21,8 @@ namespace VIAT.Price.IServices
         string getMaxBindNo();
 
         decimal getNetPriceByProdID(string prod_id);
+
+        decimal getNetPriceByProdDBID(string sProdDBID);
 
         WebResponseContent invalidData(object saveData);
 

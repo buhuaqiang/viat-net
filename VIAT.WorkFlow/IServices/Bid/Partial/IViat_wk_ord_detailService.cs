@@ -5,9 +5,12 @@ using VIAT.Core.BaseProvider;
 using VIAT.Entity.DomainModels;
 using VIAT.Core.Utilities;
 using System.Linq.Expressions;
+using System.Collections.Generic;
+
 namespace VIAT.WorkFlow.IServices
 {
     public partial interface IViat_wk_ord_detailService
     {
+        List<Viat_wk_ord_detail> getDataByBidMasterDBID(string bidmast_dbid);
     }
  }

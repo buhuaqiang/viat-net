@@ -75,6 +75,17 @@ namespace VIAT.Basic.Services
             return   repository.FindAsIQueryable(x => x.cust_id == sCustID).FirstOrDefault();
         }
 
+        /// <summary>
+        /// 根据cust_id获取唯一的实体
+        /// </summary>
+        /// <param name="cust_id"></param>
+        /// <returns></returns>
+        public Viat_com_cust getCustByCustDBID(string cust_dbid)
+        {
+            string sSql = " select  top(1)* from viat_com_cust where cust_dbid='" + cust_dbid + "' order by created_date desc";
+
+            return _repository.DapperContext.QueryFirst<Viat_com_cust>(sSql, null);
+        }
 
         /// <summary>
         /// 根据pricegroupid获取cust全部信息

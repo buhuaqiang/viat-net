@@ -264,7 +264,7 @@ namespace VIAT.WorkFlow.Services
             transferResult.detailType = typeof(Viat_app_cust_transfer);
             saveModel.DetailListData.Add(transferResult);
 
-            // 把cust記錄寫入 delivery transfer
+            /*// 把cust記錄寫入 delivery transfer
             Viat_app_cust_delivery_transfer delivery = JsonConvert.DeserializeObject<Viat_app_cust_delivery_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
             delivery.custtransfer_dbid = transfer.custtransfer_dbid;
             delivery.custdeltransfer_dbid = System.Guid.NewGuid();            
@@ -272,7 +272,7 @@ namespace VIAT.WorkFlow.Services
             deliveryResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(delivery)));
             deliveryResult.optionType = SaveModel.MainOptionType.add;
             deliveryResult.detailType = typeof(Viat_app_cust_delivery_transfer);
-            saveModel.DetailListData.Add(deliveryResult);
+            saveModel.DetailListData.Add(deliveryResult);*/
         }
 
         

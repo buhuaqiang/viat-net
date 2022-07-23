@@ -531,6 +531,19 @@ namespace VIAT.Price.Services
             {
                 webResponse.Error("no data save");
             }
+
+            processData(saveModel);
+
+            base.CustomBatchProcessEntity(saveModel);
+            return webResponse.OK("save successfule");
+        }
+
+        /// <summary>
+        /// 处理本条以外的数据
+        /// </summary>
+        /// <param name="saveModel"></param>
+        public void processData(SaveModel saveModel)
+        {
             //处理保存
             foreach (Dictionary<string, object> dic in saveModel.MainDatas)
             {
@@ -554,7 +567,7 @@ namespace VIAT.Price.Services
                     Viat_app_cust_price futurePriceEntity = getFuturePriceData(entity.pricegroup_dbid?.ToString(), entity.prod_dbid?.ToString());
                     if (futurePriceEntity != null)
                     {
-                        entity.end_date = futurePriceEntity.start_date.AddDays(-1);                     
+                        entity.end_date = futurePriceEntity.start_date.AddDays(-1);
                         //处理后，直接处理下一条                       
                     }
 
@@ -565,14 +578,14 @@ namespace VIAT.Price.Services
                 //2.2	有現行價格資料
                 //2.2.1	找出價格資料內，符合Group+Prod價格資料 且 結束日 > 新增數據起始日 且 狀態為無效的資料(多筆)
                 List<Viat_app_cust_price> invalidPriceData = getInValidPriceData(entity.pricegroup_dbid?.ToString(), entity.prod_dbid?.ToString(), entity.start_date);
-                if (invalidPriceData != null && invalidPriceData.Count>0)
+                if (invalidPriceData != null && invalidPriceData.Count > 0)
                 {
                     ProcessPriceData(entity, invalidPriceData, saveModel);
                 }
 
                 //2.2.2	判斷過去價格資料
                 List<Viat_app_cust_price> oldPriceData = getOldPriceData(entity.pricegroup_dbid?.ToString(), entity.prod_dbid?.ToString());
-                if (oldPriceData != null && oldPriceData.Count>0)
+                if (oldPriceData != null && oldPriceData.Count > 0)
                 {
                     ProcessPriceData(entity, oldPriceData, saveModel);
                 }
@@ -609,12 +622,12 @@ namespace VIAT.Price.Services
                     currentPriceEntity.status = "N";
                     currentPriceEntity.end_date = currentPriceEntity.start_date;
                 }
-                
+
                 //現行價格起始日> 新增數據起始日
                 if (getFormatYYYYMMDD(currentPriceEntity.start_date) > getFormatYYYYMMDD(entity.start_date))
                 {
                     ProcessPriceData(entity, new List<Viat_app_cust_price> { currentPriceEntity }, saveModel);
-                }              
+                }
 
 
                 //如果没有特殊情况，新增本身资料
@@ -632,9 +645,6 @@ namespace VIAT.Price.Services
                     saveModel.DetailListData.Add(dataResult);
                 }
             }
-
-            base.CustomBatchProcessEntity(saveModel);
-            return webResponse.OK("save successfule");
         }
 
 
@@ -1474,6 +1484,39 @@ namespace VIAT.Price.Services
 	                    AND (CONVERT(Date,  SysDateTime ( )) >= CONVERT(Date, custprice.start_date))
 	                    AND (CONVERT(Date,  SysDateTime ( )) <= CONVERT(Date, custprice.end_date))
 	                    AND prod.prod_id =  '" + sProdID + "'";
+            object obj = _repository.DapperContext.ExecuteScalar(sSql, null);
+            if (obj == null)
+            {
+                //当天第一个号码
+                return 0;
+            }
+            else
+            {
+                return (decimal)obj;
+            }
+
+        }
+
+        /// <summary>
+        /// 取得Gross Price
+        /// </summary>
+        /// <param name="sProdID">产品ID</param>
+        /// <returns></returns>
+        public decimal getNetPriceByProdDBID(string sProdDBID)
+        {
+            string sSql = @"SELECT
+	                    custprice.net_price 
+                    FROM
+	                    viat_app_cust_price AS custprice
+	                    INNER JOIN viat_app_cust_price_group AS pricegroup ON custprice.pricegroup_dbid = pricegroup.pricegroup_dbid
+	                    INNER JOIN viat_com_prod AS prod ON custprice.prod_dbid = prod.prod_dbid 
+                    WHERE
+	                    ( 1 = 1 ) 
+	                    AND ( pricegroup.group_id = 'GROSS' ) 
+	                    AND ( custprice.status =  'Y' ) 
+	                    AND (CONVERT(Date,  SysDateTime ( )) >= CONVERT(Date, custprice.start_date))
+	                    AND (CONVERT(Date,  SysDateTime ( )) <= CONVERT(Date, custprice.end_date))
+	                    AND prod.prod_dbid =  '" + sProdDBID + "'";
             object obj = _repository.DapperContext.ExecuteScalar(sSql, null);
             if (obj == null)
             {
