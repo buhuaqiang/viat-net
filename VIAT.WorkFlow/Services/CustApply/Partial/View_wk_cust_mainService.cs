@@ -154,23 +154,25 @@ namespace VIAT.WorkFlow.Services
         /// </summary>
         /// <param name="saveModel"></param>
         /// <returns></returns>
-        public WebResponseContent processBack(string[] bidmast_dbidLst)
+        public WebResponseContent processBack([FromBody]  string[] bidmast_dbidLst)
         {
 
-            SaveModel saveModel = new SaveModel();            
-            SaveModel.DetailListDataResult backResult = new SaveModel.DetailListDataResult();
-            saveModel.DetailListData.Add(backResult);
-            foreach (string bidmast_dbid in bidmast_dbidLst)
-            {
-                Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bidmast_dbid);
-                master.status = "02";
+             SaveModel saveModel = new SaveModel();            
+             SaveModel.DetailListDataResult backResult = new SaveModel.DetailListDataResult();
+             saveModel.DetailListData.Add(backResult);
+             foreach (string bidmast_dbid in bidmast_dbidLst)
+             {
+                 Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bidmast_dbid);
+                 master.status = "02";
 
-                backResult.optionType = SaveModel.MainOptionType.update;
-                backResult.detailType = typeof(Viat_wk_master);
-                backResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(master)));                
-            }
+                 backResult.optionType = SaveModel.MainOptionType.update;
+                 backResult.detailType = typeof(Viat_wk_master);
+                 backResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(master)));                
+             }
 
             return base.CustomBatchProcessEntity(saveModel);
+
+          
         }
 
         #region 
