@@ -135,8 +135,17 @@ namespace VIAT.WorkFlow.Services
         private void processSubmit(SaveModel saveModel)
         {
             string sBidMasterBDID = saveModel.MainData["bidmast_dbid"]?.ToString();
-            string sPriceGroupDBID = saveModel.MainData["pricegroup_dbid"]?.ToString();
-            string sCustDBID = saveModel.MainData["cust_dbid"] == null ? "" : saveModel.MainData["cust_dbid"].ToString();
+            string sPriceGroupDBID = "";
+            if (saveModel.MainData.ContainsKey("pricegroup_dbid") == true)
+            {
+                sPriceGroupDBID = saveModel.MainData["pricegroup_dbid"]?.ToString();
+            }
+            string sCustDBID = "";
+            if(saveModel.MainData.ContainsKey("cust_dbid")==true )
+            {
+                sCustDBID = saveModel.MainData["cust_dbid"].ToString();
+            }
+             
 
             //04为仅order
             string sApplyType = saveModel.MainData["apply_type"]?.ToString();
@@ -158,7 +167,10 @@ namespace VIAT.WorkFlow.Services
             Viat_app_cust_group custGroup = null;
             if (string.IsNullOrEmpty(sCustDBID) == false)
             {
-                cust = Viat_com_custService.Instance.getCustByCustDBID(sCustDBID);
+                cust = Viat_com_custService.Instance.getCustByCustDBID(sCustDBID);               
+            }
+            else if(string.IsNullOrEmpty(sCustDBID) == false)
+            {
                 custGroup = Viat_app_cust_groupService.Instance.getCustGroupByCustDBID(sCustDBID);
             }
 
