@@ -62,7 +62,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
-       //[Required(AllowEmptyStrings=false)]
+       [Required(AllowEmptyStrings=false)]
        public string territory_id { get; set; }
 
        /// <summary>
@@ -158,7 +158,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(40)]
        [Column(TypeName="varchar(40)")]
        [Editable(true)]
-       //[Required(AllowEmptyStrings=false)]
+       [Required(AllowEmptyStrings=false)]
        public string tel_no { get; set; }
 
        /// <summary>
@@ -205,7 +205,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
-       //[Required(AllowEmptyStrings=false)]
+       [Required(AllowEmptyStrings=false)]
        public string margin_type { get; set; }
 
        /// <summary>
@@ -233,7 +233,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
-       //[Required(AllowEmptyStrings=false)]
+       [Required(AllowEmptyStrings=false)]
        public string own_by_hospital { get; set; }
 
        /// <summary>
@@ -442,6 +442,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="own_hospitalname")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
+       [Required(AllowEmptyStrings=false)]
        public string own_hospitalname { get; set; }
 
        /// <summary>
@@ -450,6 +451,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="med_groupname")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
+       [Required(AllowEmptyStrings=false)]
        public string med_groupname { get; set; }
 
        /// <summary>
@@ -458,6 +460,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="delv_groupname")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
+       [Required(AllowEmptyStrings=false)]
        public string delv_groupname { get; set; }
 
        /// <summary>
@@ -466,6 +469,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="列名C1")]
        [MaxLength(71)]
        [Column(TypeName="nvarchar(71)")]
+       [Required(AllowEmptyStrings=false)]
        public string C1 { get; set; }
 
        /// <summary>
@@ -557,14 +561,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        public string doh_sub_type { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="dbid")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
 
        [Display(Name ="客戶送貨資訊")]
        [ForeignKey("cust_dbid")]
