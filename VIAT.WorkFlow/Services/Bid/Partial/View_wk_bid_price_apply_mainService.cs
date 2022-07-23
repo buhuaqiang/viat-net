@@ -24,6 +24,8 @@ using System;
 using System.Reflection;
 using VIAT.Price.Services;
 using VIAT.Basic.Services;
+using VIAT.Core.DBManager;
+using VIAT.Core.Dapper;
 namespace VIAT.WorkFlow.Services
 {
     public partial class View_wk_bid_price_apply_mainService
@@ -43,7 +45,6 @@ namespace VIAT.WorkFlow.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-
 
         WebResponseContent webRespose = new WebResponseContent();
 
@@ -79,10 +80,15 @@ namespace VIAT.WorkFlow.Services
             List<string> delLst = new List<string>();
             foreach (string bidmast_dbid in keys)
             {
-                string sDelWKMaster = "delete from viat_wk_master where bidmast_dbid='" + bidmast_dbid + "'";
-                string sDelWKCust = "delete from viat_wk_cust where bidmast_dbid='" + bidmast_dbid + "'";
-                delLst.Add(sDelWKMaster);
-                delLst.Add(sDelWKCust);
+                string delViatOrd = $"delete from viat_wk_ord_detail where bidmast_dbid = '{bidmast_dbid}'";
+                string delViatBid = $"delete from viat_wk_bid_detail where bidmast_dbid = '{bidmast_dbid}'";
+                string delViatMaster = $"delete from viat_wk_master where bidmast_dbid = '{bidmast_dbid}'";
+
+                //string sDelWKMaster = "delete from viat_wk_master where bidmast_dbid='" + bidmast_dbid + "'";
+                //string sDelWKCust = "delete from viat_wk_cust where bidmast_dbid='" + bidmast_dbid + "'";
+                delLst.Add(delViatOrd);
+                delLst.Add(delViatBid);
+                delLst.Add(delViatMaster);
             }
 
             return base.CustomExcuteBySql(delLst, "");

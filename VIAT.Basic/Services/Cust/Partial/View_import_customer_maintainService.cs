@@ -59,12 +59,21 @@ namespace VIAT.Basic.Services
              *  当cust_id不为空时，更新cust表头，表体判断是否新增
              */
             UpdateOnExecute = (saveModel) => {
-
                 Viat_app_cust_transfer transferEntity = JsonConvert.DeserializeObject<Viat_app_cust_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
                 string sCustID = "";              
                 if (string.IsNullOrEmpty(transferEntity.cust_id) == true)
                 {
-           
+                    string dohInstituteNo = saveModel.MainData["doh_institute_no"].ToString();
+                    if (!string.IsNullOrEmpty(dohInstituteNo))
+                    {
+                        PageGridData<View_com_cust> detailGrid = new PageGridData<View_com_cust>();
+                        string sql = "select count(1) from View_com_cust where doh_institute_no=@dohInstituteNo";
+                        detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { dohInstituteNo = dohInstituteNo }).GetInt();
+                        if (detailGrid.total > 0)
+                        {
+                            return webResponse.Error("NHI Institute no Already Exists");
+                        }
+                    }
                     //当cust_id为空时，需要同步cust
                     sCustID = View_com_custService.Instance.getCustID();                   
                     saveModel.MainData["cust_id"] = sCustID;

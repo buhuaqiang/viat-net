@@ -108,8 +108,7 @@ namespace VIAT.Basic.Services
 
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
-            string code = getCustID();
-            Guid cust_dbid = Guid.NewGuid();
+
 
             // 在保存数据库前的操作，所有数据都验证通过了，这一步执行完就执行数据库保存
             /* AddOnExecuting = (View_com_cust order, object list) => 
@@ -141,7 +140,21 @@ namespace VIAT.Basic.Services
 
                  return webResponse.OK();
              };*/
-
+            string dohInstituteNo = saveDataModel.MainData["doh_institute_no"].ToString();
+            string taxId = saveDataModel.MainData["tax_id"].ToString();
+            if (!string.IsNullOrEmpty(dohInstituteNo))
+            {
+                if (repository.Exists(x => x.doh_institute_no.Equals(dohInstituteNo)))
+                {
+                    return webResponse.Error("NHI Institute no Already Exists");
+                }
+                if (repository.Exists(x => x.tax_id.Equals(taxId)))
+                {
+                    return webResponse.Error("Tax ID Already Exists");
+                }
+            }
+            string code = getCustID();
+            Guid cust_dbid = Guid.NewGuid();
             saveDataModel.MainData["cust_id"] = code;
             // 在保存数据库前的操作，所有数据都验证通过了，这一步执行完就执行数据库保存
             AddOnExecuting = (View_com_cust order, object list) =>

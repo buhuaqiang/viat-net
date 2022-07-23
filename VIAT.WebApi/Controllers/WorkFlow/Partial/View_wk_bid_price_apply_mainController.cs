@@ -30,7 +30,6 @@ namespace VIAT.WorkFlow.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
-
         [ApiActionPermission]
         [HttpPost, Route("addSubmit")]
         public ActionResult addSubmit([FromBody] SaveModel saveModel)
@@ -44,6 +43,12 @@ namespace VIAT.WorkFlow.Controllers
         public ActionResult Submit([FromBody] object saveModel)
         {
             return Json(_service.Submit(saveModel));
+        }
+        [ApiActionPermission]
+        [HttpPost, Route("doRollBack")]
+        public ActionResult processBack([FromBody] string[] bidmast_dbidLst)
+        {
+            return Json(_service.processBack(bidmast_dbidLst));
         }
     }
 }
