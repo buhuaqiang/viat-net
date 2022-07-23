@@ -23,7 +23,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="PK")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-       public Guid? custdeltransfer_dbid { get; set; }
+       public Guid custdeltransfer_dbid { get; set; }
 
        /// <summary>
        ///FK
