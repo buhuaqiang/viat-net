@@ -561,11 +561,12 @@ namespace VIAT.WorkFlow.Services
                 List<Viat_wk_ord_detail> orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(sOrderData);
                 if (orderList != null && orderList.Count > 0)
                 {
-                    SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
-                    saveDataModel.DetailListData.Add(custResult);
+                    
          
                     foreach (Viat_wk_ord_detail order in orderList)
                     {
+                        SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
+                        saveDataModel.DetailListData.Add(custResult);
                         if (order.ordetail_dbid == null || order.ordetail_dbid.ToString() == getDefaultGuid(typeof(Viat_wk_ord_detail)))
                         {
                             //新增
