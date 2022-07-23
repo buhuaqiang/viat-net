@@ -167,14 +167,13 @@ namespace VIAT.WorkFlow.Services
             Viat_app_cust_group custGroup = null;
             if (string.IsNullOrEmpty(sCustDBID) == false)
             {
-                cust = Viat_com_custService.Instance.getCustByCustDBID(sCustDBID);               
-            }
-            else if(string.IsNullOrEmpty(sCustDBID) == false)
-            {
+                cust = Viat_com_custService.Instance.getCustByCustDBID(sCustDBID);
                 custGroup = Viat_app_cust_groupService.Instance.getCustGroupByCustDBID(sCustDBID);
             }
+             
 
             if(string.IsNullOrEmpty(sBidMasterBDID)==true)
+            
             {
                 sBidMasterBDID = System.Guid.NewGuid().ToString();
             }
