@@ -18,15 +18,6 @@ namespace VIAT.Entity.DomainModels
     public partial class Viat_com_cust:BaseEntity
     {
         /// <summary>
-       ///
-       /// </summary>
-       /*[Display(Name ="dbid")]
-       [JsonIgnore]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }*/
-
-       /// <summary>
        ///公司別
        /// </summary>
        [Display(Name ="公司別")]
@@ -416,6 +407,30 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_clientusername { get; set; }
+
+       /// <summary>
+       ///健保類別子類
+       /// </summary>
+       [Display(Name ="健保類別子類")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       public string doh_sub_type { get; set; }
+
+       /// <summary>
+       ///隸屬醫院名稱
+       /// </summary>
+       [Display(Name ="隸屬醫院名稱")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
+       public string own_hospital_name { get; set; }
+
+       /// <summary>
+       ///是否管控客戶)
+       /// </summary>
+       [Display(Name ="是否管控客戶)")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       public string is_controll { get; set; }
 
        [Display(Name ="客戶送貨資訊")]
        [ForeignKey("cust_dbid")]
