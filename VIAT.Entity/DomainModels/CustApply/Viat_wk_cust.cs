@@ -23,7 +23,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="主鍵")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-        public Guid wkcust_dbid { get; set; }
+        public Guid? wkcust_dbid { get; set; }
 
        /// <summary>
        ///電子郵箱
