@@ -60,7 +60,7 @@ namespace VIAT.WorkFlow.Services
             else
             {
                 //取得当前最大序号 
-                string sSerial = obj.ToString().Substring(11, 5);
+                string sSerial = obj.ToString().Substring(12, 5);
                 int nSerial = 0;
                 int.TryParse(sSerial, out nSerial);
                 return sStart + (nSerial + 1).ToString().PadLeft(5, '0');
