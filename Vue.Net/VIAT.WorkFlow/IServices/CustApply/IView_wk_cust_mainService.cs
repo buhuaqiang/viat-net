@@ -8,5 +8,6 @@ namespace VIAT.WorkFlow.IServices
 {
     public partial interface IView_wk_cust_mainService : IService<View_wk_cust_main>
     {
+        string getCustCode();
     }
 }
