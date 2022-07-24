@@ -35,5 +35,15 @@ namespace VIAT.Price.Controllers
         {
             return Json(_service.getPriceGroupByGroupID(group_id));
         }
+
+
+
+        [HttpGet, Route("getPriceGroupByCustAndProd")]
+        public IActionResult getPriceGroupByCustAndProd(string prod_dbid,string cust_dbid)
+        {
+            return Json(_service.getPriceGroupByCustAndProd(prod_dbid,cust_dbid));
+        }
+
+        
     }
 }
