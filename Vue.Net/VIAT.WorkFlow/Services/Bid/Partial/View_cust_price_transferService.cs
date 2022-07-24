@@ -241,7 +241,7 @@ namespace VIAT.WorkFlow.Services
                         //把cust記錄寫入transfer, delivery transfer
                         Viat_app_cust_price custPrice = new Viat_app_cust_price(); //JsonConvert.DeserializeObject<Viat_app_cust_price>(JsonConvert.SerializeObject(bid));
                         bid.MapValueToEntity(custPrice);
-                        custPrice.pricegroup_dbid = System.Guid.NewGuid();
+                        custPrice.custprice_dbid = System.Guid.NewGuid();                         
                         custPrice.remarks = sRemark;
                         if (bid.start_date != null)
                         {
