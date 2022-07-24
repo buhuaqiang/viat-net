@@ -1212,11 +1212,12 @@ namespace VIAT.Core.BaseProvider
                     continue;
                 }
 
+                string sIn = "";
                 if (x.DisplayType != null)
                 {
                     if (x.DisplayType == HtmlElementType.Contains || x.DisplayType.ToLower() == HtmlElementType.selectlist.ToLower())
                     {
-                        string sIn = "";
+                       
                         for (int m = 0; m <= values.Length - 1; m++)
                         {
                             sIn += "'" + values[m].ToString() + "',";
@@ -1225,15 +1226,14 @@ namespace VIAT.Core.BaseProvider
                         {
                             sIn = sIn.Substring(0, sIn.Length - 1);
                         }
-
-                        x.Value = sIn;
+                        
                     }
                 }
 
 
                 if (sDisplayType.ToLower() == "in")
                 {
-                    sWerheCondition += " and " + sAlias + "." + x.Name + " in (" + x.Value + ")";
+                    sWerheCondition += " and " + sAlias + "." + x.Name + " in (" + sIn + ")";
                 }
                 else
                 {
