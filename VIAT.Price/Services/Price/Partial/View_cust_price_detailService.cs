@@ -889,6 +889,19 @@ namespace VIAT.Price.Services
             {
                 webResponse.Error("no data save");
             }
+
+            processData(saveModel);
+            base.CustomBatchProcessEntity(saveModel);
+            return webResponse.OK("save successfule");
+        }
+
+        /// <summary>
+        /// 保存方法
+        /// </summary>
+        /// <param name="saveData">该参数为前端传过来的json，需要转为dictinary</param>
+        /// <returns></returns>
+        public void processData(SaveModel saveModel)
+        {
             //处理保存
             foreach (Dictionary<string, object> dic in saveModel.MainDatas)
             {
@@ -913,8 +926,8 @@ namespace VIAT.Price.Services
                     if (futurePriceEntity != null)
                     {
                         entity.end_date = futurePriceEntity.start_date.AddDays(-1);
-                        
-                       
+
+
                     }
                     AddCustPriceData(entity, saveModel);
                     //处理后，直接处理下一条
@@ -924,14 +937,14 @@ namespace VIAT.Price.Services
                 //2.2	有現行價格資料
                 //2.2.1	找出價格資料內，符合Group+Prod價格資料 且 結束日 > 新增數據起始日 且 狀態為無效的資料(多筆)
                 List<Viat_app_cust_price_detail> invalidPriceData = getInValidPriceData(entity.cust_dbid.ToString(), entity.prod_dbid?.ToString(), entity.start_date);
-                if (invalidPriceData != null && invalidPriceData.Count>0)
+                if (invalidPriceData != null && invalidPriceData.Count > 0)
                 {
                     ProcessPriceData(entity, invalidPriceData, saveModel);
                 }
 
                 //2.2.2	判斷過去價格資料
                 List<Viat_app_cust_price_detail> oldPriceData = getOldPriceData(entity.cust_dbid?.ToString(), entity.prod_dbid?.ToString());
-                if (oldPriceData != null && oldPriceData.Count>0)
+                if (oldPriceData != null && oldPriceData.Count > 0)
                 {
                     ProcessPriceData(entity, oldPriceData, saveModel);
                 }
@@ -967,7 +980,7 @@ namespace VIAT.Price.Services
                 {
                     currentPriceEntity.status = "N";
                     currentPriceEntity.end_date = currentPriceEntity.start_date;
-                }                
+                }
 
                 //現行價格起始日> 新增數據起始日
                 if (getFormatYYYYMMDD(currentPriceEntity.start_date) > getFormatYYYYMMDD(entity.start_date))
@@ -990,8 +1003,6 @@ namespace VIAT.Price.Services
                 AddCustPriceData(entity, saveModel);
             }
 
-            base.CustomBatchProcessEntity(saveModel);
-            return webResponse.OK("save successfule");
         }
 
         /// <summary>
