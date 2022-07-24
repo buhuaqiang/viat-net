@@ -1334,7 +1334,10 @@ namespace VIAT.Core.BaseProvider
             {
                 // PropertyInfo keyPro = entityFac.detailType.GetKeyProperty(); 
                 //处理实体多作的栏位 
-
+                if(entityFac.DetailData.Count == 0 && entityFac.detailDelKeys.Count==0)
+                {
+                    continue;
+                }
                 WebResponseContent webMainResponseResult = this.GetType().GetMethod("BatchProcessEntity")
                           .MakeGenericMethod(new Type[] { entityFac.detailType })
                           .Invoke(this, new object[] { entityFac })
