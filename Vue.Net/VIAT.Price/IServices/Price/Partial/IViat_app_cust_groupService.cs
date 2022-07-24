@@ -11,6 +11,6 @@ namespace VIAT.Price.IServices
     {
         Viat_app_cust_group getCustGroupByCustDBID(string sCustDBID);
 
-        Viat_app_cust_group getCustGroupIDAndANmeByCustDBID(string sCustDBID);
+        Viat_app_cust_price_group getCustGroupIDAndANmeByCustDBID(string sCustDBID);
     }
  }

@@ -54,13 +54,13 @@ namespace VIAT.Price.Services
         /// </summary>
         /// <param name="sCustDBID"></param>
         /// <returns></returns>
-        public Viat_app_cust_group getCustGroupIDAndANmeByCustDBID(string sCustDBID)
+        public Viat_app_cust_price_group getCustGroupIDAndANmeByCustDBID(string sCustDBID)
         {
             string sSql = @" select top(1) pg.* from viat_app_cust_price_group pg
                             inner join viat_app_cust_group cg on pg.pricegroup_dbid = cg.pricegroup_dbid
                             where pg.status = 'Y' and cg.status = 'Y' and  cg.cust_dbid='" + sCustDBID + @"' 
                             order by created_date desc ";
-            return _repository.DapperContext.QueryFirst<Viat_app_cust_group>(sSql, null);
+            return _repository.DapperContext.QueryFirst<Viat_app_cust_price_group>(sSql, null);
         }
     }
 }
