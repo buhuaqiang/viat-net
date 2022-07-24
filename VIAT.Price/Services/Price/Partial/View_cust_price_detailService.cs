@@ -814,7 +814,7 @@ namespace VIAT.Price.Services
            /* string sSql = "select TOP(1) *  from viat_app_cust_price_detail where cust_dbid=@cust_dbid and prod_dbid=@prod_dbid AND status = 'Y'ORDER BY end_date DESC";
             */
             //Viat_app_cust_price_detail entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price_detail>(sSql, new { cust_dbid = sCustDBID, prod_dbid = sProdDBID });
-            Viat_app_cust_price_detail entiryCustPrice = getCurrentPriceData(sCustDBID, sProdDBID); //_repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
+            Viat_app_cust_price_detail entiryCustPrice = getFuturePriceData(sCustDBID, sProdDBID); //_repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
             return entiryCustPrice;
             /*if (entiryCustPrice == null)
             {
