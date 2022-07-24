@@ -676,6 +676,8 @@ namespace VIAT.WorkFlow.Services
 
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
                     transfer.bid_no = masterEntity.bid_no;
+                    transfer.start_date = masterEntity.start_date;
+                    transfer.end_date = masterEntity.end_date;
                     transfer.state = "0";
                     UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
                     if (userInfo != null)
@@ -730,6 +732,7 @@ namespace VIAT.WorkFlow.Services
                     }
                     transfer.cust_dbid = masterEntry.cust_dbid;
                     transfer.bid_no = masterEntry.bid_no;
+                    
                     transfer.state = "0";
                     transfer.transfer_date = getFormatYYYYMMDD(System.DateTime.Now);
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
