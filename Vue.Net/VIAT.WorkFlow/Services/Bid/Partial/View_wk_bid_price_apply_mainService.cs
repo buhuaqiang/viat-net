@@ -676,6 +676,7 @@ namespace VIAT.WorkFlow.Services
 
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
                     transfer.bid_no = masterEntity.bid_no;
+                    transfer.state = "0";
                     UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
                     if (userInfo != null)
                     {
@@ -804,6 +805,7 @@ namespace VIAT.WorkFlow.Services
                     priceDetail.bid_no = masterEntry.bid_no;
                     priceDetail.prod_dbid = bid.prod_dbid;
                     priceDetail.status = "Y";
+                    
                     priceDetail.gross_price = View_cust_priceService.Instance.getNetPriceByProdDBID(bid.prod_dbid?.ToString());
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
 
