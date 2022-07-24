@@ -106,5 +106,18 @@ namespace VIAT.WorkFlow.Services
 
             return pageGridData;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <returns></returns>
+        public override WebResponseContent Update(SaveModel saveModel)
+        {
+            //根據主鍵取得master數據,只更新狀態
+            View_cust_price_transferService.Instance.processBidAndOrder(saveModel);
+            return base.CustomBatchProcessEntity(saveModel);
+        }
+
     }
 }
