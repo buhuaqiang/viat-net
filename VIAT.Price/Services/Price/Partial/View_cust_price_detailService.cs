@@ -255,7 +255,7 @@ namespace VIAT.Price.Services
                  { "prod_id", "prod" },{ "cust_dbid","custGroup"} ,{ "status","custPrice"},{ "state","prod"}
             };
             string sDetailConditon = getWhereCondition(searchParametersList, detailsAlias);            //处理查询条件
-            string sGroupConditon = sDetailConditon;//查詢條件是一樣的,所以直接拿這個拼接好的sql,如果查詢條件不一樣需要重新 getWhereCondition(in的時候字符串會再多一層'')    getWhereCondition(searchParametersList, groupAlias);
+            string sGroupConditon =getWhereCondition(searchParametersList, groupAlias);// sDetailConditon;//查詢條件是一樣的,所以直接拿這個拼接好的sql,如果查詢條件不一樣需要重新 getWhereCondition(in的時候字符串會再多一層'')    
 
             QuerySql = @"SELECT
 	                    custPrice.pricedetail_dbid AS pricedetail_dbid,
