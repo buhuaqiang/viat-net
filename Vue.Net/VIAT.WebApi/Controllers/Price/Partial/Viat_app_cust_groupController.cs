@@ -39,7 +39,7 @@ namespace VIAT.Price.Controllers
         /// <returns></returns>
         ///   //取得bindno
         [ApiActionPermission]
-        [HttpPost, Route("getCustGroupIDAndANmeByCustDBID")]
+        [HttpGet, Route("getCustGroupIDAndANmeByCustDBID")]
         public ActionResult GetGroupInvalidPageData(string cust_dbid)
         {
             return Json(_service.getCustGroupIDAndANmeByCustDBID(cust_dbid));
