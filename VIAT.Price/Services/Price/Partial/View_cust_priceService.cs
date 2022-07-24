@@ -806,7 +806,7 @@ namespace VIAT.Price.Services
         private List<Viat_app_cust_price> getOldPriceData(string sPriceGroupDBID, string sProdDBID)
         {
             string sSql = "select *  from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid " +
-                "AND  end_date  <= '"+ getFormatYYYYMMDD(DateTime.Now) + "' ORDER BY end_date DESC";
+                "AND  end_date  < '"+ getFormatYYYYMMDD(DateTime.Now) + "' ORDER BY end_date DESC";
             List<Viat_app_cust_price> entiryOldPriceLst = _repository.DapperContext.QueryList<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
 
             return entiryOldPriceLst;
@@ -1021,8 +1021,8 @@ namespace VIAT.Price.Services
                 return null;
             }
 
-            string sSql = "select TOP(1) *  from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid ORDER BY end_date DESC";
-            Viat_app_cust_price entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
+            //string sSql = "select TOP(1) *  from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid and prod_dbid=@prod_dbid ORDER BY end_date DESC";
+            Viat_app_cust_price entiryCustPrice = getCurrentPriceData(sPriceGroupDBID, sProdDBID); //_repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
             return entiryCustPrice;
             /*if (entiryCustPrice == null)
             {
