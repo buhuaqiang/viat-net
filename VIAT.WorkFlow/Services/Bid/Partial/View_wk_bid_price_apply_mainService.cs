@@ -147,7 +147,15 @@ namespace VIAT.WorkFlow.Services
                 saveModel.MainData.Remove("upload");
             }
             Viat_wk_master masterEntry = JsonConvert.DeserializeObject<Viat_wk_master>(JsonConvert.SerializeObject(saveModel.MainData));
-            processBidAndOrder(saveModel, masterEntry, true);       
+            if (bAddEditSubmit == true)
+            {
+                processBidAndOrder(saveModel, masterEntry, bAddEditSubmit);
+            }
+            else
+            {
+                processBidRelation(saveModel, bAddEditSubmit,masterEntry, new List<Viat_wk_bid_detail> { });
+                processOrdRelation(saveModel, bAddEditSubmit, masterEntry, new List<Viat_wk_ord_detail> { });
+            }
           
 
         }
@@ -166,7 +174,7 @@ namespace VIAT.WorkFlow.Services
             string sCustDBID = "";
             if (saveModel.MainData.ContainsKey("cust_dbid") == true)
             {
-                sCustDBID = saveModel.MainData["cust_dbid"].ToString();
+                sCustDBID = saveModel.MainData["cust_dbid"]?.ToString();
             }
 
             //04为仅order
@@ -279,7 +287,7 @@ namespace VIAT.WorkFlow.Services
             string sCustDBID = "";
             if (saveModel.MainData.ContainsKey("cust_dbid") == true)
             {
-                sCustDBID = saveModel.MainData["cust_dbid"].ToString();
+                sCustDBID = saveModel.MainData["cust_dbid"]?.ToString();
             }
 
             //04为仅order
@@ -839,6 +847,7 @@ namespace VIAT.WorkFlow.Services
                     }*/
                     custOrder.cust_dbid = masterEntry.cust_dbid;
                     custOrder.state = "0";
+                    custOrder.order_no = "123";
                     custOrder.prod_dbid = order.prod_dbid;
                     custOrder.qty = order.qty;
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
