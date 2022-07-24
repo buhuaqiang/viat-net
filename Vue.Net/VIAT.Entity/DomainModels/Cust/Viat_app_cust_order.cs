@@ -25,13 +25,13 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public Guid order_dbid { get; set; }
 
-       /// <summary>
+ /*      /// <summary>
        ///識別碼, PK, Identity
        /// </summary>
        [Display(Name ="識別碼, PK, Identity")]
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
+       public int dbid { get; set; }*/
 
        /// <summary>
        ///所屬事業單位,01:PH;03:AH;05:CH;06:NU
