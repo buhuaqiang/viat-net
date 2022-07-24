@@ -777,7 +777,8 @@ namespace VIAT.Price.Services
                 dtFormat.ShortDatePattern = "yyyy-MM-dd";
                 DateTime dSysDate = Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd"), dtFormat);
                 DateTime dPageDate = Convert.ToDateTime(sStartDate, dtFormat);
-                if (CheckFuturePrice(sCust_dbid, sProdDBID, sStartDate) == true)
+                Viat_app_cust_price_detail futurePrice = CheckFuturePrice(sCust_dbid, sProdDBID, sStartDate);
+                if (futurePrice!= null && futurePrice.status=="Y")
                 {
                     //当前增加为未来价，系统已存在未来价
                     webResponse.Code = "-1";
@@ -797,7 +798,7 @@ namespace VIAT.Price.Services
         /// <param name="sStartDate"></param>
         /// <param name="sEnddate"></param>
         /// <returns></returns>
-        private bool CheckFuturePrice(string sCustDBID, string sProdDBID, string sStartDate)
+        private Viat_app_cust_price_detail CheckFuturePrice(string sCustDBID, string sProdDBID, string sStartDate)
         {
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
@@ -806,13 +807,15 @@ namespace VIAT.Price.Services
             DateTime dPageDate = Convert.ToDateTime(sStartDate, dtFormat);
             if (dPageDate < dSysDate)
             {
-                return false;
+                return null;
             }
 
-            string sSql = "select TOP(1) *  from viat_app_cust_price_detail where cust_dbid=@cust_dbid and prod_dbid=@prod_dbid AND status = 'Y'ORDER BY end_date DESC";
-            Viat_app_cust_price_detail entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price_detail>(sSql, new { cust_dbid = sCustDBID, prod_dbid = sProdDBID });
-
-            if (entiryCustPrice == null)
+           /* string sSql = "select TOP(1) *  from viat_app_cust_price_detail where cust_dbid=@cust_dbid and prod_dbid=@prod_dbid AND status = 'Y'ORDER BY end_date DESC";
+            */
+            //Viat_app_cust_price_detail entiryCustPrice = _repository.DapperContext.QueryFirst<Viat_app_cust_price_detail>(sSql, new { cust_dbid = sCustDBID, prod_dbid = sProdDBID });
+            Viat_app_cust_price_detail entiryCustPrice = getCurrentPriceData(sCustDBID, sProdDBID); //_repository.DapperContext.QueryFirst<Viat_app_cust_price>(sSql, new { pricegroup_dbid = sPriceGroupDBID, prod_dbid = sProdDBID });
+            return entiryCustPrice;
+            /*if (entiryCustPrice == null)
             {
                 return false;
             }
@@ -822,9 +825,9 @@ namespace VIAT.Price.Services
             if (dPageDate > dSysDate && dStartDate > dSysDate)
             {
                 return true;
-            }
+            }*/
 
-            return false;
+           // return false;
         }
         #endregion
 
@@ -1138,7 +1141,7 @@ namespace VIAT.Price.Services
         private List<Viat_app_cust_price_detail> getOldPriceData(string sCustDBID, string sProdDBID)
         {
             string sSql = "select *  from viat_app_cust_price_detail where cust_dbid=@cust_dbid and prod_dbid=@prod_dbid " +
-                "AND end_date <='"+ getFormatYYYYMMDD(DateTime.Now) + "' ORDER BY end_date DESC";
+                "AND end_date <'"+ getFormatYYYYMMDD(DateTime.Now) + "' ORDER BY end_date DESC";
             List<Viat_app_cust_price_detail> entiryOldPriceLst = _repository.DapperContext.QueryList<Viat_app_cust_price_detail>(sSql, new { cust_dbid = sCustDBID, prod_dbid = sProdDBID });
 
             return entiryOldPriceLst;
@@ -1349,7 +1352,8 @@ namespace VIAT.Price.Services
                 if (string.IsNullOrEmpty(sMessageBulid4) == true)
                 {
                     //检查是否已存在未来价格
-                    if (CheckFuturePrice(group.cust_dbid?.ToString(), group.prod_dbid?.ToString(), group.start_date.ToString("yyyy-MM-dd")) == true)
+                    Viat_app_cust_price_detail futurePrice = CheckFuturePrice(group.cust_dbid?.ToString(), group.prod_dbid?.ToString(), group.start_date.ToString("yyyy-MM-dd"));
+                    if (futurePrice != null && futurePrice.status == "Y")
                     {
                         //当前增加为未来价，系统已存在未来价
                         sMessageBulid4 += "Prod:" + group.prod_id + " Future prices already exists, please Invalid the future price";
