@@ -57,7 +57,7 @@ namespace VIAT.WorkFlow.Services
             grp.group_name,
             '' as 'pendingReason'
              from viat_app_cust_price_transfer trs
-            INNER JOIN viat_com_cust cust on cust.cust_dbid=trs.cust_dbid
+            left JOIN viat_com_cust cust on cust.cust_dbid=trs.cust_dbid
             left OUTER join viat_com_prod prod on prod.prod_dbid=trs.prod_dbid
             left join viat_app_cust_price_group grp on trs.pricegroup_dbid=grp.pricegroup_dbid
             LEFT JOIN viat_com_local_mpg mpg on prod.localmpg_dbid=mpg.localmpg_dbid";

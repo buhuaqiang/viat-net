@@ -319,7 +319,8 @@ namespace VIAT.Price.Services
 	                    0 AS gross_price,
                         custPrice.reserv_price,
 	                    custPrice.min_qty,
-	                    custPrice.status,
+                        custGroup.status,
+	                   
 	                    custGroup.start_date,
 	                    custGroup.end_date,
 	                    custGroup.modified_date,
@@ -328,7 +329,7 @@ namespace VIAT.Price.Services
 	                    custPrice.remarks,
 	                    '' as bid_no,
 	                    prod.state,
-	                    custGroup.status,
+	                     custPrice.status priceStatus,
 	                    '' AS emp_ename,
                         cust.status custStatus,
                     '' as ShowInvalidProd,
