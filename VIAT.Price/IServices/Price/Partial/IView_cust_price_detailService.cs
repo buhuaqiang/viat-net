@@ -10,5 +10,7 @@ namespace VIAT.Price.IServices
     public partial interface IView_cust_price_detailService
     {
         public PageGridData<View_cust_price_detail> GetPriceDataForTransfer(PageDataOptions pageData);
+
+        void processData(SaveModel saveModel);
     }
  }
