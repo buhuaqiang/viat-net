@@ -319,12 +319,24 @@ namespace VIAT.WorkFlow.Services
                 sBidMasterBDID = System.Guid.NewGuid().ToString();
             }
 
+            if(sApplyType == "04")
+            {
+                //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
+                if (bAddEditSubmit == false)
+                {
+                    processCustOrderByBidMasterDBID(saveModel, masterEntry);
+                }
+                else
+                {
+                    processCustOrder(saveModel, masterEntry, ordLst);
+                }
+            }
             //进行判断处理
             /*
              如果是group 申請，或是（cust_dbid !=null&& viat_com_cust.status= invalid）或是客戶已存在cust_group表的有效記錄，審批后進入 price_transfer/order_transfer
              其他情況：如果申請主體是客戶ID，沒有選擇合約範本（contstret_dbid ==null）&& End_data!='2099-12-31',卡控到price_transfer/order_transer
              */
-            if (string.IsNullOrEmpty(sPriceGroupDBID) == false ||
+           else if (string.IsNullOrEmpty(sPriceGroupDBID) == false ||
                 (string.IsNullOrEmpty(sCustDBID) == false && (cust != null && cust.status == "N")) ||
                 (string.IsNullOrEmpty(sCustDBID) == false && custGroup != null && custGroup.status == "Y") ||
                 (string.IsNullOrEmpty(sCustDBID) == false && string.IsNullOrEmpty(scontstret_dbid) == true && sEndDate != "2099-12-31")
@@ -353,11 +365,11 @@ namespace VIAT.WorkFlow.Services
                
                 if (bAddEditSubmit == false)
                 {
-                    processCustOrderByBidMasterDBID(saveModel, masterEntry);
+                    processOrderTransferByBidMasterDBID(saveModel, masterEntry);
                 }
                 else
                 {
-                    processCustOrder(saveModel, masterEntry,ordLst);
+                    processOrderTransfer(saveModel, ordLst,masterEntry);
                 }
             }
             /*
@@ -365,15 +377,7 @@ namespace VIAT.WorkFlow.Services
              */
             else
             {
-                //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
-                if (bAddEditSubmit == false)
-                {
-                    processCustOrderByBidMasterDBID(saveModel, masterEntry);
-                }
-                else
-                {
-                    processCustOrder(saveModel, masterEntry,ordLst);
-                }
+               
             }
         }
 
