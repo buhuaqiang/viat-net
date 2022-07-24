@@ -1065,7 +1065,7 @@ namespace VIAT.Price.Services
             }
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
-            DateTime dEndData = Convert.ToDateTime(dicData["invalid_date"].ToString(), dtFormat);
+            DateTime dEndData = Convert.ToDateTime(dicData["invalid_date"].ToString(), dtFormat).ToLocalTime();
             string sStatus = "Y";
             if(base.getFormatYYYYMMDD(dEndData) < base.getFormatYYYYMMDD(System.DateTime.Now))
             {
