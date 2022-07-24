@@ -76,11 +76,20 @@ namespace VIAT.WorkFlow.Services
             mpg.mpg_name,
             prod.prod_id,
             prod.prod_ename,
+            prod.state as prodStatus,
+			price.min_qty,
             '' as 'pendingReason'
             FROM viat_app_cust_order_transfer trs
             LEFT JOIN viat_com_prod prod on trs.prod_dbid=prod.prod_dbid
             left join viat_com_cust cust on cust.cust_dbid=trs.cust_dbid
             LEFT JOIN viat_com_local_mpg mpg on prod.localmpg_dbid=mpg.localmpg_dbid
+            left join (SELECT prod_dbid,cust_dbid,min_qty
+								from viat_app_cust_price_detail WHERE status='Y' AND  SysDateTime() >= start_date
+								union 
+								SELECT  g.prod_dbid,g.cust_dbid,p.min_qty from viat_app_cust_group g left join viat_app_cust_price p
+								on g.pricegroup_dbid=p.pricegroup_dbid and p.prod_dbid=g.prod_dbid 
+								WHERE p.status='Y' AND  g.status='Y' and SysDateTime() >= p.start_date)
+						as price on price.prod_dbid=trs.prod_dbid and price.cust_dbid=trs.cust_dbid
 	                            WHERE ( 1 = 1 )
 		                            and trs.bid_no='" + bid_no + "'";
             
