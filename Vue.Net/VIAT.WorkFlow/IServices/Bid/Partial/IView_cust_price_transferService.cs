@@ -9,5 +9,6 @@ namespace VIAT.WorkFlow.IServices
 {
     public partial interface IView_cust_price_transferService
     {
+        void processBidAndOrder(SaveModel saveDataModel);
     }
  }
