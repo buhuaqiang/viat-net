@@ -37,5 +37,18 @@ namespace VIAT.WorkFlow.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
+
+
+        /// <summary>
+        /// 取得数据
+        /// </summary>
+        /// <param name="price_transfer_dbid"></param>
+        /// <returns></returns>
+        public Viat_app_cust_price_transfer getPriceTransferByDBID(string price_transfer_dbid)
+        {
+            string sSql = "select * from Viat_app_cust_price_transfer where price_transfer_dbid='" + price_transfer_dbid + "'";
+
+            return _repository.DapperContext.QueryFirst<Viat_app_cust_price_transfer>(sSql, null);
+        }
   }
 }
