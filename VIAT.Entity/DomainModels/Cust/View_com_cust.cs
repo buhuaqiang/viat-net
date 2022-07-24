@@ -24,7 +24,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string cust_id { get; set; }
 
        /// <summary>
@@ -52,7 +51,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string cust_name { get; set; }
 
        /// <summary>
@@ -62,7 +60,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string territory_id { get; set; }
 
        /// <summary>
@@ -72,7 +69,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string invoice_name { get; set; }
 
        /// <summary>
@@ -82,7 +78,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string cust_zip_id { get; set; }
 
        /// <summary>
@@ -92,7 +87,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(200)]
        [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string invoice_address { get; set; }
 
        /// <summary>
@@ -102,7 +96,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(100)]
        [Column(TypeName="varchar(100)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string owner { get; set; }
 
        /// <summary>
@@ -148,7 +141,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(200)]
        [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string cust_address { get; set; }
 
        /// <summary>
@@ -158,7 +150,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(40)]
        [Column(TypeName="varchar(40)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string tel_no { get; set; }
 
        /// <summary>
@@ -195,7 +186,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string doh_type { get; set; }
 
        /// <summary>
@@ -205,7 +195,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string margin_type { get; set; }
 
        /// <summary>
@@ -233,7 +222,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string own_by_hospital { get; set; }
 
        /// <summary>
@@ -323,7 +311,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string invoice_city_name { get; set; }
 
        /// <summary>
@@ -333,7 +320,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string cust_city_name { get; set; }
 
        /// <summary>
@@ -374,7 +360,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string invoice_zip_id { get; set; }
 
        /// <summary>
@@ -442,7 +427,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="own_hospitalname")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
-       [Required(AllowEmptyStrings=false)]
        public string own_hospitalname { get; set; }
 
        /// <summary>
@@ -451,7 +435,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="med_groupname")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
-       [Required(AllowEmptyStrings=false)]
        public string med_groupname { get; set; }
 
        /// <summary>
@@ -460,7 +443,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="delv_groupname")]
        [MaxLength(111)]
        [Column(TypeName="nvarchar(111)")]
-       [Required(AllowEmptyStrings=false)]
        public string delv_groupname { get; set; }
 
        /// <summary>
@@ -469,7 +451,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="列名C1")]
        [MaxLength(71)]
        [Column(TypeName="nvarchar(71)")]
-       [Required(AllowEmptyStrings=false)]
        public string C1 { get; set; }
 
        /// <summary>

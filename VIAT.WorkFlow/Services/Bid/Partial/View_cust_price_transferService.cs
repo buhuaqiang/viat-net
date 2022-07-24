@@ -45,7 +45,7 @@ namespace VIAT.WorkFlow.Services
             foreach(View_cust_price_transfer trans in pageGridData.rows)
             {
                 string result = "";
-                if (getFormatYYYYMMDD(trans.start_date) != getFormatYYYYMMDD(trans.transfer_date))
+                if (trans.start_date!=null && trans.transfer_date!=null && getFormatYYYYMMDD(trans.start_date) != getFormatYYYYMMDD(trans.transfer_date))
                     result += " Start Date ≠ Approved Date; ";
                 if (trans.end_date != null && trans.end_date.Value.Year != 2099)
                     result += " End Date ≠ 2099; ";
