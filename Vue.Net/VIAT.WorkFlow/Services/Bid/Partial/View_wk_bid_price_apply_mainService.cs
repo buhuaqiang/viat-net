@@ -72,7 +72,8 @@ namespace VIAT.WorkFlow.Services
             string sbidmast_dbid = saveModel.MainData["bidmast_dbid"].ToString();
             updateWKMaster(saveModel,"00",false);
 
-            processBidAndOrder(saveModel, sbidmast_dbid, false);
+            Viat_wk_master masterEntry = JsonConvert.DeserializeObject<Viat_wk_master>(JsonConvert.SerializeObject(saveModel.MainData));
+            processBidAndOrder(saveModel, masterEntry, false);
             return base.CustomBatchProcessEntity(saveModel);
         }
         public override WebResponseContent Del(object[] keys, bool delList = true)
@@ -139,9 +140,14 @@ namespace VIAT.WorkFlow.Services
             {
                 sBidMasterBDID = System.Guid.NewGuid().ToString();
             }
-
-            processWKMaster(saveModel, sBidMasterBDID, "03");           
-            processBidAndOrder(saveModel, sBidMasterBDID, true);       
+            processWKMaster(saveModel, sBidMasterBDID, "03");
+            string sJson = JsonConvert.SerializeObject(saveModel.MainData);
+            if(saveModel.MainData.ContainsKey("upload")==true)
+            {
+                saveModel.MainData.Remove("upload");
+            }
+            Viat_wk_master masterEntry = JsonConvert.DeserializeObject<Viat_wk_master>(JsonConvert.SerializeObject(saveModel.MainData));
+            processBidAndOrder(saveModel, masterEntry, true);       
           
 
         }
@@ -149,7 +155,7 @@ namespace VIAT.WorkFlow.Services
         /// <summary>
         /// 
         /// </summary>
-        public void processBidRelation(SaveModel saveModel, bool bAddEditSubmit, List<Viat_wk_bid_detail> bidLst)
+        public void processBidRelation(SaveModel saveModel, bool bAddEditSubmit, Viat_wk_master masterEntry, List<Viat_wk_bid_detail> bidLst)
         {
             string sBidMasterBDID = saveModel.MainData["bidmast_dbid"]?.ToString();
             string sPriceGroupDBID = "";
@@ -191,6 +197,7 @@ namespace VIAT.WorkFlow.Services
             {
                 sBidMasterBDID = System.Guid.NewGuid().ToString();
             }
+            string sBidNo = saveModel.MainData["bid_no"]?.ToString();
 
             //进行判断处理
             /*
@@ -209,11 +216,11 @@ namespace VIAT.WorkFlow.Services
                 {
                     if (bAddEditSubmit == false)
                     {
-                        processPriceTransferByBidMasterDBID(saveModel, sBidMasterBDID);
+                        processPriceTransferByBidMasterDBID(saveModel, masterEntry);
                     }
                     else
                     {
-                        processPriceTransfer(saveModel, bidLst);
+                        processPriceTransfer(saveModel, bidLst,masterEntry);
                     }
 
                 }                
@@ -230,11 +237,11 @@ namespace VIAT.WorkFlow.Services
                 {
                     if (bAddEditSubmit == false)
                     {
-                        processPriceTransferByBidMasterDBID(saveModel, sBidMasterBDID);
+                        processPriceTransferByBidMasterDBID(saveModel, masterEntry);
                     }
                     else
                     {
-                        processPriceTransfer(saveModel, bidLst);
+                        processPriceTransfer(saveModel, bidLst, masterEntry);
                     }
 
                 }
@@ -250,18 +257,18 @@ namespace VIAT.WorkFlow.Services
                 {
                     if (bAddEditSubmit == false)
                     {
-                        processPriceDetailerByBidMasterDBID(saveModel, sBidMasterBDID);
+                        processPriceDetailerByBidMasterDBID(saveModel,masterEntry);
                     }
                     else
                     {
-                        processPriceDetail(saveModel, bidLst);
+                        processPriceDetail(saveModel, masterEntry, bidLst);
                     }
                 }
                
             }
         }
 
-        public void processOrdRelation(SaveModel saveModel, bool bAddEditSubmit,  List<Viat_wk_ord_detail> ordLst)
+        public void processOrdRelation(SaveModel saveModel, bool bAddEditSubmit, Viat_wk_master masterEntry, List<Viat_wk_ord_detail> ordLst)
         {
             string sBidMasterBDID = saveModel.MainData["bidmast_dbid"]?.ToString();
             string sPriceGroupDBID = "";
@@ -320,11 +327,11 @@ namespace VIAT.WorkFlow.Services
                
                 if (bAddEditSubmit == false)
                 {
-                    processOrderTransferByBidMasterDBID(saveModel, sBidMasterBDID);
+                    processOrderTransferByBidMasterDBID(saveModel, masterEntry);
                 }
                 else
                 {
-                    processOrderTransfer(saveModel, ordLst);
+                    processOrderTransfer(saveModel, ordLst,masterEntry);
                 }
             }
             /*
@@ -338,11 +345,11 @@ namespace VIAT.WorkFlow.Services
                
                 if (bAddEditSubmit == false)
                 {
-                    processCustOrderByBidMasterDBID(saveModel, sBidMasterBDID);
+                    processCustOrderByBidMasterDBID(saveModel, masterEntry);
                 }
                 else
                 {
-                    processCustOrder(saveModel, ordLst);
+                    processCustOrder(saveModel, masterEntry,ordLst);
                 }
             }
             /*
@@ -353,11 +360,11 @@ namespace VIAT.WorkFlow.Services
                 //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
                 if (bAddEditSubmit == false)
                 {
-                    processCustOrderByBidMasterDBID(saveModel, sBidMasterBDID);
+                    processCustOrderByBidMasterDBID(saveModel, masterEntry);
                 }
                 else
                 {
-                    processCustOrder(saveModel, ordLst);
+                    processCustOrder(saveModel, masterEntry,ordLst);
                 }
             }
         }
@@ -398,8 +405,9 @@ namespace VIAT.WorkFlow.Services
             string sbidMastDBID = Guid.NewGuid().ToString();
             processWKMaster(saveDataModel, sbidMastDBID, sStatus);
 
+            Viat_wk_master masterEntry = JsonConvert.DeserializeObject<Viat_wk_master>(JsonConvert.SerializeObject(saveDataModel.MainData));
             //处理bid和order 
-            processBidAndOrder(saveDataModel, sbidMastDBID, bSubmit);
+            processBidAndOrder(saveDataModel, masterEntry,bSubmit);
         }
 
 
@@ -437,7 +445,7 @@ namespace VIAT.WorkFlow.Services
         /// 处理bid order 
         /// </summary>
         /// <param name="saveDataModel"></param>
-        private void processBidAndOrder(SaveModel saveDataModel, string bidMastDBID, bool bAddEditSubmit)
+        private void processBidAndOrder(SaveModel saveDataModel,  Viat_wk_master masterEntry, bool bAddEditSubmit)
         {
             if (saveDataModel.DetailData != null && saveDataModel.DetailData.Count > 0)
             {
@@ -447,22 +455,22 @@ namespace VIAT.WorkFlow.Services
                     if (dicTmp["key"]?.ToString() == "priceTableRowData")
                     {
                         string sBidData = dicTmp["value"]?.ToString();
-                        processBidDetail(saveDataModel, sBidData, bidMastDBID, bAddEditSubmit);
+                        processBidDetail(saveDataModel, sBidData,  masterEntry, bAddEditSubmit);
                     }
                     else if (dicTmp["key"]?.ToString() == "orderTableRowData")
                     {
                         string sOrderData = dicTmp["value"]?.ToString();
-                        processOrderDetail(saveDataModel, sOrderData, bidMastDBID, bAddEditSubmit);
+                        processOrderDetail(saveDataModel, sOrderData,  masterEntry, bAddEditSubmit);
                     }
                     else if (dicTmp["key"]?.ToString() == "delPriceTableRowData")
                     {
                         string sBidData = dicTmp["value"]?.ToString();
-                        processDelBidDetail(saveDataModel, sBidData, bidMastDBID);
+                        processDelBidDetail(saveDataModel, sBidData);
                     }
                     else if (dicTmp["key"]?.ToString() == "delOrderTableRowData")
                     {
                         string sOrderData = dicTmp["value"]?.ToString();
-                        processDelOrderDetail(saveDataModel, sOrderData, bidMastDBID);
+                        processDelOrderDetail(saveDataModel, sOrderData);
                     }
                 }
             }
@@ -472,7 +480,7 @@ namespace VIAT.WorkFlow.Services
         /// 处理bid逻辑
         /// </summary>
         /// <param name="saveDataModel"></param>
-        private void processBidDetail(SaveModel saveDataModel, string sBidData,string bidMastDBID, bool bAddEditSubmit)
+        private void processBidDetail(SaveModel saveDataModel, string sBidData, Viat_wk_master masterEntry, bool bAddEditSubmit)
         {
             if (string.IsNullOrEmpty(sBidData) == false)
             {
@@ -486,7 +494,7 @@ namespace VIAT.WorkFlow.Services
                         //新增
                         custResult.optionType = SaveModel.MainOptionType.add;
                         bid.bidetail_dbid = System.Guid.NewGuid();
-                        bid.bidmast_dbid = new Guid(bidMastDBID);
+                        bid.bidmast_dbid = masterEntry.bidmast_dbid;
                     }
                     else
                     {
@@ -497,7 +505,7 @@ namespace VIAT.WorkFlow.Services
                     saveDataModel.DetailListData.Add(custResult);                    
                 }
 
-                processBidRelation(saveDataModel, bAddEditSubmit, bidList);
+                processBidRelation(saveDataModel,bAddEditSubmit, masterEntry, bidList);
             }
 
         }
@@ -509,7 +517,7 @@ namespace VIAT.WorkFlow.Services
         /// <param name="sBidData"></param>
         /// <param name="bidMastDBID"></param>
         /// <param name="bSubmit"></param>
-        private void processDelBidDetail(SaveModel saveDataModel, string sBidData, string bidMastDBID)
+        private void processDelBidDetail(SaveModel saveDataModel, string sBidData)
         {
             if (string.IsNullOrEmpty(sBidData) == false)
             {
@@ -533,7 +541,7 @@ namespace VIAT.WorkFlow.Services
         /// <param name="sBidData"></param>
         /// <param name="bidMastDBID"></param>
         /// <param name="bSubmit"></param>
-        private void processDelOrderDetail(SaveModel saveDataModel, string sOrderData, string bidMastDBID)
+        private void processDelOrderDetail(SaveModel saveDataModel, string sOrderData)
         {
             if (string.IsNullOrEmpty(sOrderData) == false)
             {
@@ -554,7 +562,7 @@ namespace VIAT.WorkFlow.Services
         /// </summary>
         /// <param name="saveDataModel"></param>
 
-        private void processOrderDetail(SaveModel saveDataModel,string sOrderData, string bidMastDBID,bool bAddEditSubmit)
+        private void processOrderDetail(SaveModel saveDataModel,string sOrderData, Viat_wk_master masterEntry, bool bAddEditSubmit)
         {
             if (string.IsNullOrEmpty(sOrderData) == false)
             {
@@ -571,7 +579,7 @@ namespace VIAT.WorkFlow.Services
                         {
                             //新增
                             order.ordetail_dbid = System.Guid.NewGuid();
-                            order.bidmast_dbid = new Guid(bidMastDBID);
+                            order.bidmast_dbid = masterEntry.bidmast_dbid;
                             custResult.optionType = SaveModel.MainOptionType.add; 
                         }
                         else
@@ -583,7 +591,7 @@ namespace VIAT.WorkFlow.Services
                         custResult.detailType = typeof(Viat_wk_ord_detail);                       
                     }
 
-                    processOrdRelation(saveDataModel, bAddEditSubmit, orderList);
+                    processOrdRelation(saveDataModel, bAddEditSubmit, masterEntry, orderList);
                 }
             }
         }
@@ -606,27 +614,27 @@ namespace VIAT.WorkFlow.Services
         /// 根据bidmast_dbid处理processPriceTransfer
         /// </summary>
         /// <param name="bidmast_dbid"></param>
-        private void processPriceTransferByBidMasterDBID(SaveModel saveModel, string bidmast_dbid)
+        private void processPriceTransferByBidMasterDBID(SaveModel saveModel, Viat_wk_master masterEntity)
         {
-            List<Viat_wk_bid_detail> bidLst = Viat_wk_bid_detailService.Instance.getDataByBidMasterDBID(bidmast_dbid);
-            processPriceTransfer(saveModel,bidLst);
+            List<Viat_wk_bid_detail> bidLst = Viat_wk_bid_detailService.Instance.getDataByBidMasterDBID(masterEntity.bidmast_dbid.ToString());
+            processPriceTransfer(saveModel,bidLst, masterEntity);
         }
 
         /// <summary>
         /// 根据bidmast_dbid处理processOrderyTransfer
         /// </summary>
         /// <param name="bidmast_dbid"></param>
-        private void processOrderTransferByBidMasterDBID(SaveModel saveModel, string bidmast_dbid)
+        private void processOrderTransferByBidMasterDBID(SaveModel saveModel, Viat_wk_master masterEntry)
         {
-            List<Viat_wk_ord_detail> ordLst = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(bidmast_dbid);
-            processOrderTransfer(saveModel, ordLst);
+            List<Viat_wk_ord_detail> ordLst = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntry.bidmast_dbid.ToString());
+            processOrderTransfer(saveModel, ordLst, masterEntry);
         }
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="saveModel"></param>
-        private void processPriceTransfer(SaveModel saveModel, List<Viat_wk_bid_detail> bidLst)
+        private void processPriceTransfer(SaveModel saveModel, List<Viat_wk_bid_detail> bidLst, Viat_wk_master masterEntity)
         {
 
             if (bidLst != null && bidLst.Count > 0)
@@ -638,15 +646,32 @@ namespace VIAT.WorkFlow.Services
                     Viat_app_cust_price_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_price_transfer>(JsonConvert.SerializeObject(bid));
                     transfer.price_transfer_dbid = System.Guid.NewGuid();
                     //处理bidno
-                    string sBidNo = "";
-                    Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bid.bidmast_dbid?.ToString());
+                   /* string sBidNo = "";*/
+                   /* Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bid.bidmast_dbid?.ToString());
                     if(master != null)
                     {
                         sBidNo = master.bid_no;
+                    }*/
+
+                    if(string.IsNullOrEmpty(masterEntity.pricegroup_dbid?.ToString()) ==false)
+                    {
+                        transfer.pricegroup_dbid = masterEntity.pricegroup_dbid;
+                    }
+                    else if(string.IsNullOrEmpty(masterEntity.cust_dbid?.ToString()) ==false)
+                    {
+                        transfer.cust_dbid = masterEntity.cust_dbid;
                     }
 
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
-                    transfer.bid_no = sBidNo;
+                    transfer.bid_no = masterEntity.bid_no;
+                    UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
+                    if (userInfo != null)
+                    {
+                        transfer.requestor = userInfo.User_Id;
+                        transfer.requestor_name = userInfo.UserName;
+                        transfer.territory_id = "";
+
+                    }
                     transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
                     transferResult.optionType = SaveModel.MainOptionType.add;
                     transferResult.detailType = typeof(Viat_app_cust_price_transfer);
@@ -661,7 +686,7 @@ namespace VIAT.WorkFlow.Services
         /// 
         /// </summary>
         /// <param name="saveModel"></param>
-        private void processOrderTransfer(SaveModel saveModel, List<Viat_wk_ord_detail> orderLst)
+        private void processOrderTransfer(SaveModel saveModel, List<Viat_wk_ord_detail> orderLst, Viat_wk_master masterEntry)
         {
 
             if (orderLst != null && orderLst.Count > 0)
@@ -674,18 +699,24 @@ namespace VIAT.WorkFlow.Services
                     Viat_app_cust_order_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_order_transfer>(JsonConvert.SerializeObject(order));
                     transfer.order_transfer_dbid = System.Guid.NewGuid();
                    
-                    //处理bidno
-                    string sBidNo = "";
-                    Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(order.bidmast_dbid?.ToString());
+                    //处理bidno                   
+                   /* Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(order.bidmast_dbid?.ToString());
                     if (master != null)
                     {
-                        sBidNo = master.bid_no;
-                        transfer.cust_dbid = master.cust_dbid;
                         transfer.requestor = master.created_user;
                         transfer.requestor_name = master.created_username;
                         transfer.territory_id = master.territory_id;
+                    }*/
+                    UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
+                    if(userInfo != null)
+                    {
+                        transfer.requestor = userInfo.User_Id;
+                        transfer.requestor_name = userInfo.UserName;
+                        transfer.territory_id = "";
+
                     }
-                    transfer.bid_no = sBidNo;
+                    transfer.cust_dbid = masterEntry.cust_dbid;
+                    transfer.bid_no = masterEntry.bid_no;
                     transfer.state = "0";
                     transfer.transfer_date = getFormatYYYYMMDD(System.DateTime.Now);
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
@@ -705,27 +736,27 @@ namespace VIAT.WorkFlow.Services
         /// 根据bidmast_dbid处理processPriceTransfer
         /// </summary>
         /// <param name="bidmast_dbid"></param>
-        private void processPriceDetailerByBidMasterDBID(SaveModel saveModel, string bidmast_dbid)
+        private void processPriceDetailerByBidMasterDBID(SaveModel saveModel, Viat_wk_master masterEntry)
         {
-            List<Viat_wk_bid_detail> bidLst = Viat_wk_bid_detailService.Instance.getDataByBidMasterDBID(bidmast_dbid);
-            processPriceDetail(saveModel, bidLst);
+            List<Viat_wk_bid_detail> bidLst = Viat_wk_bid_detailService.Instance.getDataByBidMasterDBID(masterEntry.bidmast_dbid.ToString());
+            processPriceDetail(saveModel, masterEntry, bidLst);
         }
 
         /// <summary>
         /// 根据bidmast_dbid处理processOrderyTransfer
         /// </summary>
         /// <param name="bidmast_dbid"></param>
-        private void processCustOrderByBidMasterDBID(SaveModel saveModel, string bidmast_dbid)
+        private void processCustOrderByBidMasterDBID(SaveModel saveModel, Viat_wk_master masterEntry)
         {
-            List<Viat_wk_ord_detail> ordLst = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(bidmast_dbid);
-            processCustOrder(saveModel, ordLst);
+            List<Viat_wk_ord_detail> ordLst = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntry.bidmast_dbid.ToString());
+            processCustOrder(saveModel, masterEntry,ordLst);
         }
 
         /// <summary>
         /// Viat_app_cust_price_detail
         /// </summary>
         /// <param name="saveModel"></param>
-        private void processPriceDetail(SaveModel saveModel, List<Viat_wk_bid_detail> bidLst)
+        private void processPriceDetail(SaveModel saveModel, Viat_wk_master masterEntry, List<Viat_wk_bid_detail> bidLst)
         {
             if (bidLst != null && bidLst.Count > 0)
             {
@@ -737,19 +768,28 @@ namespace VIAT.WorkFlow.Services
                 {
                     //把cust記錄寫入transfer, delivery transfer
                     Viat_app_cust_price_detail priceDetail = JsonConvert.DeserializeObject<Viat_app_cust_price_detail>(JsonConvert.SerializeObject(bid));
-                    
+
                     //处理bidno
-                    string sBidNo = "";
-                    Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bid.bidmast_dbid?.ToString());
-                    if (master != null)
+                    /*
+                               Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bid.bidmast_dbid?.ToString());
+                               if (master != null)
+                               {
+
+                                   priceDetail.start_date = getFormatYYYYMMDD(master.start_date);
+                                   priceDetail.end_date = getFormatYYYYMMDD(master.end_date);
+                               }*/
+                    if(masterEntry.pricegroup_dbid != null)
                     {
-                        sBidNo = master.bid_no;
-                   
-                        priceDetail.cust_dbid = master.cust_dbid;
-                        priceDetail.start_date = getFormatYYYYMMDD(master.start_date);
-                        priceDetail.end_date = getFormatYYYYMMDD(master.end_date);
+                        priceDetail.pricedetail_dbid = masterEntry.pricegroup_dbid;
                     }
-                    priceDetail.bid_no = sBidNo;
+                    else if(masterEntry.cust_dbid != null)
+                    {
+                        priceDetail.cust_dbid = masterEntry.cust_dbid;
+                    }
+                   
+                    priceDetail.start_date = getFormatYYYYMMDD(masterEntry.start_date);
+                    priceDetail.end_date = getFormatYYYYMMDD(masterEntry.end_date);
+                    priceDetail.bid_no = masterEntry.bid_no;
                     priceDetail.prod_dbid = bid.prod_dbid;
                     priceDetail.status = "Y";
                     priceDetail.gross_price = View_cust_priceService.Instance.getNetPriceByProdDBID(bid.prod_dbid?.ToString());
@@ -778,7 +818,7 @@ namespace VIAT.WorkFlow.Services
         /// Viat_app_cust_order
         /// </summary>
         /// <param name="saveModel"></param>
-        private void processCustOrder(SaveModel saveModel, List<Viat_wk_ord_detail> orderLst)
+        private void processCustOrder(SaveModel saveModel, Viat_wk_master masterEntry, List<Viat_wk_ord_detail> orderLst)
         {
 
             if (orderLst != null && orderLst.Count > 0)
@@ -791,13 +831,13 @@ namespace VIAT.WorkFlow.Services
                     Viat_app_cust_order custOrder = JsonConvert.DeserializeObject<Viat_app_cust_order>(JsonConvert.SerializeObject(order));
                     custOrder.order_dbid = System.Guid.NewGuid();
                     //处理bidno
-                    string sBidNo = "";
-                    Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(order.bidmast_dbid?.ToString());
+
+                    /*Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(order.bidmast_dbid?.ToString());
                     if (master != null)
-                    {
-                        sBidNo = master.bid_no;
+                    {                      
                         custOrder.cust_dbid = master.cust_dbid;
-                    }
+                    }*/
+                    custOrder.cust_dbid = masterEntry.cust_dbid;
                     custOrder.state = "0";
                     custOrder.prod_dbid = order.prod_dbid;
                     custOrder.qty = order.qty;

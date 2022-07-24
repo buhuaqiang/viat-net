@@ -23,7 +23,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="PKID")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-       public Guid pricedetail_dbid { get; set; }
+       public Guid? pricedetail_dbid { get; set; }
 
        /// <summary>
        ///所屬事業單位,01:PH;03:AH;05:CH;06:NU
