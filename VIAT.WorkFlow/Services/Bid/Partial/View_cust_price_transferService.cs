@@ -41,6 +41,23 @@ namespace VIAT.WorkFlow.Services
 
         public override PageGridData<View_cust_price_transfer> GetPageData(PageDataOptions options)
         {
+            QuerySql = @"SELECT trs.*,
+            CONCAT(trs.territory_id,' ',trs.requestor_name) as requestorName,
+            cust.cust_id,
+            cust.cust_name,
+            prod.prod_id,
+            prod.prod_ename,
+            prod.localmpg_dbid,
+            prod.state as prodStatus,
+            mpg.mpg_name,
+            grp.group_id,
+            grp.group_name,
+            '' as 'pendingReason'
+             from viat_app_cust_price_transfer trs
+            INNER JOIN viat_com_cust cust on cust.cust_dbid=trs.cust_dbid
+            left OUTER join viat_com_prod prod on prod.prod_dbid=trs.prod_dbid
+            left join viat_app_cust_price_group grp on trs.pricegroup_dbid=grp.pricegroup_dbid
+            LEFT JOIN viat_com_local_mpg mpg on prod.localmpg_dbid=mpg.localmpg_dbid";
             PageGridData<View_cust_price_transfer> pageGridData = base.GetPageData(options);
             foreach(View_cust_price_transfer trans in pageGridData.rows)
             {

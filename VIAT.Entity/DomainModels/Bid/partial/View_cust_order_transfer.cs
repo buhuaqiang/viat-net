@@ -13,9 +13,25 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    
+
     public partial class View_cust_order_transfer
     {
         //此处配置字段(字段配置见此model的另一个partial),如果表中没有此字段请加上 [NotMapped]属性，否则会异常
+        [NotMapped]
+        [Display(Name = "prodStatus")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        public string prodStatus { get; set; }
+
+
+        /// <summary>
+        /// price book設定的最小購買數量
+        /// </summary>
+        [NotMapped]
+        [Display(Name = "min_qty")]
+        [DisplayFormat(DataFormatString = "18,5")]
+        [Column(TypeName = "decimal")]
+        public decimal? min_qty { get; set; }
+
     }
 }
