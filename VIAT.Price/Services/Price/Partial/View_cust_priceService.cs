@@ -686,8 +686,11 @@ namespace VIAT.Price.Services
         /// </summary>
         private void AddCustPriceData(Viat_app_cust_price entity, SaveModel saveModel)
         {
-            //处理NHI
-            ProcessNHI(entity, saveModel);
+            if(entity.pricegroup_dbid != null)
+            {
+                //处理NHI
+                ProcessNHI(entity, saveModel);
+            }
 
             //增加price数据,增加前先处理
             entity.custprice_dbid = System.Guid.NewGuid();
