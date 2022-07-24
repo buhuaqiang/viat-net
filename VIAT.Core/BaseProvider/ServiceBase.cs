@@ -1156,7 +1156,7 @@ namespace VIAT.Core.BaseProvider
         {
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
-            return Convert.ToDateTime(dDate.ToString(), dtFormat);
+            return new DateTime(dDate.Value.Year, dDate.Value.Month, dDate.Value.Day, 0, 0, 0, 0);
         }
 
         /// <summary>
