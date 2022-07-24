@@ -65,5 +65,39 @@ namespace VIAT.Price.Services
             };
             return base.GetPageData(options);
         }
+
+
+        public Viat_app_cust_price_group getPriceGroupByCustAndProd(string prod_dbid, string cust_dbid)
+        {
+            if(prod_dbid!=null && cust_dbid != null)
+            {
+
+            }
+            else
+            {
+                return null;
+            }
+            string sql = @"SELECT
+	                *
+                FROM
+	                viat_app_cust_price_group
+                WHERE
+	                pricegroup_dbid IN (
+		                SELECT
+			                top 1 pricegroup_dbid
+		                FROM
+			                viat_app_cust_group
+		                WHERE
+			                prod_dbid = '"+prod_dbid+@"'
+		                AND cust_dbid = '"+ cust_dbid + @"'
+		                AND status = 'Y'
+		                AND SysDateTime() >= start_date
+		                ORDER BY
+			                created_date DESC,
+			                modified_date DESC
+	                )";
+
+            return _repository.DapperContext.QueryFirst<Viat_app_cust_price_group>(sql,null);
+        }
     }
 }
