@@ -175,10 +175,22 @@ namespace VIAT.WorkFlow.Services
             {
                 List<Viat_app_cust_price_transfer> bidList = JsonConvert.DeserializeObject<List<Viat_app_cust_price_transfer>>(sData);
 
+                string sGroupImport = saveModel.MainData["add_group"]?.ToString();
+                string sPriceGroupDBID = "";
+                if(string.IsNullOrEmpty(saveModel.MainData["pricegroup_dbid"]?.ToString()) == false)
+                {
+                    sPriceGroupDBID = saveModel.MainData["pricegroup_dbid"]?.ToString();
+                }
+
+                bool bImport = false;
+                if (string.IsNullOrEmpty(sGroupImport) == false && sGroupImport=="Y" && string.IsNullOrEmpty(sPriceGroupDBID) == false)
+                {
+                    bImport = true;
+                }
 
                 //处理关联
-                processCustPrice(saveModel, bidList,sRemak);
-                processPriceDetail(saveModel, bidList,sRemak);
+                processCustPrice(saveModel, bidList, bImport, sRemak);
+                processPriceDetail(saveModel, bidList, bImport, sRemak);
                 //处理本身
                 SaveModel.DetailListDataResult priceTransferResult = new SaveModel.DetailListDataResult();
                 saveModel.DetailListData.Add(priceTransferResult);
@@ -209,23 +221,63 @@ namespace VIAT.WorkFlow.Services
         /// Viat_app_cust_price_detail
         /// </summary>
         /// <param name="saveModel"></param>
-        public void processCustPrice(SaveModel saveModel, List<Viat_app_cust_price_transfer> bidLst, string sRemark)
+        public void processCustPrice(SaveModel saveModel, List<Viat_app_cust_price_transfer> bidLst, bool bImport, string sRemark)
         {
             if (bidLst != null && bidLst.Count > 0)
             {
                 //关联处理记录.
                 List<Dictionary<string, object>> pricesLst = new List<Dictionary<string, object>>();
 
-                //SaveModel.DetailListDataResult custPriceResult = new SaveModel.DetailListDataResult();
-               
+                SaveModel.DetailListDataResult ImportResult = new SaveModel.DetailListDataResult();
+                saveModel.DetailListData.Add(ImportResult);
                 foreach (Viat_app_cust_price_transfer bid in bidLst)
                 {
                     if (bid.state == "2") continue;
                     //导入,根据cust_id,group_id进行区分
-                    if (string.IsNullOrEmpty(bid.pricegroup_dbid?.ToString()) == false)
+                    if (string.IsNullOrEmpty(bid.pricegroup_dbid?.ToString()) == false || 
+                        bImport == true)
                     {
                         //处理组
+                        //把cust記錄寫入transfer, delivery transfer
+                        Viat_app_cust_price custPrice = new Viat_app_cust_price(); //JsonConvert.DeserializeObject<Viat_app_cust_price>(JsonConvert.SerializeObject(bid));
+                        bid.MapValueToEntity(custPrice);
+                        custPrice.pricegroup_dbid = System.Guid.NewGuid();
+                        custPrice.remarks = sRemark;
+                        if (bid.start_date != null)
+                        {
+                            custPrice.start_date = getFormatYYYYMMDD(bid.start_date);
+                        }
 
+                        if (bid.end_date != null)
+                        {
+                            custPrice.end_date = getFormatYYYYMMDD(bid.end_date);
+                        }
+                        custPrice.status = "Y";
+
+                        Dictionary<string, object> priceDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custPrice));
+                        /*  custPriceResult.DetailData.Add(priceDic);
+                          custPriceResult.optionType = SaveModel.MainOptionType.add;
+                          custPriceResult.detailType = typeof(Viat_app_cust_price);
+                          saveModel.DetailListData.Add(custPriceResult);*/
+
+                        //记录旧数据
+                        pricesLst.Add(priceDic);
+
+                        //如果是groupimport,需要插cust_group
+                        if(bImport == true)
+                        {
+                            Viat_app_cust_group custGroup = new Viat_app_cust_group();
+                            bid.MapValueToEntity(custGroup);
+                            custGroup.pricegroup_dbid = new Guid(saveModel.MainData["pricegroup_dbid"].ToString());
+                            custGroup.custgroup_dbid = System.Guid.NewGuid();
+                            custGroup.start_date = bid.start_date;
+                            custGroup.end_date = bid.end_date;
+                            custGroup.status = "Y";
+
+                            ImportResult.optionType = SaveModel.MainOptionType.add;
+                            ImportResult.detailType = typeof(Viat_app_cust_group);
+                            ImportResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string,object>>(JsonConvert.SerializeObject(custGroup)));
+                        }
                     }
                     else if (string.IsNullOrEmpty(bid.cust_dbid?.ToString()) == false)
                     {
@@ -233,30 +285,6 @@ namespace VIAT.WorkFlow.Services
                         return;
                     }
 
-                    //把cust記錄寫入transfer, delivery transfer
-                    Viat_app_cust_price custPrice = new Viat_app_cust_price(); //JsonConvert.DeserializeObject<Viat_app_cust_price>(JsonConvert.SerializeObject(bid));
-                    bid.MapValueToEntity(custPrice);
-                    custPrice.pricegroup_dbid = System.Guid.NewGuid();
-                    custPrice.remarks = sRemark;
-                    if (bid.start_date != null)
-                    {
-                        custPrice.start_date = getFormatYYYYMMDD(bid.start_date);
-                    }
-
-                    if (bid.end_date != null)
-                    {
-                        custPrice.end_date = getFormatYYYYMMDD(bid.end_date);
-                    }
-                    custPrice.status = "Y";                    
-
-                    Dictionary<string, object> priceDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custPrice));
-                  /*  custPriceResult.DetailData.Add(priceDic);
-                    custPriceResult.optionType = SaveModel.MainOptionType.add;
-                    custPriceResult.detailType = typeof(Viat_app_cust_price);
-                    saveModel.DetailListData.Add(custPriceResult);*/
-
-                    //记录旧数据
-                    pricesLst.Add(priceDic);
                 }
 
                 //处理旧数据
@@ -272,7 +300,7 @@ namespace VIAT.WorkFlow.Services
         /// Viat_app_cust_price_detail
         /// </summary>
         /// <param name="saveModel"></param>
-        public void processPriceDetail(SaveModel saveModel, List<Viat_app_cust_price_transfer> bidLst, string sRemark)
+        public void processPriceDetail(SaveModel saveModel, List<Viat_app_cust_price_transfer> bidLst,bool bImport, string sRemark)
         {
             if (bidLst != null && bidLst.Count > 0)
             {
@@ -287,7 +315,7 @@ namespace VIAT.WorkFlow.Services
                     if (bid.state == "2") continue;
 
                     //导入,根据cust_id,group_id进行区分
-                    if (string.IsNullOrEmpty(bid.pricegroup_dbid?.ToString()) == false)
+                    if (string.IsNullOrEmpty(bid.pricegroup_dbid?.ToString()) == false || bImport == true)
                     {
                         //处理组
                         return;
