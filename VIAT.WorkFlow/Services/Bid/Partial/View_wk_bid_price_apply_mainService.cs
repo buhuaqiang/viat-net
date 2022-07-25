@@ -405,14 +405,21 @@ namespace VIAT.WorkFlow.Services
             return base.CustomBatchProcessEntity(saveModel);
         }
 
-        public List<Viat_app_cust_order> RecentOrder(string ProdctId, string CustomerId)
+        public List<Viat_app_cust_order> RecentOrder(string ProdctId, string CustomerId,string PricegroupiId)
         {
             string sSql = @"select  c_order.*,prod.prod_id,prod.prod_ename,cust.cust_id,cust.cust_name from  viat_app_cust_order c_order
                             left join viat_com_prod prod on c_order.prod_dbid = prod.prod_dbid
                             left join viat_com_cust cust on c_order.cust_dbid=cust.cust_dbid
-                            where  c_order.custdbid=@CustomerId and c_order.prod_dbid=ProdctId and c_order.created_date > DATEADD(year,-1,GETDATE())";
-
-            return repository.DapperContext.QueryList<Viat_app_cust_order>(sSql, new { CustomerId = CustomerId, ProdctId = ProdctId });
+                            where c_order.prod_dbid= '@ProdctId' and c_order.created_date > DATEADD(year,-1,GETDATE())";
+            if (!string.IsNullOrEmpty(PricegroupiId))
+            {
+                sSql += $" and cust.cust_dbid in (SELECT distinct cust_dbid from viat_app_cust_group where pricegroup_dbid='{PricegroupiId}')";
+            }
+            if (!string.IsNullOrEmpty(CustomerId))
+            {
+                sSql += $"and cust.cust_dbid='{CustomerId}'";
+            }
+            return repository.DapperContext.QueryList<Viat_app_cust_order>(sSql, new { ProdctId = ProdctId });
         }
 
         #region 
