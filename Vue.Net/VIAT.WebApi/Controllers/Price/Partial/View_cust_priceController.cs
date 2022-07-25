@@ -171,6 +171,12 @@ namespace VIAT.Price.Controllers
             return Json(_service.GetGroupInvalidPageData(options));
         }
 
-         
+        [ApiActionPermission]
+        [HttpPost, Route("importData")]
+        public ActionResult importData([FromBody] List<View_cust_price> list)
+        {
+            return Json(_service.importData(list));
+        }
+
     }
 }

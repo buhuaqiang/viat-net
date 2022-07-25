@@ -1688,20 +1688,25 @@ namespace VIAT.Price.Services
             }
             if(string.IsNullOrEmpty(sMessageBulid4) == false)
             {
-                webResponse.Code = "-2";
-                webResponse.Url = "/api/View_cust_price/aaa";
-                webResponse.Data = list;
                 return webResponse.Error(sMessageBulid4);
+            }            
+
+
+            webResponse = checkConfirmData(list);    
+            if(webResponse.Code =="-2")
+            {
+                return webResponse;
+            }
+            else
+            {
+                importData(list);
             }
 
-            checkConfirmData(list);
-
             #endregion
 
-
             #endregion
-
             return webResponse.OK();
+             
         }
 
         private WebResponseContent checkConfirmData(List<View_cust_price> list)
@@ -1735,6 +1740,8 @@ namespace VIAT.Price.Services
                     string sConfirmMessage = sMessage1 + sMessage2 + "'</p>Do you want to import data?";
 
                     webResponse.Code = "-2";
+                    webResponse.Url = "/api/View_cust_price/importData";
+                    webResponse.Data = list;
                     return webResponse.Error(sConfirmMessage);                   
                 }
             }
@@ -1798,7 +1805,7 @@ namespace VIAT.Price.Services
 
                 //新增
                 //进行数据处理
-                webResponse = this.bathSaveCustPrice(JsonConvert.SerializeObject(list));                
+                //webResponse = this.bathSaveCustPrice(JsonConvert.SerializeObject(list));                
                 webResponse.Code = "-1";
                 return webResponse;
             };

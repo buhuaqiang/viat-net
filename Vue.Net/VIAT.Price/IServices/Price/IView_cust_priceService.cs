@@ -27,5 +27,7 @@ namespace VIAT.Price.IServices
         WebResponseContent invalidData(object saveData);
 
         PageGridData<View_cust_price> GetGroupInvalidPageData(PageDataOptions options);
+
+        WebResponseContent importData(List<View_cust_price> list);
     }
 }
