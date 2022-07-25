@@ -407,7 +407,10 @@ namespace VIAT.WorkFlow.Services
 
         public List<Viat_app_cust_order> RecentOrder(string ProdctId, string CustomerId)
         {
-            string sSql = @"select * from viat_app_cust_order a where a.custdbid=@CustomerId and prod_dbid=ProdctId and created_date BETWEEN GETDATE() and GETDATE()-365";
+            string sSql = @"select  c_order.*,prod.prod_id,prod.prod_ename,cust.cust_id,cust.cust_name from  viat_app_cust_order c_order
+                            left join viat_com_prod prod on c_order.prod_dbid = prod.prod_dbid
+                            left join viat_com_cust cust on c_order.cust_dbid=cust.cust_dbid
+                            where  c_order.custdbid=@CustomerId and c_order.prod_dbid=ProdctId and c_order.created_date > DATEADD(year,-1,GETDATE())";
 
             return repository.DapperContext.QueryList<Viat_app_cust_order>(sSql, new { CustomerId = CustomerId, ProdctId = ProdctId });
         }
