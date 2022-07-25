@@ -428,6 +428,11 @@ namespace VIAT.WorkFlow.Services
             return repository.DapperContext.QueryList<Viat_app_cust_order>(sSql, new { });
         }
 
+        public View_wk_bid_price_apply_main getWkApplyMainByBidNO(string bid_no)
+        {
+            return repository.FindAsIQueryable(x => x.bid_no == bid_no).FirstOrDefault();
+        }
+
         public Viat_app_cust_price ProductPrice(string prod_dbid, string pricegroup_dbid)
         {
             PageGridData<Viat_app_cust_price> detailGrid = new PageGridData<Viat_app_cust_price>();

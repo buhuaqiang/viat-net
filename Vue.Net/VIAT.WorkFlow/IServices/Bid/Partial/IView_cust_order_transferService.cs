@@ -9,5 +9,6 @@ namespace VIAT.WorkFlow.IServices
 {
     public partial interface IView_cust_order_transferService
     {
+        public PageGridData<View_cust_order_transfer> GetAllPageData(PageDataOptions options);
     }
  }
