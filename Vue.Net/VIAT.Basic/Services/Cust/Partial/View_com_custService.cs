@@ -140,18 +140,10 @@ namespace VIAT.Basic.Services
 
                  return webResponse.OK();
              };*/
-            string dohInstituteNo = saveDataModel.MainData["doh_institute_no"].ToString();
-            string taxId = saveDataModel.MainData["tax_id"].ToString();
-            if (!string.IsNullOrEmpty(dohInstituteNo))
+            string result = NHIInstitute(saveDataModel);
+            if (!string.IsNullOrEmpty(result))
             {
-                if (repository.Exists(x => x.doh_institute_no.Equals(dohInstituteNo)))
-                {
-                    return webResponse.Error("NHI Institute no Already Exists");
-                }
-                if (repository.Exists(x => x.tax_id.Equals(taxId)))
-                {
-                    return webResponse.Error("Tax ID Already Exists");
-                }
+                return webResponse.Error(result);
             }
             string code = getCustID();
             Guid cust_dbid = Guid.NewGuid();
@@ -170,11 +162,16 @@ namespace VIAT.Basic.Services
 
         public override WebResponseContent Update(SaveModel saveModel)
         {
-             UpdateOnExecuting = (View_com_cust order, object addList, object updateList, List<object> delKeys) =>
+            string result = NHIInstitute(saveModel);
+            if (!string.IsNullOrEmpty(result))
+            {
+                return webResponse.Error(result);
+            }
+            UpdateOnExecuting = (View_com_cust order, object addList, object updateList, List<object> delKeys) =>
              {
 
-                return webResponse.OK();
-            };
+                 return webResponse.OK();
+             };
             return _viat_com_custService.Update(saveModel);
         }
 
@@ -235,7 +232,47 @@ namespace VIAT.Basic.Services
 
             return _repository.DapperContext.QueryFirst<View_com_cust>(sSql, null);
         }
+        /// <summary>
+        /// 查询doh_institute_no和tax_id是否有重复
+        /// </summary>
+        /// <param name="saveDataModel"></param>
+        /// <returns></returns>
+        private string NHIInstitute(SaveModel saveDataModel)
+        {
+            try
+            {
+                string result = "";
+                string custId = saveDataModel.MainData["cust_dbid"].ToString();
+                string dohInstituteNo = saveDataModel.MainData["doh_institute_no"].ToString();
+                string taxId = saveDataModel.MainData["tax_id"].ToString();
+                PageGridData<Viat_com_cust> detailGrid = new PageGridData<Viat_com_cust>();
+                if (!string.IsNullOrEmpty(dohInstituteNo))
+                {
+                    string sql = $"select count(1) from viat_com_cust where doh_institute_no='{dohInstituteNo}' and cust_dbid <> '{custId}'";
+                    detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { }).GetInt();
+                    if (detailGrid.total > 0)
+                    {
+                        throw new Exception("NHI Institute no Already Exists");
+                    }
+                }
+                if (!string.IsNullOrEmpty(taxId))
+                {
+                    string sql = $"select count(1) from viat_com_cust where tax_id='{taxId}' and cust_dbid <> '{custId}'";
+                    detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { }).GetInt();
+                    if (detailGrid.total > 0)
+                    {
+                        throw new Exception("Tax ID Already Exists");
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+           
+        }
 
-       
+
     }
 }
