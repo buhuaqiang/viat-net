@@ -11,6 +11,7 @@ using VIAT.Core.ManageUser;
 using VIAT.Core.Services;
 using VIAT.Core.Utilities;
 using VIAT.Entity.DomainModels;
+using VIAT.Entity.DomainModels.System;
 
 namespace VIAT.System.Services
 {
@@ -47,7 +48,10 @@ namespace VIAT.System.Services
                     .FirstOrDefaultAsync();
 
                 //if (user == null || loginInfo.Password.Trim().EncryptDES(AppSetting.Secret.User) != (user.UserPwd ?? ""))
-                    //return responseContent.Error(ResponseType.LoginError);
+                //return responseContent.Error(ResponseType.LoginError);
+                PageGridData<Viat_Sys_Org_Level_Detail> detailGrid = new PageGridData<Viat_Sys_Org_Level_Detail>();
+                string sql = $"select * from viat_sys_org_level_detail d where d.sysorg_dbid in (select sysorg_dbid from  viat_sys_org_level where status='Y') and d.emp_dbid =@empId";
+                detailGrid.rows = repository.DapperContext.QueryList<Viat_Sys_Org_Level_Detail>(sql, new { empId = user.emp_dbid });
 
                 string token = JwtHelper.IssueJwt(new UserInfo()
                 {
@@ -57,7 +61,7 @@ namespace VIAT.System.Services
                     ClientID = loginInfo.ClientID,
                     ClientUserName = loginInfo.ClientUserName ?? "",
                     ClientTrueUserName = loginInfo.ClientTrueUserName ?? "",
-                   
+                    TerritoryId = detailGrid.rows.Count() > 0 ? detailGrid.rows[0].Org_Id : ""
                 });
                 user.Token = token;
                 responseContent.Data = new { token, userName = user.UserTrueName, img = user.HeadImageUrl };
@@ -186,7 +190,8 @@ namespace VIAT.System.Services
                          RoleName = s.RoleName,
                          ClientID = UserContext.Current.ClientID,
                          ClientUserName = UserContext.Current.ClientUserName??"",
-                         ClientTrueUserName = UserContext.Current.ClientTrueUserName??""
+                         ClientTrueUserName = UserContext.Current.ClientTrueUserName??"",
+                         TerritoryId = UserContext.Current.TerritoryId??""
                     }) ;
 
                 if (userInfo == null) return responseContent.Error("未查到用户信息!");

@@ -100,7 +100,8 @@ namespace VIAT.System.Controllers
                                  RoleName = s.RoleName,
                                  ClientID = UserContext.Current.ClientID,
                                  ClientUserName = UserContext.Current.ClientUserName??"",
-                                 ClientTrueUserName = UserContext.Current.ClientTrueUserName??""
+                                 ClientTrueUserName = UserContext.Current.ClientTrueUserName??"",
+                                 TerritoryId = UserContext.Current.TerritoryId??""
                              }).FirstOrDefault();
 
                     if (userInfo == null) return Json(responseContent.Error("未查到用户信息!"));
