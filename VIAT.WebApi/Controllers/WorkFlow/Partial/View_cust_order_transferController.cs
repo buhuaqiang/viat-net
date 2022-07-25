@@ -38,5 +38,13 @@ namespace VIAT.WorkFlow.Controllers
         {
             return Json(_service.GetPageDataByOrderNO(loadData));
         }
+
+        [ApiActionPermission]
+        [HttpPost, Route("GetAllPageData")]
+        public ActionResult GetAllPageData([FromBody] PageDataOptions loadData)
+        {
+            return Json(_service.GetAllPageData(loadData));
+        }
+
     }
 }

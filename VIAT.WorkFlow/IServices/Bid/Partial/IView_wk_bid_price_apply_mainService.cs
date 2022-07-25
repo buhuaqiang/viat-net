@@ -14,6 +14,9 @@ namespace VIAT.WorkFlow.IServices
         WebResponseContent addSubmit(SaveModel saveModel);
 
         WebResponseContent Submit(object saveModel);
+
+        View_wk_bid_price_apply_main getWkApplyMainByBidNO(string bid_no);
+
         WebResponseContent processBack(string[] bidmast_dbidLst);
 
         List<Viat_app_cust_order> RecentOrder(string ProdctId, string CustomerId, string PricegroupiId);

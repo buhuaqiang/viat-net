@@ -119,5 +119,37 @@ namespace VIAT.WorkFlow.Services
             return base.CustomBatchProcessEntity(saveModel);
         }
 
+
+        public PageGridData<View_cust_order_transfer> GetAllPageData(PageDataOptions pageData)
+        {
+
+            PageGridData<View_cust_order_transfer> pageGridData = new PageGridData<View_cust_order_transfer>();
+             
+            QuerySql = @"SELECT 
+             ROW_NUMBER()over(order by trs.dbid desc) as rowId,
+            trs.* ,
+            cust.cust_id,
+            cust.cust_name,
+            prod.localmpg_dbid,
+            mpg.mpg_name,
+            prod.prod_id,
+            prod.prod_ename,
+            prod.state as prodStatus
+            FROM viat_app_cust_order_transfer trs
+            LEFT JOIN viat_com_prod prod on trs.prod_dbid=prod.prod_dbid
+            left join viat_com_cust cust on cust.cust_dbid=trs.cust_dbid
+            LEFT JOIN viat_com_local_mpg mpg on prod.localmpg_dbid=mpg.localmpg_dbid
+           WHERE ( 1 = 1 )
+		                           ";
+            string sql = "select count(1) from (" + QuerySql + ") a";
+            pageGridData.total = repository.DapperContext.ExecuteScalar(sql, null).GetInt();
+
+            // QuerySql += "  ORDER BY prod_id, modified_date"; 
+            sql = @$"select * from (" +
+                QuerySql + $" ) as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
+            pageGridData.rows = repository.DapperContext.QueryList<View_cust_order_transfer>(sql, null);
+            return pageGridData;
+        }
+
     }
 }

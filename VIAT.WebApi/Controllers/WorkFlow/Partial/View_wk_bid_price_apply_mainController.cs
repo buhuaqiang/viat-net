@@ -50,6 +50,14 @@ namespace VIAT.WorkFlow.Controllers
         {
             return Json(_service.processBack(bidmast_dbidLst));
         }
+
+        [ApiActionPermission]
+        [HttpGet, Route("getWkApplyMainByBidNO")]
+        public IActionResult getWkApplyMainByBidNO(string bid_no)
+        {
+            return Json(_service.getWkApplyMainByBidNO(bid_no));
+        }
+
         //[ApiActionPermission]
         [HttpGet, Route("RecentOrder")]
         public ActionResult RecentOrder(string ProdctId,string CustomerId, string PricegroupiId)
