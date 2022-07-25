@@ -1711,12 +1711,13 @@ namespace VIAT.Price.Services
 
         private WebResponseContent checkConfirmData(List<View_cust_price> list)
         {
+            string sMessage1 = "";
+            string sMessage2 = "";
+            string sMessage3 = "";
+            string sMessage4 = "";
             foreach (View_cust_price group in list)
             {
-                string sMessage1 = "";
-                string sMessage2 = "";
-                string sMessage3 = "";
-                string sMessage4 = "";
+                
                 if (group.invoice_price > group.nhi_price)
                 {
                     sMessage1 += "Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br/>";
@@ -1733,17 +1734,17 @@ namespace VIAT.Price.Services
                 if (string.IsNullOrEmpty(sMessage2) == false)
                 {
                     sMessage2 = "Invoice price ≠ NHI price but Invoice Price = Net Price.<br/><p>" + sMessage2 + "<br/>";
-                }
+                }                
+            }
 
-                if (string.IsNullOrEmpty(sMessage1) == false || string.IsNullOrEmpty(sMessage2) == false)
-                {
-                    string sConfirmMessage = sMessage1 + sMessage2 + "'</p>Do you want to import data?";
+            if (string.IsNullOrEmpty(sMessage1) == false || string.IsNullOrEmpty(sMessage2) == false)
+            {
+                string sConfirmMessage = sMessage1 + sMessage2 + "'</p>Do you want to import data?";
 
-                    webResponse.Code = "-2";
-                    webResponse.Url = "/api/View_cust_price/importData";
-                    webResponse.Data = list;
-                    return webResponse.Error(sConfirmMessage);                   
-                }
+                webResponse.Code = "-2";
+                webResponse.Url = "/api/View_cust_price/importData";
+                webResponse.Data = list;
+                return webResponse.Error(sConfirmMessage);
             }
 
             return webResponse.OK();
