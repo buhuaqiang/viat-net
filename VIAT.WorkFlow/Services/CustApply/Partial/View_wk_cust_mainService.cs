@@ -241,7 +241,8 @@ namespace VIAT.WorkFlow.Services
                 PageGridData<Viat_wk_cust> detailGrid = new PageGridData<Viat_wk_cust>();
                 if (!string.IsNullOrEmpty(dohInstituteNo))
                 {
-                    string sql = $"select count(1) from viat_wk_cust where doh_institute_no='{dohInstituteNo}' and wkcust_dbid <> '{wkCustId}'";
+                    string sql = $"select count(1) from viat_wk_cust where doh_institute_no='{dohInstituteNo}'";
+                    sql += string.IsNullOrEmpty(wkCustId) ? "" : $" and wkcust_dbid <> '{wkCustId}'";
                     detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { }).GetInt();
                     if (detailGrid.total > 0)
                     {
@@ -250,7 +251,8 @@ namespace VIAT.WorkFlow.Services
                 }
                 if (!string.IsNullOrEmpty(taxId))
                 {
-                    string sql = $"select count(1) from viat_wk_cust where tax_id='{taxId}' and wkcust_dbid <> '{wkCustId}'";
+                    string sql = $"select count(1) from viat_wk_cust where tax_id='{taxId}'";
+                    sql += string.IsNullOrEmpty(wkCustId) ? "" : $" and wkcust_dbid <> '{wkCustId}'";
                     detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { }).GetInt();
                     if (detailGrid.total > 0)
                     {
