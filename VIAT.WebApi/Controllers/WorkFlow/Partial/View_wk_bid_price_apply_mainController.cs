@@ -50,5 +50,11 @@ namespace VIAT.WorkFlow.Controllers
         {
             return Json(_service.processBack(bidmast_dbidLst));
         }
+        //[ApiActionPermission]
+        [HttpGet, Route("RecentOrder")]
+        public List<Viat_app_cust_order> RecentOrder([FromBody] string ProdctId,string CustomerId)
+        {
+            return _service.RecentOrder(ProdctId, CustomerId);
+        }
     }
 }
