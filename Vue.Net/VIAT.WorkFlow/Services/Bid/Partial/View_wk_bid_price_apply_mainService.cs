@@ -428,7 +428,7 @@ namespace VIAT.WorkFlow.Services
             return repository.DapperContext.QueryList<Viat_app_cust_order>(sSql, new { });
         }
 
-        public Viat_app_cust_price ProductPrice(string prod_id, string pricegroup_dbid)
+        public Viat_app_cust_price ProductPrice(string prod_dbid, string pricegroup_dbid)
         {
             PageGridData<Viat_app_cust_price> detailGrid = new PageGridData<Viat_app_cust_price>();
             var sql = @$"select * from viat_app_cust_price where status = 'Y' AND ( SysDateTime ( ) ) >= start_date AND ( SysDateTime ( ) ) <= end_date 
