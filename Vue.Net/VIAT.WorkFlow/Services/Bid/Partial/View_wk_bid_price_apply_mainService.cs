@@ -428,6 +428,15 @@ namespace VIAT.WorkFlow.Services
             return repository.DapperContext.QueryList<Viat_app_cust_order>(sSql, new { });
         }
 
+        public Viat_app_cust_price ProductPrice(string ProdctId, string PricegroupId)
+        {
+            PageGridData<Viat_app_cust_price> detailGrid = new PageGridData<Viat_app_cust_price>();
+            var sql = @$"select * from viat_app_cust_price where status = 'Y' AND ( SysDateTime ( ) ) >= start_date AND ( SysDateTime ( ) ) <= end_date 
+                            AND prod_dbid = '{ProdctId}' and pricegroup_dbid = '{PricegroupId}'";
+            detailGrid.rows = repository.DapperContext.QueryList<Viat_app_cust_price>(sql, new {});
+            return detailGrid.rows[0];
+        }
+
         #region 
 
         /// <summary>
