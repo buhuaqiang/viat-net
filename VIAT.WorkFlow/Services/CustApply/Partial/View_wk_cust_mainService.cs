@@ -66,9 +66,13 @@ namespace VIAT.WorkFlow.Services
         /// <returns></returns>
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
+            string result = NHIInstitute(saveDataModel);
+            if (!string.IsNullOrEmpty(result))
+            {
+                return webRespose.Error(result);
+            }
             addWKMaster(saveDataModel,"00");
 
-            
             return base.CustomBatchProcessEntity(saveDataModel);          
         }
 
@@ -80,6 +84,11 @@ namespace VIAT.WorkFlow.Services
 
        public override WebResponseContent Update(SaveModel saveModel)
         {
+            string result = NHIInstitute(saveModel);
+            if (!string.IsNullOrEmpty(result))
+            {
+                return webRespose.Error(result);
+            }
             string _status = saveModel.MainData.GetValue("status")?.ToString();
         
             updateWKMaster(saveModel, _status);
@@ -216,7 +225,45 @@ namespace VIAT.WorkFlow.Services
             custResult.detailType = typeof(Viat_wk_cust);
             saveDataModel.DetailListData.Add(custResult);
         }
-
+        /// <summary>
+        /// 查询doh_institute_no和tax_id是否有重复
+        /// </summary>
+        /// <param name="saveDataModel"></param>
+        /// <returns></returns>
+        private string NHIInstitute(SaveModel saveDataModel)
+        {
+            try
+            {
+                string result = "";
+                string wkCustId = saveDataModel.MainData["wkcust_dbid"].ToString();
+                string dohInstituteNo = saveDataModel.MainData["doh_institute_no"].ToString();
+                string taxId = saveDataModel.MainData["tax_id"].ToString();
+                PageGridData<Viat_wk_cust> detailGrid = new PageGridData<Viat_wk_cust>();
+                if (!string.IsNullOrEmpty(dohInstituteNo))
+                {
+                    string sql = $"select count(1) from viat_wk_cust where doh_institute_no='{dohInstituteNo}' and wkcust_dbid <> '{wkCustId}'";
+                    detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { }).GetInt();
+                    if (detailGrid.total > 0)
+                    {
+                        throw new Exception("NHI Institute no Already Exists");
+                    }
+                }
+                if (!string.IsNullOrEmpty(taxId))
+                {
+                    string sql = $"select count(1) from viat_wk_cust where tax_id='{taxId}' and wkcust_dbid <> '{wkCustId}'";
+                    detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { }).GetInt();
+                    if (detailGrid.total > 0)
+                    {
+                        throw new Exception("Tax ID Already Exists");
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+        }
         /// <summary>
         /// add master
         /// </summary>
@@ -276,9 +323,6 @@ namespace VIAT.WorkFlow.Services
             deliveryResult.detailType = typeof(Viat_app_cust_delivery_transfer);
             saveModel.DetailListData.Add(deliveryResult);
         }
-
-        
-
         #endregion
 
     }
