@@ -405,6 +405,13 @@ namespace VIAT.WorkFlow.Services
             return base.CustomBatchProcessEntity(saveModel);
         }
 
+        public List<Viat_app_cust_order> RecentOrder(string ProdctId, string CustomerId)
+        {
+            string sSql = @"select * from viat_app_cust_order a where a.custdbid=@CustomerId and prod_dbid=ProdctId and created_date BETWEEN GETDATE() and GETDATE()-365";
+
+            return repository.DapperContext.QueryList<Viat_app_cust_order>(sSql, new { CustomerId = CustomerId, ProdctId = ProdctId });
+        }
+
         #region 
 
         /// <summary>

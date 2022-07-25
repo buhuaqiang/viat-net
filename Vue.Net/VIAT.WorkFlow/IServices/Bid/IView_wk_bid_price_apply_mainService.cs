@@ -9,6 +9,5 @@ namespace VIAT.WorkFlow.IServices
 {
     public partial interface IView_wk_bid_price_apply_mainService : IService<View_wk_bid_price_apply_main>
     {
-        WebResponseContent processBack(string[] bidmast_dbidLst);
     }
 }
