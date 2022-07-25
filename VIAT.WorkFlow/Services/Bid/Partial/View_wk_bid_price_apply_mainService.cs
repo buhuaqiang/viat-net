@@ -46,6 +46,17 @@ namespace VIAT.WorkFlow.Services
             //base.Init(dbRepository);
         }
 
+        public enum enumOption
+        {
+            None,
+            add,
+            update,
+            addsubmit,
+            submit
+        }
+
+        private enumOption option = enumOption.None;
+
         WebResponseContent webRespose = new WebResponseContent();
 
         /// <summary>
@@ -55,6 +66,7 @@ namespace VIAT.WorkFlow.Services
         /// <returns></returns>
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
+            option = enumOption.add;
            addWKMaster(saveDataModel,"00",false);
 
             return base.CustomBatchProcessEntity(saveDataModel);
@@ -68,6 +80,7 @@ namespace VIAT.WorkFlow.Services
 
         public override WebResponseContent Update(SaveModel saveModel)
         {
+            option = enumOption.update;
             //根據主鍵取得master數據,只更新狀態
             string sbidmast_dbid = saveModel.MainData["bidmast_dbid"].ToString();
             updateWKMaster(saveModel,"00",false);
@@ -101,7 +114,7 @@ namespace VIAT.WorkFlow.Services
         /// <returns></returns>
         public WebResponseContent Submit([FromBody] object saveModelData)
         {
-
+            option = enumOption.submit;
             List<Dictionary<string, object>> lst = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(saveModelData.ToString());
             if (lst == null || lst.Count == 0)
             {
@@ -120,8 +133,8 @@ namespace VIAT.WorkFlow.Services
         /// <param name="saveModel"></param>
         /// <returns></returns>
         public WebResponseContent addSubmit([FromBody] SaveModel saveModel)
-        { 
-
+        {
+            option = enumOption.addsubmit;
             //判断是否为新增还是编辑
             string sbidmast_dbid = saveModel.MainData["bidmast_dbid"].ToString();
            
@@ -554,7 +567,10 @@ namespace VIAT.WorkFlow.Services
                     saveDataModel.DetailListData.Add(custResult);                    
                 }
 
-                processBidRelation(saveDataModel,bAddEditSubmit, masterEntry, bidList);
+                if (option == enumOption.addsubmit)
+                {
+                    processBidRelation(saveDataModel, bAddEditSubmit, masterEntry, bidList);
+                }
             }
 
         }
@@ -640,7 +656,10 @@ namespace VIAT.WorkFlow.Services
                         custResult.detailType = typeof(Viat_wk_ord_detail);                       
                     }
 
-                    processOrdRelation(saveDataModel, bAddEditSubmit, masterEntry, orderList);
+                    if (option == enumOption.addsubmit)
+                    {
+                        processOrdRelation(saveDataModel, bAddEditSubmit, masterEntry, orderList);
+                    }
                 }
             }
         }
