@@ -432,7 +432,7 @@ namespace VIAT.WorkFlow.Services
         {
             PageGridData<Viat_app_cust_price> detailGrid = new PageGridData<Viat_app_cust_price>();
             var sql = @$"select * from viat_app_cust_price where status = 'Y' AND ( SysDateTime ( ) ) >= start_date AND ( SysDateTime ( ) ) <= end_date 
-                            AND prod_dbid = '{prod_id}' and pricegroup_dbid = '{pricegroup_dbid}'";
+                            AND prod_dbid = '{prod_dbid}' and pricegroup_dbid = '{pricegroup_dbid}'";
             detailGrid.rows = repository.DapperContext.QueryList<Viat_app_cust_price>(sql, new {});
             return detailGrid.rows[0];
         }
