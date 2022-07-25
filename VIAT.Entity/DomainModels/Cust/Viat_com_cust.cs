@@ -349,7 +349,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="主鍵")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-       public Guid? cust_dbid { get; set; }
+       public Guid cust_dbid { get; set; }
 
        /// <summary>
        ///客戶地址郵區代碼
