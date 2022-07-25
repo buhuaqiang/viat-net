@@ -55,7 +55,7 @@ namespace VIAT.Core.ManageUser
                 {
                     return _userInfo;
                 }
-                return GetUserInfo(UserId, ClientID, ClientUserName, ClientTrueUserName);
+                return GetUserInfo(UserId, ClientID, ClientUserName, ClientTrueUserName,TerritoryId);
             }
         }
 
@@ -76,7 +76,7 @@ namespace VIAT.Core.ManageUser
             return roleId == 1;
         }
 
-        public UserInfo GetUserInfo(int userId,int? nClientID, string sClientUserName, string sClientTrueUserName)
+        public UserInfo GetUserInfo(int userId,int? nClientID, string sClientUserName, string sClientTrueUserName,string sTerritoryId)
         {
             if (_userInfo != null) return _userInfo;
             if (userId <= 0)
@@ -99,7 +99,8 @@ namespace VIAT.Core.ManageUser
                     UserTrueName = s.UserTrueName,
                     ClientID = nClientID,
                     ClientUserName = sClientUserName,
-                    ClientTrueUserName = sClientTrueUserName,                 
+                    ClientTrueUserName = sClientTrueUserName,         
+                    TerritoryId = sTerritoryId,
                     Enable = s.Enable
                 }).FirstOrDefault();
 
@@ -384,6 +385,13 @@ namespace VIAT.Core.ManageUser
             get
             {
                 return (Context.User.FindFirstValue("ClientTrueUserName"))?.ToString();
+            }
+        }
+        public string TerritoryId
+        {
+            get
+            {
+                return (Context.User.FindFirstValue("TerritoryId"))?.ToString();
             }
         }
         public string UserName

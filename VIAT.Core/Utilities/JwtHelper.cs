@@ -28,6 +28,7 @@ namespace VIAT.Core.Utilities
                  new Claim("ClientID",userInfo?.ClientID?.ToString()),
                  new Claim("ClientUserName",userInfo.ClientUserName.ToString()),
                   new Claim("ClientTrueUserName",userInfo.ClientTrueUserName.ToString()),
+                   new Claim("TerritoryId",userInfo.TerritoryId.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti,userInfo.User_Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Iat, $"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}"),
                 new Claim(JwtRegisteredClaimNames.Nbf,$"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}") ,

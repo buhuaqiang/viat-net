@@ -19,7 +19,6 @@ namespace VIAT.Entity.DomainModels
         public string UserTrueName { get; set; }
         public int  Enable { get; set; }
         public string Token { get; set; }
-
         /*增加代理人信息*/
         /// <summary>
         /// 代理人ID
@@ -33,5 +32,7 @@ namespace VIAT.Entity.DomainModels
         /// 代理人名称
         /// </summary>
         public string ClientTrueUserName { get; set; }
+        public string TerritoryId { get; set; }
+
     }
 }
