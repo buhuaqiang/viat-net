@@ -17,6 +17,6 @@ namespace VIAT.WorkFlow.IServices
         WebResponseContent processBack(string[] bidmast_dbidLst);
 
         List<Viat_app_cust_order> RecentOrder(string ProdctId, string CustomerId, string PricegroupiId);
-        Viat_app_cust_price ProductPrice(string ProdctId, string PricegroupId);
+        Viat_app_cust_price ProductPrice(string prod_id, string pricegroup_dbid);
     }
  }

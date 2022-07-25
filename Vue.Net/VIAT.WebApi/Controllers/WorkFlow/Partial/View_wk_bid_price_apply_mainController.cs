@@ -57,9 +57,9 @@ namespace VIAT.WorkFlow.Controllers
             return Json(_service.RecentOrder(ProdctId, CustomerId, PricegroupiId));
         }
         [HttpGet, Route("ProductPrice")]
-        public ActionResult ProductPrice([FromBody] string ProdctId,string PricegroupId)
+        public ActionResult ProductPrice([FromBody] string prod_id, string pricegroup_dbid)
         {
-            return Json(_service.ProductPrice(ProdctId, PricegroupId));
+            return Json(_service.ProductPrice(prod_id, pricegroup_dbid));
         }
     }
 }
