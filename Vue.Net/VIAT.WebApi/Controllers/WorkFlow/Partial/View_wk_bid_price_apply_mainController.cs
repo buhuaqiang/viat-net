@@ -60,9 +60,9 @@ namespace VIAT.WorkFlow.Controllers
 
         //[ApiActionPermission]
         [HttpGet, Route("RecentOrder")]
-        public ActionResult RecentOrder(string ProdctId,string CustomerId, string PricegroupiId)
+        public ActionResult RecentOrder(string prod_dbid, string cust_dbid, string pricegroup_dbid)
         {
-            return Json(_service.RecentOrder(ProdctId, CustomerId, PricegroupiId));
+            return Json(_service.RecentOrder(prod_dbid, cust_dbid, pricegroup_dbid));
         }
         [HttpGet, Route("ProductPrice")]
         public ActionResult ProductPrice(string prod_dbid, string pricegroup_dbid)
