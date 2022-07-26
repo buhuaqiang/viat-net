@@ -113,7 +113,8 @@ namespace VIAT.WorkFlow.Services
 
         public List<View_cust_price_detail> CustPriceDetailData(string pricegroup_dbid, string[] prod_dbid)
         {
-            string str = string.Format("'{0}'", string.Join(",", prod_dbid.ToArray()).Replace(",", "','")); ;
+
+            string str = string.Format("'{0}'", string.Join(",", prod_dbid.ToArray()).Replace(",", "','"));
             string sql = @$"SELECT
 	                    detail.pricedetail_dbid,
 	                    detail.cust_dbid,
@@ -135,9 +136,9 @@ namespace VIAT.WorkFlow.Services
                     WHERE
 	                    1 = 1 
 	                    AND detail.cust_dbid IN ( SELECT DISTINCT cust_dbid FROM viat_app_cust_group WHERE pricegroup_dbid = '{pricegroup_dbid}') 
-	                    AND prod_dbid IN ({str})";
-            List<View_cust_price_detail> lstProceDetail = (List<View_cust_price_detail>)repository.DapperContext.ExecuteScalar(sql,null);
-            return lstProceDetail;
+	                    AND detail.prod_dbid IN ({str})";
+            //List<View_cust_price_detail> lstProceDetail = (List<View_cust_price_detail>)repository.DapperContext.ExecuteScalar(sql,null);
+            return repository.DapperContext.QueryList<View_cust_price_detail>(sql, new { });
         }
 
 
