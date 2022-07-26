@@ -22,7 +22,7 @@ namespace VIAT.Price.IServices
         List<View_cust_price_detail> GetCustInvalidList(string cust_dbid, string prod_dbid,string channel);
 
 
-        WebResponseContent importData(List<View_cust_price> list);
+        WebResponseContent importData(List<View_cust_price_detail> list);
 
     }
 }
