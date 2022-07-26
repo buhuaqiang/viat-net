@@ -1448,11 +1448,12 @@ namespace VIAT.Core.BaseProvider
                     Object obj1 = JsonConvert.DeserializeObject(listdata);
                     Newtonsoft.Json.Linq.JObject js1 = obj1 as Newtonsoft.Json.Linq.JObject;//把上面的obj转换为 Jobject对象
 
+                    bool bHaveKey = false;
+                    PropertyInfo mainKey = type.GetKeyProperty();
                     foreach (var item in js1)
                     {
                         string sKey = item.Key;
-                        object sData = item.Value;
-
+                        object sData = item.Value; 
                         foreach (PropertyInfo pInfoTmp in pInfo)
                         {
                             if(pInfoTmp.GetDisplayName()== "CanNotWrite")
@@ -1470,17 +1471,30 @@ namespace VIAT.Core.BaseProvider
                                 {
                                     dicRow.Add(sKey, sData);
                                 }
-                            }
+                            }                      
 
                         }
-
+                        //检查是否有主键，没有则增加
+                       if(sKey.ToLower() == mainKey.Name.ToLower())
+                        {
+                            bHaveKey = true;
+                        }
                     }
+
+                    if(bHaveKey == false)
+                    {
+                        dicRow.Add(mainKey.Name, "");
+                    }
+
                     dictionaryResult.Add(dicRow);
 
                 }
 
               
-            }     
+            }
+
+         
+          
 
             return dictionaryResult;
         }
