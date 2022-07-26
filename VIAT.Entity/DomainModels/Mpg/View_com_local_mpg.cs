@@ -48,6 +48,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string mpg_id { get; set; }
 
        /// <summary>
