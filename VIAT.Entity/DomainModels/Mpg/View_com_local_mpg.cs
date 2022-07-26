@@ -222,14 +222,6 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="dbid")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
        [Display(Name ="pm_id")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
