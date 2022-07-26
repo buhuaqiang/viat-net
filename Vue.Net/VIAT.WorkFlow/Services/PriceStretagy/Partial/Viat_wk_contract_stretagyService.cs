@@ -75,9 +75,17 @@ namespace VIAT.WorkFlow.Services
             //处理表头
             SaveModel.DetailListDataResult headResult = new SaveModel.DetailListDataResult();
             string contstret_dbid = "";
-            Viat_wk_contract_stretagy head = new Viat_wk_contract_stretagy();
-            head = JsonConvert.DeserializeObject<Viat_wk_contract_stretagy>(JsonConvert.SerializeObject(saveDataModel.MainData));
-            if(head.contstret_dbid!= null && head.contstret_dbid.ToString() != getDefaultGuid(typeof(Viat_wk_contract_stretagy)))
+ 
+            if(saveDataModel.MainData.ContainsKey("contstret_dbid")==false)
+            {
+                saveDataModel.MainData.Add("contstret_dbid", "");
+            }
+            if(saveDataModel.MainData["contstret_dbid"]!= null && string.IsNullOrEmpty(saveDataModel.MainData["contstret_dbid"].ToString()) == true)
+            {
+                saveDataModel.MainData["contstret_dbid"] = getDefaultGuid(typeof(Viat_wk_contract_stretagy));
+            }
+           
+            if(saveDataModel.MainData["contstret_dbid"] != null && saveDataModel.MainData["contstret_dbid"].ToString() != getDefaultGuid(typeof(Viat_wk_contract_stretagy)))
             {
                 //更新
                 contstret_dbid = saveDataModel.MainData["contstret_dbid"].ToString();
@@ -86,7 +94,6 @@ namespace VIAT.WorkFlow.Services
             else
             {
                 contstret_dbid= System.Guid.NewGuid().ToString();
-
                 //新增
                 headResult.optionType = SaveModel.MainOptionType.add;
                 saveDataModel.MainData["contstret_dbid"] = contstret_dbid;
@@ -94,7 +101,7 @@ namespace VIAT.WorkFlow.Services
             
             headResult.detailType = typeof(Viat_wk_contract_stretagy);
             //增加表头处理
-            headResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string,object>>(JsonConvert.SerializeObject(head)));
+            headResult.DetailData.Add(saveDataModel.MainData);
             saveDataModel.DetailListData.Add(headResult);
 
             //处理表体
@@ -116,19 +123,20 @@ namespace VIAT.WorkFlow.Services
                     {
                         string sData = dicTmp["value"]?.ToString();
                         //新增
-                        List<Viat_wk_cont_stretagy_detail> list = JsonConvert.DeserializeObject<List<Viat_wk_cont_stretagy_detail>>(sData);
-                        foreach(Viat_wk_cont_stretagy_detail deatil in list)
+                        List<Dictionary<string,object>> dicList = base.CalcSameEntiryProperties(typeof(Viat_wk_cont_stretagy_detail), sData);
+       
+                        foreach(Dictionary<string, object> deatil in dicList)
                         {
-                            if(deatil.contstretail_dbid!=null && deatil.contstretail_dbid.ToString() != getDefaultGuid(typeof(Viat_wk_cont_stretagy_detail)))
+                            if(deatil["contstretail_dbid"] != null && string.IsNullOrEmpty(deatil["contstretail_dbid"].ToString())==false)
                             {
                                 //更新
-                                updateResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(deatil)));
+                                updateResult.DetailData.Add(deatil);
                             }
                             else
                             {
                                 //新增
-                                deatil.contstretail_dbid = System.Guid.NewGuid();
-                                deatil.contstret_dbid = head.contstret_dbid;
+                                deatil["contstretail_dbid"] = System.Guid.NewGuid();
+                                deatil["contstret_dbid"] = contstret_dbid;
                                 insertResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(deatil)));
 
                             }
