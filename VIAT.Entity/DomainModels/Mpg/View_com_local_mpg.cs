@@ -48,7 +48,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string mpg_id { get; set; }
 
        /// <summary>
@@ -116,8 +115,9 @@ namespace VIAT.Entity.DomainModels
        ///Global Mpg Name
        /// </summary>
        [Display(Name ="Global Mpg Name")]
-       [MaxLength(15)]
-       [Column(TypeName="nvarchar(15)")]
+       [MaxLength(66)]
+       [Column(TypeName="nvarchar(66)")]
+       [Required(AllowEmptyStrings=false)]
        public string globalMpgName { get; set; }
 
        /// <summary>
@@ -222,10 +222,50 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="supervisor_id")]
+       [Display(Name ="dbid")]
+       [Column(TypeName="int")]
+       [Required(AllowEmptyStrings=false)]
+       public int dbid { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="pm_id")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
-       public string supervisor_id { get; set; }
+       public string pm_id { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="ma_name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       public string ma_name { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="pm_name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       public string pm_name { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="medica_reviewe_id")]
+       [MaxLength(5)]
+       [Column(TypeName="varchar(5)")]
+       public string medica_reviewe_id { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="medica_reviewe_name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       public string medica_reviewe_name { get; set; }
 
        
     }

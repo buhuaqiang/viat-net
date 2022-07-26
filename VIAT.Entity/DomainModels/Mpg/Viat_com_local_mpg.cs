@@ -48,7 +48,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string mpg_id { get; set; }
 
        /// <summary>
@@ -194,12 +193,52 @@ namespace VIAT.Entity.DomainModels
        public string ma_id { get; set; }
 
        /// <summary>
-       ///主管(預留欄位)
+       ///識別碼, PK, Identity
        /// </summary>
-       [Display(Name ="主管(預留欄位)")]
+       [Display(Name ="識別碼, PK, Identity")]
+       [Column(TypeName="int")]
+       [Required(AllowEmptyStrings=false)]
+       public int dbid { get; set; }
+
+       /// <summary>
+       ///主管代碼(預留)
+       /// </summary>
+       [Display(Name ="主管代碼(預留)")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
-       public string supervisor_id { get; set; }
+       public string pm_id { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="ma_name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       public string ma_name { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="pm_name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       public string pm_name { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="medical_reviewe_id")]
+       [MaxLength(5)]
+       [Column(TypeName="varchar(5)")]
+       public string medical_reviewe_id { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="medical_reviewe_name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       public string medical_reviewe_name { get; set; }
 
        
     }
