@@ -50,8 +50,8 @@ namespace VIAT.System.Services
                 //if (user == null || loginInfo.Password.Trim().EncryptDES(AppSetting.Secret.User) != (user.UserPwd ?? ""))
                 //return responseContent.Error(ResponseType.LoginError);
                 PageGridData<Viat_Sys_Org_Level_Detail> detailGrid = new PageGridData<Viat_Sys_Org_Level_Detail>();
-                //string sql = $"select * from viat_sys_org_level_detail d where d.sysorg_dbid in (select sysorg_dbid from  viat_sys_org_level where status='Y') and d.emp_dbid ='{user.emp_dbid}'";
-                //detailGrid.rows = repository.DapperContext.QueryList<Viat_Sys_Org_Level_Detail>(sql, new { });
+                string sql = $"select * from viat_sys_org_level_detail d where d.sysorg_dbid in (select sysorg_dbid from  viat_sys_org_level where status='Y') and d.emp_dbid ='{user.emp_dbid}'";
+                detailGrid.rows = repository.DapperContext.QueryList<Viat_Sys_Org_Level_Detail>(sql, new { });
 
                 string token = JwtHelper.IssueJwt(new UserInfo()
                 {
@@ -61,7 +61,7 @@ namespace VIAT.System.Services
                     ClientID = loginInfo.ClientID,
                     ClientUserName = loginInfo.ClientUserName ?? "",
                     ClientTrueUserName = loginInfo.ClientTrueUserName ?? "",
-                    TerritoryId ="01515" //detailGrid.rows.Count() > 0 ? detailGrid.rows[0].Org_Id : ""
+                    TerritoryId = detailGrid.rows.Count() > 0 ? detailGrid.rows[0].Org_Id : ""//"01515"
                 });
                 user.Token = token;
                 responseContent.Data = new { token, userName = user.UserTrueName, img = user.HeadImageUrl };
