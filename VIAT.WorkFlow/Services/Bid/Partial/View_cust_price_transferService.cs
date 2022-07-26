@@ -106,9 +106,11 @@ namespace VIAT.WorkFlow.Services
         /// <returns></returns>
         public override WebResponseContent Update(SaveModel saveModel)
         {
+
+            return null;
             //根據主鍵取得master數據,只更新狀態
-            processBidAndOrder(saveModel);
-            return base.CustomBatchProcessEntity(saveModel);
+           // processBidAndOrder(saveModel);
+           // return base.CustomBatchProcessEntity(saveModel);
         }
 
         public List<View_cust_price_detail> CustPriceDetailData(string pricegroup_dbid, string[] prod_dbid)

@@ -66,7 +66,12 @@ namespace VIAT.Price.Services
             return base.GetPageData(options);
         }
 
-
+        /// <summary>
+        /// 暫時不用了(和其他接口重複)
+        /// </summary>
+        /// <param name="prod_dbid"></param>
+        /// <param name="cust_dbid"></param>
+        /// <returns></returns>
         public Viat_app_cust_price_group getPriceGroupByCustAndProd(string prod_dbid, string cust_dbid)
         {
             if(prod_dbid!=null && cust_dbid != null)
