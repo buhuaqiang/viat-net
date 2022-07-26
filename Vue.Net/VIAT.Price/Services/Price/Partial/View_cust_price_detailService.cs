@@ -344,17 +344,17 @@ namespace VIAT.Price.Services
                     JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid where 1=1";
             QuerySql += sGroupConditon;
 
-            
 
-                /*base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {
-                    {
-                        x.prod_id,QueryOrderBy.Asc
-                    },{
-                        x.updated_date,QueryOrderBy.Asc
-                    }
-                };*/
 
-                return base.GetPageData(options);
+            /*base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {
+                {
+                    x.prod_id,QueryOrderBy.Asc
+                },{
+                    x.updated_date,QueryOrderBy.Asc
+                }
+            };*/
+            setQueryParameters();
+            return base.GetPageData(options);
         }
 
 
