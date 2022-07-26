@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Entity.DomainModels;
 using VIAT.WorkFlow.IServices;
+using VIAT.Core.Filters;
 
 namespace VIAT.WorkFlow.Controllers
 {
@@ -28,6 +29,13 @@ namespace VIAT.WorkFlow.Controllers
         {
             _service = service;
             _httpContextAccessor = httpContextAccessor;
+        }
+
+        [ApiActionPermission]
+        [HttpPost, Route("addSubmit")]
+        public ActionResult CustPriceDetailData(string pricegroup_dbid, string[] prod_dbid)
+        {
+            return Json(_service.CustPriceDetailData(pricegroup_dbid, prod_dbid));
         }
     }
 }
