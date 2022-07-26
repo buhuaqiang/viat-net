@@ -61,7 +61,7 @@ namespace VIAT.Price.Services
                      x.updated_date,QueryOrderBy.Asc
                  }
              };*/
-
+            setQueryParameters();
             return base.GetPageData(options);
         }
 
@@ -1846,9 +1846,9 @@ namespace VIAT.Price.Services
 
         #endregion
 
-        /*public override WebResponseContent Export(PageDataOptions pageData)
+      /*  public override WebResponseContent Export(PageDataOptions pageData)
         {
-            ExportColumns = x => new {  };
+            ExportColumns = x => new { };
             return base.Export(pageData);
         }*/
     }
