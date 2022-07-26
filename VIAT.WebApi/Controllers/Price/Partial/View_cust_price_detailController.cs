@@ -91,7 +91,7 @@ namespace VIAT.Price.Controllers
 
         [ApiActionPermission]
         [HttpPost, Route("importData")]
-        public ActionResult importData([FromBody] List<View_cust_price> list)
+        public ActionResult importData([FromBody] List<View_cust_price_detail> list)
         {
             return Json(_service.importData(list));
         }
