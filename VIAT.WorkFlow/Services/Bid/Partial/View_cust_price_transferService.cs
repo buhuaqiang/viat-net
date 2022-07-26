@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using VIAT.Price.Services;
+using System.Text.RegularExpressions;
 
 namespace VIAT.WorkFlow.Services
 {
@@ -110,11 +111,38 @@ namespace VIAT.WorkFlow.Services
             return base.CustomBatchProcessEntity(saveModel);
         }
 
-
+        public List<View_cust_price_detail> CustPriceDetailData(string pricegroup_dbid, string[] prod_dbid)
+        {
+            string str = string.Format("'{0}'", string.Join(",", prod_dbid.ToArray()).Replace(",", "','")); ;
+            string sql = @$"SELECT
+	                    detail.pricedetail_dbid,
+	                    detail.cust_dbid,
+	                    detail.prod_dbid,
+	                    cust.cust_id,
+	                    cust.cust_name,
+	                    prod.prod_id,
+	                    prod.prod_ename,
+	                    detail.invoice_price,
+	                    detail.net_price,
+	                    detail.min_qty,
+	                    detail.start_date,
+	                    detail.end_date,
+	                    detail.status 
+                    FROM
+	                    viat_app_cust_price_detail detail
+	                    LEFT JOIN viat_com_cust cust ON detail.cust_dbid = cust.cust_dbid
+	                    LEFT JOIN viat_com_prod prod ON prod.prod_dbid = detail.prod_dbid 
+                    WHERE
+	                    1 = 1 
+	                    AND detail.cust_dbid IN ( SELECT DISTINCT cust_dbid FROM viat_app_cust_group WHERE pricegroup_dbid = '{pricegroup_dbid}') 
+	                    AND prod_dbid IN ({str})";
+            List<View_cust_price_detail> lstProceDetail = (List<View_cust_price_detail>)repository.DapperContext.ExecuteScalar(sql,null);
+            return lstProceDetail;
+        }
 
 
         #region         
-         
+
 
         /// <summary>
         /// 处理bid order 
@@ -420,13 +448,17 @@ namespace VIAT.WorkFlow.Services
                         continue;
                     }
 
+                    List<Viat_app_cust_order> lstCustOrder = repository.DbContext.Set<Viat_app_cust_order>().Where(a => a.order_no.Contains("ORDER" + DateTime.Now.ToString("YYYYMMDD"))).OrderByDescending(a => a.order_no).ToList();
+
+                    string result = lstCustOrder.Count() > 0 ? Regex.Match(lstCustOrder[0].order_no, @"\d+$").Value.PadLeft(4, '0') : "1".PadLeft(4, '0');
+
                     //把cust記錄寫入transfer, delivery transfer
                     Viat_app_cust_order custOrder = JsonConvert.DeserializeObject<Viat_app_cust_order>(JsonConvert.SerializeObject(order));
                     custOrder.order_dbid = System.Guid.NewGuid();
                     //处理bidno 
                     custOrder.cust_dbid = order.cust_dbid;
                     custOrder.state = "0";
-                    custOrder.order_no = "123";
+                    custOrder.order_no = "ORDER" + DateTime.Now.ToString("YYYYMMDD") + result;
                     custOrder.prod_dbid = order.prod_dbid;
                     custOrder.qty = order.qty;
                     custOrder.remarks = sRemark;
