@@ -26,6 +26,8 @@ using VIAT.Price.Services;
 using VIAT.Basic.Services;
 using VIAT.Core.DBManager;
 using VIAT.Core.Dapper;
+using System.Text.RegularExpressions;
+
 namespace VIAT.WorkFlow.Services
 {
     public partial class View_wk_bid_price_apply_mainService
@@ -66,10 +68,18 @@ namespace VIAT.WorkFlow.Services
         /// <returns></returns>
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
-            option = enumOption.add;
-           addWKMaster(saveDataModel,"00",false);
+            try
+            {
+                option = enumOption.add;
+                addWKMaster(saveDataModel, "00", false);
 
-            return base.CustomBatchProcessEntity(saveDataModel);
+                return base.CustomBatchProcessEntity(saveDataModel);
+            }
+            catch (Exception ex)
+            {
+                return webRespose.Error(ex.Message);
+            }
+           
         }
 
         /// <summary>
@@ -80,14 +90,22 @@ namespace VIAT.WorkFlow.Services
 
         public override WebResponseContent Update(SaveModel saveModel)
         {
-            option = enumOption.update;
-            //根據主鍵取得master數據,只更新狀態
-            string sbidmast_dbid = saveModel.MainData["bidmast_dbid"].ToString();
-            updateWKMaster(saveModel,"00",false);
+            try
+            {
+                option = enumOption.update;
+                //根據主鍵取得master數據,只更新狀態
+                string sbidmast_dbid = saveModel.MainData["bidmast_dbid"].ToString();
+                updateWKMaster(saveModel, "00", false);
 
-            Viat_wk_master masterEntry = JsonConvert.DeserializeObject<Viat_wk_master>(JsonConvert.SerializeObject(saveModel.MainData));
-            processBidAndOrder(saveModel, masterEntry, false);
-            return base.CustomBatchProcessEntity(saveModel);
+                Viat_wk_master masterEntry = JsonConvert.DeserializeObject<Viat_wk_master>(JsonConvert.SerializeObject(saveModel.MainData));
+                processBidAndOrder(saveModel, masterEntry, false);
+                return base.CustomBatchProcessEntity(saveModel);
+            }
+            catch (Exception ex)
+            {
+                return webRespose.Error(ex.Message);
+            }
+            
         }
         public override WebResponseContent Del(object[] keys, bool delList = true)
         {
@@ -114,17 +132,25 @@ namespace VIAT.WorkFlow.Services
         /// <returns></returns>
         public WebResponseContent Submit([FromBody] object saveModelData)
         {
-            option = enumOption.submit;
-            List<Dictionary<string, object>> lst = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(saveModelData.ToString());
-            if (lst == null || lst.Count == 0)
+            try
             {
-                return webRespose.Error("no data");
-            }
-            SaveModel saveModel = new SaveModel();
-            saveModel.MainData = lst[0];
+                option = enumOption.submit;
+                List<Dictionary<string, object>> lst = JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(saveModelData.ToString());
+                if (lst == null || lst.Count == 0)
+                {
+                    return webRespose.Error("no data");
+                }
+                SaveModel saveModel = new SaveModel();
+                saveModel.MainData = lst[0];
 
-            processSubmit(saveModel,false);
-            return base.CustomBatchProcessEntity(saveModel);
+                processSubmit(saveModel, false);
+                return base.CustomBatchProcessEntity(saveModel);
+            }
+            catch (Exception ex)
+            {
+                return webRespose.Error(ex.Message);
+            }
+            
         }
 
         /// <summary>
@@ -134,12 +160,20 @@ namespace VIAT.WorkFlow.Services
         /// <returns></returns>
         public WebResponseContent addSubmit([FromBody] SaveModel saveModel)
         {
-            option = enumOption.addsubmit;
-            //判断是否为新增还是编辑
-            string sbidmast_dbid = saveModel.MainData["bidmast_dbid"].ToString();
-           
-            processSubmit(saveModel,true);
-            return base.CustomBatchProcessEntity(saveModel);
+            try
+            {
+                option = enumOption.addsubmit;
+                //判断是否为新增还是编辑
+                string sbidmast_dbid = saveModel.MainData["bidmast_dbid"].ToString();
+
+                processSubmit(saveModel, true);
+                return base.CustomBatchProcessEntity(saveModel);
+            }
+            catch (Exception ex)
+            {
+                return webRespose.Error(ex.Message);
+            }
+            
         }
 
         /// <summary>
@@ -148,29 +182,34 @@ namespace VIAT.WorkFlow.Services
         /// <param name="saveModel"></param>
         private void processSubmit(SaveModel saveModel,bool bAddEditSubmit)
         {
-            string sBidMasterBDID = saveModel.MainData["bidmast_dbid"]?.ToString();     
-            if(string.IsNullOrEmpty(sBidMasterBDID)==true)            
+            try
             {
-                sBidMasterBDID = System.Guid.NewGuid().ToString();
+                string sBidMasterBDID = saveModel.MainData["bidmast_dbid"]?.ToString();
+                if (string.IsNullOrEmpty(sBidMasterBDID) == true)
+                {
+                    sBidMasterBDID = System.Guid.NewGuid().ToString();
+                }
+                processWKMaster(saveModel, sBidMasterBDID, "03");
+                string sJson = JsonConvert.SerializeObject(saveModel.MainData);
+                if (saveModel.MainData.ContainsKey("upload") == true)
+                {
+                    saveModel.MainData.Remove("upload");
+                }
+                Viat_wk_master masterEntry = JsonConvert.DeserializeObject<Viat_wk_master>(JsonConvert.SerializeObject(saveModel.MainData));
+                if (bAddEditSubmit == true)
+                {
+                    processBidAndOrder(saveModel, masterEntry, bAddEditSubmit);
+                }
+                else
+                {
+                    processBidRelation(saveModel, bAddEditSubmit, masterEntry, new List<Viat_wk_bid_detail> { });
+                    processOrdRelation(saveModel, bAddEditSubmit, masterEntry, new List<Viat_wk_ord_detail> { });
+                }
             }
-            processWKMaster(saveModel, sBidMasterBDID, "03");
-            string sJson = JsonConvert.SerializeObject(saveModel.MainData);
-            if(saveModel.MainData.ContainsKey("upload")==true)
+            catch (Exception ex)
             {
-                saveModel.MainData.Remove("upload");
+                throw new Exception(ex.Message);
             }
-            Viat_wk_master masterEntry = JsonConvert.DeserializeObject<Viat_wk_master>(JsonConvert.SerializeObject(saveModel.MainData));
-            if (bAddEditSubmit == true)
-            {
-                processBidAndOrder(saveModel, masterEntry, bAddEditSubmit);
-            }
-            else
-            {
-                processBidRelation(saveModel, bAddEditSubmit,masterEntry, new List<Viat_wk_bid_detail> { });
-                processOrdRelation(saveModel, bAddEditSubmit, masterEntry, new List<Viat_wk_ord_detail> { });
-            }
-          
-
         }
 
         /// <summary>
@@ -424,19 +463,19 @@ namespace VIAT.WorkFlow.Services
         /// <param name="CustomerId"></param>
         /// <param name="PricegroupiId"></param>
         /// <returns></returns>
-        public List<Viat_app_cust_order> RecentOrder(string ProdctId, string CustomerId,string PricegroupiId)
+        public List<Viat_app_cust_order> RecentOrder(string prod_dbid, string cust_dbid, string pricegroup_dbid)
         {
             string sSql = $"select  c_order.*,prod.prod_id,prod.prod_ename,cust.cust_id,cust.cust_name from  viat_app_cust_order c_order" +
                            $" left join viat_com_prod prod on c_order.prod_dbid = prod.prod_dbid" +
                            $" left join viat_com_cust cust on c_order.cust_dbid=cust.cust_dbid" +
-                           $" where c_order.prod_dbid= '{ProdctId}' and c_order.created_date > DATEADD(year,-1,GETDATE())";
-            if (!string.IsNullOrEmpty(PricegroupiId))
+                           $" where c_order.prod_dbid= '{prod_dbid}' and c_order.created_date > DATEADD(year,-1,GETDATE())";
+            if (!string.IsNullOrEmpty(pricegroup_dbid))
             {
-                sSql += $" and cust.cust_dbid in (SELECT distinct cust_dbid from viat_app_cust_group where pricegroup_dbid='{PricegroupiId}')";
+                sSql += $" and cust.cust_dbid in (SELECT distinct cust_dbid from viat_app_cust_group where pricegroup_dbid='{pricegroup_dbid}')";
             }
-            if (!string.IsNullOrEmpty(CustomerId))
+            if (!string.IsNullOrEmpty(cust_dbid))
             {
-                sSql += $"and cust.cust_dbid='{CustomerId}'";
+                sSql += $"and cust.cust_dbid='{cust_dbid}'";
             }
             return repository.DapperContext.QueryList<Viat_app_cust_order>(sSql, new { });
         }
@@ -463,13 +502,20 @@ namespace VIAT.WorkFlow.Services
         /// <param name="saveModel"></param>
         private void addWKMaster(SaveModel saveDataModel,string sStatus, bool bSubmit)
         {
+            try
+            {
+                string sbidMastDBID = Guid.NewGuid().ToString();
+                processWKMaster(saveDataModel, sbidMastDBID, sStatus);
 
-            string sbidMastDBID = Guid.NewGuid().ToString();
-            processWKMaster(saveDataModel, sbidMastDBID, sStatus);
-
-            Viat_wk_master masterEntry = JsonConvert.DeserializeObject<Viat_wk_master>(JsonConvert.SerializeObject(saveDataModel.MainData));
-            //处理bid和order 
-            processBidAndOrder(saveDataModel, masterEntry,bSubmit);
+                Viat_wk_master masterEntry = JsonConvert.DeserializeObject<Viat_wk_master>(JsonConvert.SerializeObject(saveDataModel.MainData));
+                //处理bid和order 
+                processBidAndOrder(saveDataModel, masterEntry, bSubmit);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
 
@@ -509,33 +555,41 @@ namespace VIAT.WorkFlow.Services
         /// <param name="saveDataModel"></param>
         private void processBidAndOrder(SaveModel saveDataModel,  Viat_wk_master masterEntry, bool bAddEditSubmit)
         {
-            if (saveDataModel.DetailData != null && saveDataModel.DetailData.Count > 0)
+            try
             {
-                foreach (Dictionary<string, object> dic in saveDataModel.DetailData)
+                if (saveDataModel.DetailData != null && saveDataModel.DetailData.Count > 0)
                 {
-                    Dictionary<string, object> dicTmp = dic;
-                    if (dicTmp["key"]?.ToString() == "priceTableRowData")
+                    foreach (Dictionary<string, object> dic in saveDataModel.DetailData)
                     {
-                        string sBidData = dicTmp["value"]?.ToString();
-                        processBidDetail(saveDataModel, sBidData,  masterEntry, bAddEditSubmit);
-                    }
-                    else if (dicTmp["key"]?.ToString() == "orderTableRowData")
-                    {
-                        string sOrderData = dicTmp["value"]?.ToString();
-                        processOrderDetail(saveDataModel, sOrderData,  masterEntry, bAddEditSubmit);
-                    }
-                    else if (dicTmp["key"]?.ToString() == "delPriceTableRowData")
-                    {
-                        string sBidData = dicTmp["value"]?.ToString();
-                        processDelBidDetail(saveDataModel, sBidData);
-                    }
-                    else if (dicTmp["key"]?.ToString() == "delOrderTableRowData")
-                    {
-                        string sOrderData = dicTmp["value"]?.ToString();
-                        processDelOrderDetail(saveDataModel, sOrderData);
+                        Dictionary<string, object> dicTmp = dic;
+                        if (dicTmp["key"]?.ToString() == "priceTableRowData")
+                        {
+                            string sBidData = dicTmp["value"]?.ToString();
+                            processBidDetail(saveDataModel, sBidData, masterEntry, bAddEditSubmit);
+                        }
+                        else if (dicTmp["key"]?.ToString() == "orderTableRowData")
+                        {
+                            string sOrderData = dicTmp["value"]?.ToString();
+                            processOrderDetail(saveDataModel, sOrderData, masterEntry, bAddEditSubmit);
+                        }
+                        else if (dicTmp["key"]?.ToString() == "delPriceTableRowData")
+                        {
+                            string sBidData = dicTmp["value"]?.ToString();
+                            processDelBidDetail(saveDataModel, sBidData);
+                        }
+                        else if (dicTmp["key"]?.ToString() == "delOrderTableRowData")
+                        {
+                            string sOrderData = dicTmp["value"]?.ToString();
+                            processDelOrderDetail(saveDataModel, sOrderData);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         /// <summary>
@@ -629,39 +683,56 @@ namespace VIAT.WorkFlow.Services
 
         private void processOrderDetail(SaveModel saveDataModel,string sOrderData, Viat_wk_master masterEntry, bool bAddEditSubmit)
         {
-            if (string.IsNullOrEmpty(sOrderData) == false)
+            try
             {
-                List<Viat_wk_ord_detail> orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(sOrderData);
-                if (orderList != null && orderList.Count > 0)
+                if (!string.IsNullOrEmpty(sOrderData))
                 {
-                    
-         
-                    foreach (Viat_wk_ord_detail order in orderList)
+                    List<Viat_wk_ord_detail> orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(sOrderData);
+                    if (orderList != null && orderList.Count > 0)
                     {
-                        SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
-                        saveDataModel.DetailListData.Add(custResult);
-                        if (order.ordetail_dbid == null || order.ordetail_dbid.ToString() == getDefaultGuid(typeof(Viat_wk_ord_detail)))
+                        Guid? sCustDBID = new Guid();
+                        if (saveDataModel.MainData.ContainsKey("cust_dbid"))
                         {
-                            //新增
-                            order.ordetail_dbid = System.Guid.NewGuid();
-                            order.bidmast_dbid = masterEntry.bidmast_dbid;
-                            custResult.optionType = SaveModel.MainOptionType.add; 
+                            sCustDBID = (Guid)saveDataModel.MainData["cust_dbid"];
                         }
-                        else
+                        foreach (Viat_wk_ord_detail order in orderList)
                         {
-                            //更新
-                            custResult.optionType = SaveModel.MainOptionType.update;
+                            #region 增加判断如果没有价格则不能保存
+                            List<Viat_app_cust_price_detail> lstCustPriceDetail = repository.DbContext.Set<Viat_app_cust_price_detail>().Where(x => x.cust_dbid == sCustDBID && x.prod_dbid == order.prod_dbid).ToList();
+                            if (lstCustPriceDetail.Count() == 0)
+                            {
+                                throw new Exception("");
+                            }
+                            #endregion
+                            SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
+                            saveDataModel.DetailListData.Add(custResult);
+                            if (order.ordetail_dbid == null || order.ordetail_dbid.ToString() == getDefaultGuid(typeof(Viat_wk_ord_detail)))
+                            {
+                                //新增
+                                order.ordetail_dbid = System.Guid.NewGuid();
+                                order.bidmast_dbid = masterEntry.bidmast_dbid;
+                                custResult.optionType = SaveModel.MainOptionType.add;
+                            }
+                            else
+                            {
+                                //更新
+                                custResult.optionType = SaveModel.MainOptionType.update;
+                            }
+                            custResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(order)));
+                            custResult.detailType = typeof(Viat_wk_ord_detail);
                         }
-                        custResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(order)));
-                        custResult.detailType = typeof(Viat_wk_ord_detail);                       
-                    }
-
-                    if (option == enumOption.addsubmit)
-                    {
-                        processOrdRelation(saveDataModel, bAddEditSubmit, masterEntry, orderList);
+                        if (option == enumOption.addsubmit)
+                        {
+                            processOrdRelation(saveDataModel, bAddEditSubmit, masterEntry, orderList);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+            
         }
 
         /// <summary>
@@ -910,6 +981,8 @@ namespace VIAT.WorkFlow.Services
                     {                      
                         custOrder.cust_dbid = master.cust_dbid;
                     }*/
+                    
+
                     custOrder.cust_dbid = masterEntry.cust_dbid;
                     custOrder.state = "0";
                     custOrder.order_no = "123";
