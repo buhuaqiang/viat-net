@@ -32,8 +32,8 @@ namespace VIAT.WorkFlow.Controllers
         }
 
         [ApiActionPermission]
-        [HttpPost, Route("addSubmit")]
-        public ActionResult CustPriceDetailData(string pricegroup_dbid, string[] prod_dbid)
+        [HttpGet, Route("CustPriceDetailData")]
+        public ActionResult CustPriceDetailData( string pricegroup_dbid, string[] prod_dbid)
         {
             return Json(_service.CustPriceDetailData(pricegroup_dbid, prod_dbid));
         }
