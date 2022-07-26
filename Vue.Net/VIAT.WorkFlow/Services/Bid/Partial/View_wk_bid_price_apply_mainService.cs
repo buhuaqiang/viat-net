@@ -129,8 +129,9 @@ namespace VIAT.WorkFlow.Services
         /// <summary>
         /// 提交邏輯
         /// </summary>
+        /// [FromBody] 
         /// <returns></returns>
-        public WebResponseContent Submit([FromBody] object saveModelData)
+        public WebResponseContent Submit(object saveModelData)
         {
             try
             {
@@ -690,18 +691,19 @@ namespace VIAT.WorkFlow.Services
                     List<Viat_wk_ord_detail> orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(sOrderData);
                     if (orderList != null && orderList.Count > 0)
                     {
-                        Guid? sCustDBID = new Guid();
+                        Guid guid = new Guid();
                         if (saveDataModel.MainData.ContainsKey("cust_dbid"))
                         {
-                            sCustDBID = (Guid)saveDataModel.MainData["cust_dbid"];
+                            guid = string.IsNullOrEmpty(saveDataModel.MainData["cust_dbid"].ToString())?new Guid():new Guid(saveDataModel.MainData["cust_dbid"].ToString());
                         }
                         foreach (Viat_wk_ord_detail order in orderList)
                         {
                             #region 增加判断如果没有价格则不能保存
-                            List<Viat_app_cust_price_detail> lstCustPriceDetail = repository.DbContext.Set<Viat_app_cust_price_detail>().Where(x => x.cust_dbid == sCustDBID && x.prod_dbid == order.prod_dbid).ToList();
+                            List<Viat_app_cust_price_detail> lstCustPriceDetail = repository.DbContext.Set<Viat_app_cust_price_detail>().Where(x => x.cust_dbid == guid && x.prod_dbid == order.prod_dbid).ToList();
                             if (lstCustPriceDetail.Count() == 0)
                             {
-                                throw new Exception("");
+                                List<Viat_com_prod> prodModel = repository.DbContext.Set<Viat_com_prod>().Where(x => x.prod_dbid == order.prod_dbid).ToList();
+                                throw new Exception(prodModel[0].prod_ename + " No effective price");
                             }
                             #endregion
                             SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
