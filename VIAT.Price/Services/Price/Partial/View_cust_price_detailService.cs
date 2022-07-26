@@ -620,12 +620,12 @@ namespace VIAT.Price.Services
                 //把实休转为dictionary
                 Dictionary<string, object> dicEntity = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
                 //更新本身的数据
-                SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+               /* SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
                 dataResult.optionType = SaveModel.MainOptionType.update;
                 dataResult.detailType = typeof(Viat_app_cust_price_detail);
                 dataResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
-                saveModel.DetailListData.Add(dataResult);
-               /* if (entity.status == "N" && Convert.ToDateTime(entity.start_date.ToString("yyyy-MM-dd"), dtFormat) > Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
+                saveModel.DetailListData.Add(dataResult);*/
+                if (entity.status == "N" && Convert.ToDateTime(entity.start_date.ToString("yyyy-MM-dd"), dtFormat) > Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
                 {
                     //如果本次修改為未來價格且Status = Invalid，自動刪除該筆資料              
                     //增加修改
@@ -643,7 +643,7 @@ namespace VIAT.Price.Services
                     dataResult.detailType = typeof(Viat_app_cust_price_detail);
                     dataResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
                     saveModel.DetailListData.Add(dataResult);
-                }*/
+                }
 
                 base.CustomBatchProcessEntity(saveModel);
 
@@ -680,7 +680,7 @@ namespace VIAT.Price.Services
         #endregion
         public override WebResponseContent DownLoadTemplate()
         {
-            DownLoadTemplateColumns = x => new {x.cust_id, x.group_id, x.prod_id, x.nhi_price, x.net_price,x.gross_price, x.min_qty, x.start_date, x.end_date, x.remarks };
+            DownLoadTemplateColumns = x => new {x.cust_id, x.group_id, x.prod_id, x.nhi_price, x.net_price,x.reserv_price,x.gross_price, x.min_qty, x.start_date, x.end_date, x.remarks };
             return base.DownLoadTemplate();
         }
 
@@ -1294,7 +1294,7 @@ namespace VIAT.Price.Services
 
                 if (string.IsNullOrEmpty(sColumns) == false)
                 {
-                    sMessageBulider1 += ("column(s):[" + sColumns + "] at row read " + nLoop) + "<br/>";
+                    sMessageBulider1 += ("column(s):[" + sColumns + "] at row read " + nLoop) + "<br>";
                 }
 
                 nLoop++;
@@ -1320,17 +1320,19 @@ namespace VIAT.Price.Services
                 {
                     if(group.net_price>group.invoice_price)
                     {
-                        sCheckMessage3 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
+                        sCheckMessage3 += "Net Price can’t > Invoice Price: " + "<br>";
+                        sCheckMessage3 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br>";
                     }
                     //无值，清空gross
                     group.gross_price = null;
                 }      
                 
-            }
-            if(string.IsNullOrEmpty(sCheckMessage3)==false)
+            } 
+
+           /* if(string.IsNullOrEmpty(sCheckMessage3)==false)
             {
-                return webResponse.Error("Net Price can’t > Invoice Price <br/> "+ sCheckMessage3);
-            }
+                return webResponse.Error("Net Price can’t > Invoice Price <br> "+ sCheckMessage3);
+            }*/
 
                 #endregion
 
@@ -1339,11 +1341,22 @@ namespace VIAT.Price.Services
                 string sMessageBulid4 = "";
             foreach (View_cust_price_detail group in list)
             {
+                if (string.IsNullOrEmpty(group.reserv_price?.ToString()) == false)
+                {
+                    if (group.reserv_price > group.net_price)
+                    {
+                        sMessageBulid4 += "Reserve Price can't > Net Price: " + "<br>";
+                        sMessageBulid4 += "Group Id: " + group.group_id + ",Prod Id: " + group.prod_id + "<br>";
+
+                    }
+                }
+        
+
                 //判斷產品是否存在
                 Viat_com_prod prod = getProd(group.prod_id, "1");
                 if (prod == null)
                 {
-                    sMessageBulid4 += "ItemCode:" + group.prod_id + " is not exist" + "<br/>";
+                    sMessageBulid4 += "ItemCode:" + group.prod_id + " is not exist" + "<br>";
                 }
                 else
                 {
@@ -1354,7 +1367,7 @@ namespace VIAT.Price.Services
                 Viat_com_cust cust = getCust(group.cust_id);
                 if (cust == null)
                 {
-                    sMessageBulid4 += "CustId:" + group.cust_id + " is not exist" + "<br/>";
+                    sMessageBulid4 += "CustId:" + group.cust_id + " is not exist" + "<br>";
                 }
                 else
                 {
@@ -1382,14 +1395,21 @@ namespace VIAT.Price.Services
                     group.status = "N";
                 }
             }
-            if (string.IsNullOrEmpty(sMessageBulid4) == false)
+            if (string.IsNullOrEmpty(sCheckMessage3) == false || string.IsNullOrEmpty(sMessageBulid4) == false)
             {
-                return webResponse.Error(sMessageBulid4);
+                return webResponse.Error(sCheckMessage3 + "<br>" + sMessageBulid4);
             }
 
 
-            checkConfirmData(list);
-
+            webResponse = checkConfirmData(list);
+            if (webResponse.Code == "-2")
+            {
+                return webResponse;
+            }
+            else
+            {
+                importData(list);
+            }
 
             #endregion
 
@@ -1409,58 +1429,63 @@ namespace VIAT.Price.Services
                 string sMessage4 = "";
                 if (group.invoice_price > group.nhi_price)
                 {
-                    sMessage1 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sMessage1 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br>";
                 }
-                if (group.nhi_price != group.invoice_price && group.net_price == group.invoice_price)
+                if (group.nhi_price >0 && group.invoice_price >0 && group.nhi_price != group.invoice_price && group.net_price == group.invoice_price)
                 {
-                    sMessage2 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sMessage2 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br>";
                 }
-                if(group.gross_price != null && group.gross_price < group.net_price )
+                if(group.gross_price>0 && group.net_price>0 && group.gross_price != null && group.gross_price < group.net_price )
                 {
-                    sMessage3 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sMessage3 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br>";
                 }
                 if (group.gross_price != null && group.gross_price > group.net_price)
                 {
-                    sMessage4 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sMessage4 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br>";
                 }
 
                 if (string.IsNullOrEmpty(sMessage1) == false)
                 {
-                    sMessage1 = "Invoice price > NHI price.<br/><p>" + sMessage1 + "<br/>";
+                    sMessage1 = "Invoice price > NHI price.<br><p>" + sMessage1 + "<br>";
                 }
                 if (string.IsNullOrEmpty(sMessage2) == false)
                 {
-                    sMessage2 = "Invoice price ≠ NHI price but Invoice Price = Net Price.<br/><p>" + sMessage2 + "<br/>";
+                    sMessage2 = "Invoice price ≠ NHI price but Invoice Price = Net Price.<br><p>" + sMessage2 + "<br>";
                 }
                 if (string.IsNullOrEmpty(sMessage3) == false)
                 {
-                    sMessage3 = "Gross price < Net price<br/><p>" + sMessage3 + "<br/>";
+                    sMessage3 = "Gross price < Net price<br><p>" + sMessage3 + "<br>";
                 }
                 if (string.IsNullOrEmpty(sMessage2) == false)
                 {
-                    sMessage4 = "Gross price > NHI price<br/><p>" + sMessage4 + "<br/>";
+                    sMessage4 = "Gross price > NHI price<br><p>" + sMessage4 + "<br>";
                 }
 
                 string sConfirmMessage = "";
                 if (string.IsNullOrEmpty(sMessage1) == false || string.IsNullOrEmpty(sMessage2) == false)
                 {
-                    sConfirmMessage += sMessage1 + sMessage2 + "'</br></p>";                    
+                    sConfirmMessage += sMessage1 + sMessage2 + "'<br></p>";                    
                 }
 
                 if (string.IsNullOrEmpty(sMessage3) == false)
                 {
-                      sConfirmMessage += sMessage3 + "'</br></p>";
+                      sConfirmMessage += sMessage3 + "'<br></p>";
                    
                 }
                 if (string.IsNullOrEmpty(sMessage4) == false)
                 {
-                    sConfirmMessage = sMessage4 + "'</br></p>";
+                    sConfirmMessage += sMessage4 + "'<br></p>";
 
                 }
                 if(string.IsNullOrEmpty(sConfirmMessage) == false)
                 {
+                    //View_cust_price_detail
+                      sConfirmMessage = sConfirmMessage + "<br>" + "</p>Do you want to import data?";
+
                     webResponse.Code = "-2";
-                 return   webResponse.OK(sConfirmMessage);
+                    webResponse.Url = "/api/View_cust_price_detail/importData";
+                    webResponse.Data = list;
+                    return webResponse.Error(sConfirmMessage);
                 }
 
             }
@@ -1506,7 +1531,7 @@ namespace VIAT.Price.Services
         public override WebResponseContent Import(List<IFormFile> files)
         {
             //如果下載模板指定了DownLoadTemplate,則在Import方法必須也要指定,並且字段要和下載模板裡指定的一致
-            DownLoadTemplateColumns = x => new { x.cust_id, x.prod_id, x.nhi_price,x.invoice_price, x.net_price, x.gross_price, x.min_qty, x.start_date, x.end_date, x.remarks };
+            DownLoadTemplateColumns = x => new { x.cust_id, x.prod_id, x.nhi_price,x.invoice_price, x.net_price,x.reserv_price, x.gross_price, x.min_qty, x.start_date, x.end_date, x.remarks };
 
             ImportOnExecutBefore = () =>
             {
@@ -1524,13 +1549,27 @@ namespace VIAT.Price.Services
 
                 //新增
                 //进行数据处理
-                webResponse = this.bathSaveCustPrice(JsonConvert.SerializeObject(list));
+               // webResponse = this.bathSaveCustPrice(JsonConvert.SerializeObject(list));
                 webResponse.Code = "-1";
                 return webResponse;
             };
             return base.Import(files);
         }
 
+
+        /// <summary>
+        /// 正式导入数据
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        public WebResponseContent importData(List<View_cust_price_detail> list)
+        {
+            //新增
+            //进行数据处理
+            webResponse = this.bathSaveCustPrice(JsonConvert.SerializeObject(list));
+            webResponse.Code = "-1";
+            return webResponse;
+        }
         #endregion
 
         public PageGridData<View_cust_price_detail> GetPriceDataForTransfer(PageDataOptions pageData)
