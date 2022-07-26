@@ -402,15 +402,15 @@ namespace VIAT.Price.Services
 
                    //◆	更新本次修改價格資料
                    //把实休转为dictionary
+                   /*     Dictionary<string, object> dicEntity = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
+                        //更新本身的数据
+                        SaveModel.DetailListDataResult dataCurrResult = new SaveModel.DetailListDataResult();
+                        dataCurrResult.optionType = SaveModel.MainOptionType.update;
+                        dataCurrResult.detailType = typeof(Viat_app_cust_price);
+                        dataCurrResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
+                        saveModel.DetailListData.Add(dataCurrResult);*/
                    Dictionary<string, object> dicEntity = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
-                   //更新本身的数据
-                   SaveModel.DetailListDataResult dataCurrResult = new SaveModel.DetailListDataResult();
-                   dataCurrResult.optionType = SaveModel.MainOptionType.update;
-                   dataCurrResult.detailType = typeof(Viat_app_cust_price);
-                   dataCurrResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
-                   saveModel.DetailListData.Add(dataCurrResult);
-
-                  /* if (entity.status == "N" && Convert.ToDateTime(entity.start_date.ToString("yyyy-MM-dd"), dtFormat) > Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
+                   if (entity.status == "N" && Convert.ToDateTime(entity.start_date.ToString("yyyy-MM-dd"), dtFormat) > Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
                    {
                        //如果本次修改為未來價格且Status = Invalid，自動刪除該筆資料              
                        //增加修改
@@ -428,7 +428,7 @@ namespace VIAT.Price.Services
                        dataResult.detailType = typeof(Viat_app_cust_price);
                        dataResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
                        saveModel.DetailListData.Add(dataResult);
-                   }*/
+                   }
 
                    base.CustomBatchProcessEntity(saveModel);
 
@@ -1468,7 +1468,7 @@ namespace VIAT.Price.Services
 
         public override WebResponseContent DownLoadTemplate()
         {
-            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price,x.net_price,x.min_qty,x.start_date,x.end_date,x.remarks };
+            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price,x.net_price,x.reserv_price,x.min_qty,x.start_date,x.end_date,x.remarks };
             return base.DownLoadTemplate();
         }
 
@@ -1617,20 +1617,21 @@ namespace VIAT.Price.Services
                
                 if(string.IsNullOrEmpty(sColumns) == false)
                 {
-                    sMessageBulider1 += ("column(s):[" + sColumns + "] at row read " + nLoop) + "<br/>";
+                    sMessageBulider1 += ("column(s):[" + sColumns + "] at row read " + nLoop) + "<br>";
                 }
                 nLoop++;
                 #endregion
             }
-
-            if(string.IsNullOrEmpty(sMessageBulider1 )==false)
+            if(string.IsNullOrEmpty(sMessageBulider1) ==false)
             {
                 return webResponse.Error(sMessageBulider1);
             }
+
+           
             #endregion
             #region check2 逐筆檢查NHI Price , Invoice Price , Net price, Gross Price關係
 
-      
+            
            
             #region check3 判斷Cust Id是否為Expfizer Cust Id                   
 
@@ -1642,12 +1643,27 @@ namespace VIAT.Price.Services
             string sMessageBulid4 = "";
             foreach (View_cust_price group in list)
             {
-                
+                if(string.IsNullOrEmpty(group.reserv_price?.ToString()) ==false)
+                {
+                    if(group.reserv_price>group.net_price)
+                    {
+                        sMessageBulid4 += "Reserve Price can't > Net Price: " + "<br>";
+                        sMessageBulid4 += "Group Id: " + group.group_id + ",Prod Id: " + group.prod_id + "<br>";
+
+                    }
+                }
+
+                if (group.net_price > group.invoice_price)
+                {
+                    sMessageBulid4 += "Net Price can’t > Invoice Price: " + "<br>";
+                    sMessageBulid4 += "Group Id: " + group.group_id + ",Prod Id: " + group.prod_id + "<br>";
+                }
+
                 //判斷產品是否存在
                 Viat_com_prod prod = getProd(group.prod_id,"1");
                 if(prod == null)
                 {
-                    sMessageBulid4 += "ItemCode:" + group.prod_id + " is not exist" + "<br/>";
+                    sMessageBulid4 += "ItemCode:" + group.prod_id + " is not exist" + "<br>";
                 }
                 else
                 {
@@ -1658,7 +1674,7 @@ namespace VIAT.Price.Services
                 Viat_app_cust_price_group priceGroup = getGroup(group.group_id);
                 if(priceGroup == null)
                 {
-                    sMessageBulid4+="ItemCode:" + group.group_id + " is not exist" + "<br/>";
+                    sMessageBulid4+="ItemCode:" + group.group_id + " is not exist" + "<br>";
                 }
                 else
                 {
@@ -1720,20 +1736,20 @@ namespace VIAT.Price.Services
                 
                 if (group.invoice_price > group.nhi_price)
                 {
-                    sMessage1 += "Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sMessage1 += "Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br>";
                 }
-                if (group.nhi_price != group.invoice_price && group.net_price == group.invoice_price)
+                if (group.nhi_price >0 && group.invoice_price>0 && group.nhi_price != group.invoice_price && group.net_price == group.invoice_price)
                 {
-                    sMessage2 += "Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sMessage2 += "Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br>";
                 }
 
                 if (string.IsNullOrEmpty(sMessage1) == false)
                 {
-                    sMessage1 = "Invoice price > NHI price.<br/><p>" + sMessage1 + "<br/>";
+                    sMessage1 = "Invoice price > NHI price." + "<br>" + sMessage1 + "<br>";
                 }
                 if (string.IsNullOrEmpty(sMessage2) == false)
                 {
-                    sMessage2 = "Invoice price ≠ NHI price but Invoice Price = Net Price.<br/><p>" + sMessage2 + "<br/>";
+                    sMessage2 = "Invoice price ≠ NHI price but Invoice Price = Net Price." + "<br>" + sMessage2 + "<br>";
                 }                
             }
 
@@ -1788,7 +1804,7 @@ namespace VIAT.Price.Services
         public override WebResponseContent Import(List<IFormFile> files)
         {
             //如果下載模板指定了DownLoadTemplate,則在Import方法必須也要指定,並且字段要和下載模板裡指定的一致
-            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price, x.invoice_price, x.net_price, x.min_qty, x.start_date, x.end_date, x.remarks };
+            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price, x.invoice_price, x.net_price, x.reserv_price, x.min_qty, x.start_date, x.end_date, x.remarks };
 
             ImportOnExecutBefore = () =>
              {
