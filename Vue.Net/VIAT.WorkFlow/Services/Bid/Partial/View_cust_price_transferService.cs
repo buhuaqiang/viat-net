@@ -112,7 +112,7 @@ namespace VIAT.WorkFlow.Services
             return base.CustomBatchProcessEntity(saveModel);
         }
 
-        public List<View_cust_price_detail> CustPriceDetailData(string pricegroup_dbid, string[] prod_dbid)
+        public List<View_cust_price_detail> CustPriceDetailData(string pricegroup_dbid, string[] prod_dbid, string cust_dbid)
         {
 
             string str = string.Format("'{0}'", string.Join(",", prod_dbid.ToArray()).Replace(",", "','"));
@@ -137,7 +137,7 @@ namespace VIAT.WorkFlow.Services
                     WHERE
 	                    1 = 1 
 	                    AND detail.cust_dbid IN ( SELECT DISTINCT cust_dbid FROM viat_app_cust_group WHERE pricegroup_dbid = '{pricegroup_dbid}') 
-	                    AND detail.prod_dbid IN ({str}) and detail.status = 'Y'";
+	                    AND detail.prod_dbid IN ({str}) and detail.status = 'Y' and detail.cust_dbid <> {cust_dbid}";
             //List<View_cust_price_detail> lstProceDetail = (List<View_cust_price_detail>)repository.DapperContext.ExecuteScalar(sql,null);
             return repository.DapperContext.QueryList<View_cust_price_detail>(sql, new { });
         }
