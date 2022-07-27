@@ -150,7 +150,6 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Start Date")]
        [Column(TypeName="datetime")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public DateTime start_date { get; set; }
 
        /// <summary>
@@ -158,8 +157,7 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="End Date")]
        [Column(TypeName="datetime")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
+       [Editable(true)]      
        public DateTime end_date { get; set; }
 
        /// <summary>
