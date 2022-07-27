@@ -470,11 +470,11 @@ namespace VIAT.WorkFlow.Services
                            $" left join viat_com_prod prod on c_order.prod_dbid = prod.prod_dbid" +
                            $" left join viat_com_cust cust on c_order.cust_dbid=cust.cust_dbid" +
                            $" where c_order.prod_dbid= '{prod_dbid}' and c_order.created_date > DATEADD(year,-1,GETDATE())";
-            if (!string.IsNullOrEmpty(pricegroup_dbid) || pricegroup_dbid.ToLower() != "null")
+            if (!string.IsNullOrEmpty(pricegroup_dbid) && pricegroup_dbid.ToLower() != "null")
             {
                 sSql += $" and cust.cust_dbid in (SELECT distinct cust_dbid from viat_app_cust_group where pricegroup_dbid='{pricegroup_dbid}')";
             }
-            if (!string.IsNullOrEmpty(cust_dbid) || cust_dbid.ToLower() != "null")
+            if (!string.IsNullOrEmpty(cust_dbid) && cust_dbid.ToLower() != "null")
             {
                 sSql += $"and cust.cust_dbid='{cust_dbid}'";
             }
@@ -897,48 +897,56 @@ namespace VIAT.WorkFlow.Services
 
             if (bidLst != null && bidLst.Count > 0)
             {
-                SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();               
-                foreach (Viat_wk_bid_detail bid in bidLst)
+                List<Viat_wk_ord_detail> ordLst = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntity.bidmast_dbid.ToString());
+                if (OrderQty(saveModel,ordLst))
                 {
-                    //把cust記錄寫入transfer, delivery transfer
-                    Viat_app_cust_price_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_price_transfer>(JsonConvert.SerializeObject(bid));
-                    transfer.price_transfer_dbid = System.Guid.NewGuid();
-                    //处理bidno
-                   /* string sBidNo = "";*/
-                   /* Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bid.bidmast_dbid?.ToString());
-                    if(master != null)
-                    {
-                        sBidNo = master.bid_no;
-                    }*/
-
-                    if(string.IsNullOrEmpty(masterEntity.pricegroup_dbid?.ToString()) ==false)
-                    {
-                        transfer.pricegroup_dbid = masterEntity.pricegroup_dbid;
-                    }
-                    else if(string.IsNullOrEmpty(masterEntity.cust_dbid?.ToString()) ==false)
-                    {
-                        transfer.cust_dbid = masterEntity.cust_dbid;
-                    }
-
-                    SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
-                    transfer.bid_no = masterEntity.bid_no;
-                    transfer.start_date = masterEntity.start_date;
-                    transfer.end_date = masterEntity.end_date;
-                    transfer.state = "0";
-                    UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
-                    if (userInfo != null)
-                    {
-                        transfer.requestor = userInfo.User_Id;
-                        transfer.requestor_name = userInfo.UserName;
-                        transfer.territory_id = "";
-
-                    }
-                    transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
-                    transferResult.optionType = SaveModel.MainOptionType.add;
-                    transferResult.detailType = typeof(Viat_app_cust_price_transfer);
-                    saveModel.DetailListData.Add(transferResult);
-
+                    processPriceDetail(saveModel, masterEntity, bidLst);
                 }
+                else
+                {
+                    foreach (Viat_wk_bid_detail bid in bidLst)
+                    {
+                        //把cust記錄寫入transfer, delivery transfer
+                        Viat_app_cust_price_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_price_transfer>(JsonConvert.SerializeObject(bid));
+                        transfer.price_transfer_dbid = System.Guid.NewGuid();
+                        //处理bidno
+                        /* string sBidNo = "";*/
+                        /* Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bid.bidmast_dbid?.ToString());
+                         if(master != null)
+                         {
+                             sBidNo = master.bid_no;
+                         }*/
+
+                        if (string.IsNullOrEmpty(masterEntity.pricegroup_dbid?.ToString()) == false)
+                        {
+                            transfer.pricegroup_dbid = masterEntity.pricegroup_dbid;
+                        }
+                        else if (string.IsNullOrEmpty(masterEntity.cust_dbid?.ToString()) == false)
+                        {
+                            transfer.cust_dbid = masterEntity.cust_dbid;
+                        }
+
+                        SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
+                        transfer.bid_no = masterEntity.bid_no;
+                        transfer.start_date = masterEntity.start_date;
+                        transfer.end_date = masterEntity.end_date;
+                        transfer.state = "0";
+                        UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
+                        if (userInfo != null)
+                        {
+                            transfer.requestor = userInfo.User_Id;
+                            transfer.requestor_name = userInfo.UserName;
+                            transfer.territory_id = "";
+
+                        }
+                        transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
+                        transferResult.optionType = SaveModel.MainOptionType.add;
+                        transferResult.detailType = typeof(Viat_app_cust_price_transfer);
+                        saveModel.DetailListData.Add(transferResult);
+
+                    }
+                }
+                
             }
         }
 
@@ -952,43 +960,70 @@ namespace VIAT.WorkFlow.Services
 
             if (orderLst != null && orderLst.Count > 0)
             {
-                foreach(Viat_wk_ord_detail order in orderLst)
-                {   
-                    //把cust記錄寫入transfer, delivery transfer
-                    Viat_app_cust_order_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_order_transfer>(JsonConvert.SerializeObject(order));
-                    transfer.order_transfer_dbid = System.Guid.NewGuid();
-                   
-                    //处理bidno                   
-                   /* Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(order.bidmast_dbid?.ToString());
-                    if (master != null)
-                    {
-                        transfer.requestor = master.created_user;
-                        transfer.requestor_name = master.created_username;
-                        transfer.territory_id = master.territory_id;
-                    }*/
-                    UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
-                    if(userInfo != null)
-                    {
-                        transfer.requestor = userInfo.User_Id;
-                        transfer.requestor_name = userInfo.UserName;
-                        transfer.territory_id = "";
-
-                    }
-                    transfer.cust_dbid = masterEntry.cust_dbid;
-                    transfer.bid_no = masterEntry.bid_no;
-                    
-                    transfer.state = "0";
-                    transfer.transfer_date = getFormatYYYYMMDD(System.DateTime.Now);
-                    SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
-                    transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
-                    transferResult.optionType = SaveModel.MainOptionType.add;
-                    transferResult.detailType = typeof(Viat_app_cust_order_transfer);
-                    saveModel.DetailListData.Add(transferResult);
+                if (OrderQty(saveModel,orderLst))
+                {
+                    processCustOrder(saveModel, masterEntry, orderLst);
                 }
+                else
+                {
+                    foreach (Viat_wk_ord_detail order in orderLst)
+                    {
+                        //把cust記錄寫入transfer, delivery transfer
+                        Viat_app_cust_order_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_order_transfer>(JsonConvert.SerializeObject(order));
+                        transfer.order_transfer_dbid = System.Guid.NewGuid();
+
+                        //处理bidno                   
+                        /* Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(order.bidmast_dbid?.ToString());
+                         if (master != null)
+                         {
+                             transfer.requestor = master.created_user;
+                             transfer.requestor_name = master.created_username;
+                             transfer.territory_id = master.territory_id;
+                         }*/
+                        UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
+                        if (userInfo != null)
+                        {
+                            transfer.requestor = userInfo.User_Id;
+                            transfer.requestor_name = userInfo.UserName;
+                            transfer.territory_id = "";
+
+                        }
+                        transfer.cust_dbid = masterEntry.cust_dbid;
+                        transfer.bid_no = masterEntry.bid_no;
+
+                        transfer.state = "0";
+                        transfer.transfer_date = getFormatYYYYMMDD(System.DateTime.Now);
+                        SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
+                        transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
+                        transferResult.optionType = SaveModel.MainOptionType.add;
+                        transferResult.detailType = typeof(Viat_app_cust_order_transfer);
+                        saveModel.DetailListData.Add(transferResult);
+                    }
+                }
+                
                 
             }
         }
-
+        private bool OrderQty(SaveModel saveModel, List<Viat_wk_ord_detail> orderLst)
+        {
+            bool result = true;
+            if (orderLst != null && orderLst.Count > 0)
+            {
+                foreach (var order in orderLst)
+                {
+                    List<View_cust_price_detail> lstPriceDetail = CustPriceDetailData(order.prod_dbid.ToString(), saveModel.MainData["cust_dbid"].ToString());
+                    if (lstPriceDetail != null)
+                    {
+                        int? minQty = lstPriceDetail[0].min_qty;
+                        if (order.qty < minQty)
+                        {
+                            result = false;
+                        }
+                    }
+                }
+            }
+            return result;
+        }
 
         #region 除以上規則外，全部直接寫入cust_price_detail表和 viat_app_cust_order表
 
@@ -1098,11 +1133,23 @@ namespace VIAT.WorkFlow.Services
                     {                      
                         custOrder.cust_dbid = master.cust_dbid;
                     }*/
-                    
+                    string orderDate = "ORDER" + DateTime.Now.ToString("yyyyMMdd");
+                    List<Viat_app_cust_order> lstCustOrder = repository.DbContext.Set<Viat_app_cust_order>()
+                        .Where(a => a.order_no.Contains(orderDate)).OrderByDescending(a => a.order_no).ToList();
+
+                    string result = "";
+                    if (lstCustOrder.Count() > 0)
+                    {
+                        string orderNo = lstCustOrder[0].order_no;
+                        int str = Convert.ToInt32(orderNo.Substring(orderNo.Length - 5)) + 1;
+                        result = str.ToString().PadLeft(5, '0');
+                    }
+
+                    result = string.IsNullOrEmpty(result) ? "1".PadLeft(5, '0') : result;
 
                     custOrder.cust_dbid = masterEntry.cust_dbid;
                     custOrder.state = "0";
-                    custOrder.order_no = "123";
+                    custOrder.order_no = orderDate + "-" + result;
                     custOrder.prod_dbid = order.prod_dbid;
                     custOrder.qty = order.qty;
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
