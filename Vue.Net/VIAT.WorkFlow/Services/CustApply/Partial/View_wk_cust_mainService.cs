@@ -237,10 +237,10 @@ namespace VIAT.WorkFlow.Services
                 string result = "", wkCustId = "";
                 if (saveDataModel.MainData.ContainsKey("wkcust_dbid"))
                 {
-                    wkCustId = saveDataModel.MainData["wkcust_dbid"].ToString();
+                    wkCustId = saveDataModel.MainData["wkcust_dbid"]==null ? "" : saveDataModel.MainData["wkcust_dbid"].ToString();
                 }
-                string dohInstituteNo = string.IsNullOrEmpty(saveDataModel.MainData["doh_institute_no"].ToString()) ? "" : saveDataModel.MainData["doh_institute_no"].ToString();
-                string taxId = string.IsNullOrEmpty(saveDataModel.MainData["tax_id"].ToString()) ? "" : saveDataModel.MainData["tax_id"].ToString();
+                string dohInstituteNo = saveDataModel.MainData["doh_institute_no"] == null ? "" : saveDataModel.MainData["doh_institute_no"].ToString();
+                string taxId = saveDataModel.MainData["tax_id"]==null ? "" : saveDataModel.MainData["tax_id"].ToString();
                 PageGridData<Viat_wk_cust> detailGrid = new PageGridData<Viat_wk_cust>();
                 if (!string.IsNullOrEmpty(dohInstituteNo))
                 {
