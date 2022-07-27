@@ -314,7 +314,7 @@ namespace VIAT.WorkFlow.Services
             transfer.bid_no = transfer.bid_no.Trim();
             #region 增加Viat_app_cust_transfer为空的字段viat_com_cust补全
             List<Viat_com_cust> lstComCust = repository.DbContext.Set<Viat_com_cust>().Where(x => x.cust_id == transfer.cust_id).ToList();
-            if (lstComCust != null)
+            if (lstComCust.Count()>0)
             {
                 transfer.entity = lstComCust[0].entity;
                 transfer.division = lstComCust[0].division;
@@ -322,6 +322,7 @@ namespace VIAT.WorkFlow.Services
                 transfer.tel_no = lstComCust[0].tel_no;
                 transfer.territory_id = lstComCust[0].territory_id;
                 transfer.margin_type = lstComCust[0].margin_type;
+                transfer.own_by_hospital = lstComCust[0].own_by_hospital;
                 transfer.is_contract = lstComCust[0].is_contract;
                 transfer.med_group = lstComCust[0].med_group;
                 transfer.delv_group = lstComCust[0].delv_group;

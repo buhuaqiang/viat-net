@@ -461,7 +461,7 @@ namespace VIAT.WorkFlow.Services
                     //处理bidno 
                     custOrder.cust_dbid = order.cust_dbid;
                     custOrder.state = "0";
-                    custOrder.order_no = orderDate + result;
+                    custOrder.order_no = orderDate +"-"+ result;
                     custOrder.prod_dbid = order.prod_dbid;
                     custOrder.qty = order.qty;
                     custOrder.remarks = sRemark;
