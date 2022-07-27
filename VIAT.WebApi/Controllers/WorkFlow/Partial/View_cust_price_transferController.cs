@@ -33,9 +33,9 @@ namespace VIAT.WorkFlow.Controllers
 
         [ApiActionPermission]
         [HttpGet, Route("CustPriceDetailData")]
-        public ActionResult CustPriceDetailData( string pricegroup_dbid, string[] prod_dbid)
+        public ActionResult CustPriceDetailData( string pricegroup_dbid, string[] prod_dbid,string cust_dbid)
         {
-            return Json(_service.CustPriceDetailData(pricegroup_dbid, prod_dbid));
+            return Json(_service.CustPriceDetailData(pricegroup_dbid, prod_dbid,cust_dbid));
         }
     }
 }
