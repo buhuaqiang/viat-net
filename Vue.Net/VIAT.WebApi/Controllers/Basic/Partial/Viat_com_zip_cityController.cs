@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Entity.DomainModels;
 using VIAT.Basic.IServices;
+using VIAT.Core.Filters;
 
 namespace VIAT.Basic.Controllers
 {
@@ -29,5 +30,7 @@ namespace VIAT.Basic.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
+
+       
     }
 }
