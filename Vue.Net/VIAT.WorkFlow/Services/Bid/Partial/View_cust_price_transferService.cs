@@ -449,8 +449,9 @@ namespace VIAT.WorkFlow.Services
                     {
                         continue;
                     }
-
-                    List<Viat_app_cust_order> lstCustOrder = repository.DbContext.Set<Viat_app_cust_order>().Where(a => a.order_no.Contains("ORDER" + DateTime.Now.ToString("YYYYMMDD"))).OrderByDescending(a => a.order_no).ToList();
+                    string orderDate = "ORDER" + DateTime.Now.ToString("yyyymmdd");
+                    List<Viat_app_cust_order> lstCustOrder = repository.DbContext.Set<Viat_app_cust_order>()
+                        .Where(a => a.order_no.Contains(orderDate)).OrderByDescending(a => a.order_no).ToList();
 
                     string result = lstCustOrder.Count() > 0 ? Regex.Match(lstCustOrder[0].order_no, @"\d+$").Value.PadLeft(4, '0') : "1".PadLeft(4, '0');
 
@@ -460,7 +461,7 @@ namespace VIAT.WorkFlow.Services
                     //处理bidno 
                     custOrder.cust_dbid = order.cust_dbid;
                     custOrder.state = "0";
-                    custOrder.order_no = "ORDER" + DateTime.Now.ToString("YYYYMMDD") + result;
+                    custOrder.order_no = orderDate + result;
                     custOrder.prod_dbid = order.prod_dbid;
                     custOrder.qty = order.qty;
                     custOrder.remarks = sRemark;
