@@ -449,7 +449,7 @@ namespace VIAT.WorkFlow.Services
                     {
                         continue;
                     }
-                    string orderDate = "ORDER" + DateTime.Now.ToString("yyyymmdd");
+                    string orderDate = "ORDER" + DateTime.Now.ToString("yyyyMMdd");
                     List<Viat_app_cust_order> lstCustOrder = repository.DbContext.Set<Viat_app_cust_order>()
                         .Where(a => a.order_no.Contains(orderDate)).OrderByDescending(a => a.order_no).ToList();
 
