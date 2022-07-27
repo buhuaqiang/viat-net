@@ -90,8 +90,8 @@ namespace VIAT.Entity.DomainModels
        ///Ma
        /// </summary>
        [Display(Name ="Ma")]
-       [MaxLength(20)]
-       [Column(TypeName="varchar(20)")]
+       [MaxLength(40)]
+       [Column(TypeName="varchar(40)")]
        [Editable(true)]
        public string maUserName { get; set; }
 
@@ -99,8 +99,8 @@ namespace VIAT.Entity.DomainModels
        ///PM
        /// </summary>
        [Display(Name ="PM")]
-       [MaxLength(20)]
-       [Column(TypeName="varchar(20)")]
+       [MaxLength(40)]
+       [Column(TypeName="varchar(40)")]
        [Editable(true)]
        public string supervisorUserName { get; set; }
 
@@ -262,6 +262,15 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
        public string medical_reviewe_id { get; set; }
+
+       /// <summary>
+       ///IMT Type
+       /// </summary>
+       [Display(Name ="IMT Type")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       [Editable(true)]
+       public string imt_type { get; set; }
 
        
     }
