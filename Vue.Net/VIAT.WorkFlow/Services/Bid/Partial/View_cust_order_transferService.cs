@@ -115,7 +115,7 @@ namespace VIAT.WorkFlow.Services
         public override WebResponseContent Update(SaveModel saveModel)
         {
             //根據主鍵取得master數據,只更新狀態
-            View_cust_price_transferService.Instance.processBidAndOrder(saveModel);
+            View_cust_price_transferService.Instance.processBidAndOrder(saveModel,false);
             return base.CustomBatchProcessEntity(saveModel);
         }
 

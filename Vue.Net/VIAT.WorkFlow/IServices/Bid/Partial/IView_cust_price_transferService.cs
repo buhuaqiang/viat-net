@@ -11,7 +11,7 @@ namespace VIAT.WorkFlow.IServices
 {
     public partial interface IView_cust_price_transferService
     {
-        void processBidAndOrder(SaveModel saveDataModel);
+        void processBidAndOrder(SaveModel saveDataModel, bool bImport);
         List<View_cust_price_detail> CustPriceDetailData(string pricegroup_dbid, string[] prod_dbid, string cust_dbid);
     }
  }

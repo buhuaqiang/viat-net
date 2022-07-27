@@ -106,9 +106,21 @@ namespace VIAT.WorkFlow.Services
         /// <returns></returns>
         public override WebResponseContent Update(SaveModel saveModel)
         {
+            string sGroupImport = saveModel.MainData["add_group"]?.ToString();
+            string sPriceGroupDBID = "";
+            if (string.IsNullOrEmpty(saveModel.MainData["pricegroup_dbid"]?.ToString()) == false)
+            {
+                sPriceGroupDBID = saveModel.MainData["pricegroup_dbid"]?.ToString();
+            }
+
+            bool bImport = false;
+            if (string.IsNullOrEmpty(sGroupImport) == false && sGroupImport == "Y" && string.IsNullOrEmpty(sPriceGroupDBID) == false)
+            {
+                bImport = true;
+            }
 
             //根據主鍵取得master數據,只更新狀態
-            processBidAndOrder(saveModel);
+            processBidAndOrder(saveModel, bImport);
             return base.CustomBatchProcessEntity(saveModel);
         }
 
@@ -150,7 +162,7 @@ namespace VIAT.WorkFlow.Services
         /// 处理bid order 
         /// </summary>
         /// <param name="saveDataModel"></param>
-        public void processBidAndOrder(SaveModel saveDataModel)
+        public void processBidAndOrder(SaveModel saveDataModel, bool bImport)
         {
             if (saveDataModel.DetailData != null && saveDataModel.DetailData.Count > 0)
             {
@@ -177,14 +189,19 @@ namespace VIAT.WorkFlow.Services
                     if (dicTmp["key"]?.ToString() == "priceTableRowData")
                     {
                         string sBidData = dicTmp["value"]?.ToString();
-                        processGroupAndCust(saveDataModel, sBidData, sBidPriceReamrk);
+                        processGroupAndCust(saveDataModel, sBidData, bImport, sBidPriceReamrk);
                     }
                     else if (dicTmp["key"]?.ToString() == "orderTableRowData")
                     {
                         string sOrderData = dicTmp["value"]?.ToString();
                         processOrder(saveDataModel, sOrderData, sBidOrderRemark);
                     }
-                   
+                    else if (dicTmp["key"]?.ToString() == "joinGroupList")
+                    {
+                        string sJoinData = dicTmp["value"]?.ToString();
+                        processCustGroup(saveDataModel, sJoinData, bImport);
+                    }
+
                 }
             }
         }
@@ -199,24 +216,13 @@ namespace VIAT.WorkFlow.Services
         /// <param name="saveModel"></param>
         /// <param name="masterEntry"></param>
         /// <param name="sData"></param>
-        public void processGroupAndCust(SaveModel saveModel, string sData,string sRemak)
+        public void processGroupAndCust(SaveModel saveModel, string sData, bool bImport, string sRemak)
         {
             if (string.IsNullOrEmpty(sData) == false)
             {
                 List<Viat_app_cust_price_transfer> bidList = JsonConvert.DeserializeObject<List<Viat_app_cust_price_transfer>>(sData);
 
-                string sGroupImport = saveModel.MainData["add_group"]?.ToString();
-                string sPriceGroupDBID = "";
-                if(string.IsNullOrEmpty(saveModel.MainData["pricegroup_dbid"]?.ToString()) == false)
-                {
-                    sPriceGroupDBID = saveModel.MainData["pricegroup_dbid"]?.ToString();
-                }
-
-                bool bImport = false;
-                if (string.IsNullOrEmpty(sGroupImport) == false && sGroupImport=="Y" && string.IsNullOrEmpty(sPriceGroupDBID) == false)
-                {
-                    bImport = true;
-                }
+             
 
                 //处理关联
                 processCustPrice(saveModel, bidList, bImport, sRemak);
@@ -484,6 +490,45 @@ namespace VIAT.WorkFlow.Services
         }
 
 
+        /// <summary>
+        /// 处理price_detail, 处理cust_group
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <param name="sData"></param>
+        public void processCustGroup(SaveModel saveModel,string sData, bool bImport)
+        {
+            if (string.IsNullOrEmpty(sData) == false && bImport== true)
+            {
+                List<Viat_app_cust_price_detail> detailList = JsonConvert.DeserializeObject<List<Viat_app_cust_price_detail>>(sData);
+                //detail
+                SaveModel.DetailListDataResult detailResult = new SaveModel.DetailListDataResult();
+                detailResult.optionType = SaveModel.MainOptionType.update;
+                detailResult.detailType = typeof(Viat_app_cust_price_detail);
+                saveModel.DetailListData.Add(detailResult);
+                //custgroup
+                SaveModel.DetailListDataResult custGroupResult = new SaveModel.DetailListDataResult();
+                custGroupResult.optionType = SaveModel.MainOptionType.add;
+                custGroupResult.detailType = typeof(Viat_app_cust_group);
+                saveModel.DetailListData.Add(custGroupResult);
+
+                foreach(Viat_app_cust_price_detail detail in detailList)
+                {
+                    //detail
+                    detail.status = "N";
+                    detailResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string,object>>(JsonConvert.SerializeObject(detail)));
+
+                    //custgroup
+                    Viat_app_cust_group custGroup = new Viat_app_cust_group();
+                    custGroup.custgroup_dbid = System.Guid.NewGuid();
+                    custGroup.pricegroup_dbid = detail.pricedetail_dbid;
+                    custGroup.cust_dbid = detail.cust_dbid;
+                    custGroup.status = "Y";
+                    custGroup.start_date = getFormatYYYYMMDD(saveModel.MainData["start_date"].ToString());
+                    custGroup.end_date = getFormatYYYYMMDD(saveModel.MainData["end_date"].ToString());
+                    custGroupResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custGroup)));
+                }
+            }
+        }
         #endregion
 
         #endregion
