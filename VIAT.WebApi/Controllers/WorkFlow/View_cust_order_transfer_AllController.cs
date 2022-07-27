@@ -10,24 +10,16 @@ using VIAT.Entity.DomainModels;
 using VIAT.WorkFlow.IServices;
 namespace VIAT.WorkFlow.Controllers
 {
-    [Route("api/allOrderTransfer")]
+    [Route("api/View_cust_order_transfer_all")]
     [PermissionTable(Name = "allOrderTransfer")]
     public partial class View_cust_order_transfer_AllController : ApiBaseController<IView_cust_order_transferService>
     {
-        IView_cust_order_transferService transferService;
         public View_cust_order_transfer_AllController(IView_cust_order_transferService service)
         : base(service)
         {
-            this.transferService = service;
         }
 
-        [HttpPost, Route("GetPageData")]
-        [ApiActionPermission()]
-        public ActionResult GetPageData1([FromBody] PageDataOptions loadData)
-        {
-            
-            return Json(transferService.GetAllPageData(loadData));
-        }
+        
     }
 }
 
