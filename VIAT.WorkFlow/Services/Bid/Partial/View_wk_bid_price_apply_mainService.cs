@@ -470,11 +470,11 @@ namespace VIAT.WorkFlow.Services
                            $" left join viat_com_prod prod on c_order.prod_dbid = prod.prod_dbid" +
                            $" left join viat_com_cust cust on c_order.cust_dbid=cust.cust_dbid" +
                            $" where c_order.prod_dbid= '{prod_dbid}' and c_order.created_date > DATEADD(year,-1,GETDATE())";
-            if (!string.IsNullOrEmpty(pricegroup_dbid))
+            if (!string.IsNullOrEmpty(pricegroup_dbid) || pricegroup_dbid.ToLower() != "null")
             {
                 sSql += $" and cust.cust_dbid in (SELECT distinct cust_dbid from viat_app_cust_group where pricegroup_dbid='{pricegroup_dbid}')";
             }
-            if (!string.IsNullOrEmpty(cust_dbid))
+            if (!string.IsNullOrEmpty(cust_dbid) || cust_dbid.ToLower() != "null")
             {
                 sSql += $"and cust.cust_dbid='{cust_dbid}'";
             }
@@ -691,19 +691,24 @@ namespace VIAT.WorkFlow.Services
                     List<Viat_wk_ord_detail> orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(sOrderData);
                     if (orderList != null && orderList.Count > 0)
                     {
-                        Guid guid = new Guid();
-                        if (saveDataModel.MainData.ContainsKey("cust_dbid"))
-                        {
-                            guid = string.IsNullOrEmpty(saveDataModel.MainData["cust_dbid"].ToString())?new Guid():new Guid(saveDataModel.MainData["cust_dbid"].ToString());
-                        }
+                        object bidPrice = "";
+                        saveDataModel.DetailData.Select(x => x.TryGetValue("priceTableRowData",out bidPrice));
+                        List<Viat_wk_bid_detail> bidList = JsonConvert.DeserializeObject<List<Viat_wk_bid_detail>>(bidPrice.ToString());
                         foreach (Viat_wk_ord_detail order in orderList)
                         {
-                            #region 增加判断如果没有价格则不能保存
-                            List<Viat_app_cust_price_detail> lstCustPriceDetail = repository.DbContext.Set<Viat_app_cust_price_detail>().Where(x => x.cust_dbid == guid && x.prod_dbid == order.prod_dbid).ToList();
-                            if (lstCustPriceDetail.Count() == 0)
+                            #region 增加判断在bid和order的product_id不相等的情况下没有价格则不能保存
+                            List<View_cust_price_detail> lstPriceDetail = CustPriceDetailData(order.prod_dbid.ToString(), saveDataModel.MainData["cust_dbid"].ToString());
+                            if (lstPriceDetail.Count() == 0)
                             {
                                 List<Viat_com_prod> prodModel = repository.DbContext.Set<Viat_com_prod>().Where(x => x.prod_dbid == order.prod_dbid).ToList();
-                                throw new Exception(prodModel[0].prod_ename + " No effective price");
+                                if (bidList != null && bidList.Count()>0)
+                                {
+                                    if (bidList.Where(x => x.prod_dbid == order.prod_dbid).Count() == 0) throw new Exception(prodModel[0].prod_ename + " No effective price");
+                                }
+                                else
+                                {
+                                    throw new Exception(prodModel[0].prod_ename + " No effective price");
+                                }
                             }
                             #endregion
                             SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
@@ -736,8 +741,118 @@ namespace VIAT.WorkFlow.Services
             }
             
         }
-
-        //private List<View_cust_price_detail>
+        #region 查询是否有有效价格
+        private List<View_cust_price_detail> CustPriceDetailData(string prod_dbid,string cust_dbid)
+        {
+            string where = "";
+            where += string.IsNullOrEmpty(prod_dbid) ? "" : "and  prod.prod_dbid ='" + prod_dbid + "'";
+            where += string.IsNullOrEmpty(cust_dbid) ? "" : "and  cust.cust_dbid ='" + cust_dbid + "'";
+            string sql = @"SELECT top 1 price.* 
+                    FROM
+	                    (
+		                    (
+		                    SELECT
+			                    * 
+		                    FROM
+			                    (
+			                    SELECT
+				                    '1' AS source_type,
+				                    MAX ( custPrice_d.dbid ) AS dbid,
+				                    MAX ( custPrice_d.created_user ) AS created_user,
+				                    MAX ( custPrice_d.created_client ) AS created_client,
+				                    MAX ( custPrice_d.created_date ) AS created_date,
+				                    MAX ( custPrice_d.modified_user ) AS modified_user,
+				                    MAX ( custPrice_d.modified_client ) AS modified_client,
+				                    MAX ( custPrice_d.modified_date ) AS modified_date,
+				                    MAX ( custPrice_d.division ) AS division,
+				                    '' AS group_id,
+				                    '' AS group_name,
+				                    custPrice_d.prod_dbid,
+				                    MAX ( prod.prod_id ) AS prod_id,
+				                    MAX ( prod.prod_ename ) AS prod_ename,
+				                    MAX ( custPrice_d.nhi_price ) AS nhi_price,
+				                    MAX ( custPrice_d.invoice_price ) AS invoice_price,
+				                    MAX ( custPrice_d.net_price ) AS net_price,
+				                    MAX ( custPrice_d.min_qty ) AS min_qty,
+				                    MAX ( custPrice_d.start_date ) AS start_date,
+				                    MAX ( custPrice_d.end_date ) AS end_date,
+				                    custPrice_d.status,
+				                    MAX ( custPrice_d.source ) AS source,
+				                    MAX ( custPrice_d.remarks ) AS remarks,
+				                    MAX ( cust.cust_id ) AS cust_id,
+				                    MAX ( cust.cust_name ) AS cust_name,
+				                    MAX ( prod.state ) AS prod_status,
+				                    custPrice_d.cust_dbid 
+			                    FROM
+				                    viat_app_cust_price_detail AS custPrice_d
+				                    LEFT JOIN viat_com_prod AS prod ON custPrice_d.prod_dbid = prod.prod_dbid
+				                    LEFT JOIN viat_com_cust AS cust ON custPrice_d.cust_dbid = cust.cust_dbid 
+			                    WHERE
+				                    custPrice_d.status = 'Y' " + where + @"
+			                    GROUP BY
+				                    custPrice_d.prod_dbid,
+				                    custPrice_d.cust_dbid,
+				                    custPrice_d.status 
+			                    ) AS cp_d 
+		                    ) UNION
+		                    (
+		                    SELECT
+			                    * 
+		                    FROM
+			                    (
+			                    SELECT
+				                    '0' AS source_type,
+				                    MAX ( custPrice.dbid ) AS dbid,
+				                    MAX ( custPrice.created_user ) AS created_user,
+				                    MAX ( custPrice.created_client ) AS created_client,
+				                    MAX ( custPrice.created_date ) AS created_date,
+				                    MAX ( custPrice.modified_user ) AS modified_user,
+				                    MAX ( custPrice.modified_client ) AS modified_client,
+				                    MAX ( custPrice.modified_date ) AS modified_date,
+				                    MAX ( custPrice.division ) AS division,
+				                    priceGroup.group_id,
+				                    priceGroup.group_name,
+				                    custPrice.prod_dbid,
+				                    MAX ( prod.prod_id ) AS prod_id,
+				                    MAX ( prod.prod_ename ) AS prod_ename,
+				                    MAX ( custPrice.nhi_price ) AS nhi_price,
+				                    MAX ( custPrice.invoice_price ) AS invoice_price,
+				                    MAX ( custPrice.net_price ) AS net_price,
+				                    MAX ( custPrice.min_qty ) AS min_qty,
+				                    MAX ( custPrice.start_date ) AS start_date,
+				                    MAX ( custPrice.end_date ) AS end_date,
+				                    custPrice.status,
+				                    MAX ( custPrice.source ) AS source,
+				                    MAX ( custPrice.remarks ) AS remarks,
+				                    MAX ( cust.cust_id ) AS cust_id,
+				                    MAX ( cust.cust_name ) AS cust_name,
+				                    MAX ( prod.state ) AS prod_status,
+				                    custGroup.cust_dbid 
+			                    FROM
+				                    viat_app_cust_price AS custPrice
+				                    JOIN viat_app_cust_group AS custGroup ON custPrice.pricegroup_dbid = custGroup.pricegroup_dbid 
+				                    AND custPrice.prod_dbid = custGroup.prod_dbid
+				                    LEFT JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid
+				                    LEFT JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid
+				                    LEFT JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid
+				                    LEFT JOIN viat_com_dist AS dist ON cust.cust_dbid = dist.cust_dbid 
+			                    WHERE
+				                    custGroup.status = 'Y' 
+				                    AND prod.prod_dbid NOT IN ( SELECT priceDetail.prod_dbid FROM viat_app_cust_price_detail AS priceDetail WHERE priceDetail.cust_dbid = custGroup.cust_dbid AND priceDetail.status = 'Y' ) 
+				                    AND custPrice.status = 'Y' " + where + @"
+			                    GROUP BY
+				                    custPrice.pricegroup_dbid,
+				                    group_id,
+				                    group_name,
+				                    custPrice.prod_dbid,
+				                    custGroup.cust_dbid,
+				                    custPrice.status
+			                    ) AS cp 
+		                    ) 
+	                    ) AS price";
+            return repository.DapperContext.QueryList<View_cust_price_detail>(sql, new { });
+        }
+        #endregion
 
         /// <summary>
         /// add master
@@ -837,10 +952,8 @@ namespace VIAT.WorkFlow.Services
 
             if (orderLst != null && orderLst.Count > 0)
             {
-                SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
-               
                 foreach(Viat_wk_ord_detail order in orderLst)
-                {
+                {   
                     //把cust記錄寫入transfer, delivery transfer
                     Viat_app_cust_order_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_order_transfer>(JsonConvert.SerializeObject(order));
                     transfer.order_transfer_dbid = System.Guid.NewGuid();
