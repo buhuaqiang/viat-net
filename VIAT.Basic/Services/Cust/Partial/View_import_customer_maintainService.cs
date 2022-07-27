@@ -123,9 +123,9 @@ namespace VIAT.Basic.Services
                     transferEntity.MapValueToEntity(cust);
                     cust.cust_dbid = custGuid;
                     cust.cust_id = sCustID;
-                    cust.own_hospital = saveModel.MainData["own_hospital"] == null? new Guid(): (Guid?)saveModel.MainData["own_hospital"];
+                    /*cust.own_hospital = saveModel.MainData["own_hospital"] == null? new Guid(): (Guid?)saveModel.MainData["own_hospital"];
                     cust.med_group = saveModel.MainData["med_group"] == null ? new Guid() : (Guid?)saveModel.MainData["med_group"];
-                    cust.delv_group = saveModel.MainData["delv_group"] == null ? new Guid() : (Guid?)saveModel.MainData["delv_group"];
+                    cust.delv_group = saveModel.MainData["delv_group"] == null ? new Guid() : (Guid?)saveModel.MainData["delv_group"];*/
                     SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
                     custResult.detailType = typeof(Viat_com_cust);
                     custResult.optionType = SaveModel.MainOptionType.add;
