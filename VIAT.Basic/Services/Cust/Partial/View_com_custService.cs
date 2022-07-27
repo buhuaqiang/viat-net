@@ -244,10 +244,10 @@ namespace VIAT.Basic.Services
                 string result = "", custId="";
                 if (saveDataModel.MainData.ContainsKey("cust_dbid"))
                 {
-                    custId = saveDataModel.MainData["cust_dbid"].ToString();
+                    custId = saveDataModel.MainData["cust_dbid"] == null ? "" : saveDataModel.MainData["cust_dbid"].ToString();
                 }
-                string dohInstituteNo = saveDataModel.MainData["doh_institute_no"].ToString();
-                string taxId = saveDataModel.MainData["tax_id"].ToString();
+                string dohInstituteNo = saveDataModel.MainData["doh_institute_no"] == null ? "" : saveDataModel.MainData["doh_institute_no"].ToString();
+                string taxId = saveDataModel.MainData["tax_id"] == null ? "" : saveDataModel.MainData["tax_id"].ToString();
                 PageGridData<Viat_com_cust> detailGrid = new PageGridData<Viat_com_cust>();
                 if (!string.IsNullOrEmpty(dohInstituteNo))
                 {
