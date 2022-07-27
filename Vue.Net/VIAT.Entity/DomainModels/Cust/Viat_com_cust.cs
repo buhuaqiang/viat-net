@@ -422,6 +422,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="隸屬醫院名稱")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
+        [Editable(true)]
        public string own_hospital_name { get; set; }
 
        /// <summary>
@@ -430,7 +431,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="是否管控客戶)")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       public string is_controll { get; set; }
+        [Editable(true)]
+        public string is_controll { get; set; }
 
        [Display(Name ="客戶送貨資訊")]
        [ForeignKey("cust_dbid")]
