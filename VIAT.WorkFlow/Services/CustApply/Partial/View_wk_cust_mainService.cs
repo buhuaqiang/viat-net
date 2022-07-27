@@ -317,7 +317,7 @@ namespace VIAT.WorkFlow.Services
             if (lstComCust.Count()>0)
             {
                 transfer.entity = lstComCust[0].entity;
-                transfer.division = lstComCust[0].division;
+                transfer.division = lstComCust[0].division; 
                 transfer.contact = lstComCust[0].contact;
                 transfer.tel_no = lstComCust[0].tel_no;
                 transfer.territory_id = lstComCust[0].territory_id;
@@ -329,6 +329,8 @@ namespace VIAT.WorkFlow.Services
                 transfer.new_cust_id = lstComCust[0].new_cust_id;
                 transfer.inactive_date = lstComCust[0].inactive_date;
                 transfer.source = lstComCust[0].source;
+                transfer.is_controll = lstComCust[0].is_controll;
+                transfer.own_hospital_name = lstComCust[0].own_hospital_name;
             }
             #endregion
 
