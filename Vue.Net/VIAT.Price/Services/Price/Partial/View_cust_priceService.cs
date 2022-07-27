@@ -1478,7 +1478,7 @@ namespace VIAT.Price.Services
 
         public override WebResponseContent DownLoadTemplate()
         {
-            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price,x.net_price,x.reserv_price,x.min_qty,x.start_date,x.end_date,x.remarks };
+            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price,x.net_price,x.invoice_price,x.reserv_price,x.min_qty,x.start_date,x.end_date,x.remarks };
             return base.DownLoadTemplate();
         }
 
@@ -1747,23 +1747,24 @@ namespace VIAT.Price.Services
                 string sMessage4 = "";
                 if (group.invoice_price > group.nhi_price)
                 {
-                    sMessage1 += "Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sConfirmMessage += " Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "\\<br/> ";
                 }
                 if (group.nhi_price >0 && group.invoice_price>0 && group.nhi_price != group.invoice_price && group.net_price == group.invoice_price)
                 {
-                    sMessage2 += "Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sConfirmMessage += " Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "\\<br/> ";
                 }
 
                 if (string.IsNullOrEmpty(sMessage1) == false)
                 {
-                    sMessage1 = "Invoice price > NHI price." + "<br/>"  + sMessage1 + "<br/>";
+                    sConfirmMessage += "<p> Invoice price > NHI price." + " \\<br/>";
+                    sConfirmMessage += sMessage1 + "\\<br>";
                 }
                 if (string.IsNullOrEmpty(sMessage2) == false)
                 {
-                    sMessage2 = "Invoice price ≠ NHI price but Invoice Price = Net Price." + "<br/>" + sMessage2 + "<br/>";
+                    sConfirmMessage += "<p> Invoice price ≠ NHI price but Invoice Price = Net Price." + "\\<br/> </p>" + sMessage2 + "\\<br/>";
                 }
 
-                sConfirmMessage += sMessage1 + sMessage2;
+                //sConfirmMessage += sMessage1 + sMessage2;
             }
 
             if (string.IsNullOrEmpty(sConfirmMessage) == false)
