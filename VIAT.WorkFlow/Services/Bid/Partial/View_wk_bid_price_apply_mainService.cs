@@ -140,7 +140,7 @@ namespace VIAT.WorkFlow.Services
                 if (lst == null || lst.Count == 0)
                 {
                     return webRespose.Error("no data");
-                }
+                }   
                 SaveModel saveModel = new SaveModel();
                 saveModel.MainData = lst[0];
 
@@ -492,7 +492,7 @@ namespace VIAT.WorkFlow.Services
             var sql = @$"select * from viat_app_cust_price where status = 'Y' AND ( SysDateTime ( ) ) >= start_date AND ( SysDateTime ( ) ) <= end_date 
                             AND prod_dbid = '{prod_dbid}' and pricegroup_dbid = '{pricegroup_dbid}'";
             detailGrid.rows = repository.DapperContext.QueryList<Viat_app_cust_price>(sql, new {});
-            return detailGrid.rows[0];
+            return detailGrid.rows.Count > 0 ? detailGrid.rows[0]:new Viat_app_cust_price();
         }
 
         #region 
@@ -736,6 +736,8 @@ namespace VIAT.WorkFlow.Services
             }
             
         }
+
+        //private List<View_cust_price_detail>
 
         /// <summary>
         /// add master
