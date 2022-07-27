@@ -31,6 +31,11 @@ namespace VIAT.Basic.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-       
+        [ApiActionPermission]
+        [HttpPost, Route("GetPageDataForSelect")]
+        public  ActionResult GetPageDataForSelect([FromBody] PageDataOptions loadData)
+        {
+            return base.GetPageData(loadData);
+        }
     }
 }
