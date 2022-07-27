@@ -137,7 +137,7 @@ namespace VIAT.WorkFlow.Services
                     WHERE
 	                    1 = 1 
 	                    AND detail.cust_dbid IN ( SELECT DISTINCT cust_dbid FROM viat_app_cust_group WHERE pricegroup_dbid = '{pricegroup_dbid}') 
-	                    AND detail.prod_dbid IN ({str})";
+	                    AND detail.prod_dbid IN ({str}) and detail.status = 'Y'";
             //List<View_cust_price_detail> lstProceDetail = (List<View_cust_price_detail>)repository.DapperContext.ExecuteScalar(sql,null);
             return repository.DapperContext.QueryList<View_cust_price_detail>(sql, new { });
         }
