@@ -42,19 +42,18 @@ namespace VIAT.Entity.DomainModels
        public string entity { get; set; }
 
        /// <summary>
-       ///Mpg ID
+       ///Local Mpg ID
        /// </summary>
-       [Display(Name ="Mpg ID")]
+       [Display(Name ="Local Mpg ID")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string mpg_id { get; set; }
 
        /// <summary>
-       ///Mpg Name
+       ///Local Mpg Name
        /// </summary>
-       [Display(Name ="Mpg Name")]
+       [Display(Name ="Local Mpg Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
@@ -97,13 +96,22 @@ namespace VIAT.Entity.DomainModels
        public string maUserName { get; set; }
 
        /// <summary>
-       ///Supervisor
+       ///PM
        /// </summary>
-       [Display(Name ="Supervisor")]
+       [Display(Name ="PM")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
        [Editable(true)]
        public string supervisorUserName { get; set; }
+
+       /// <summary>
+       ///Medical Reviewe Name
+       /// </summary>
+       [Display(Name ="Medical Reviewe Name")]
+       [MaxLength(50)]
+       [Column(TypeName="nvarchar(50)")]
+       [Editable(true)]
+       public string medical_reviewe_name { get; set; }
 
        /// <summary>
        ///sort
@@ -213,25 +221,27 @@ namespace VIAT.Entity.DomainModels
        public DateTime? modified_date { get; set; }
 
        /// <summary>
-       ///
+       ///Ma ID
        /// </summary>
-       [Display(Name ="ma_id")]
+       [Display(Name ="Ma ID")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
+       [Editable(true)]
        public string ma_id { get; set; }
 
        /// <summary>
-       ///
+       ///Pm ID
        /// </summary>
-       [Display(Name ="pm_id")]
+       [Display(Name ="Pm ID")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
+       [Editable(true)]
        public string pm_id { get; set; }
 
        /// <summary>
-       ///
+       ///Ma Name
        /// </summary>
-       [Display(Name ="ma_name")]
+       [Display(Name ="Ma Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        public string ma_name { get; set; }
@@ -240,25 +250,18 @@ namespace VIAT.Entity.DomainModels
        ///
        /// </summary>
        [Display(Name ="pm_name")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
+       [MaxLength(255)]
+       [Column(TypeName="varchar(255)")]
        public string pm_name { get; set; }
 
        /// <summary>
-       ///
+       ///Medical Reviewe ID
        /// </summary>
-       [Display(Name ="medica_reviewe_id")]
+       [Display(Name ="Medical Reviewe ID")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
-       public string medica_reviewe_id { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="medica_reviewe_name")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
-       public string medica_reviewe_name { get; set; }
+       [Editable(true)]
+       public string medical_reviewe_id { get; set; }
 
        
     }
