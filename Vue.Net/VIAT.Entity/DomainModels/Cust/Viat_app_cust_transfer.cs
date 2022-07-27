@@ -388,6 +388,20 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 
-       
+        /// <summary>
+        ///隸屬醫院名稱
+        /// </summary>
+        [Display(Name = "隸屬醫院名稱")]
+        [MaxLength(100)]
+        [Column(TypeName = "nvarchar(100)")]
+        public string own_hospital_name { get; set; }
+
+        /// <summary>
+        ///是否管控客戶)
+        /// </summary>
+        [Display(Name = "是否管控客戶)")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        public string is_controll { get; set; }
     }
 }
