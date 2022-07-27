@@ -241,8 +241,11 @@ namespace VIAT.Basic.Services
         {
             try
             {
-                string result = "";
-                string custId = saveDataModel.MainData["cust_dbid"].ToString();
+                string result = "", custId="";
+                if (saveDataModel.MainData.ContainsKey("cust_dbid"))
+                {
+                    custId = saveDataModel.MainData["cust_dbid"].ToString();
+                }
                 string dohInstituteNo = saveDataModel.MainData["doh_institute_no"].ToString();
                 string taxId = saveDataModel.MainData["tax_id"].ToString();
                 PageGridData<Viat_com_cust> detailGrid = new PageGridData<Viat_com_cust>();
