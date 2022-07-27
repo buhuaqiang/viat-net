@@ -1,21 +1,19 @@
 /*
- *接口编写处...
-*如果接口需要做Action的权限验证，请在Action上使用属性
-*如: [ApiActionPermission("View_cust_order_transfer",Enums.ActionPermissionOptions.Search)]
+ *代码由框架生成,任何更改都可能导致被代码生成器覆盖
+ *如果要增加方法请在当前目录下Partial文件夹View_cust_order_transferController编写
  */
-using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.DependencyInjection;
+using VIAT.Core.Controllers.Basic;
+using VIAT.Core.Filters;
+using VIAT.Entity.AttributeManager;
 using VIAT.Entity.DomainModels;
 using VIAT.WorkFlow.IServices;
-using VIAT.Core.Filters;
-
 namespace VIAT.WorkFlow.Controllers
 {
-    public partial class View_cust_order_transfer_AllController
+   
+    public partial class View_cust_order_transfer_AllController : ApiBaseController<IView_cust_order_transferService>
     {
         private readonly IView_cust_order_transferService _service;//访问业务代码
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -30,21 +28,14 @@ namespace VIAT.WorkFlow.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
-
-        //根據bid no查詢當前批次訂單信息
         [ApiActionPermission]
-        [HttpPost, Route("getOrderDataByBidNo")]
-        public ActionResult getOrderDataByBidNo([FromBody] PageDataOptions loadData)
-        {
-            return Json(_service.GetPageDataByOrderNO(loadData));
-        }
-
-        [ApiActionPermission]
-        [HttpPost, Route("GetAllPageData")]
-        public ActionResult GetAllPageData([FromBody] PageDataOptions loadData)
+        [HttpPost, Route("GetPageData")]
+        public override ActionResult GetPageData([FromBody] PageDataOptions loadData)
         {
             return Json(_service.GetAllPageData(loadData));
         }
 
+
     }
 }
+
