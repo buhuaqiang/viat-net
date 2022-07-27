@@ -452,8 +452,15 @@ namespace VIAT.WorkFlow.Services
                     string orderDate = "ORDER" + DateTime.Now.ToString("yyyyMMdd");
                     List<Viat_app_cust_order> lstCustOrder = repository.DbContext.Set<Viat_app_cust_order>()
                         .Where(a => a.order_no.Contains(orderDate)).OrderByDescending(a => a.order_no).ToList();
+                    string result = "";
+                    if (lstCustOrder.Count()>0)
+                    {
+                        string orderNo = lstCustOrder[0].order_no;
+                        int str = Convert.ToInt32(orderNo.Substring(orderNo.Length - 5))+1;
+                        result = str.ToString().PadLeft(5, '0');
+                    }
 
-                    string result = lstCustOrder.Count() > 0 ? Regex.Match(lstCustOrder[0].order_no, @"\d+$").Value.PadLeft(4, '0') : "1".PadLeft(4, '0');
+                    result = string.IsNullOrEmpty(result) ? "1".PadLeft(5, '0') : result;
 
                     //把cust記錄寫入transfer, delivery transfer
                     Viat_app_cust_order custOrder = JsonConvert.DeserializeObject<Viat_app_cust_order>(JsonConvert.SerializeObject(order));
