@@ -317,50 +317,57 @@ namespace VIAT.WorkFlow.Services
                 if (sApplyType != "04")
                 {
                     //增加数量判断
-                    List<Viat_wk_ord_detail> orderList;
+                    //List<Viat_wk_ord_detail> orderList;
+                    //if (bAddEditSubmit == false)
+                    //{
+                    //    orderList = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntry.bidmast_dbid.ToString());
+                    //}
+                    //else
+                    //{
+                    //    string orderDetail = "";
+                    //    foreach (var item in saveModel.DetailData)
+                    //    {
+                    //        Dictionary<string, object> dicTmp = item;
+                    //        if (dicTmp["key"]?.ToString() == "orderTableRowData")
+                    //        {
+                    //            orderDetail = dicTmp["value"]?.ToString();
+                    //            break;
+                    //        }
+                    //    }
+                    //    orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(orderDetail.ToString());
+                    //}
+                    //if (OrderQty(saveModel, orderList))
+                    //{
+                    //    if (bAddEditSubmit == false)
+                    //    {
+                    //        processPriceDetailerByBidMasterDBID(saveModel, masterEntry);
+                    //    }
+                    //    else
+                    //    {
+                    //        processPriceDetail(saveModel, masterEntry, bidLst);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    if (bAddEditSubmit == false)
+                    //    {
+                    //        processPriceTransferByBidMasterDBID(saveModel, masterEntry);
+                    //    }
+                    //    else
+                    //    {
+                    //        processPriceTransfer(saveModel, bidLst, masterEntry);
+                    //    }
+                    //}
                     if (bAddEditSubmit == false)
                     {
-                        orderList = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntry.bidmast_dbid.ToString());
+                        processPriceDetailerByBidMasterDBID(saveModel, masterEntry);
                     }
                     else
                     {
-                        string orderDetail = "";
-                        foreach (var item in saveModel.DetailData)
-                        {
-                            Dictionary<string, object> dicTmp = item;
-                            if (dicTmp["key"]?.ToString() == "orderTableRowData")
-                            {
-                                orderDetail = dicTmp["value"]?.ToString();
-                                break;
-                            }
-                        }
-                        orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(orderDetail.ToString());
+                        processPriceDetail(saveModel, masterEntry, bidLst);
                     }
-                    if (OrderQty(saveModel, orderList))
-                    {
-                        if (bAddEditSubmit == false)
-                        {
-                            processPriceDetailerByBidMasterDBID(saveModel, masterEntry);
-                        }
-                        else
-                        {
-                            processPriceDetail(saveModel, masterEntry, bidLst);
-                        }
-                    }
-                    else
-                    {
-                        if (bAddEditSubmit == false)
-                        {
-                            processPriceTransferByBidMasterDBID(saveModel, masterEntry);
-                        }
-                        else
-                        {
-                            processPriceTransfer(saveModel, bidLst, masterEntry);
-                        }
-                    }
-                        
                 }
-               
+
             }
         }
 
@@ -417,38 +424,46 @@ namespace VIAT.WorkFlow.Services
             }
             if (sApplyType == "04")
             {
-                
-                if (OrderQty(saveModel, orderList))
+
+                //if (OrderQty(saveModel, orderList))
+                //{
+                //    //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
+                //    if (bAddEditSubmit == false)
+                //    {
+                //        processCustOrderByBidMasterDBID(saveModel, masterEntry);
+                //    }
+                //    else
+                //    {
+                //        processCustOrder(saveModel, masterEntry, ordLst);
+                //    }
+                //}
+                //else
+                //{
+                //    if (bAddEditSubmit == false)
+                //    {
+                //        processOrderTransferByBidMasterDBID(saveModel, masterEntry);
+                //    }
+                //    else
+                //    {
+                //        processOrderTransfer(saveModel, ordLst, masterEntry);
+                //    }
+                //}
+                //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
+                if (bAddEditSubmit == false)
                 {
-                    //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
-                    if (bAddEditSubmit == false)
-                    {
-                        processCustOrderByBidMasterDBID(saveModel, masterEntry);
-                    }
-                    else
-                    {
-                        processCustOrder(saveModel, masterEntry, ordLst);
-                    }
+                    processCustOrderByBidMasterDBID(saveModel, masterEntry);
                 }
                 else
                 {
-                    if (bAddEditSubmit == false)
-                    {
-                        processOrderTransferByBidMasterDBID(saveModel, masterEntry);
-                    }
-                    else
-                    {
-                        processOrderTransfer(saveModel, ordLst, masterEntry);
-                    }
+                    processCustOrder(saveModel, masterEntry, ordLst);
                 }
-                
             }
             //进行判断处理
             /*
              如果是group 申請，或是（cust_dbid !=null&& viat_com_cust.status= invalid）或是客戶已存在cust_group表的有效記錄，審批后進入 price_transfer/order_transfer
              其他情況：如果申請主體是客戶ID，沒有選擇合約範本（contstret_dbid ==null）&& End_data!='2099-12-31',卡控到price_transfer/order_transer
              */
-           else if (string.IsNullOrEmpty(sPriceGroupDBID) == false ||
+            else if (string.IsNullOrEmpty(sPriceGroupDBID) == false ||
                 (string.IsNullOrEmpty(sCustDBID) == false && (cust != null && cust.status == "N")) ||
                 (string.IsNullOrEmpty(sCustDBID) == false && custGroup != null && custGroup.status == "Y") ||
                 (string.IsNullOrEmpty(sCustDBID) == false && string.IsNullOrEmpty(scontstret_dbid) == true && sEndDate != "2099-12-31")
@@ -489,29 +504,29 @@ namespace VIAT.WorkFlow.Services
              */
             else
             {
-                if (OrderQty(saveModel, orderList))
-                {
-                    //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
-                    if (bAddEditSubmit == false)
-                    {
-                        processCustOrderByBidMasterDBID(saveModel, masterEntry);
-                    }
-                    else
-                    {
-                        processCustOrder(saveModel, masterEntry, ordLst);
-                    }
-                }
-                else
-                {
-                    if (bAddEditSubmit == false)
-                    {
-                        processOrderTransferByBidMasterDBID(saveModel, masterEntry);
-                    }
-                    else
-                    {
-                        processOrderTransfer(saveModel, ordLst, masterEntry);
-                    }
-                }
+                //if (OrderQty(saveModel, orderList))
+                //{
+                //    //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
+                //    if (bAddEditSubmit == false)
+                //    {
+                //        processCustOrderByBidMasterDBID(saveModel, masterEntry);
+                //    }
+                //    else
+                //    {
+                //        processCustOrder(saveModel, masterEntry, ordLst);
+                //    }
+                //}
+                //else
+                //{
+                //    if (bAddEditSubmit == false)
+                //    {
+                //        processOrderTransferByBidMasterDBID(saveModel, masterEntry);
+                //    }
+                //    else
+                //    {
+                //        processOrderTransfer(saveModel, ordLst, masterEntry);
+                //    }
+                //}
             }
         }
 
@@ -794,19 +809,25 @@ namespace VIAT.WorkFlow.Services
                         }
                         foreach (Viat_wk_ord_detail order in orderList)
                         {
+                            List<Viat_com_prod> prodModel = repository.DbContext.Set<Viat_com_prod>().Where(x => x.prod_dbid == order.prod_dbid).ToList();
                             #region 增加判断在bid和order的product_id不相等的情况下没有价格则不能保存
                             List<View_cust_price_detail> lstPriceDetail = CustPriceDetailData(order.prod_dbid.ToString(), saveDataModel.MainData["cust_dbid"].ToString());
                             if (lstPriceDetail.Count() == 0)
                             {
-                                List<Viat_com_prod> prodModel = repository.DbContext.Set<Viat_com_prod>().Where(x => x.prod_dbid == order.prod_dbid).ToList();
                                 if (bidList != null && bidList.Count()>0)
                                 {
-                                    if (bidList.Where(x => x.prod_dbid.Equal(order.prod_dbid)).Count() == 0) throw new Exception(prodModel[0].prod_ename + " No effective price");
+                                    if (bidList.Where(x => x.prod_dbid.Equal(order.prod_dbid)).Count() == 0) throw new Exception(prodModel[0].prod_ename + " No effective price!");
                                 }
                                 else
                                 {
-                                    throw new Exception(prodModel[0].prod_ename + " No effective price");
+                                    throw new Exception(prodModel[0].prod_ename + " No effective price!");
                                 }
+                            }
+                            #endregion
+                            #region 增加数量小于最小数量不能提交
+                            if (!OrderQty(saveDataModel, orderList))
+                            {
+                                throw new Exception(prodModel[0].prod_ename + " The number of applications cannot be less than the minimum number!");
                             }
                             #endregion
                             SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
@@ -1101,7 +1122,7 @@ namespace VIAT.WorkFlow.Services
                         int? minQty = lstPriceDetail[0].min_qty;
                         if (order.qty < minQty)
                         {
-                            result = false;
+                            result =false;
                         }
                     }
                 }
