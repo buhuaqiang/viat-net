@@ -1443,41 +1443,41 @@ namespace VIAT.Price.Services
                 string sMessage4 = "";
                 if (group.invoice_price > group.nhi_price)
                 {
-                    sMessage1 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sMessage1 = "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
                 }
                 if (group.nhi_price >0 && group.invoice_price >0 && group.nhi_price != group.invoice_price && group.net_price == group.invoice_price)
                 {
-                    sMessage2 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sMessage2 = "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
                 }
                 if(group.gross_price>0 && group.net_price>0 && group.gross_price != null && group.gross_price < group.net_price )
                 {
-                    sMessage3 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sMessage3 = "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
                 }
                 if (group.gross_price != null && group.gross_price > group.nhi_price)
                 {
-                    sMessage4 += "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
+                    sMessage4 = "Cust Id:" + group.cust_id + ",Prod Id:" + group.prod_id + "<br/>";
                 }
 
                 if (string.IsNullOrEmpty(sMessage1) == false)
                 {
-                    sConformMessage += "Invoice price > NHI price1." + "<br/>";
-                    sConformMessage += sMessage1 + "<br/>";
+                    sMessage1 = "Invoice price > NHI price1." + "<br/>" + sMessage1;
+                   
                 }
                 if (string.IsNullOrEmpty(sMessage2) == false)
                 {
-                    sMessage2 = "Invoice price ≠ NHI price but Invoice Price = Net Price.<br/><p>" + sMessage2 + "<br/>";
+                    sMessage2 = "Invoice price ≠ NHI price but Invoice Price = Net Price." + "<br/>" + sMessage2;
                 }
                 if (string.IsNullOrEmpty(sMessage3) == false)
                 {
-                    sMessage3 = "Gross price < Net price<br/><p>" + sMessage3 + "<br/>";
+                    sMessage3 = "Gross price < Net price<br/><p>" + "<br/>" + sMessage3 ;
                 }
                 if (string.IsNullOrEmpty(sMessage4) == false)
                 {
-                    sConformMessage += "Gross price > NHI price1 " + " <br/> ";
-                    sConformMessage += "" + sMessage4 + " <br/> ";
+                    sMessage4 = "Gross price > NHI price1 " + " <br/> " + sMessage4;
+                     
                 }
 
-   
+                sConformMessage += sMessage1 + sMessage2 + sMessage3 + sMessage4;
                /* if (string.IsNullOrEmpty(sMessage1) == false || string.IsNullOrEmpty(sMessage2) == false)
                 {
                     sConfirmMessage += sMessage1 + sMessage2 + "'<br/>";                    
@@ -1492,14 +1492,14 @@ namespace VIAT.Price.Services
                 {
                     sConfirmMessage += sMessage4 + "'<br/>";
 
-                }*/ 
+                }*/
             }
             if (string.IsNullOrEmpty(sConformMessage) == false)
             {
                 //View_cust_price_detail
-                sConformMessage =  sConformMessage + " <br/> ";
-                sConformMessage += " Do you want to import data?";
-
+            
+                sConformMessage += " <br/> " + " Do you want to import data?";
+            
                 webResponse.Code = "-2";
                 webResponse.Url = "/api/View_cust_price_detail/importData";
                 webResponse.Data = list;
