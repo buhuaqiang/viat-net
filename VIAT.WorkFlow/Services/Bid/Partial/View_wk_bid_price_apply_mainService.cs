@@ -691,8 +691,17 @@ namespace VIAT.WorkFlow.Services
                     List<Viat_wk_ord_detail> orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(sOrderData);
                     if (orderList != null && orderList.Count > 0)
                     {
-                        object bidPrice = "";
-                        saveDataModel.DetailData.Select(x => x.TryGetValue("priceTableRowData",out bidPrice));
+                        string bidPrice = "";
+
+                        foreach (var item in saveDataModel.DetailData)
+                        {
+                            Dictionary<string, object> dicTmp = item;
+                            if (dicTmp["key"]?.ToString() == "priceTableRowData")
+                            {
+                                bidPrice = dicTmp["value"]?.ToString();
+                                break;
+                            }
+                        }
                         List<Viat_wk_bid_detail> bidList = JsonConvert.DeserializeObject<List<Viat_wk_bid_detail>>(bidPrice.ToString());
                         foreach (Viat_wk_ord_detail order in orderList)
                         {
@@ -703,7 +712,7 @@ namespace VIAT.WorkFlow.Services
                                 List<Viat_com_prod> prodModel = repository.DbContext.Set<Viat_com_prod>().Where(x => x.prod_dbid == order.prod_dbid).ToList();
                                 if (bidList != null && bidList.Count()>0)
                                 {
-                                    if (bidList.Where(x => x.prod_dbid == order.prod_dbid).Count() == 0) throw new Exception(prodModel[0].prod_ename + " No effective price");
+                                    if (bidList.Where(x => x.prod_dbid.Equal(order.prod_dbid)).Count() == 0) throw new Exception(prodModel[0].prod_ename + " No effective price");
                                 }
                                 else
                                 {
@@ -897,8 +906,22 @@ namespace VIAT.WorkFlow.Services
 
             if (bidLst != null && bidLst.Count > 0)
             {
-                List<Viat_wk_ord_detail> ordLst = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntity.bidmast_dbid.ToString());
-                if (OrderQty(saveModel,ordLst))
+                //List<Viat_wk_ord_detail> ordLst = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntity.bidmast_dbid.ToString());
+
+                string orderDetail = "";
+
+                foreach (var item in saveModel.DetailData)
+                {
+                    Dictionary<string, object> dicTmp = item;
+                    if (dicTmp["key"]?.ToString() == "orderTableRowData")
+                    {
+                        orderDetail = dicTmp["value"]?.ToString();
+                        break;
+                    }
+                }
+                List<Viat_wk_ord_detail> orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(orderDetail.ToString());
+
+                if (OrderQty(saveModel, orderList))
                 {
                     processPriceDetail(saveModel, masterEntity, bidLst);
                 }
@@ -1009,10 +1032,11 @@ namespace VIAT.WorkFlow.Services
             bool result = true;
             if (orderLst != null && orderLst.Count > 0)
             {
+                string cust_dbid = saveModel.MainData["cust_dbid"] == null ? "" : saveModel.MainData["cust_dbid"].ToString();
                 foreach (var order in orderLst)
                 {
-                    List<View_cust_price_detail> lstPriceDetail = CustPriceDetailData(order.prod_dbid.ToString(), saveModel.MainData["cust_dbid"].ToString());
-                    if (lstPriceDetail != null)
+                    List<View_cust_price_detail> lstPriceDetail = CustPriceDetailData(order.prod_dbid.ToString(), cust_dbid);
+                    if (lstPriceDetail != null && lstPriceDetail.Count() > 0)
                     {
                         int? minQty = lstPriceDetail[0].min_qty;
                         if (order.qty < minQty)
@@ -1021,6 +1045,10 @@ namespace VIAT.WorkFlow.Services
                         }
                     }
                 }
+            }
+            else
+            {
+                result = false;
             }
             return result;
         }
@@ -1121,6 +1149,7 @@ namespace VIAT.WorkFlow.Services
             {
                 SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
 
+                string orderDate = "ORDER" + DateTime.Now.ToString("yyyyMMdd"),orderNo = "";
                 foreach (Viat_wk_ord_detail order in orderLst)
                 {
                     //把cust記錄寫入transfer, delivery transfer
@@ -1133,23 +1162,23 @@ namespace VIAT.WorkFlow.Services
                     {                      
                         custOrder.cust_dbid = master.cust_dbid;
                     }*/
-                    string orderDate = "ORDER" + DateTime.Now.ToString("yyyyMMdd");
+                    #region 增加order_no规则
                     List<Viat_app_cust_order> lstCustOrder = repository.DbContext.Set<Viat_app_cust_order>()
                         .Where(a => a.order_no.Contains(orderDate)).OrderByDescending(a => a.order_no).ToList();
 
-                    string result = "";
-                    if (lstCustOrder.Count() > 0)
+                    if (string.IsNullOrEmpty(orderNo))
                     {
-                        string orderNo = lstCustOrder[0].order_no;
-                        int str = Convert.ToInt32(orderNo.Substring(orderNo.Length - 5)) + 1;
-                        result = str.ToString().PadLeft(5, '0');
+                        if (lstCustOrder.Count() > 0)
+                        {
+                            orderNo = lstCustOrder[0].order_no;
+                        }
                     }
-
-                    result = string.IsNullOrEmpty(result) ? "1".PadLeft(5, '0') : result;
-
+                    //int str = string.IsNullOrEmpty(orderNo) ? 0 : (Convert.ToInt32(orderNo.Substring(orderNo.Length - 5)));
+                    orderNo = orderDate + "-" + OrderNo(string.IsNullOrEmpty(orderNo) ? 0 : (Convert.ToInt32(orderNo.Substring(orderNo.Length - 5))));
+                    #endregion
                     custOrder.cust_dbid = masterEntry.cust_dbid;
                     custOrder.state = "0";
-                    custOrder.order_no = orderDate + "-" + result;
+                    custOrder.order_no = orderNo;
                     custOrder.prod_dbid = order.prod_dbid;
                     custOrder.qty = order.qty;
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
@@ -1162,7 +1191,10 @@ namespace VIAT.WorkFlow.Services
             }
         }
 
-
+        private string OrderNo(int OrderNo)
+        { 
+            return OrderNo == 0 ? "1".PadLeft(5, '0'): (OrderNo+1).ToString().PadLeft(5, '0');
+        }
         #endregion
 
         #endregion
