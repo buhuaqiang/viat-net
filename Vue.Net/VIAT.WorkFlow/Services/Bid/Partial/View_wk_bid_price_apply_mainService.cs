@@ -702,7 +702,15 @@ namespace VIAT.WorkFlow.Services
                                 break;
                             }
                         }
-                        List<Viat_wk_bid_detail> bidList = JsonConvert.DeserializeObject<List<Viat_wk_bid_detail>>(bidPrice.ToString());
+                        List<Viat_wk_bid_detail> bidList = new List<Viat_wk_bid_detail>();
+                        if (string.IsNullOrEmpty(bidPrice))
+                        {
+                            bidList = Viat_wk_bid_detailService.Instance.getDataByBidMasterDBID(masterEntry.bidmast_dbid.ToString());
+                        }
+                        else
+                        {
+                            bidList = JsonConvert.DeserializeObject<List<Viat_wk_bid_detail>>(bidPrice.ToString());
+                        }
                         foreach (Viat_wk_ord_detail order in orderList)
                         {
                             #region 增加判断在bid和order的product_id不相等的情况下没有价格则不能保存
