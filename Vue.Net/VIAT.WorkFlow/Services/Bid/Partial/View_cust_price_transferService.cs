@@ -431,6 +431,7 @@ namespace VIAT.WorkFlow.Services
                 saveModel.DetailListData.Add(transferResult);
                 SaveModel.DetailListDataResult orderResult = new SaveModel.DetailListDataResult();
                 saveModel.DetailListData.Add(orderResult);
+                string orderDate = "ORDER" + DateTime.Now.ToString("yyyyMMdd"), orderNo = "";
                 foreach (Viat_app_cust_order_transfer order in orderLst)
                 {
 
@@ -455,26 +456,26 @@ namespace VIAT.WorkFlow.Services
                     {
                         continue;
                     }
-                    string orderDate = "ORDER" + DateTime.Now.ToString("yyyyMMdd");
+                    #region 增加order_no规则
                     List<Viat_app_cust_order> lstCustOrder = repository.DbContext.Set<Viat_app_cust_order>()
                         .Where(a => a.order_no.Contains(orderDate)).OrderByDescending(a => a.order_no).ToList();
-                    string result = "";
-                    if (lstCustOrder.Count()>0)
+                    if (string.IsNullOrEmpty(orderNo))
                     {
-                        string orderNo = lstCustOrder[0].order_no;
-                        int str = Convert.ToInt32(orderNo.Substring(orderNo.Length - 5))+1;
-                        result = str.ToString().PadLeft(5, '0');
+                        if (lstCustOrder.Count() > 0)
+                        {
+                            orderNo = lstCustOrder[0].order_no;
+                        }
                     }
-
-                    result = string.IsNullOrEmpty(result) ? "1".PadLeft(5, '0') : result;
-
+                    //int str = string.IsNullOrEmpty(orderNo) ? 0 : (Convert.ToInt32(orderNo.Substring(orderNo.Length - 5)));
+                    orderNo = orderDate + "-" + OrderNo(string.IsNullOrEmpty(orderNo) ? 0 : (Convert.ToInt32(orderNo.Substring(orderNo.Length - 5))));
+                    #endregion
                     //把cust記錄寫入transfer, delivery transfer
                     Viat_app_cust_order custOrder = JsonConvert.DeserializeObject<Viat_app_cust_order>(JsonConvert.SerializeObject(order));
                     custOrder.order_dbid = System.Guid.NewGuid();
                     //处理bidno 
                     custOrder.cust_dbid = order.cust_dbid;
                     custOrder.state = "0";
-                    custOrder.order_no = orderDate +"-"+ result;
+                    custOrder.order_no = orderNo;
                     custOrder.prod_dbid = order.prod_dbid;
                     custOrder.qty = order.qty;
                     custOrder.remarks = sRemark;
@@ -488,7 +489,10 @@ namespace VIAT.WorkFlow.Services
 
             }
         }
-
+        private string OrderNo(int OrderNo)
+        {
+            return OrderNo == 0 ? "1".PadLeft(5, '0') : (OrderNo + 1).ToString().PadLeft(5, '0');
+        }
 
         /// <summary>
         /// 处理price_detail, 处理cust_group
