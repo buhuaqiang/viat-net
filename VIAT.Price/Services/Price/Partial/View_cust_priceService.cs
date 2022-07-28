@@ -1759,29 +1759,31 @@ namespace VIAT.Price.Services
                 string sMessage4 = "";
                 if (group.invoice_price > group.nhi_price)
                 {
-                    sConfirmMessage += " Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "\\<br/> ";
+                    sMessage1 = " Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br/> ";
                 }
                 if (group.nhi_price >0 && group.invoice_price>0 && group.nhi_price != group.invoice_price && group.net_price == group.invoice_price)
                 {
-                    sConfirmMessage += " Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "\\<br/> ";
+                    sMessage2 = " Group Id:" + group.group_id + ",Prod Id:" + group.prod_id + "<br/> ";
                 }
 
                 if (string.IsNullOrEmpty(sMessage1) == false)
                 {
-                    sConfirmMessage += "<p> Invoice price > NHI price." + " \\<br/>";
-                    sConfirmMessage += sMessage1 + "\\<br>";
+                    sMessage1 = "<p> Invoice price > NHI price." + " <br/>" + sMessage1 ;                   
                 }
                 if (string.IsNullOrEmpty(sMessage2) == false)
                 {
-                    sConfirmMessage += "<p> Invoice price ≠ NHI price but Invoice Price = Net Price." + "\\<br/> </p>" + sMessage2 + "\\<br/>";
+                    sMessage2 = "<p> Invoice price ≠ NHI price but Invoice Price = Net Price." + "<br/>" + sMessage2;
                 }
 
-                //sConfirmMessage += sMessage1 + sMessage2;
+                sConfirmMessage += sMessage1 + sMessage2;
             }
 
             if (string.IsNullOrEmpty(sConfirmMessage) == false)
             {
-                sConfirmMessage = sConfirmMessage + "</p>Do you want to import data?";
+                //View_cust_price_detail
+              
+                sConfirmMessage += "<br/>" + " Do you want to import data?";
+               
 
                 webResponse.Code = "-2";
                 webResponse.Url = "/api/View_cust_price/importData";
