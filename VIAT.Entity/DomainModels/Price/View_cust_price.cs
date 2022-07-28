@@ -160,10 +160,18 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]      
        public DateTime end_date { get; set; }
 
-       /// <summary>
-       ///Status
-       /// </summary>
-       [Display(Name ="Status")]
+
+        /// <summary>
+        ///Modified Date
+        /// </summary>
+        [Display(Name = "Modified Date")]
+        [Column(TypeName = "datetime")]
+        public DateTime? modified_date { get; set; }
+
+        /// <summary>
+        ///Status
+        /// </summary>
+        [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
@@ -305,12 +313,7 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="varchar(50)")]
        public string modified_clientusername { get; set; }
 
-       /// <summary>
-       ///Modified Date
-       /// </summary>
-       [Display(Name ="Modified Date")]
-       [Column(TypeName="datetime")]
-       public DateTime? modified_date { get; set; }
+       
 
        /// <summary>
        ///

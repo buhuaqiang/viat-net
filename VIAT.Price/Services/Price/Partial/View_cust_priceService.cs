@@ -1478,7 +1478,19 @@ namespace VIAT.Price.Services
 
         public override WebResponseContent DownLoadTemplate()
         {
-            DownLoadTemplateColumns = x => new { x.group_id, x.prod_id, x.nhi_price,x.net_price,x.invoice_price,x.reserv_price,x.min_qty,x.start_date,x.end_date,x.remarks };
+            DownLoadTemplateColumns = x => new {
+                x.group_id, 
+                x.group_name,
+                x.prod_id, 
+                x.prod_ename,
+                x.nhi_price,
+                x.net_price,
+                x.invoice_price,
+                x.reserv_price,
+                x.min_qty,
+                x.start_date,
+                x.end_date,
+                x.remarks };
             return base.DownLoadTemplate();
         }
 
