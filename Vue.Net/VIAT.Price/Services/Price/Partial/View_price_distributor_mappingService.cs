@@ -61,7 +61,7 @@ namespace VIAT.Price.Services
             string sProds = saveDataModel.MainData["prods"].ToString();
             string sGroups = saveDataModel.MainData["pricegroups"].ToString();
             string sCusts = saveDataModel.MainData["custs"].ToString();
-
+            string sPriceChannel = saveDataModel.MainData["price_channel"].ToString();
             string[] sProdArray = sProds.Split(',');
             string[] sGroupArray = null;
             if(string.IsNullOrEmpty(sGroups) ==false)
@@ -73,11 +73,50 @@ namespace VIAT.Price.Services
             if (string.IsNullOrEmpty(sCusts) == false)
             {
                 sCustArray = sCusts.Split(',');
-            }           
+            }
 
             saveDataModel.MainDatas = new List<Dictionary<string, object>>();
             saveDataModel.mainOptionType = SaveModel.MainOptionType.add;
             saveDataModel.MainFacType = typeof(Viat_app_dist_mapping);
+
+            if (sPriceChannel != null)
+            {
+                for (int i = 0; i < sProdArray.Length; i++)
+                {
+                    Viat_com_prod prod = Viat_com_prodService.Instance.getProdByProdID(sProdArray[i]);
+                    if (prod == null)
+                    {
+                        return webResponse.Error("no proddbid");
+                    }
+                    //产品dbid
+                    string sProdDBID = prod.prod_dbid.ToString();
+                    Dictionary<string, object> saveDic = new Dictionary<string, object>(saveDataModel.MainData);
+                    //处理distmapping_dbid，prod_dbid，cust_dbid,pricegroup_dbid
+                    if (saveDic.ContainsKey("distmapping_dbid") == false)
+                    {
+                        saveDic.Add("distmapping_dbid", "");
+                    }
+                    if (saveDic.ContainsKey("prod_dbid") == false)
+                    {
+                        saveDic.Add("prod_dbid", "");
+                    }
+
+                    if (saveDic.ContainsKey("cust_dbid") == false)
+                    {
+                        saveDic.Add("cust_dbid", "");
+                    }
+
+                    if (saveDic.ContainsKey("pricegroup_dbid") == false)
+                    {
+                        saveDic.Add("pricegroup_dbid", "");
+                    }
+                    saveDic["prod_dbid"] = sProdDBID;
+                    saveDic["price_channel"] = sPriceChannel;
+                    saveDataModel.MainDatas.Add(saveDic);
+                }
+            }
+
+
             //如果是组
             if (sGroupArray != null && sGroupArray.Length > 0)
             {
