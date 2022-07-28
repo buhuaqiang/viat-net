@@ -188,6 +188,15 @@ namespace VIAT.Entity.DomainModels
        public string group_name { get; set; }
 
        /// <summary>
+       ///Group Channel
+       /// </summary>
+       [Display(Name ="Group Channel")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+       [Editable(true)]
+       public string price_channel { get; set; }
+
+       /// <summary>
        ///
        /// </summary>
        [Display(Name ="prod_cname")]
@@ -235,7 +244,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string i_dist_id { get; set; }
 
        /// <summary>
@@ -253,6 +261,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string e_dist_id { get; set; }
 
        /// <summary>
@@ -315,15 +324,6 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="nvarchar(256)")]
        [Editable(true)]
        public string remarks { get; set; }
-
-       /// <summary>
-       ///Group Channel
-       /// </summary>
-       [Display(Name ="Group Channel")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
-       [Editable(true)]
-       public string price_channel { get; set; }
 
        
     }
