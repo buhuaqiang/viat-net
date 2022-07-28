@@ -174,7 +174,45 @@ namespace VIAT.Price.Services
             }
             else
             {
-                saveDataModel.MainDatas.Add(saveDataModel.MainData);
+                for (int i = 0; i < sProdArray.Length; i++)
+                {
+                    Viat_com_prod prod = Viat_com_prodService.Instance.getProdByProdID(sProdArray[i]);
+                    if (prod == null)
+                    {
+                        return webResponse.Error("no proddbid");
+                    }
+                    //Viat_com_cust cust = Viat_com_custService.Instance.getCustByCustID(sCustArray[j]);
+                    //if (cust == null)
+                    //{
+                    //    return webResponse.Error("no custdbid");
+                    //}
+                    //产品dbid
+                    string sProdDBID = prod.prod_dbid.ToString();
+                    //string sCustDBID = cust.cust_dbid.ToString();
+                    Dictionary<string, object> saveDic = new Dictionary<string, object>(saveDataModel.MainData);
+                    //处理distmapping_dbid，prod_dbid，cust_dbid,pricegroup_dbid
+                    if (saveDic.ContainsKey("distmapping_dbid") == false)
+                    {
+                        saveDic.Add("distmapping_dbid", "");
+                    }
+                    if (saveDic.ContainsKey("prod_dbid") == false)
+                    {
+                        saveDic.Add("prod_dbid", "");
+                    }
+
+                    if (saveDic.ContainsKey("cust_dbid") == false)
+                    {
+                        saveDic.Add("cust_dbid", "");
+                    }
+
+                    if (saveDic.ContainsKey("pricegroup_dbid") == false)
+                    {
+                        saveDic.Add("pricegroup_dbid", "");
+                    }
+                    saveDic["prod_dbid"] = sProdDBID;
+                    //saveDic["cust_dbid"] = sCustDBID;
+                    saveDataModel.MainDatas.Add(saveDic);
+                }
             }
             // 在保存数据库前的操作，所有数据都验证通过了，这一步执行完就执行数据库保存
             return base.CustomUpdateMains(saveDataModel);
