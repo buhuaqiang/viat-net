@@ -906,20 +906,26 @@ namespace VIAT.WorkFlow.Services
 
             if (bidLst != null && bidLst.Count > 0)
             {
-                //List<Viat_wk_ord_detail> ordLst = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntity.bidmast_dbid.ToString());
+                List<Viat_wk_ord_detail> orderList = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntity.bidmast_dbid.ToString());
 
                 string orderDetail = "";
-
-                foreach (var item in saveModel.DetailData)
+                if (saveModel.DetailData == null)
                 {
-                    Dictionary<string, object> dicTmp = item;
-                    if (dicTmp["key"]?.ToString() == "orderTableRowData")
-                    {
-                        orderDetail = dicTmp["value"]?.ToString();
-                        break;
-                    }
+                    orderList = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntity.bidmast_dbid.ToString());
                 }
-                List<Viat_wk_ord_detail> orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(orderDetail.ToString());
+                else
+                {
+                    foreach (var item in saveModel.DetailData)
+                    {
+                        Dictionary<string, object> dicTmp = item;
+                        if (dicTmp["key"]?.ToString() == "orderTableRowData")
+                        {
+                            orderDetail = dicTmp["value"]?.ToString();
+                            break;
+                        }
+                    }
+                    orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(orderDetail.ToString());
+                }
 
                 if (OrderQty(saveModel, orderList))
                 {
