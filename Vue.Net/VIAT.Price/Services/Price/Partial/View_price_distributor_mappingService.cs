@@ -79,21 +79,21 @@ namespace VIAT.Price.Services
             saveDataModel.mainOptionType = SaveModel.MainOptionType.add;
             saveDataModel.MainFacType = typeof(Viat_app_dist_mapping);
             //如果是组
-            if (sGroupArray!= null && sGroupArray.Length>0)
+            if (sGroupArray != null && sGroupArray.Length > 0)
             {
                 for (int i = 0; i < sProdArray.Length; i++)
                 {
                     Viat_com_prod prod = Viat_com_prodService.Instance.getProdByProdID(sProdArray[i]);
-                    if(prod==null)
+                    if (prod == null)
                     {
                         return webResponse.Error("no proddbid");
                     }
                     //产品dbid
                     string sProdDBID = prod.prod_dbid.ToString();
-                    for(int j=0; j<sGroupArray.Length;j++)
+                    for (int j = 0; j < sGroupArray.Length; j++)
                     {
                         Viat_app_cust_price_group group = Viat_app_cust_price_groupService.Instance.getPriceGroupByGroupID(sGroupArray[j]);
-                        if(group == null)
+                        if (group == null)
                         {
                             return webResponse.Error("no groupdbid");
                         }
@@ -126,9 +126,8 @@ namespace VIAT.Price.Services
                 }
             }
 
-
             //如果是客户
-            if (sCustArray != null && sCustArray.Length > 0)
+            else if (sCustArray != null && sCustArray.Length > 0)
             {
                 for (int i = 0; i < sProdArray.Length; i++)
                 {
@@ -173,7 +172,10 @@ namespace VIAT.Price.Services
                     }
                 }
             }
-
+            else
+            {
+                saveDataModel.MainDatas.Add(saveDataModel.MainData);
+            }
             // 在保存数据库前的操作，所有数据都验证通过了，这一步执行完就执行数据库保存
             return base.CustomUpdateMains(saveDataModel);
         }
