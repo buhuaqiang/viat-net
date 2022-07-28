@@ -64,7 +64,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string e_dist_id { get; set; }
 
        /// <summary>
@@ -74,7 +73,8 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
-       public string i_dist_id { get; set; }
+        [Required(AllowEmptyStrings = false)]
+        public string i_dist_id { get; set; }
 
        /// <summary>
        ///生效日
