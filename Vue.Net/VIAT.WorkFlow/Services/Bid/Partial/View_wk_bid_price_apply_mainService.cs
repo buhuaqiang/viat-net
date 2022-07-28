@@ -316,14 +316,49 @@ namespace VIAT.WorkFlow.Services
                 //全部直接寫入cust_price_detail表和 viat_app_cust_order表
                 if (sApplyType != "04")
                 {
+                    //增加数量判断
+                    List<Viat_wk_ord_detail> orderList;
                     if (bAddEditSubmit == false)
                     {
-                        processPriceDetailerByBidMasterDBID(saveModel,masterEntry);
+                        orderList = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntry.bidmast_dbid.ToString());
                     }
                     else
                     {
-                        processPriceDetail(saveModel, masterEntry, bidLst);
+                        string orderDetail = "";
+                        foreach (var item in saveModel.DetailData)
+                        {
+                            Dictionary<string, object> dicTmp = item;
+                            if (dicTmp["key"]?.ToString() == "orderTableRowData")
+                            {
+                                orderDetail = dicTmp["value"]?.ToString();
+                                break;
+                            }
+                        }
+                        orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(orderDetail.ToString());
                     }
+                    if (OrderQty(saveModel, orderList))
+                    {
+                        if (bAddEditSubmit == false)
+                        {
+                            processPriceDetailerByBidMasterDBID(saveModel, masterEntry);
+                        }
+                        else
+                        {
+                            processPriceDetail(saveModel, masterEntry, bidLst);
+                        }
+                    }
+                    else
+                    {
+                        if (bAddEditSubmit == false)
+                        {
+                            processPriceTransferByBidMasterDBID(saveModel, masterEntry);
+                        }
+                        else
+                        {
+                            processPriceTransfer(saveModel, bidLst, masterEntry);
+                        }
+                    }
+                        
                 }
                
             }
@@ -371,18 +406,42 @@ namespace VIAT.WorkFlow.Services
             {
                 sBidMasterBDID = System.Guid.NewGuid().ToString();
             }
-
-            if(sApplyType == "04")
+            List<Viat_wk_ord_detail> orderList;
+            if (bAddEditSubmit == false)
             {
-                //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
-                if (bAddEditSubmit == false)
+                orderList = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntry.bidmast_dbid.ToString());
+            }
+            else
+            {
+                orderList = ordLst;
+            }
+            if (sApplyType == "04")
+            {
+                
+                if (OrderQty(saveModel, orderList))
                 {
-                    processCustOrderByBidMasterDBID(saveModel, masterEntry);
+                    //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
+                    if (bAddEditSubmit == false)
+                    {
+                        processCustOrderByBidMasterDBID(saveModel, masterEntry);
+                    }
+                    else
+                    {
+                        processCustOrder(saveModel, masterEntry, ordLst);
+                    }
                 }
                 else
                 {
-                    processCustOrder(saveModel, masterEntry, ordLst);
+                    if (bAddEditSubmit == false)
+                    {
+                        processOrderTransferByBidMasterDBID(saveModel, masterEntry);
+                    }
+                    else
+                    {
+                        processOrderTransfer(saveModel, ordLst, masterEntry);
+                    }
                 }
+                
             }
             //进行判断处理
             /*
@@ -430,7 +489,29 @@ namespace VIAT.WorkFlow.Services
              */
             else
             {
-               
+                if (OrderQty(saveModel, orderList))
+                {
+                    //全部直接寫入cust_price_detail表和 viat_app_cust_order表               
+                    if (bAddEditSubmit == false)
+                    {
+                        processCustOrderByBidMasterDBID(saveModel, masterEntry);
+                    }
+                    else
+                    {
+                        processCustOrder(saveModel, masterEntry, ordLst);
+                    }
+                }
+                else
+                {
+                    if (bAddEditSubmit == false)
+                    {
+                        processOrderTransferByBidMasterDBID(saveModel, masterEntry);
+                    }
+                    else
+                    {
+                        processOrderTransfer(saveModel, ordLst, masterEntry);
+                    }
+                }
             }
         }
 
@@ -914,76 +995,48 @@ namespace VIAT.WorkFlow.Services
 
             if (bidLst != null && bidLst.Count > 0)
             {
-                List<Viat_wk_ord_detail> orderList = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntity.bidmast_dbid.ToString());
 
-                string orderDetail = "";
-                if (saveModel.DetailData == null)
+                foreach (Viat_wk_bid_detail bid in bidLst)
                 {
-                    orderList = Viat_wk_ord_detailService.Instance.getDataByBidMasterDBID(masterEntity.bidmast_dbid.ToString());
-                }
-                else
-                {
-                    foreach (var item in saveModel.DetailData)
+                    //把cust記錄寫入transfer, delivery transfer
+                    Viat_app_cust_price_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_price_transfer>(JsonConvert.SerializeObject(bid));
+                    transfer.price_transfer_dbid = System.Guid.NewGuid();
+                    //处理bidno
+                    /* string sBidNo = "";*/
+                    /* Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bid.bidmast_dbid?.ToString());
+                     if(master != null)
+                     {
+                         sBidNo = master.bid_no;
+                     }*/
+
+                    if (string.IsNullOrEmpty(masterEntity.pricegroup_dbid?.ToString()) == false)
                     {
-                        Dictionary<string, object> dicTmp = item;
-                        if (dicTmp["key"]?.ToString() == "orderTableRowData")
-                        {
-                            orderDetail = dicTmp["value"]?.ToString();
-                            break;
-                        }
+                        transfer.pricegroup_dbid = masterEntity.pricegroup_dbid;
                     }
-                    orderList = JsonConvert.DeserializeObject<List<Viat_wk_ord_detail>>(orderDetail.ToString());
-                }
-
-                if (OrderQty(saveModel, orderList))
-                {
-                    processPriceDetail(saveModel, masterEntity, bidLst);
-                }
-                else
-                {
-                    foreach (Viat_wk_bid_detail bid in bidLst)
+                    else if (string.IsNullOrEmpty(masterEntity.cust_dbid?.ToString()) == false)
                     {
-                        //把cust記錄寫入transfer, delivery transfer
-                        Viat_app_cust_price_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_price_transfer>(JsonConvert.SerializeObject(bid));
-                        transfer.price_transfer_dbid = System.Guid.NewGuid();
-                        //处理bidno
-                        /* string sBidNo = "";*/
-                        /* Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(bid.bidmast_dbid?.ToString());
-                         if(master != null)
-                         {
-                             sBidNo = master.bid_no;
-                         }*/
+                        transfer.cust_dbid = masterEntity.cust_dbid;
+                    }
 
-                        if (string.IsNullOrEmpty(masterEntity.pricegroup_dbid?.ToString()) == false)
-                        {
-                            transfer.pricegroup_dbid = masterEntity.pricegroup_dbid;
-                        }
-                        else if (string.IsNullOrEmpty(masterEntity.cust_dbid?.ToString()) == false)
-                        {
-                            transfer.cust_dbid = masterEntity.cust_dbid;
-                        }
-
-                        SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
-                        transfer.bid_no = masterEntity.bid_no;
-                        transfer.start_date = masterEntity.start_date;
-                        transfer.end_date = masterEntity.end_date;
-                        transfer.state = "0";
-                        UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
-                        if (userInfo != null)
-                        {
-                            transfer.requestor = userInfo.User_Id;
-                            transfer.requestor_name = userInfo.UserName;
-                            transfer.territory_id = "";
-
-                        }
-                        transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
-                        transferResult.optionType = SaveModel.MainOptionType.add;
-                        transferResult.detailType = typeof(Viat_app_cust_price_transfer);
-                        saveModel.DetailListData.Add(transferResult);
+                    SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
+                    transfer.bid_no = masterEntity.bid_no;
+                    transfer.start_date = masterEntity.start_date;
+                    transfer.end_date = masterEntity.end_date;
+                    transfer.state = "0";
+                    UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
+                    if (userInfo != null)
+                    {
+                        transfer.requestor = userInfo.User_Id;
+                        transfer.requestor_name = userInfo.UserName;
+                        transfer.territory_id = "";
 
                     }
+                    transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
+                    transferResult.optionType = SaveModel.MainOptionType.add;
+                    transferResult.detailType = typeof(Viat_app_cust_price_transfer);
+                    saveModel.DetailListData.Add(transferResult);
+
                 }
-                
             }
         }
 
@@ -997,48 +1050,41 @@ namespace VIAT.WorkFlow.Services
 
             if (orderLst != null && orderLst.Count > 0)
             {
-                if (OrderQty(saveModel,orderLst))
+                foreach (Viat_wk_ord_detail order in orderLst)
                 {
-                    processCustOrder(saveModel, masterEntry, orderLst);
-                }
-                else
-                {
-                    foreach (Viat_wk_ord_detail order in orderLst)
+                    //把cust記錄寫入transfer, delivery transfer
+                    Viat_app_cust_order_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_order_transfer>(JsonConvert.SerializeObject(order));
+                    transfer.order_transfer_dbid = System.Guid.NewGuid();
+
+                    //处理bidno                   
+                    /* Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(order.bidmast_dbid?.ToString());
+                     if (master != null)
+                     {
+                         transfer.requestor = master.created_user;
+                         transfer.requestor_name = master.created_username;
+                         transfer.territory_id = master.territory_id;
+                     }*/
+                    UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
+                    if (userInfo != null)
                     {
-                        //把cust記錄寫入transfer, delivery transfer
-                        Viat_app_cust_order_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_order_transfer>(JsonConvert.SerializeObject(order));
-                        transfer.order_transfer_dbid = System.Guid.NewGuid();
+                        transfer.requestor = userInfo.User_Id;
+                        transfer.requestor_name = userInfo.UserName;
+                        transfer.territory_id = "";
 
-                        //处理bidno                   
-                        /* Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(order.bidmast_dbid?.ToString());
-                         if (master != null)
-                         {
-                             transfer.requestor = master.created_user;
-                             transfer.requestor_name = master.created_username;
-                             transfer.territory_id = master.territory_id;
-                         }*/
-                        UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
-                        if (userInfo != null)
-                        {
-                            transfer.requestor = userInfo.User_Id;
-                            transfer.requestor_name = userInfo.UserName;
-                            transfer.territory_id = "";
-
-                        }
-                        transfer.cust_dbid = masterEntry.cust_dbid;
-                        transfer.bid_no = masterEntry.bid_no;
-
-                        transfer.state = "0";
-                        transfer.transfer_date = getFormatYYYYMMDD(System.DateTime.Now);
-                        SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
-                        transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
-                        transferResult.optionType = SaveModel.MainOptionType.add;
-                        transferResult.detailType = typeof(Viat_app_cust_order_transfer);
-                        saveModel.DetailListData.Add(transferResult);
                     }
+                    transfer.cust_dbid = masterEntry.cust_dbid;
+                    transfer.bid_no = masterEntry.bid_no;
+
+                    transfer.state = "0";
+                    transfer.transfer_date = getFormatYYYYMMDD(System.DateTime.Now);
+                    SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
+                    transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
+                    transferResult.optionType = SaveModel.MainOptionType.add;
+                    transferResult.detailType = typeof(Viat_app_cust_order_transfer);
+                    saveModel.DetailListData.Add(transferResult);
                 }
-                
-                
+
+
             }
         }
         private bool OrderQty(SaveModel saveModel, List<Viat_wk_ord_detail> orderLst)
@@ -1059,10 +1105,6 @@ namespace VIAT.WorkFlow.Services
                         }
                     }
                 }
-            }
-            else
-            {
-                result = false;
             }
             return result;
         }
@@ -1100,7 +1142,6 @@ namespace VIAT.WorkFlow.Services
                 //关联处理记录.
                 List<Dictionary<string, object>> pricesLst = new List<Dictionary<string, object>>();
 
-                SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
                 foreach (Viat_wk_bid_detail bid in bidLst)
                 {
                     //把cust記錄寫入transfer, delivery transfer
@@ -1115,21 +1156,21 @@ namespace VIAT.WorkFlow.Services
                                    priceDetail.start_date = getFormatYYYYMMDD(master.start_date);
                                    priceDetail.end_date = getFormatYYYYMMDD(master.end_date);
                                }*/
-                    if(masterEntry.pricegroup_dbid != null)
+                    if (masterEntry.pricegroup_dbid != null)
                     {
                         priceDetail.pricedetail_dbid = masterEntry.pricegroup_dbid;
                     }
-                    else if(masterEntry.cust_dbid != null)
+                    else if (masterEntry.cust_dbid != null)
                     {
                         priceDetail.cust_dbid = masterEntry.cust_dbid;
                     }
-                   
+
                     priceDetail.start_date = getFormatYYYYMMDD(masterEntry.start_date);
                     priceDetail.end_date = getFormatYYYYMMDD(masterEntry.end_date);
                     priceDetail.bid_no = masterEntry.bid_no;
                     priceDetail.prod_dbid = bid.prod_dbid;
                     priceDetail.status = "Y";
-                    
+
                     priceDetail.gross_price = View_cust_priceService.Instance.getNetPriceByProdDBID(bid.prod_dbid?.ToString());
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
 
@@ -1146,9 +1187,9 @@ namespace VIAT.WorkFlow.Services
                 //处理旧数据
                 saveModel.MainDatas = pricesLst;
                 View_cust_priceService.Instance.processData(saveModel);
-                
+
             }
-           
+
         }
 
 
