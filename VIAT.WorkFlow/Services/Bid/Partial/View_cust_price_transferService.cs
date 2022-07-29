@@ -107,14 +107,14 @@ namespace VIAT.WorkFlow.Services
         public override WebResponseContent Update(SaveModel saveModel)
         {
             string sGroupImport = saveModel.MainData["add_group"]?.ToString();
-            string sPriceGroupDBID = "";
-            if (string.IsNullOrEmpty(saveModel.MainData["pricegroup_dbid"]?.ToString()) == false)
+            string sInPriceGroupDBID = "";
+            if (string.IsNullOrEmpty(saveModel.MainData["in_pricegroup_dbid"]?.ToString()) == false)
             {
-                sPriceGroupDBID = saveModel.MainData["pricegroup_dbid"]?.ToString();
+                sInPriceGroupDBID = saveModel.MainData["in_pricegroup_dbid"]?.ToString();
             }
 
             bool bImport = false;
-            if (string.IsNullOrEmpty(sGroupImport) == false && sGroupImport == "Y" && string.IsNullOrEmpty(sPriceGroupDBID) == false)
+            if (string.IsNullOrEmpty(sGroupImport) == false && sGroupImport == "Y" && string.IsNullOrEmpty(sInPriceGroupDBID) == false)
             {
                 bImport = true;
             }
@@ -265,15 +265,16 @@ namespace VIAT.WorkFlow.Services
 
                 SaveModel.DetailListDataResult ImportResult = new SaveModel.DetailListDataResult();
                 saveModel.DetailListData.Add(ImportResult);
+                string pricegroud = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
+                Guid pricegroupdbid = new Guid(pricegroud);
                 foreach (Viat_app_cust_price_transfer bid in bidLst)
                 {
                     if (bid.state == "2") continue;
                     //导入,根据cust_id,group_id进行区分
-                    if (string.IsNullOrEmpty(bid.pricegroup_dbid?.ToString()) == false || 
+                    if (string.IsNullOrEmpty(pricegroupdbid.ToString()) == false || 
                         bImport == true)
                     {
-                        string pricegroud = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
-                        Guid pricegroupdbid = new Guid(pricegroud);
+                        
                         //处理组
                         //把cust記錄寫入transfer, delivery transfer
                         Viat_app_cust_price custPrice = new Viat_app_cust_price(); //JsonConvert.DeserializeObject<Viat_app_cust_price>(JsonConvert.SerializeObject(bid));
@@ -305,12 +306,14 @@ namespace VIAT.WorkFlow.Services
                         {
                             Viat_app_cust_group custGroup = new Viat_app_cust_group();
                             bid.MapValueToEntity(custGroup);
-                            custGroup.pricegroup_dbid = new Guid(saveModel.MainData["pricegroup_dbid"].ToString());
+                            //custGroup.pricegroup_dbid = new Guid(saveModel.MainData["pricegroup_dbid"].ToString());
                             custGroup.custgroup_dbid = System.Guid.NewGuid();
                             custGroup.start_date = getFormatYYYYMMDD(bid.start_date);
                             custGroup.end_date = getFormatYYYYMMDD(bid.end_date);
                             custGroup.status = "Y";
                             custGroup.pricegroup_dbid = pricegroupdbid;
+                            custGroup.prod_dbid = bid.prod_dbid;
+                            custGroup.cust_dbid = bid.cust_dbid;
                             ImportResult.optionType = SaveModel.MainOptionType.add;
                             ImportResult.detailType = typeof(Viat_app_cust_group);
                             ImportResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string,object>>(JsonConvert.SerializeObject(custGroup)));
@@ -345,14 +348,15 @@ namespace VIAT.WorkFlow.Services
                 //关联处理记录.
                 List<Dictionary<string, object>> pricesLst = new List<Dictionary<string, object>>();
 
-               // SaveModel.DetailListDataResult custPriceResult = new SaveModel.DetailListDataResult();
-
+                // SaveModel.DetailListDataResult custPriceResult = new SaveModel.DetailListDataResult();
+                string pricegroud = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
+                Guid pricegroupdbid = new Guid(pricegroud);
                 foreach (Viat_app_cust_price_transfer bid in bidLst)
                 {
                     if (bid.state == "2") continue;
 
                     //导入,根据cust_id,group_id进行区分
-                    if (string.IsNullOrEmpty(bid.pricegroup_dbid?.ToString()) == false || bImport == true)
+                    if (string.IsNullOrEmpty(pricegroupdbid.ToString()) == false || bImport == true)
                     {
                         //处理组
                         return;
