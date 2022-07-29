@@ -63,21 +63,15 @@ namespace VIAT.Basic.Services
                 string sCustID = "";              
                 if (string.IsNullOrEmpty(transferEntity.cust_id) == true)
                 {
-                    string dohInstituteNo = saveModel.MainData["doh_institute_no"].ToString();
-                    if (!string.IsNullOrEmpty(dohInstituteNo))
-                    {
-                        PageGridData<View_com_cust> detailGrid = new PageGridData<View_com_cust>();
-                        string sql = "select count(1) from View_com_cust where doh_institute_no=@dohInstituteNo";
-                        detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { dohInstituteNo = dohInstituteNo }).GetInt();
-                        if (detailGrid.total > 0)
-                        {
-                            return webResponse.Error("NHI Institute no Already Exists");
-                        }
-                    }
                     //当cust_id为空时，需要同步cust
                     sCustID = View_com_custService.Instance.getCustID();                   
                     saveModel.MainData["cust_id"] = sCustID;
                     
+                }
+                string result = NHIInstitute(saveModel);
+                if (!string.IsNullOrEmpty(result))
+                {
+                    return webResponse.Error(result);
                 }
                 saveModel.MainData["state"] = "1";
                 //处理表头[viat_app_cust_transfer]
@@ -123,6 +117,8 @@ namespace VIAT.Basic.Services
                     transferEntity.MapValueToEntity(cust);
                     cust.cust_dbid = custGuid;
                     cust.cust_id = sCustID;
+                    cust.is_controll = saveModel.MainData.ContainsKey("is_controll") ? saveModel.MainData["is_controll"].ToString() : "";
+                    cust.own_hospital_name = saveModel.MainData.ContainsKey("own_hospital_name") ? saveModel.MainData["own_hospital_name"].ToString() : "";
                     /*cust.own_hospital = saveModel.MainData["own_hospital"] == null? new Guid(): (Guid?)saveModel.MainData["own_hospital"];
                     cust.med_group = saveModel.MainData["med_group"] == null ? new Guid() : (Guid?)saveModel.MainData["med_group"];
                     cust.delv_group = saveModel.MainData["delv_group"] == null ? new Guid() : (Guid?)saveModel.MainData["delv_group"];*/
@@ -162,8 +158,8 @@ namespace VIAT.Basic.Services
                     {
                         cust.cust_dbid = custFac.cust_dbid;
                     }
-                   
-
+                    cust.is_controll = saveModel.MainData.ContainsKey("is_controll") ? saveModel.MainData["is_controll"].ToString() : "";
+                    cust.own_hospital_name = saveModel.MainData.ContainsKey("own_hospital_name") ? saveModel.MainData["own_hospital_name"].ToString() : "";
                     SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
                     custResult.detailType = typeof(Viat_com_cust);
                     custResult.optionType = SaveModel.MainOptionType.update;
@@ -215,6 +211,46 @@ namespace VIAT.Basic.Services
             };
            
             return base.Update(saveModel);
+        }
+
+        private string NHIInstitute(SaveModel saveDataModel)
+        {
+            try
+            {
+                string result = "", CustId = "";
+                if (saveDataModel.MainData.ContainsKey("cust_id"))
+                {
+                    CustId = saveDataModel.MainData["cust_id"] == null ? "" : saveDataModel.MainData["cust_id"].ToString();
+                }
+                string dohInstituteNo = saveDataModel.MainData["doh_institute_no"] == null ? "" : saveDataModel.MainData["doh_institute_no"].ToString();
+                string taxId = saveDataModel.MainData["tax_id"] == null ? "" : saveDataModel.MainData["tax_id"].ToString();
+                PageGridData<Viat_wk_cust> detailGrid = new PageGridData<Viat_wk_cust>();
+                if (!string.IsNullOrEmpty(dohInstituteNo))
+                {
+                    string sql = $"select count(1) from viat_com_cust where doh_institute_no='{dohInstituteNo}'";
+                    sql += string.IsNullOrEmpty(CustId) ? "" : $" and cust_id <> '{CustId}'";
+                    detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { }).GetInt();
+                    if (detailGrid.total > 0)
+                    {
+                        throw new Exception("NHI Institute no Already Exists");
+                    }
+                }
+                if (!string.IsNullOrEmpty(taxId))
+                {
+                    string sql = $"select count(1) from viat_com_cust where tax_id='{taxId}'";
+                    sql += string.IsNullOrEmpty(CustId) ? "" : $" and cust_id <> '{CustId}'";
+                    detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { }).GetInt();
+                    if (detailGrid.total > 0)
+                    {
+                        throw new Exception("Tax ID Already Exists");
+                    }
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
         }
 
         private int List<T>()
