@@ -31,14 +31,14 @@ namespace VIAT.Core.Utilities
             WebResponseContent responseContent = new WebResponseContent();
 
             FileInfo file = new FileInfo(path);
-            if (!file.Exists) return responseContent.Error("未找到上传的文件,请重新上传");
+            if (!file.Exists) return responseContent.Error("no file, please select file");
 
             List<T> entities = new List<T>();
             using (ExcelPackage package = new ExcelPackage(file))
             {
                 if (package.Workbook.Worksheets.Count == 0 ||
                     package.Workbook.Worksheets.FirstOrDefault().Dimension.End.Row <= 1)
-                    return responseContent.Error("未导入数据");
+                    return responseContent.Error("no import data");
                 //2020.08.11修复获取表结构信息时，表为别名时查不到数据的问题
                 //typeof(T).GetEntityTableName()
                 List<CellOptions> cellOptions = GetExportColumnInfo(typeof(T).Name, false, false, columns: exportColumns?.GetExpressionToArray());
@@ -67,18 +67,18 @@ namespace VIAT.Core.Utilities
                         CellOptions options = cellOptions.Where(x => x.ColumnCNName == columnCNName).FirstOrDefault();
                         if (options == null)
                         {
-                            return responseContent.Error("导入文件列[" + columnCNName + "]不是模板中的列");
+                            return responseContent.Error("import column[" + columnCNName + "]is invalid column");
                         }
                         if (options.Index > 0)
                         {
-                            return responseContent.Error("导入文件列[" + columnCNName + "]不能重复");
+                            return responseContent.Error("importcolumn[" + columnCNName + "] double");
                         }
                         options.Index = j;
                     }
                 }
                 if (cellOptions.Exists(x => x.Index == 0))
                 {
-                    return responseContent.Error("导入文件列必须与导入模板相同");
+                    return responseContent.Error("import column must same with template");
                 }
 
                 PropertyInfo[] propertyInfos = typeof(T).GetProperties()
@@ -102,7 +102,7 @@ namespace VIAT.Core.Utilities
                         {
                             if (options.Requierd)
                             {
-                                return responseContent.Error($"第{m}行[{options.ColumnCNName}]验证未通过,不能为空。");
+                                return responseContent.Error($"at{m}row[{options.ColumnCNName}]is empty。");
                             }
                             continue;
                         }
@@ -114,7 +114,7 @@ namespace VIAT.Core.Utilities
                         {
                             if (options.KeyValues == null)
                             {
-                                return responseContent.Error($"[{options.ColumnCNName}]字段数字典编号[{options.DropNo}]缺失,请检查字典配置");
+                                return responseContent.Error($"[{options.ColumnCNName}]dictionary no[{options.DropNo}]deficiency,please check dictionary");
                             }
                             string key = options.KeyValues.Where(x => x.Value == value)
                                   .Select(s => s.Key)
@@ -123,7 +123,7 @@ namespace VIAT.Core.Utilities
                             {
                                 //小于20个字典项，直接提示所有可选value
                                 string values = options.KeyValues.Count < 20 ? (string.Join(',', options.KeyValues.Select(s => s.Value))) : options.ColumnCNName;
-                                return responseContent.Error($"第{m}行[{options.ColumnCNName}]验证未通过,必须是字典数据中[{values}]的值。");
+                                return responseContent.Error($"at{m}row[{options.ColumnCNName}]check nopass,must in dictionar[{values}]value。");
                             }
                             //将值设置为数据字典的Key,如果导入为是/否字典项，存在表中应该对为1/0
                             value = key;
@@ -147,7 +147,7 @@ namespace VIAT.Core.Utilities
 
                         if (!result.Item1 && bCheckImportCustom==false)
                         {
-                            return responseContent.Error($"第{m}行[{options.ColumnCNName}]验证未通过,{result.Item2}");
+                            return responseContent.Error($"at{m}row[{options.ColumnCNName}]check failed,{result.Item2}");
                         }
 
                         property.SetValue(entity, value.ChangeType(property.PropertyType));
