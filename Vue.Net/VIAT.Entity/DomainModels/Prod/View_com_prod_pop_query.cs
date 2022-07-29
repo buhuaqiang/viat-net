@@ -399,6 +399,15 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="varchar(15)")]
        public string lmpg_mpg_id { get; set; }
 
-       
+
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "category")]
+        [MaxLength(15)]
+        [Column(TypeName = "varchar(15)")]
+        public string category { get; set; }
+
+
     }
 }
