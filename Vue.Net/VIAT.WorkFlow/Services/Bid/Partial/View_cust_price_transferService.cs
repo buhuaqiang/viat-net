@@ -266,7 +266,7 @@ namespace VIAT.WorkFlow.Services
                 SaveModel.DetailListDataResult ImportResult = new SaveModel.DetailListDataResult();
                 saveModel.DetailListData.Add(ImportResult);
                 string pricegroud = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
-                Guid pricegroupdbid = new Guid();
+                Guid? pricegroupdbid = null;
                 if (!string.IsNullOrEmpty(pricegroud))
                 {
                     pricegroupdbid = new Guid(pricegroud);
@@ -355,7 +355,7 @@ namespace VIAT.WorkFlow.Services
 
                 // SaveModel.DetailListDataResult custPriceResult = new SaveModel.DetailListDataResult();
                 string pricegroud = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
-                Guid pricegroupdbid = new Guid();
+                Guid? pricegroupdbid = null;
                 if (!string.IsNullOrEmpty(pricegroud))
                 {
                     pricegroupdbid = new Guid(pricegroud);
