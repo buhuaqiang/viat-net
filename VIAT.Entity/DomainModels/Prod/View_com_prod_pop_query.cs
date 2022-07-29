@@ -403,7 +403,7 @@ namespace VIAT.Entity.DomainModels
         /// <summary>
         ///
         /// </summary>
-        [Display(Name = "category")]
+        [Display(Name = "Category")]
         [MaxLength(15)]
         [Column(TypeName = "varchar(15)")]
         public string category { get; set; }
