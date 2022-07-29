@@ -234,6 +234,11 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 
-       
+        /// <summary>
+        ///最後修改時間
+        /// </summary>
+        [Display(Name = "最後修改時間")]
+        [Column(TypeName = "datetime")]
+        public DateTime? apploved_date { get; set; }
     }
 }
