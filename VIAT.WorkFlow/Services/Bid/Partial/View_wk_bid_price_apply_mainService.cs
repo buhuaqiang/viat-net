@@ -633,7 +633,7 @@ namespace VIAT.WorkFlow.Services
 
                 saveDataModel.MainData["bidmast_dbid"] = bidMastDBID;
                 saveDataModel.MainData["bid_no"] = sBinNo;                
-                saveDataModel.MainData["start_date"] = getFormatYYYYMMDD(DateTime.Now.ToString("yyyy-MM-dd"));
+                //saveDataModel.MainData["start_date"] = getFormatYYYYMMDD(DateTime.Now.ToString("yyyy-MM-dd"));
 
                 masterResult.optionType = SaveModel.MainOptionType.add;
             }
