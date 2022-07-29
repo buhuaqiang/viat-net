@@ -62,9 +62,18 @@ namespace VIAT.Basic.Services
                 SearchParameters item = searchParametersList[i];
                 if (item.Name == "channelValue")
                 {
+                    searchParametersList.Remove(item);
                     whereConditon += "and cust.doh_type in (  select doh_type from viat_com_doh_type where channel = '" + item.Value + "')";
+                    break;
                 }
-               
+
+                if (item.Name == "city_name")
+                {
+                    searchParametersList.Remove(item);
+                    whereConditon += "and (city.city_name like '%" + item.Value + "%' or city.zip_name like '%" + item.Value + "%')";
+                    break;
+                }
+
             }
                 QuerySql = @"select cust.* ,
                         own.cust_id as own_hospital_cust_id,
