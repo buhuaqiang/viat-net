@@ -222,18 +222,14 @@ namespace VIAT.WorkFlow.Services
             {
                 List<Viat_app_cust_price_transfer> bidList = JsonConvert.DeserializeObject<List<Viat_app_cust_price_transfer>>(sData);
 
-             
-
-                //处理关联
-                processCustPrice(saveModel, bidList, bImport, sRemak);
-                processPriceDetail(saveModel, bidList, bImport, sRemak);
                 //处理本身
                 SaveModel.DetailListDataResult priceTransferResult = new SaveModel.DetailListDataResult();
                 saveModel.DetailListData.Add(priceTransferResult);
                 foreach (Viat_app_cust_price_transfer bid in bidList)
                 {
-                   
-                    if(bid.state == "2")
+                    bid.start_date = Convert.ToDateTime(saveModel.MainData["start_date"]);
+                    bid.end_date = Convert.ToDateTime(saveModel.MainData["end_date"]);
+                    if (bid.state == "2")
                     {
                         //不导入  //更新自己
                         bid.state = "2";                         
@@ -248,7 +244,10 @@ namespace VIAT.WorkFlow.Services
                     priceTransferResult.optionType = SaveModel.MainOptionType.update;
                     priceTransferResult.detailType = typeof(Viat_app_cust_price_transfer);
                     priceTransferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(bid)));
-                }               
+                }
+                //处理关联
+                processCustPrice(saveModel, bidList, bImport, sRemak);
+                processPriceDetail(saveModel, bidList, bImport, sRemak);
             }
 
         }
@@ -306,8 +305,8 @@ namespace VIAT.WorkFlow.Services
                             bid.MapValueToEntity(custGroup);
                             custGroup.pricegroup_dbid = new Guid(saveModel.MainData["pricegroup_dbid"].ToString());
                             custGroup.custgroup_dbid = System.Guid.NewGuid();
-                            custGroup.start_date = bid.start_date;
-                            custGroup.end_date = bid.end_date;
+                            custGroup.start_date = getFormatYYYYMMDD(bid.start_date);
+                            custGroup.end_date = getFormatYYYYMMDD(bid.end_date);
                             custGroup.status = "Y";
 
                             ImportResult.optionType = SaveModel.MainOptionType.add;

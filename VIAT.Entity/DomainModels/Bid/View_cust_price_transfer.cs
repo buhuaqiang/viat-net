@@ -410,8 +410,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="reserv_price")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
-       public decimal? reserv_price { get; set; }
-
-       
+        [Editable(true)]
+        public decimal? reserv_price { get; set; }
     }
 }

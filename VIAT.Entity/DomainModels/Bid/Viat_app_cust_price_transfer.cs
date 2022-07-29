@@ -352,6 +352,13 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 
-       
+        /// <summary>
+        ///进售价
+        /// </summary>
+        [Display(Name = "进售价")]
+        [DisplayFormat(DataFormatString = "18,5")]
+        [Column(TypeName = "decimal")]
+        [Editable(true)]
+        public decimal? reserv_price { get; set; }
     }
 }
