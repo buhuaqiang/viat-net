@@ -321,5 +321,23 @@ namespace VIAT.Price.Services
         {
             return _viat_app_dist_mappingService.Del(keys, delList);
         }
+
+        public List<View_price_distributor_mapping> PriceDistributorMappingData(string prod_id, string price_channel, string group_id, string cust_id)
+        {
+            string sql = "select * from View_price_distributor_mapping where prod_id = '" + prod_id + "'";
+            if (!string.IsNullOrEmpty(price_channel))
+            {
+                sql += " and price_channel = '" + price_channel + "'";
+            }
+            if (!string.IsNullOrEmpty(group_id))
+            {
+                sql += " and group_id = '" + group_id + "'";
+            }
+            if (!string.IsNullOrEmpty(cust_id))
+            {
+                sql += " and cust_id = '" + cust_id + "'";
+            }
+            return repository.DapperContext.QueryList<View_price_distributor_mapping>(sql, null);
+        }
     }
 }

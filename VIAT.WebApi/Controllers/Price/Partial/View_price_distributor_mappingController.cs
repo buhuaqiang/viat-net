@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Entity.DomainModels;
 using VIAT.Price.IServices;
+using VIAT.Core.Filters;
 
 namespace VIAT.Price.Controllers
 {
@@ -28,6 +29,13 @@ namespace VIAT.Price.Controllers
         {
             _service = service;
             _httpContextAccessor = httpContextAccessor;
+        }
+
+        [ApiActionPermission]
+        [HttpGet, Route("PriceMapingData")]
+        public ActionResult PriceDistributorMappingData(string prod_id, string price_channel, string group_id, string cust_id)
+        {
+            return Json(_service.PriceDistributorMappingData(prod_id, prod_id, group_id, cust_id));
         }
     }
 }
