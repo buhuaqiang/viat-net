@@ -417,7 +417,7 @@ namespace VIAT.Core.BaseProvider
         public virtual WebResponseContent Import(List<Microsoft.AspNetCore.Http.IFormFile> files)
         {
             if (files == null || files.Count == 0)
-                return new WebResponseContent { Status = true, Message = "请选择上传的文件" };
+                return new WebResponseContent { Status = true, Message = "please select file" };
             Microsoft.AspNetCore.Http.IFormFile formFile = files[0];
             string dicPath = $"Upload/{DateTime.Now.ToString("yyyMMdd")}/{typeof(T).Name}/".MapPath();
             if (!Directory.Exists(dicPath)) Directory.CreateDirectory(dicPath);
@@ -438,8 +438,8 @@ namespace VIAT.Core.BaseProvider
             }
             catch (Exception ex)
             {
-                Response.Error("未能处理导入的文件,请检查导入的文件是否正确");
-                Logger.Error($"表{typeof(T).GetEntityTableCnName()}导入失败{ex.Message + ex.InnerException?.Message}");
+                Response.Error("please check file correct");
+                Logger.Error($"table{typeof(T).GetEntityTableCnName()}import failed{ex.Message + ex.InnerException?.Message}");
             }
             if (CheckResponseResult()) return Response;
             List<T> list = Response.Data as List<T>;
@@ -452,7 +452,7 @@ namespace VIAT.Core.BaseProvider
             if (HttpContext.Current.Request.Query.ContainsKey("table"))
             {
                 ImportOnExecuted?.Invoke(list);
-                return Response.OK("文件上传成功", list.Serialize());
+                return Response.OK("file import sucess", list.Serialize());
             }
             repository.AddRange(list, true);
             if (ImportOnExecuted != null)
@@ -460,7 +460,7 @@ namespace VIAT.Core.BaseProvider
                 Response = ImportOnExecuted.Invoke(list);
                 if (CheckResponseResult()) return Response;
             }
-            return Response.OK("文件上传成功");
+            return Response.OK("file import sucess"");
         }
 
         /// <summary>
