@@ -625,7 +625,7 @@ namespace VIAT.WorkFlow.Services
             //增加master数据
             SaveModel.DetailListDataResult masterResult = new SaveModel.DetailListDataResult();
             saveDataModel.MainData["status"] = sStatus;
-            saveDataModel.MainData["apploved_date"] = DateTime.Now;
+            saveDataModel.MainData["approved_date"] = DateTime.Now;
             if (saveDataModel.MainData["bidmast_dbid"]!= null && string.IsNullOrEmpty(saveDataModel.MainData["bidmast_dbid"].ToString())==true)
             {
                 //新增
