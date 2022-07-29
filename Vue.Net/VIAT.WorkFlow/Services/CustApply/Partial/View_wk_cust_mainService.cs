@@ -346,6 +346,7 @@ namespace VIAT.WorkFlow.Services
             Viat_app_cust_delivery_transfer delivery = JsonConvert.DeserializeObject<Viat_app_cust_delivery_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
             delivery.custtransfer_dbid = transfer.custtransfer_dbid;
             delivery.custdeltransfer_dbid = System.Guid.NewGuid();
+            delivery.delivery_name = saveModel.MainData["cust_name"] == null ? "" : saveModel.MainData["cust_name"].ToString();
             SaveModel.DetailListDataResult deliveryResult = new SaveModel.DetailListDataResult();
             deliveryResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(delivery)));
             deliveryResult.optionType = SaveModel.MainOptionType.add;

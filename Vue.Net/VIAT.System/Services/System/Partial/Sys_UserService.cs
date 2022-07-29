@@ -71,7 +71,7 @@ namespace VIAT.System.Services
                     TerritoryId = detailGrid.rows.Count() > 0 ? string.IsNullOrEmpty(detailGrid.rows[0].Org_Id)? "QQ1": detailGrid.rows[0].Org_Id : "QQ1"//"01515"
                 });
                 user.Token = token;
-                responseContent.Data = new { token, userName = user.UserTrueName, img = user.HeadImageUrl };
+                responseContent.Data = new { token, userName = user.UserTrueName, img = user.HeadImageUrl,userId = user.User_Id };
                 repository.Update(user, x => x.Token, true);
                 UserContext.Current.LogOut(user.User_Id);
 
