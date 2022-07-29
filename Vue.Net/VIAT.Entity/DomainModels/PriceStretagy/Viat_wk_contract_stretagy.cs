@@ -26,13 +26,21 @@ namespace VIAT.Entity.DomainModels
        public Guid contstret_dbid { get; set; }
 
        /// <summary>
+       ///策略類型
+       /// </summary>
+       [Display(Name = "Stretagy Type")]
+       [MaxLength(3)]
+       [Column(TypeName="varchar(3)")]
+       [Editable(true)]
+       public string cont_stretagy_type { get; set; }
+
+       /// <summary>
        ///Stretagy ID
        /// </summary>
        [Display(Name ="Stretagy ID")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string cont_stretagy_id { get; set; }
 
        /// <summary>
@@ -42,13 +50,12 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(100)]
        [Column(TypeName="varchar(100)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string cont_stretagy_name { get; set; }
 
        /// <summary>
-       ///Amount
+       ///Rang
        /// </summary>
-       [Display(Name ="Amount")]
+       [Display(Name ="Rang")]
        [Column(TypeName="numeric")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
@@ -61,7 +68,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="char(1)")]
        [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
 
        /// <summary>

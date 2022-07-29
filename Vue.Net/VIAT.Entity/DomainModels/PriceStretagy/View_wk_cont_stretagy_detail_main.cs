@@ -96,10 +96,18 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="varchar(15)")]
        public string prod_type { get; set; }
 
-       /// <summary>
-       ///列名contstretail_dbid
-       /// </summary>
-       [Key]
+        /// <summary>
+        ///Product Type
+        /// </summary>
+        [Display(Name = "Category")]
+        [MaxLength(15)]
+        [Column(TypeName = "varchar(15)")]
+        public string category { get; set; }
+
+        /// <summary>
+        ///列名contstretail_dbid
+        /// </summary>
+        [Key]
        [Display(Name ="列名contstretail_dbid")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
