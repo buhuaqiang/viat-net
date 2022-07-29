@@ -1546,8 +1546,22 @@ namespace VIAT.Price.Services
 
         public override WebResponseContent Import(List<IFormFile> files)
         {
-            //如果下載模板指定了DownLoadTemplate,則在Import方法必須也要指定,並且字段要和下載模板裡指定的一致
-            DownLoadTemplateColumns = x => new { x.cust_id, x.prod_id, x.nhi_price,x.invoice_price, x.net_price,x.reserv_price, x.gross_price, x.min_qty, x.start_date, x.end_date, x.remarks };
+            //如果下載模板指定了DownLoadTemplate,則在Import方法必須也要指定,並且字段要和下載模板裡指定的一致//x.cust_id, x.prod_id, x.nhi_price,x.invoice_price, x.net_price,x.reserv_price, x.gross_price, x.min_qty, x.start_date, x.end_date, x.remarks
+            DownLoadTemplateColumns = x => new {
+                x.cust_id,
+                x.cust_name,
+                x.prod_id,
+                x.prod_ename,
+                x.nhi_price,
+                x.net_price,
+                x.invoice_price,
+                x.reserv_price,
+                x.gross_price,
+                x.min_qty,
+                x.start_date,
+                x.end_date,
+                x.remarks
+                 };
 
             ImportOnExecutBefore = () =>
             {
