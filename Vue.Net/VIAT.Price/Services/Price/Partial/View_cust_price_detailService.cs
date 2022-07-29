@@ -906,7 +906,7 @@ namespace VIAT.Price.Services
 
             processData(saveModel);
             base.CustomBatchProcessEntity(saveModel);
-            return webResponse.OK("save successfule");
+            return webResponse.OK("save successful");
         }
 
         /// <summary>
