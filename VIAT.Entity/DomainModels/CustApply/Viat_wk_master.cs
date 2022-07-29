@@ -239,6 +239,6 @@ namespace VIAT.Entity.DomainModels
         /// </summary>
         [Display(Name = "最後修改時間")]
         [Column(TypeName = "datetime")]
-        public DateTime? apploved_date { get; set; }
+        public DateTime? approved_date { get; set; }
     }
 }
