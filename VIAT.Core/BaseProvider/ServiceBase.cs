@@ -460,7 +460,7 @@ namespace VIAT.Core.BaseProvider
                 Response = ImportOnExecuted.Invoke(list);
                 if (CheckResponseResult()) return Response;
             }
-            return Response.OK("file import sucess"");
+            return Response.OK("file import sucess");
         }
 
         /// <summary>
