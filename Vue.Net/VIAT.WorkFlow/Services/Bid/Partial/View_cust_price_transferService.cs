@@ -272,6 +272,8 @@ namespace VIAT.WorkFlow.Services
                     if (string.IsNullOrEmpty(bid.pricegroup_dbid?.ToString()) == false || 
                         bImport == true)
                     {
+                        string pricegroud = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
+                        Guid pricegroupdbid = new Guid(pricegroud);
                         //处理组
                         //把cust記錄寫入transfer, delivery transfer
                         Viat_app_cust_price custPrice = new Viat_app_cust_price(); //JsonConvert.DeserializeObject<Viat_app_cust_price>(JsonConvert.SerializeObject(bid));
@@ -288,7 +290,7 @@ namespace VIAT.WorkFlow.Services
                             custPrice.end_date = getFormatYYYYMMDD(bid.end_date);
                         }
                         custPrice.status = "Y";
-
+                        custPrice.pricegroup_dbid = pricegroupdbid;
                         Dictionary<string, object> priceDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custPrice));
                         /*  custPriceResult.DetailData.Add(priceDic);
                           custPriceResult.optionType = SaveModel.MainOptionType.add;
@@ -308,7 +310,7 @@ namespace VIAT.WorkFlow.Services
                             custGroup.start_date = getFormatYYYYMMDD(bid.start_date);
                             custGroup.end_date = getFormatYYYYMMDD(bid.end_date);
                             custGroup.status = "Y";
-
+                            custGroup.pricegroup_dbid = pricegroupdbid;
                             ImportResult.optionType = SaveModel.MainOptionType.add;
                             ImportResult.detailType = typeof(Viat_app_cust_group);
                             ImportResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string,object>>(JsonConvert.SerializeObject(custGroup)));
