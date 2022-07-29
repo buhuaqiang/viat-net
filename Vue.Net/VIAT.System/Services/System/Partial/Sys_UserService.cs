@@ -68,7 +68,7 @@ namespace VIAT.System.Services
                     ClientID = loginInfo.ClientID,
                     ClientUserName = loginInfo.ClientUserName ?? "",
                     ClientTrueUserName = loginInfo.ClientTrueUserName ?? "",
-                    TerritoryId = detailGrid.rows.Count() > 0 ? string.IsNullOrEmpty(detailGrid.rows[0].Org_Id)?"": detailGrid.rows[0].Org_Id : ""//"01515"
+                    TerritoryId = detailGrid.rows.Count() > 0 ? string.IsNullOrEmpty(detailGrid.rows[0].Org_Id)? "QQ1": detailGrid.rows[0].Org_Id : "QQ1"//"01515"
                 });
                 user.Token = token;
                 responseContent.Data = new { token, userName = user.UserTrueName, img = user.HeadImageUrl };
