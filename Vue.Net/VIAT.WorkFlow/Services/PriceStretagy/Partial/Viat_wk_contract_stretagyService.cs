@@ -80,19 +80,6 @@ namespace VIAT.WorkFlow.Services
             {
                 saveDataModel.MainData.Add("contstret_dbid", "");
             }
-            if(saveDataModel.MainData["contstret_dbid"] != null && saveDataModel.MainData["contstret_dbid"].ToString() != getDefaultGuid(typeof(Viat_wk_contract_stretagy)))
-            {
-                //更新
-                contstret_dbid = saveDataModel.MainData["contstret_dbid"].ToString();
-                headResult.optionType = SaveModel.MainOptionType.update;
-            }
-            else
-            {
-                contstret_dbid= System.Guid.NewGuid().ToString();
-                //新增
-                headResult.optionType = SaveModel.MainOptionType.add;
-                saveDataModel.MainData["contstret_dbid"] = contstret_dbid;
-            }
             #region 增加stretagy_id唯一判断
             string stretagy_id = saveDataModel.MainData["cont_stretagy_id"] != null ? saveDataModel.MainData["cont_stretagy_id"].ToString() : "";
             PageGridData<Viat_wk_contract_stretagy> detailGrid = new PageGridData<Viat_wk_contract_stretagy>();
@@ -104,7 +91,6 @@ namespace VIAT.WorkFlow.Services
                     sql += " and contstret_dbid <> '" + saveDataModel.MainData["contstret_dbid"].ToString() + "'";
                 }
             }
-
             detailGrid.total = repository.DapperContext.ExecuteScalar(sql, null).ToInt();
             if (detailGrid.total > 0)
             {
@@ -114,6 +100,19 @@ namespace VIAT.WorkFlow.Services
             if (saveDataModel.MainData["contstret_dbid"] != null && string.IsNullOrEmpty(saveDataModel.MainData["contstret_dbid"].ToString()) == true)
             {
                 saveDataModel.MainData["contstret_dbid"] = getDefaultGuid(typeof(Viat_wk_contract_stretagy));
+            }
+            if (saveDataModel.MainData["contstret_dbid"] != null && saveDataModel.MainData["contstret_dbid"].ToString() != getDefaultGuid(typeof(Viat_wk_contract_stretagy)))
+            {
+                //更新
+                contstret_dbid = saveDataModel.MainData["contstret_dbid"].ToString();
+                headResult.optionType = SaveModel.MainOptionType.update;
+            }
+            else
+            {
+                contstret_dbid = System.Guid.NewGuid().ToString();
+                //新增
+                headResult.optionType = SaveModel.MainOptionType.add;
+                saveDataModel.MainData["contstret_dbid"] = contstret_dbid;
             }
             headResult.detailType = typeof(Viat_wk_contract_stretagy);
             //增加表头处理
