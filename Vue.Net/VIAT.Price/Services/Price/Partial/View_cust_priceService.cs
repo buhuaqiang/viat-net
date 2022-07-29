@@ -911,34 +911,39 @@ namespace VIAT.Price.Services
         /// </summary>
         private void ProcessNHI(Viat_app_cust_price entity, SaveModel saveModel)
         {
-            string sSql = @"SELECT TOP(1) *
+            /*增加判断，当前记录是否current*/
+            if (getFormatYYYYMMDD(entity.start_date) <= getFormatYYYYMMDD(DateTime.Now) && getFormatYYYYMMDD(entity.end_date) >= getFormatYYYYMMDD(DateTime.Now))
+            {
+
+                string sSql = @"SELECT TOP(1) *
                             FROM viat_app_cust_price_group
                             WHERE group_id = 'NHI' and pricegroup_dbid ='" + entity.pricegroup_dbid + "'";
 
-            Viat_app_cust_price_group entityGroup = _repository.DapperContext.QueryFirst<Viat_app_cust_price_group>(sSql, null);
-            if (entityGroup == null)
-            {
-                return;
-            }
-            else
-            {
-                entity.nhi_price = entity.net_price;
-                string sProd = @"SELECT TOP(1) *
+                Viat_app_cust_price_group entityGroup = _repository.DapperContext.QueryFirst<Viat_app_cust_price_group>(sSql, null);
+                if (entityGroup == null)
+                {
+                    return;
+                }
+                else
+                {
+                    entity.nhi_price = entity.net_price;
+                    string sProd = @"SELECT TOP(1) *
                                     FROM viat_com_prod 
                                     WHERE prod_dbid = '" + entity.prod_dbid + "'";
-                Viat_com_prod entityProd = _repository.DapperContext.QueryFirst<Viat_com_prod>(sProd, null);
-                if (entityProd != null)
-                {
-                    entityProd.nhi_id = entity.nhi_id;
-                    entityProd.nhi_price = entity.net_price;                  
-                }
+                    Viat_com_prod entityProd = _repository.DapperContext.QueryFirst<Viat_com_prod>(sProd, null);
+                    if (entityProd != null)
+                    {
+                        entityProd.nhi_id = entity.nhi_id;
+                        entityProd.nhi_price = entity.net_price;
+                    }
 
-                Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entityProd));
-                SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
-                dataResult.optionType = SaveModel.MainOptionType.update;
-                dataResult.detailType = typeof(Viat_com_prod);
-                dataResult.DetailData = new List<Dictionary<string, object>> { dic };
-                saveModel.DetailListData.Add(dataResult);
+                    Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entityProd));
+                    SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
+                    dataResult.optionType = SaveModel.MainOptionType.update;
+                    dataResult.detailType = typeof(Viat_com_prod);
+                    dataResult.DetailData = new List<Dictionary<string, object>> { dic };
+                    saveModel.DetailListData.Add(dataResult);
+                }
             }
         }
 
