@@ -305,7 +305,6 @@ namespace VIAT.WorkFlow.Services
         /// <param name="saveModel"></param>
         private void processCustTransferAndDelivery(SaveModel saveModel)
         {
-
             //把cust記錄寫入transfer, delivery transfer
             Viat_app_cust_transfer transfer = JsonConvert.DeserializeObject<Viat_app_cust_transfer>(JsonConvert.SerializeObject(saveModel.MainData));
             transfer.custtransfer_dbid = System.Guid.NewGuid();
@@ -319,9 +318,6 @@ namespace VIAT.WorkFlow.Services
                 transfer.entity = lstComCust[0].entity;
                 transfer.division = lstComCust[0].division; 
                 transfer.contact = lstComCust[0].contact;
-                transfer.tel_no = lstComCust[0].tel_no;
-                transfer.territory_id = lstComCust[0].territory_id;
-                transfer.margin_type = lstComCust[0].margin_type;
                 transfer.own_by_hospital = lstComCust[0].own_by_hospital;
                 transfer.is_contract = lstComCust[0].is_contract;
                 transfer.med_group = lstComCust[0].med_group;
@@ -332,6 +328,10 @@ namespace VIAT.WorkFlow.Services
                 transfer.is_controll = lstComCust[0].is_controll;
                 transfer.own_hospital_name = lstComCust[0].own_hospital_name;
             }
+            UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
+            transfer.tel_no = saveModel.MainData["delivery_tel_no"] == null ? "": saveModel.MainData["delivery_tel_no"].ToString();
+            transfer.territory_id = userInfo.TerritoryId;
+            transfer.margin_type = saveModel.MainData["doh_type"] == null ? "" : saveModel.MainData["doh_type"].ToString();
             #endregion
 
             SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
