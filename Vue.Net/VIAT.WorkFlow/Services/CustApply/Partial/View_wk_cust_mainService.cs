@@ -203,6 +203,7 @@ namespace VIAT.WorkFlow.Services
             saveDataModel.MainData["bid_no"] = sBinNo;
             saveDataModel.MainData["status"] = sStatus;
             saveDataModel.MainData["start_date"] = getFormatYYYYMMDD(DateTime.Now.ToString("yyyy-MM-dd"));
+            saveDataModel.MainData["apploved_date"] = DateTime.Now;
            /* if (saveDataModel.MainData.GetValue("apply_type")?.ToString() == "01")
             {
                 saveDataModel.MainData["cust_id"] = code;
@@ -281,6 +282,7 @@ namespace VIAT.WorkFlow.Services
             Viat_wk_master master = Viat_wk_masterService.Instance.getMasterByDBID(sbidmast_dbid);             
             master.apply_type = sApplyType;
             master.status = sStatus;
+            master.apploved_date = DateTime.Now;
             //修改master数据
             SaveModel.DetailListDataResult masterResult = new SaveModel.DetailListDataResult();
             masterResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(master)));
