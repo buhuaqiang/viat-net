@@ -218,9 +218,10 @@ namespace VIAT.WorkFlow.Services
             }
         }
 
-        public WebResponseContent CustPriceTransferImport(List<IFormFile> files)
+        public WebResponseContent CustPriceTransferImport(List<IFormFile> fileInput, string cust_dbid, string group_dbid)
         {
-            webRespose = _Price_TransferService.ImportData(files);
+
+            //webRespose = _Price_TransferService.ImportData(files);
             return webRespose;
         }
         
