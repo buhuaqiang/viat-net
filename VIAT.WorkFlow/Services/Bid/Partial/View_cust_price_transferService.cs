@@ -278,11 +278,16 @@ namespace VIAT.WorkFlow.Services
                 List<Dictionary<string, object>> pricesLst = new List<Dictionary<string, object>>();
                 SaveModel.DetailListDataResult ImportResult = new SaveModel.DetailListDataResult();
                 saveModel.DetailListData.Add(ImportResult);
-                string pricegroud = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
+                string inpricegrouddbid = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
+                string pricegrouddbid = saveModel.MainData["pricegroup_dbid"] == null ? "" : saveModel.MainData["pricegroup_dbid"].ToString();
                 Guid? pricegroupdbid = null;
-                if (!string.IsNullOrEmpty(pricegroud))
+                if (!string.IsNullOrEmpty(inpricegrouddbid))
                 {
-                    pricegroupdbid = new Guid(pricegroud);
+                    pricegroupdbid = new Guid(inpricegrouddbid);
+                }
+                else if (!string.IsNullOrEmpty(pricegrouddbid))
+                {
+                    pricegroupdbid = new Guid(pricegrouddbid);
                 }
                 switch (Cust)
                 {
