@@ -1165,11 +1165,12 @@ namespace VIAT.Core.BaseProvider
         /// </summary>
         /// <param name="dDate"></param>
         /// <returns></returns>
-        public DateTime getFormatYYYYMMDD(string dDate)
+        public DateTime getFormatYYYYMMDD(string sDate)
         {
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
-            return Convert.ToDateTime(dDate, dtFormat);
+            DateTime? dDate = Convert.ToDateTime(sDate, dtFormat);
+            return new DateTime(dDate.Value.Year, dDate.Value.Month, dDate.Value.Day, 0, 0, 0, 0);
         }
 
 

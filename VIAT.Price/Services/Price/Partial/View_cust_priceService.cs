@@ -365,7 +365,7 @@ namespace VIAT.Price.Services
                                oldPrice.end_date = entity.start_date.AddDays(-1);
                            }
 
-                           if (oldPrice.end_date < Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat) == true)
+                           if (getFormatYYYYMMDD(oldPrice.end_date) < getFormatYYYYMMDD(System.DateTime.Now) == true)
                            {
                                oldPrice.status = "N";
                            }
@@ -410,7 +410,7 @@ namespace VIAT.Price.Services
                         dataCurrResult.DetailData = new List<Dictionary<string, object>> { dicEntity };
                         saveModel.DetailListData.Add(dataCurrResult);*/
                    Dictionary<string, object> dicEntity = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(entity));
-                   if (entity.status == "N" && Convert.ToDateTime(entity.start_date.ToString("yyyy-MM-dd"), dtFormat) > Convert.ToDateTime(System.DateTime.Now.ToString("yyyy-MM-dd"), dtFormat))
+                   if (entity.status == "N" && getFormatYYYYMMDD(entity.start_date) > getFormatYYYYMMDD(System.DateTime.Now))
                    {
                        //如果本次修改為未來價格且Status = Invalid，自動刪除該筆資料              
                        //增加修改
@@ -706,7 +706,7 @@ namespace VIAT.Price.Services
             entity.custprice_dbid = System.Guid.NewGuid();
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
-            if (Convert.ToDateTime(entity.end_date.ToString(), dtFormat) < Convert.ToDateTime(System.DateTime.Now.ToString(), dtFormat))
+            if (getFormatYYYYMMDD(entity.end_date.ToString()) < getFormatYYYYMMDD(System.DateTime.Now))
             {
                 entity.status = "N";
             }
@@ -984,8 +984,8 @@ namespace VIAT.Price.Services
                 //检查是否触发未来价的卡控：不能同时有两个未来价
                 DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
                 dtFormat.ShortDatePattern = "yyyy-MM-dd";
-                DateTime dSysDate = Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd"), dtFormat);
-                DateTime dPageDate = Convert.ToDateTime(sStartDate, dtFormat);
+                DateTime dSysDate = getFormatYYYYMMDD(DateTime.Now);
+                DateTime dPageDate = getFormatYYYYMMDD(sStartDate);
                 Viat_app_cust_price futurePrice = CheckFuturePrice(sPriceGroupDBID, sProdDBID, sStartDate);
                 if (futurePrice != null && futurePrice.status=="Y")
                 {
@@ -1029,8 +1029,8 @@ namespace VIAT.Price.Services
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
             //当前系统日期
-            DateTime dSysDate = Convert.ToDateTime(DateTime.Now.ToString("yyyy-MM-dd"), dtFormat);
-            DateTime dPageDate = Convert.ToDateTime(sStartDate, dtFormat);
+            DateTime dSysDate = getFormatYYYYMMDD(DateTime.Now);
+            DateTime dPageDate = getFormatYYYYMMDD(sStartDate);
             if (dPageDate < dSysDate)
             {
                 return null;
@@ -1080,7 +1080,7 @@ namespace VIAT.Price.Services
             }
             DateTimeFormatInfo dtFormat = new DateTimeFormatInfo();
             dtFormat.ShortDatePattern = "yyyy-MM-dd";
-            DateTime dEndData = Convert.ToDateTime(dicData["invalid_date"].ToString(), dtFormat).ToLocalTime();
+            DateTime dEndData = getFormatYYYYMMDD(dicData["invalid_date"].ToString()).ToLocalTime();
             string sStatus = "Y";
             if(base.getFormatYYYYMMDD(dEndData) <= base.getFormatYYYYMMDD(System.DateTime.Now))
             {
