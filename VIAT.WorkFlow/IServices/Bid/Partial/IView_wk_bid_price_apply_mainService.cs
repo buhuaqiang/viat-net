@@ -6,6 +6,7 @@ using VIAT.Entity.DomainModels;
 using VIAT.Core.Utilities;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace VIAT.WorkFlow.IServices
 {
@@ -24,5 +25,7 @@ namespace VIAT.WorkFlow.IServices
         public PageGridData<Viat_app_cust_order> RecentOrder(PageDataOptions pageData);
 
         Viat_app_cust_price ProductPrice(string prod_dbid, string pricegroup_dbid);
+
+        WebResponseContent CustPriceTransferImport(List<IFormFile> files);
     }
  }
