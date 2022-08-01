@@ -59,11 +59,23 @@ namespace VIAT.WorkFlow.Controllers
         }
 
         //[ApiActionPermission]
-        [HttpGet, Route("RecentOrder")]
+       /* [HttpPost, Route("RecentOrder")]
         public ActionResult RecentOrder(string prod_dbid, string cust_dbid, string pricegroup_dbid)
         {
             return Json(_service.RecentOrder(prod_dbid, cust_dbid, pricegroup_dbid));
+        }*/
+
+        //查詢價格for transfer彈窗
+        [ApiActionPermission]
+        [HttpPost, Route("RecentOrder")]
+        public ActionResult RecentOrder([FromBody] PageDataOptions options)
+        {
+            return Json(_service.RecentOrder(options));
+
         }
+
+
+
         [HttpGet, Route("ProductPrice")]
         public ActionResult ProductPrice(string prod_dbid, string pricegroup_dbid)
         {
