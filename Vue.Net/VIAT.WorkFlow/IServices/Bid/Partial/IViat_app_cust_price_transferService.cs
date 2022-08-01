@@ -5,9 +5,13 @@ using VIAT.Core.BaseProvider;
 using VIAT.Entity.DomainModels;
 using VIAT.Core.Utilities;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
+
 namespace VIAT.WorkFlow.IServices
 {
     public partial interface IViat_app_cust_price_transferService
     {
+        WebResponseContent ImportData(List<IFormFile> files);
     }
  }

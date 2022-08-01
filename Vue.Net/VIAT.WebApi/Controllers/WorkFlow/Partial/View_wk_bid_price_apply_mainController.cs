@@ -73,13 +73,16 @@ namespace VIAT.WorkFlow.Controllers
             return Json(_service.RecentOrder(options));
 
         }
-
-
-
         [HttpGet, Route("ProductPrice")]
         public ActionResult ProductPrice(string prod_dbid, string pricegroup_dbid)
         {
             return Json(_service.ProductPrice(prod_dbid, pricegroup_dbid));
+        }
+        [ApiActionPermission]
+        [HttpPost, Route("PriceTansferImport")]
+        public ActionResult CustPriceTransferImport([FromBody] List<IFormFile> files)
+        {
+            return Json(_service.CustPriceTransferImport(files));
         }
     }
 }

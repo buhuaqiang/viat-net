@@ -27,6 +27,8 @@ using VIAT.Basic.Services;
 using VIAT.Core.DBManager;
 using VIAT.Core.Dapper;
 using System.Text.RegularExpressions;
+using System.IO;
+using VIAT.WorkFlow.IServices;
 
 namespace VIAT.WorkFlow.Services
 {
@@ -34,16 +36,19 @@ namespace VIAT.WorkFlow.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IView_wk_bid_price_apply_mainRepository _repository;//访问数据库
+        private readonly IViat_app_cust_price_transferService _Price_TransferService;
 
         [ActivatorUtilitiesConstructor]
         public View_wk_bid_price_apply_mainService(
             IView_wk_bid_price_apply_mainRepository dbRepository,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IViat_app_cust_price_transferService Price_TransferService
             )
         : base(dbRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _repository = dbRepository;
+            _Price_TransferService = Price_TransferService;
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
@@ -213,6 +218,12 @@ namespace VIAT.WorkFlow.Services
             }
         }
 
+        public WebResponseContent CustPriceTransferImport(List<IFormFile> files)
+        {
+            webRespose = _Price_TransferService.ImportData(files);
+            return webRespose;
+        }
+        
         /// <summary>
         /// 
         /// </summary>
