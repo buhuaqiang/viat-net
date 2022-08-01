@@ -560,7 +560,7 @@ namespace VIAT.WorkFlow.Services
         /// <param name="CustomerId"></param>
         /// <param name="PricegroupiId"></param>
         /// <returns></returns>
-        public List<Viat_app_cust_order> RecentOrder(string prod_dbid, string cust_dbid, string pricegroup_dbid)
+       /* public List<Viat_app_cust_order> RecentOrder(string prod_dbid, string cust_dbid, string pricegroup_dbid)
         {
             string sSql = $"select  c_order.*,prod.prod_id,prod.prod_ename,cust.cust_id,cust.cust_name from  viat_app_cust_order c_order" +
                            $" left join viat_com_prod prod on c_order.prod_dbid = prod.prod_dbid" +
@@ -575,8 +575,71 @@ namespace VIAT.WorkFlow.Services
                 sSql += $"and cust.cust_dbid='{cust_dbid}'";
             }
             return repository.DapperContext.QueryList<Viat_app_cust_order>(sSql, new { });
-        }
+        }*/
 
+        public PageGridData<Viat_app_cust_order> RecentOrder(PageDataOptions pageData)
+        {
+            PageGridData<Viat_app_cust_order> pageGridData = new PageGridData<Viat_app_cust_order>();
+            string prod_dbid = "";
+            string cust_dbid = "";
+            string pricegroup_dbid = "";
+            /*解析查询条件*/
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            if (!string.IsNullOrEmpty(pageData.Wheres))
+            {
+                searchParametersList = pageData.Wheres.DeserializeObject<List<SearchParameters>>();
+                if (searchParametersList != null && searchParametersList.Count > 0)
+                {
+                    foreach (SearchParameters sp in searchParametersList)
+                    {
+                        if (sp.Name.ToLower() == "prod_dbid".ToLower())
+                        {
+                            prod_dbid = sp.Value;
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "cust_dbid".ToLower())
+                        {
+                            cust_dbid = sp.Value;
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "pricegroup_dbid".ToLower())
+                        {
+                            pricegroup_dbid = sp.Value;
+                            continue;
+                        }
+
+                    }
+                }
+            }
+
+            string where = "";
+            if (string.IsNullOrEmpty(prod_dbid) == false)
+            {
+                where += " and c_order.created_date > DATEADD(year,-1,GETDATE()) and c_order.prod_dbid='" + prod_dbid + "'";
+            }
+            if (string.IsNullOrEmpty(cust_dbid) == false)
+            {
+                where += " and cust.cust_dbid='" + cust_dbid + "'";
+            }
+            if (string.IsNullOrEmpty(pricegroup_dbid) == false)
+            {
+                where += "and cust.cust_dbid in (SELECT distinct cust_dbid from viat_app_cust_group where pricegroup_dbid='" + pricegroup_dbid + "')";
+            }
+
+            QuerySql = @" select  ROW_NUMBER()over(order by c_order.order_no desc) as rowId , c_order.*,prod.prod_id,prod.prod_ename,cust.cust_id,cust.cust_name from  viat_app_cust_order c_order 
+                        left join viat_com_prod prod on c_order.prod_dbid = prod.prod_dbid
+                        left join viat_com_cust cust on c_order.cust_dbid=cust.cust_dbid  where 1=1 " + where;
+
+            string sql = "select count(1) from (" + QuerySql + ") a";
+            pageGridData.total = repository.DapperContext.ExecuteScalar(sql, null).GetInt();
+
+            // QuerySql += "  ORDER BY prod_id, modified_date"; 
+            sql = @$"select * from (" +
+                QuerySql + $" ) as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
+            pageGridData.rows = repository.DapperContext.QueryList<Viat_app_cust_order>(sql, null);
+            return pageGridData;
+
+        }
         public View_wk_bid_price_apply_main getWkApplyMainByBidNO(string bid_no)
         {
             return repository.FindAsIQueryable(x => x.bid_no == bid_no).FirstOrDefault();
