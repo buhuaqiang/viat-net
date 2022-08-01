@@ -12,6 +12,5 @@ namespace VIAT.WorkFlow.IServices
 {
     public partial interface IViat_app_cust_price_transferService
     {
-        WebResponseContent ImportData(List<IFormFile> files);
     }
  }
