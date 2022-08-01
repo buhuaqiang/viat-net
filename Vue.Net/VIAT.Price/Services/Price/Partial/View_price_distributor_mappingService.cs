@@ -79,7 +79,7 @@ namespace VIAT.Price.Services
             saveDataModel.mainOptionType = SaveModel.MainOptionType.add;
             saveDataModel.MainFacType = typeof(Viat_app_dist_mapping);
 
-            if (sPriceChannel != null)
+            if (sPriceChannel != null && sPriceChannel !="" )
             {
                 for (int i = 0; i < sProdArray.Length; i++)
                 {
@@ -163,7 +163,7 @@ namespace VIAT.Price.Services
                 }
             }
             //如果是客户
-            else if (sCustArray != null && sCustArray.Length > 0)
+            if (sCustArray != null && sCustArray.Length > 0)
             {
                 for (int i = 0; i < sProdArray.Length; i++)
                 {
@@ -324,20 +324,23 @@ namespace VIAT.Price.Services
 
         public List<View_price_distributor_mapping> PriceDistributorMappingData(string prod_id, string price_channel, string group_id, string cust_id)
         {
-            string sql = "select * from View_price_distributor_mapping where prod_id = '" + prod_id + "'";
+            string sql = "select top(1)* from View_price_distributor_mapping where prod_id =@sProd_id";
             if (!string.IsNullOrEmpty(price_channel))
             {
-                sql += " and price_channel = '" + price_channel + "'";
+                sql += " and price_channel =@sPrice_channel";
             }
             if (!string.IsNullOrEmpty(group_id))
             {
-                sql += " and group_id = '" + group_id + "'";
+                sql += " and group_id =@sGroup_id";
             }
             if (!string.IsNullOrEmpty(cust_id))
             {
-                sql += " and cust_id = '" + cust_id + "'";
+                sql += " and cust_id = @sCust_id";
             }
-            return repository.DapperContext.QueryList<View_price_distributor_mapping>(sql, null);
+            sql += " order by created_date";
+            
+            return repository.DapperContext.QueryList<View_price_distributor_mapping>(sql,
+                    new { sProd_id = prod_id , sPrice_channel  = price_channel , sGroup_id  = group_id , sCust_id = cust_id });
         }
     }
 }
