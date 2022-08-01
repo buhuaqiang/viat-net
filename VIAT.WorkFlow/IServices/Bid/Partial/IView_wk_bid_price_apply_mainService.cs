@@ -26,6 +26,6 @@ namespace VIAT.WorkFlow.IServices
 
         Viat_app_cust_price ProductPrice(string prod_dbid, string pricegroup_dbid);
 
-        WebResponseContent CustPriceTransferImport(List<IFormFile> files);
+        WebResponseContent CustPriceTransferImport(List<IFormFile> fileInput, string cust_dbid, string group_dbid);
     }
  }
