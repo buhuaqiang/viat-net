@@ -19,7 +19,10 @@ namespace VIAT.WorkFlow.IServices
 
         WebResponseContent processBack(string[] bidmast_dbidLst);
 
-        List<Viat_app_cust_order> RecentOrder(string prod_dbid, string cust_dbid, string pricegroup_dbid);
+       // List<Viat_app_cust_order> RecentOrder(string prod_dbid, string cust_dbid, string pricegroup_dbid);
+
+        public PageGridData<Viat_app_cust_order> RecentOrder(PageDataOptions pageData);
+
         Viat_app_cust_price ProductPrice(string prod_dbid, string pricegroup_dbid);
     }
  }
