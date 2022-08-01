@@ -40,56 +40,5 @@ namespace VIAT.WorkFlow.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-
-        WebResponseContent webRespose = new WebResponseContent();
-        /// <summary>
-        /// 取得数据
-        /// </summary>
-        /// <param name="price_transfer_dbid"></param>
-        /// <returns></returns>
-        public Viat_app_cust_price_transfer getPriceTransferByDBID(string price_transfer_dbid)
-        {
-            string sSql = "select * from Viat_app_cust_price_transfer where price_transfer_dbid='" + price_transfer_dbid + "'";
-
-            return _repository.DapperContext.QueryFirst<Viat_app_cust_price_transfer>(sSql, null);
-        }
-        public WebResponseContent ImportData(List<IFormFile> files)
-        {
-            if (files == null || files.Count == 0)
-                return new WebResponseContent { Code = "-2", Status = true, Message = "please select file" };
-            IFormFile formFile = files[0];
-            string dicPath = $"Upload/{DateTime.Now.ToString("yyyMMdd")}/{typeof(Viat_app_cust_price_transfer).Name}/".MapPath();
-            if (!Directory.Exists(dicPath)) Directory.CreateDirectory(dicPath);
-            dicPath = $"{dicPath}{Guid.NewGuid().ToString()}_{formFile.FileName}";
-
-            using (var stream = new FileStream(dicPath, FileMode.Create))
-            {
-                formFile.CopyTo(stream);
-            }
-            try
-            {
-                webRespose = EPPlusHelper.ReadToDataTable<Viat_app_cust_price_transfer>(bCheckImportCustom, dicPath, DownLoadTemplateColumns, GetIgnoreTemplate());
-            }
-            catch (Exception)
-            {
-                return new WebResponseContent { Code = "-2", Status = true, Message = "please check file correct" };
-            }
-
-            //List<Viat_app_cust_price_transfer> list = webRespose.Data as List<Viat_app_cust_price_transfer>;
-            //if (list != null && list.Count > 0)
-            //{ 
-
-            //}
-            webRespose.Code = "-1";
-            return webRespose;
-        }
-        private static string[] auditFields = new string[] { "auditid", "auditstatus", "auditor", "auditdate", "auditreason" };
-        private List<string> GetIgnoreTemplate()
-        {
-            //忽略创建人、修改人、审核等字段
-            List<string> ignoreTemplate = UserIgnoreFields.ToList();
-            ignoreTemplate.AddRange(auditFields.ToList());
-            return ignoreTemplate;
-        }
     }
 }

@@ -80,9 +80,9 @@ namespace VIAT.WorkFlow.Controllers
         }
         [ApiActionPermission]
         [HttpPost, Route("PriceTansferImport")]
-        public ActionResult CustPriceTransferImport(List<IFormFile> files, string cust_dbid, string group_dbid)
+        public ActionResult CustPriceTransferImport(List<IFormFile> files, string cust_id, string group_dbid)
         {
-            return Json(_service.CustPriceTransferImport(files, cust_dbid, group_dbid));
+            return Json(_service.CustPriceTransferImport(files, cust_id, group_dbid));
         }
     }
 }

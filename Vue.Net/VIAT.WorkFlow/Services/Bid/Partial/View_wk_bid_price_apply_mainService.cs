@@ -29,6 +29,9 @@ using VIAT.Core.Dapper;
 using System.Text.RegularExpressions;
 using System.IO;
 using VIAT.WorkFlow.IServices;
+using OfficeOpenXml;
+using System.Data;
+using VIAT.Price.IServices;
 
 namespace VIAT.WorkFlow.Services
 {
@@ -36,19 +39,19 @@ namespace VIAT.WorkFlow.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IView_wk_bid_price_apply_mainRepository _repository;//访问数据库
-        private readonly IViat_app_cust_price_transferService _Price_TransferService;
+        private readonly IView_cust_price_detailService _Price_DetailService;
 
         [ActivatorUtilitiesConstructor]
         public View_wk_bid_price_apply_mainService(
             IView_wk_bid_price_apply_mainRepository dbRepository,
             IHttpContextAccessor httpContextAccessor,
-            IViat_app_cust_price_transferService Price_TransferService
+            IView_cust_price_detailService Price_DetailService
             )
         : base(dbRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _repository = dbRepository;
-            _Price_TransferService = Price_TransferService;
+            _Price_DetailService = Price_DetailService;
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
@@ -218,13 +221,103 @@ namespace VIAT.WorkFlow.Services
             }
         }
 
-        public WebResponseContent CustPriceTransferImport(List<IFormFile> files, string cust_dbid, string group_dbid)
+        public WebResponseContent CustPriceTransferImport(List<IFormFile> files, string cust_id, string group_dbid)
         {
-
-            webRespose = _Price_TransferService.ImportData(files);
+            WebResponseContent content = BidDetailData(files);
+            if (!content.Status)
+            {
+                return content;
+            }
+            DataTable dt = content.Data as DataTable;
+            List<Viat_wk_bid_detail_select> lstDetail = new List<Viat_wk_bid_detail_select>();
+            PageGridData<View_cust_price_detail> GetPriceDetail = new PageGridData<View_cust_price_detail>();
+            foreach (DataRow item in dt.Rows)
+            {
+                string prod_id = item["Product ID"].ToString();
+                string prod_ename = item["Product Name"].ToString();
+                decimal? net_price = 0 ;
+                Guid? prod_dbid = null;
+                Viat_com_prod ComProd = repository.DbContext.Set<Viat_com_prod>().Where(x => x.prod_id == prod_id).First();
+                if (ComProd.prod_dbid == null)
+                {
+                    return new WebResponseContent { Code = "-2", Message = $"{prod_ename} Product is empty" };
+                }
+                prod_dbid = ComProd.prod_dbid;
+                if (!string.IsNullOrEmpty(cust_id))
+                {
+                    PageDataOptions pageData = new PageDataOptions();
+                    string where = "[{\"Name\":\"cust_id\"},{\"Name\":\"prod_id\"}]";
+                    pageData.Wheres = where;
+                    GetPriceDetail = _Price_DetailService.GetPriceDataForTransfer(pageData);
+                    net_price = GetPriceDetail.rows.Count() == 0 ? 0 : GetPriceDetail.rows[0].net_price;
+                }
+                else if (!string.IsNullOrEmpty(group_dbid))
+                {
+                    Viat_app_cust_price _Cust_Price = ProductPrice(prod_dbid.ToString(), group_dbid);
+                    net_price = _Cust_Price.net_price;
+                }
+                Viat_wk_bid_detail_select bidDetail = new Viat_wk_bid_detail_select()
+                {
+                    prod_id = prod_id,
+                    prod_ename = prod_ename,
+                    invoice_price = Convert.ToDecimal(item["Invice Price"]),
+                    bid_price = Convert.ToDecimal(item["Product ID"]),
+                    min_qty = Convert.ToInt32(item["Product ID"]),
+                    prod_dbid = prod_dbid,
+                    nhi_price = Convert.ToDecimal(ComProd.nhi_id),
+                    net_price = (decimal)net_price
+                };
+                lstDetail.Add(bidDetail);
+            }
+            webRespose.Data = lstDetail;
+            webRespose.Code = "-1";
             return webRespose;
         }
-        
+
+        private WebResponseContent BidDetailData(List<IFormFile> files)
+        {
+            if (files == null || files.Count == 0)
+                return new WebResponseContent { Code = "-2", Status = false, Message = "please select file" };
+            IFormFile formFile = files[0];
+            string dicPath = $"Upload/{DateTime.Now.ToString("yyyMMdd")}/{typeof(Viat_wk_bid_detail_select).Name}/".MapPath();
+            if (!Directory.Exists(dicPath)) Directory.CreateDirectory(dicPath);
+            dicPath = $"{dicPath}{Guid.NewGuid().ToString()}_{formFile.FileName}";
+            FileInfo file = new FileInfo(dicPath);
+            using (var stream = new FileStream(dicPath, FileMode.Create))
+            {
+                formFile.CopyTo(stream);
+            }
+            DataTable dt = new DataTable();
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                #region 获取列头
+                ExcelWorksheet sheetFirst = package.Workbook.Worksheets.FirstOrDefault();
+
+                for (int j = sheetFirst.Dimension.Start.Column, k = sheetFirst.Dimension.End.Column; j <= k; j++)
+                {
+                    string columnCNName = sheetFirst.Cells[1, j].Value?.ToString()?.Trim();
+                    dt.Columns.Add(columnCNName);
+                }
+                #endregion
+
+                if (package.Workbook.Worksheets.Count == 0 ||
+                package.Workbook.Worksheets.FirstOrDefault().Dimension.End.Row <= 1)
+                    return new WebResponseContent { Code = "-2",Status = false, Message = "no import data" };
+                ExcelWorksheet sheet = package.Workbook.Worksheets.FirstOrDefault();
+                for (int m = sheet.Dimension.Start.Row + 1, n = sheet.Dimension.End.Row; m <= n; m++)
+                {
+                    var dr = dt.NewRow();
+                    for (int j = sheet.Dimension.Start.Column, k = sheet.Dimension.End.Column; j <= k; j++)
+                    {
+                        string value = sheet.Cells[m, j].Value?.ToString();
+                        dr[j - 1] = value;
+                    }
+                    dt.Rows.Add(dr);
+                }
+            }
+            return new WebResponseContent { Data = dt,Status = true};
+        }
+
         /// <summary>
         /// 
         /// </summary>
