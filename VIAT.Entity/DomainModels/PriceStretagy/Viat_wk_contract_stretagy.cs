@@ -29,8 +29,8 @@ namespace VIAT.Entity.DomainModels
        ///策略類型
        /// </summary>
        [Display(Name = "Stretagy Type")]
-       [MaxLength(3)]
-       [Column(TypeName="varchar(3)")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
        [Editable(true)]
        public string cont_stretagy_type { get; set; }
 
