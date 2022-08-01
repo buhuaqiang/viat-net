@@ -31,11 +31,11 @@ namespace VIAT.Price.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        [ApiActionPermission]
+        
         [HttpGet, Route("PriceMapingData")]
         public ActionResult PriceDistributorMappingData(string prod_id, string price_channel, string group_id, string cust_id)
         {
-            return Json(_service.PriceDistributorMappingData(prod_id, prod_id, group_id, cust_id));
+            return Json(_service.PriceDistributorMappingData(prod_id, price_channel, group_id, cust_id));
         }
     }
 }

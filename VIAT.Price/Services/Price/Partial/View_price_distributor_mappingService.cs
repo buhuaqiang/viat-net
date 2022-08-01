@@ -324,7 +324,7 @@ namespace VIAT.Price.Services
 
         public List<View_price_distributor_mapping> PriceDistributorMappingData(string prod_id, string price_channel, string group_id, string cust_id)
         {
-            string sql = "select top(1)* from View_price_distributor_mapping where prod_id =@sProd_id";
+            string sql = @"select top(1)* from View_price_distributor_mapping where prod_id =@sProd_id";
             if (!string.IsNullOrEmpty(price_channel))
             {
                 sql += " and price_channel =@sPrice_channel";
@@ -338,7 +338,7 @@ namespace VIAT.Price.Services
                 sql += " and cust_id = @sCust_id";
             }
             sql += " order by created_date";
-            
+           
             return repository.DapperContext.QueryList<View_price_distributor_mapping>(sql,
                     new { sProd_id = prod_id , sPrice_channel  = price_channel , sGroup_id  = group_id , sCust_id = cust_id });
         }
