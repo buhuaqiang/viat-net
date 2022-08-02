@@ -130,14 +130,7 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public decimal? net_price { get; set; }
 
-       /// <summary>
-       ///Gross Price
-       /// </summary>
-       [Display(Name ="Gross Price")]
-       [DisplayFormat(DataFormatString="18,5")]
-       [Column(TypeName="decimal")]
-       [Editable(true)]
-       public decimal? gross_price { get; set; }
+      
 
        /// <summary>
        ///
@@ -148,23 +141,24 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public decimal? reserv_price { get; set; }
 
-       /// <summary>
-       ///Min Qty
-       /// </summary>
-       [Display(Name ="Min Qty")]
+        /// <summary>
+        ///Gross Price
+        /// </summary>
+        [Display(Name = "Gross Price")]
+        [DisplayFormat(DataFormatString = "18,5")]
+        [Column(TypeName = "decimal")]
+        [Editable(true)]
+        public decimal? gross_price { get; set; }
+
+        /// <summary>
+        ///Min Qty
+        /// </summary>
+        [Display(Name ="Min Qty")]
        [Column(TypeName="int")]
        [Editable(true)]
        public int? min_qty { get; set; }
 
-       /// <summary>
-       ///status
-       /// </summary>
-       [Display(Name ="status")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public string status { get; set; }
+       
 
        /// <summary>
        ///Start Date
@@ -189,10 +183,20 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 
-       /// <summary>
-       ///Remarks
-       /// </summary>
-       [Display(Name ="Remarks")]
+        /// <summary>
+        ///status
+        /// </summary>
+        [Display(Name = "status")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        [Editable(true)]
+        [Required(AllowEmptyStrings = false)]
+        public string status { get; set; }
+
+        /// <summary>
+        ///Remarks
+        /// </summary>
+        [Display(Name ="Remarks")]
        [MaxLength(256)]
        [Column(TypeName="nvarchar(256)")]
        [Editable(true)]
