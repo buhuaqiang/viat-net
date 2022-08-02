@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using VIAT.Entity.DomainModels;
 using VIAT.WorkFlow.IServices;
 using VIAT.Core.Filters;
+using VIAT.Price.IServices;
 
 namespace VIAT.WorkFlow.Controllers
 {
@@ -19,16 +20,19 @@ namespace VIAT.WorkFlow.Controllers
     {
         private readonly IView_wk_bid_price_apply_mainService _service;//访问业务代码
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IView_cust_price_detailService _view_cust_price_detailService;//
 
         [ActivatorUtilitiesConstructor]
         public View_wk_bid_price_apply_mainController(
             IView_wk_bid_price_apply_mainService service,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IView_cust_price_detailService view_cust_price_detailService
         )
         : base(service)
         {
             _service = service;
             _httpContextAccessor = httpContextAccessor;
+            _view_cust_price_detailService = view_cust_price_detailService;
         }
         [ApiActionPermission]
         [HttpPost, Route("addSubmit")]
@@ -73,6 +77,17 @@ namespace VIAT.WorkFlow.Controllers
             return Json(_service.RecentOrder(options));
 
         }
+
+        //查詢Bid order Apply價格彈窗
+        [ApiActionPermission]
+        [HttpPost, Route("GetPriceDataForTransfer")]
+        public ActionResult GetPriceDataForTransfer([FromBody] PageDataOptions options)
+        {
+            return Json(_view_cust_price_detailService.GetPriceDataForTransfer(options));
+
+        }
+
+
         [HttpGet, Route("ProductPrice")]
         public ActionResult ProductPrice(string prod_dbid, string pricegroup_dbid)
         {
