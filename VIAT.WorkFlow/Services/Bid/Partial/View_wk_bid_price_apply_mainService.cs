@@ -883,7 +883,10 @@ namespace VIAT.WorkFlow.Services
                     else
                     {
                         custResult.optionType = SaveModel.MainOptionType.update;
-                    }           
+                    }
+                    bid.price_close = bid.bid_price;
+                    bid.final_allowance = bid.allowance;
+                    bid.final_discount = bid.discount;
                     custResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(bid)));                   
                     custResult.detailType = typeof(Viat_wk_bid_detail);
                     saveDataModel.DetailListData.Add(custResult);                    
@@ -1215,9 +1218,9 @@ namespace VIAT.WorkFlow.Services
                     transfer.start_date = masterEntity.start_date;
                     transfer.end_date = masterEntity.end_date;
                     transfer.state = "0";
-                    transfer.price_close = bid.bid_price;
-                    transfer.final_discount = bid.allowance;
-                    transfer.final_fg = bid.discount;
+                    transfer.price_close = bid.price_close;
+                    transfer.final_discount = bid.final_discount;
+                    transfer.final_fg = bid.final_allowance;
                     UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
                     if (userInfo != null)
                     {
