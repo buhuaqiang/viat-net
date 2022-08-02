@@ -105,13 +105,13 @@ namespace VIAT.Entity.DomainModels
        public string supervisorUserName { get; set; }
 
        /// <summary>
-       ///Medical Reviewe Name
+       ///Medical Reviewer Name
        /// </summary>
-       [Display(Name ="Medical Reviewe Name")]
+       [Display(Name ="Medical Reviewer Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
-       public string medical_reviewe_name { get; set; }
+       public string medical_reviewer_name { get; set; }
 
        /// <summary>
        ///sort
@@ -191,6 +191,15 @@ namespace VIAT.Entity.DomainModels
        public int? modified_user { get; set; }
 
        /// <summary>
+       ///IMT Type
+       /// </summary>
+       [Display(Name ="IMT Type")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
+       [Editable(true)]
+       public string imt_type { get; set; }
+
+       /// <summary>
        ///Last Modified
        /// </summary>
        [Display(Name ="Last Modified")]
@@ -221,27 +230,27 @@ namespace VIAT.Entity.DomainModels
        public DateTime? modified_date { get; set; }
 
        /// <summary>
-       ///Ma ID
+       ///
        /// </summary>
-       [Display(Name ="Ma ID")]
+       [Display(Name ="ma_id")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
        public string ma_id { get; set; }
 
        /// <summary>
-       ///Pm ID
+       ///
        /// </summary>
-       [Display(Name ="Pm ID")]
+       [Display(Name ="pm_id")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
        public string pm_id { get; set; }
 
        /// <summary>
-       ///Ma Name
+       ///
        /// </summary>
-       [Display(Name ="Ma Name")]
+       [Display(Name ="ma_name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        public string ma_name { get; set; }
@@ -249,28 +258,11 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="pm_name")]
-       [MaxLength(255)]
-       [Column(TypeName="varchar(255)")]
-       public string pm_name { get; set; }
-
-       /// <summary>
-       ///Medical Reviewe ID
-       /// </summary>
-       [Display(Name ="Medical Reviewe ID")]
+       [Display(Name ="medical_reviewer_id")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
        [Editable(true)]
-       public string medical_reviewe_id { get; set; }
-
-       /// <summary>
-       ///IMT Type
-       /// </summary>
-       [Display(Name ="IMT Type")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       [Editable(true)]
-       public string imt_type { get; set; }
+       public string medical_reviewer_id { get; set; }
 
        
     }
