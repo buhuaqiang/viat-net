@@ -1221,6 +1221,7 @@ namespace VIAT.WorkFlow.Services
                     transfer.price_close = bid.price_close;
                     transfer.final_discount = bid.final_discount;
                     transfer.final_fg = bid.final_allowance;
+                    transfer.price_bid = bid.bid_price;
                     UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
                     if (userInfo != null)
                     {
