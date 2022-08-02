@@ -995,7 +995,7 @@ namespace VIAT.WorkFlow.Services
                             }
                             #endregion
                             #region 增加数量小于最小数量不能提交
-                            if (!OrderQty(saveDataModel, orderList))
+                            if (!OrderQty(saveDataModel, orderList, bidPrice))
                             {
                                 throw new Exception(prodModel[0].prod_ename + " The number of applications cannot be less than the minimum number!");
                             }
@@ -1278,23 +1278,39 @@ namespace VIAT.WorkFlow.Services
 
             }
         }
-        private bool OrderQty(SaveModel saveModel, List<Viat_wk_ord_detail> orderLst)
+        private bool OrderQty(SaveModel saveModel, List<Viat_wk_ord_detail> orderLst,string bidPrice)
         {
             bool result = true;
             if (orderLst != null && orderLst.Count > 0)
             {
                 string cust_dbid = saveModel.MainData["cust_dbid"] == null ? "" : saveModel.MainData["cust_dbid"].ToString();
+                List<Viat_wk_bid_detail> bidList = JsonConvert.DeserializeObject<List<Viat_wk_bid_detail>>(bidPrice.ToString());
                 foreach (var order in orderLst)
                 {
-                    List<View_cust_price_detail> lstPriceDetail = CustPriceDetailData(order.prod_dbid.ToString(), cust_dbid);
-                    if (lstPriceDetail != null && lstPriceDetail.Count() > 0)
+                    if (!string.IsNullOrEmpty(bidPrice))
                     {
-                        int? minQty = lstPriceDetail[0].min_qty;
-                        if (order.qty < minQty)
+                        int orderCount = bidList.Where(a=>a.prod_dbid == order.prod_dbid && a.min_qty > order.qty).Count();
+                        if (orderCount >0)
                         {
-                            result =false;
+                            result = false;
+                            break;
                         }
                     }
+                    else
+                    {
+                        List<View_cust_price_detail> lstPriceDetail = CustPriceDetailData(order.prod_dbid.ToString(), cust_dbid);
+                        if (lstPriceDetail != null && lstPriceDetail.Count() > 0)
+                        {
+                            int? minQty = lstPriceDetail[0].min_qty;
+                            if (order.qty < minQty)
+                            {
+                                result = false;
+                                break;
+                            }
+                        }
+                    }
+
+                   
                 }
             }
             return result;
