@@ -80,8 +80,8 @@ namespace VIAT.WorkFlow.Controllers
 
         //查詢Bid order Apply價格彈窗
         [ApiActionPermission]
-        [HttpPost, Route("GetPriceDataForTransfer")]
-        public ActionResult GetPriceDataForTransfer([FromBody] PageDataOptions options)
+        [HttpPost, Route("GetPriceDataForApply")]
+        public ActionResult GetPriceDataForApply([FromBody] PageDataOptions options)
         {
             return Json(_view_cust_price_detailService.GetPriceDataForTransfer(options));
 
