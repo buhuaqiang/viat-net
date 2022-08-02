@@ -691,6 +691,17 @@ namespace VIAT.WorkFlow.Services
         {
             if (string.IsNullOrEmpty(sData) == false && Cust.Equals("CustPriceGroup"))
             {
+                string inpricegrouddbid = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
+                string pricegrouddbid = saveModel.MainData["pricegroup_dbid"] == null ? "" : saveModel.MainData["pricegroup_dbid"].ToString();
+                Guid? pricegroupdbid = null;
+                if (!string.IsNullOrEmpty(inpricegrouddbid))
+                {
+                    pricegroupdbid = new Guid(inpricegrouddbid);
+                }
+                else if (!string.IsNullOrEmpty(pricegrouddbid))
+                {
+                    pricegroupdbid = new Guid(pricegrouddbid);
+                }
                 List<Viat_app_cust_price_detail> detailList = JsonConvert.DeserializeObject<List<Viat_app_cust_price_detail>>(sData);
                 //detail
                 SaveModel.DetailListDataResult detailResult = new SaveModel.DetailListDataResult();
@@ -712,8 +723,9 @@ namespace VIAT.WorkFlow.Services
                     //custgroup
                     Viat_app_cust_group custGroup = new Viat_app_cust_group();
                     custGroup.custgroup_dbid = System.Guid.NewGuid();
-                    custGroup.pricegroup_dbid = detail.pricedetail_dbid;
+                    custGroup.pricegroup_dbid = pricegroupdbid;
                     custGroup.cust_dbid = detail.cust_dbid;
+                    custGroup.prod_dbid = detail.prod_dbid;
                     custGroup.status = "Y";
                     custGroup.start_date = getFormatYYYYMMDD(saveModel.MainData["start_date"].ToString());
                     custGroup.end_date = getFormatYYYYMMDD(saveModel.MainData["end_date"].ToString());
