@@ -272,7 +272,7 @@ namespace VIAT.WorkFlow.Services
             return webRespose;
         }
 
-        private WebResponseContent BidDetailData(List<IFormFile> files)
+        public static WebResponseContent BidDetailData(List<IFormFile> files)
         {
             if (files == null || files.Count == 0)
                 return new WebResponseContent { Code = "-2", Status = false, Message = "please select file" };
@@ -1212,6 +1212,9 @@ namespace VIAT.WorkFlow.Services
                     transfer.start_date = masterEntity.start_date;
                     transfer.end_date = masterEntity.end_date;
                     transfer.state = "0";
+                    transfer.price_close = bid.price_close;
+                    transfer.final_discount = bid.final_discount;
+                    transfer.final_fg = bid.final_allowance;
                     UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
                     if (userInfo != null)
                     {

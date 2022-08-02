@@ -184,6 +184,17 @@ namespace VIAT.WorkFlow.Services
         {
             if (saveDataModel.DetailData != null && saveDataModel.DetailData.Count > 0)
             {
+                string inpricegrouddbid = saveDataModel.MainData["in_pricegroup_dbid"] == null ? "" : saveDataModel.MainData["in_pricegroup_dbid"].ToString();
+                string pricegrouddbid = saveDataModel.MainData["pricegroup_dbid"] == null ? "" : saveDataModel.MainData["pricegroup_dbid"].ToString();
+                Guid? pricegroupdbid = null;
+                if (!string.IsNullOrEmpty(inpricegrouddbid))
+                {
+                    pricegroupdbid = new Guid(inpricegrouddbid);
+                }
+                else if (!string.IsNullOrEmpty(pricegrouddbid))
+                {
+                    pricegroupdbid = new Guid(pricegrouddbid);
+                }
                 //取得两个remark;
                 string sBidPriceReamrk = "";
                 string sBidOrderRemark ="";
@@ -207,7 +218,7 @@ namespace VIAT.WorkFlow.Services
                     if (dicTmp["key"]?.ToString() == "priceTableRowData")
                     {
                         string sBidData = dicTmp["value"]?.ToString();
-                        processGroupAndCust(saveDataModel, sBidData, Cust, sBidPriceReamrk);
+                        processGroupAndCust(saveDataModel, sBidData, Cust, sBidPriceReamrk, pricegroupdbid);
                     }
                     else if (dicTmp["key"]?.ToString() == "orderTableRowData")
                     {
@@ -217,7 +228,7 @@ namespace VIAT.WorkFlow.Services
                     else if (dicTmp["key"]?.ToString() == "joinGroupList")
                     {
                         string sJoinData = dicTmp["value"]?.ToString();
-                        processCustGroup(saveDataModel, sJoinData, Cust);
+                        processCustGroup(saveDataModel, sJoinData, Cust, pricegroupdbid);
                     }
 
                 }
@@ -234,7 +245,7 @@ namespace VIAT.WorkFlow.Services
         /// <param name="saveModel"></param>
         /// <param name="masterEntry"></param>
         /// <param name="sData"></param>
-        public void processGroupAndCust(SaveModel saveModel, string sData, string Cust, string sRemak)
+        public void processGroupAndCust(SaveModel saveModel, string sData, string Cust, string sRemak,Guid? pricegroupdbid)
         {
             if (string.IsNullOrEmpty(sData) == false)
             {
@@ -258,6 +269,8 @@ namespace VIAT.WorkFlow.Services
                         bid.state = "1";
                        
                     }
+                    bid.pricegroup_dbid = pricegroupdbid;
+                    bid.add_group = saveModel.MainData["add_group"].ToString();
                     //更新本身数据
                     priceTransferResult.optionType = SaveModel.MainOptionType.update;
                     priceTransferResult.detailType = typeof(Viat_app_cust_price_transfer);
@@ -266,12 +279,12 @@ namespace VIAT.WorkFlow.Services
                 //处理关联
                 //processCustPrice(saveModel, bidList, bImport, sRemak);
                 //processPriceDetail(saveModel, bidList, bImport, sRemak);
-                processCust(saveModel, bidList, Cust, sRemak);
+                processCust(saveModel, bidList, Cust, sRemak, pricegroupdbid);
             }
 
         }
 
-        public void processCust(SaveModel saveModel, List<Viat_app_cust_price_transfer> bidLst, string Cust, string sRemark)
+        public void processCust(SaveModel saveModel, List<Viat_app_cust_price_transfer> bidLst, string Cust, string sRemark,Guid? pricegroupdbid)
         {
             if (bidLst != null && bidLst.Count > 0)
             {
@@ -279,17 +292,7 @@ namespace VIAT.WorkFlow.Services
                 List<Dictionary<string, object>> groupList = new List<Dictionary<string, object>>();
                 //SaveModel.DetailListDataResult ImportResult = new SaveModel.DetailListDataResult();
                 //saveModel.DetailListData.Add(ImportResult);
-                string inpricegrouddbid = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
-                string pricegrouddbid = saveModel.MainData["pricegroup_dbid"] == null ? "" : saveModel.MainData["pricegroup_dbid"].ToString();
-                Guid? pricegroupdbid = null;
-                if (!string.IsNullOrEmpty(inpricegrouddbid))
-                {
-                    pricegroupdbid = new Guid(inpricegrouddbid);
-                }
-                else if (!string.IsNullOrEmpty(pricegrouddbid))
-                {
-                    pricegroupdbid = new Guid(pricegrouddbid);
-                }
+                
                 switch (Cust)
                 {
                     case "CustPriceGroup":
@@ -687,21 +690,13 @@ namespace VIAT.WorkFlow.Services
         /// </summary>
         /// <param name="saveModel"></param>
         /// <param name="sData"></param>
-        public void processCustGroup(SaveModel saveModel,string sData, string Cust)
+        public void processCustGroup(SaveModel saveModel,string sData, string Cust,Guid? pricegroupdbid)
         {
             if (string.IsNullOrEmpty(sData) == false && Cust.Equals("CustPriceGroup"))
             {
-                string inpricegrouddbid = saveModel.MainData["in_pricegroup_dbid"] == null ? "" : saveModel.MainData["in_pricegroup_dbid"].ToString();
-                string pricegrouddbid = saveModel.MainData["pricegroup_dbid"] == null ? "" : saveModel.MainData["pricegroup_dbid"].ToString();
-                Guid? pricegroupdbid = null;
-                if (!string.IsNullOrEmpty(inpricegrouddbid))
-                {
-                    pricegroupdbid = new Guid(inpricegrouddbid);
-                }
-                else if (!string.IsNullOrEmpty(pricegrouddbid))
-                {
-                    pricegroupdbid = new Guid(pricegrouddbid);
-                }
+                List<Dictionary<string, object>> groupList = new List<Dictionary<string, object>>();
+                string bid_no = saveModel.MainData["bid_no"] == null ? "" : saveModel.MainData["bid_no"].ToString();
+
                 List<Viat_app_cust_price_detail> detailList = JsonConvert.DeserializeObject<List<Viat_app_cust_price_detail>>(sData);
                 //detail
                 SaveModel.DetailListDataResult detailResult = new SaveModel.DetailListDataResult();
@@ -709,10 +704,10 @@ namespace VIAT.WorkFlow.Services
                 detailResult.detailType = typeof(Viat_app_cust_price_detail);
                 saveModel.DetailListData.Add(detailResult);
                 //custgroup
-                SaveModel.DetailListDataResult custGroupResult = new SaveModel.DetailListDataResult();
-                custGroupResult.optionType = SaveModel.MainOptionType.add;
-                custGroupResult.detailType = typeof(Viat_app_cust_group);
-                saveModel.DetailListData.Add(custGroupResult);
+                //SaveModel.DetailListDataResult custGroupResult = new SaveModel.DetailListDataResult();
+                //custGroupResult.optionType = SaveModel.MainOptionType.add;
+                //custGroupResult.detailType = typeof(Viat_app_cust_group);
+                //saveModel.DetailListData.Add(custGroupResult);
 
                 foreach(Viat_app_cust_price_detail detail in detailList)
                 {
@@ -726,11 +721,16 @@ namespace VIAT.WorkFlow.Services
                     custGroup.pricegroup_dbid = pricegroupdbid;
                     custGroup.cust_dbid = detail.cust_dbid;
                     custGroup.prod_dbid = detail.prod_dbid;
+                    custGroup.bid_no = bid_no;
                     custGroup.status = "Y";
                     custGroup.start_date = getFormatYYYYMMDD(saveModel.MainData["start_date"].ToString());
                     custGroup.end_date = getFormatYYYYMMDD(saveModel.MainData["end_date"].ToString());
-                    custGroupResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custGroup)));
+                    Dictionary<string, object> groupDic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custGroup));
+                    groupList.Add(groupDic);
+                    //custGroupResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(custGroup)));
                 }
+                saveModel.DetailsData = groupList;
+                Viat_app_cust_groupService.Instance.processData(saveModel);
             }
         }
         #endregion
