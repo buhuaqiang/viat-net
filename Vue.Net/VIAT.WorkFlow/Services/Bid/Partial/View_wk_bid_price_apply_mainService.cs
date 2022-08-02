@@ -256,17 +256,15 @@ namespace VIAT.WorkFlow.Services
                     Viat_app_cust_price _Cust_Price = ProductPrice(prod_dbid.ToString(), group_dbid);
                     net_price = _Cust_Price.net_price;
                 }
-                Viat_wk_bid_detail_select bidDetail = new Viat_wk_bid_detail_select()
-                {
-                    prod_id = prod_id,
-                    prod_ename = prod_ename,
-                    invoice_price = Convert.ToDecimal(item["Invice Price"]),
-                    bid_price = Convert.ToDecimal(item["Product ID"]),
-                    min_qty = Convert.ToInt32(item["Product ID"]),
-                    prod_dbid = prod_dbid,
-                    nhi_price = Convert.ToDecimal(ComProd.nhi_id),
-                    net_price = (decimal)net_price
-                };
+                Viat_wk_bid_detail_select bidDetail = new Viat_wk_bid_detail_select();
+                bidDetail.prod_id = prod_id;
+                bidDetail.prod_ename = prod_ename;
+                bidDetail.invoice_price = Convert.ToDecimal(item["Invice Price"]);
+                bidDetail.bid_price = Convert.ToDecimal(item["Bid Price"]);
+                bidDetail.min_qty = Convert.ToInt32(item["Min Qty"]);
+                bidDetail.prod_dbid = prod_dbid;
+                bidDetail.nhi_price = Convert.ToDecimal(ComProd.nhi_price);
+                bidDetail.net_price = (decimal)net_price;
                 lstDetail.Add(bidDetail);
             }
             webRespose.Data = lstDetail;
