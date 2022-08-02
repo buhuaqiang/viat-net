@@ -254,7 +254,7 @@ namespace VIAT.WorkFlow.Services
                 else if (!string.IsNullOrEmpty(group_dbid))
                 {
                     Viat_app_cust_price _Cust_Price = ProductPrice(prod_dbid.ToString(), group_dbid);
-                    net_price = _Cust_Price.net_price;
+                    net_price = _Cust_Price.net_price == null?0: _Cust_Price.net_price;
                 }
                 Viat_wk_bid_detail_select bidDetail = new Viat_wk_bid_detail_select();
                 bidDetail.prod_id = prod_id;
