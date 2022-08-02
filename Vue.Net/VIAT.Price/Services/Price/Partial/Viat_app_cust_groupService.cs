@@ -308,7 +308,7 @@ namespace VIAT.Price.Services
                     Dictionary<string, object> dic = JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(processEntity));
                     SaveModel.DetailListDataResult dataResult = new SaveModel.DetailListDataResult();
                     dataResult.optionType = SaveModel.MainOptionType.update;
-                    dataResult.detailType = typeof(Viat_app_cust_price);
+                    dataResult.detailType = typeof(Viat_app_cust_group);
                     dataResult.DetailData = new List<Dictionary<string, object>> { dic };
                     saveModel.DetailListData.Add(dataResult);
 
