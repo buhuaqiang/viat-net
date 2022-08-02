@@ -194,14 +194,6 @@ namespace VIAT.Entity.DomainModels
        public string ma_id { get; set; }
 
        /// <summary>
-       ///識別碼, PK, Identity
-       /// </summary>
-       [Display(Name ="識別碼, PK, Identity")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
-
-       /// <summary>
        ///主管代碼(預留)
        /// </summary>
        [Display(Name ="主管代碼(預留)")]
