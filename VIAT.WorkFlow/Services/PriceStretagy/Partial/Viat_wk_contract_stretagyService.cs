@@ -19,6 +19,8 @@ using Microsoft.AspNetCore.Http;
 using VIAT.WorkFlow.IRepositories;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System;
+using VIAT.WorkFlow.IServices;
 
 namespace VIAT.WorkFlow.Services
 {
@@ -26,17 +28,19 @@ namespace VIAT.WorkFlow.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IViat_wk_contract_stretagyRepository _repository;//访问数据库
-   
+        private readonly IView_wk_cont_stretagy_detailService _DetailService;
 
         [ActivatorUtilitiesConstructor]
         public Viat_wk_contract_stretagyService(
             IViat_wk_contract_stretagyRepository dbRepository,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IView_wk_cont_stretagy_detailService DetailService
             )
         : base(dbRepository)
         {
             _httpContextAccessor = httpContextAccessor;
             _repository = dbRepository;
+            _DetailService = DetailService;
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
@@ -178,5 +182,25 @@ namespace VIAT.WorkFlow.Services
             return webResponse.OK();
         }
 
+        /// <summary>
+        /// 下载模板(导入时弹出框中的下载模板)(2020.05.07)
+        /// </summary>
+        /// <returns></returns>
+        //public override WebResponseContent DownLoadTemplate()
+        //{
+        //    //指定导出模板的字段,如果不设置DownLoadTemplateColumns，默认导出查所有页面上能看到的列(2020.05.07)
+        //    DownLoadTemplateColumns = x => new { x.cont_stretagy_type, x.cont_stretagy_id, x.cont_stretagy_name, x.amount,x.status };
+        //    return base.DownLoadTemplate();
+        //}
+
+        /// <summary>
+        /// 导入
+        /// </summary>
+        /// <param name="files"></param>
+        /// <returns></returns>
+        public override WebResponseContent Import(List<IFormFile> files)
+        {
+            return Viat_wk_cont_stretagy_detailService.Instance.Import(files);
+        }
     }
 }

@@ -17,6 +17,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.WorkFlow.IRepositories;
+using System.Collections.Generic;
+using System;
+using System.IO;
+using System.Data;
+using Newtonsoft.Json;
 
 namespace VIAT.WorkFlow.Services
 {
@@ -37,5 +42,63 @@ namespace VIAT.WorkFlow.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+        WebResponseContent webResponse = new WebResponseContent();
+        public override WebResponseContent Import(List<IFormFile> files)
+        {
+            SaveModel saveModel = new SaveModel();
+            WebResponseContent detailContent = View_wk_bid_price_apply_mainService.BidDetailData(files);
+            if (!detailContent.Status)
+            {
+                return detailContent;
+            }
+            DataTable dt = detailContent.Data as DataTable;
+            foreach (DataRow dw in dt.Rows)
+            {
+                string cont_stretagy_id = dw["Strategy ID"].ToString();
+                string prod_id = dw["Product ID"].ToString();
+                decimal invoice_price = dw["Invoice Price"] == null ? 0 : Convert.ToDecimal(dw["Invoice Price"]);
+                decimal net_price = dw["Net Price"] == null ? 0 : Convert.ToDecimal(dw["Net Price"]);
+                int min_qty = dw["Min Qty"] == null ? 0 : Convert.ToInt32(dw["Min Qty"]);
+                SaveModel.DetailListDataResult detailResult = new SaveModel.DetailListDataResult();
+                Viat_wk_cont_stretagy_detail stretagyDetailModel = new Viat_wk_cont_stretagy_detail();
+                #region 查询contstret_dbid
+                var lstStretagy = repository.DbContext.Set<Viat_wk_contract_stretagy>().Where(x => x.cont_stretagy_id == cont_stretagy_id).ToList();
+                if (lstStretagy.Count() == 0)
+                {
+                    return new WebResponseContent { Code = "-2", Message = $"The {cont_stretagy_id} not exist" };
+                }
+                #endregion
+                #region 查询prod_dbid
+                var lstProd = repository.DbContext.Set<Viat_com_prod>().Where(x => x.prod_id == prod_id).ToList();
+                if (lstProd.Count()==0)
+                {
+                    return new WebResponseContent { Code = "-2", Message = $"The {prod_id} not exist" };
+                }
+                #endregion
+                int detailCon = repository.DbContext.Set<Viat_wk_cont_stretagy_detail>().Where(x => x.contstret_dbid == lstStretagy[0].contstret_dbid && x.prod_dbid == lstProd[0].prod_dbid).Count();
+                if (detailCon>0)
+                {
+                    detailResult.optionType = SaveModel.MainOptionType.update;
+                }
+                else
+                {
+                    detailResult.optionType = SaveModel.MainOptionType.add;
+                    stretagyDetailModel.contstretail_dbid = Guid.NewGuid();
+                }
+                stretagyDetailModel.invoice_price = invoice_price;
+                stretagyDetailModel.net_price = net_price;
+                stretagyDetailModel.min_qty = min_qty;
+                stretagyDetailModel.contstret_dbid = lstStretagy[0].contstret_dbid;
+                stretagyDetailModel.prod_dbid = lstProd[0].prod_dbid;
+
+                detailResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(stretagyDetailModel)));
+                detailResult.detailType = typeof(Viat_wk_cont_stretagy_detail);
+                saveModel.DetailListData.Add(detailResult);
+            }
+
+            base.CustomBatchProcessEntity(saveModel);
+            webResponse.Code = "-1";
+            return webResponse;
+        }
+    }
 }
