@@ -315,6 +315,7 @@ namespace VIAT.WorkFlow.Services
                     dt.Rows.Add(dr);
                 }
             }
+            File.Delete(dicPath);
             return new WebResponseContent { Data = dt,Status = true};
         }
 
