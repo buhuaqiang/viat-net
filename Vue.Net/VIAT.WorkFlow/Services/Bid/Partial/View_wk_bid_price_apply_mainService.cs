@@ -986,11 +986,11 @@ namespace VIAT.WorkFlow.Services
                             {
                                 if (bidList != null && bidList.Count()>0)
                                 {
-                                    if (bidList.Where(x => x.prod_dbid.Equal(order.prod_dbid)).Count() == 0) throw new Exception(prodModel[0].prod_ename + " No effective price!");
+                                    if (bidList.Where(x => x.prod_dbid.Equal(order.prod_dbid)).Count() == 0) throw new Exception("Order "+prodModel[0].prod_ename + " No effective price!");
                                 }
                                 else
                                 {
-                                    throw new Exception(prodModel[0].prod_ename + " No effective price!");
+                                    throw new Exception("Order "+prodModel[0].prod_ename + " No effective price!");
                                 }
                             }
                             #endregion
