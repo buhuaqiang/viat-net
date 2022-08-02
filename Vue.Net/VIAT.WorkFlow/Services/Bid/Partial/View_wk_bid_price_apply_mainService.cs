@@ -236,6 +236,9 @@ namespace VIAT.WorkFlow.Services
                 string prod_id = item["Product ID"].ToString();
                 string prod_ename = item["Product Name"].ToString();
                 decimal? net_price = 0 ;
+                decimal invice_price = item["Invice Price"] == null ? 0 : Convert.ToDecimal(item["Invice Price"]);
+                decimal bid_price = item["Bid Price"] == null ? 0 : Convert.ToDecimal(item["Bid Price"]);
+                int min_qty = item["Min Qty"] == null ? 0 : Convert.ToInt32(item["Min Qty"]);
                 Guid? prod_dbid = null;
                 Viat_com_prod ComProd = repository.DbContext.Set<Viat_com_prod>().Where(x => x.prod_id == prod_id).First();
                 if (ComProd.prod_dbid == null)
@@ -259,9 +262,9 @@ namespace VIAT.WorkFlow.Services
                 Viat_wk_bid_detail_select bidDetail = new Viat_wk_bid_detail_select();
                 bidDetail.prod_id = prod_id;
                 bidDetail.prod_ename = prod_ename;
-                bidDetail.invoice_price = Convert.ToDecimal(item["Invice Price"]);
-                bidDetail.bid_price = Convert.ToDecimal(item["Bid Price"]);
-                bidDetail.min_qty = Convert.ToInt32(item["Min Qty"]);
+                bidDetail.invoice_price = invice_price;
+                bidDetail.bid_price = bid_price;
+                bidDetail.min_qty = min_qty;
                 bidDetail.prod_dbid = prod_dbid;
                 bidDetail.nhi_price = Convert.ToDecimal(ComProd.nhi_price);
                 bidDetail.net_price = (decimal)net_price;
@@ -1212,9 +1215,9 @@ namespace VIAT.WorkFlow.Services
                     transfer.start_date = masterEntity.start_date;
                     transfer.end_date = masterEntity.end_date;
                     transfer.state = "0";
-                    transfer.price_close = bid.price_close;
-                    transfer.final_discount = bid.final_discount;
-                    transfer.final_fg = bid.final_allowance;
+                    transfer.price_close = bid.bid_price;
+                    transfer.final_discount = bid.allowance;
+                    transfer.final_fg = bid.discount;
                     UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
                     if (userInfo != null)
                     {
