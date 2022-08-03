@@ -21,6 +21,8 @@ using VIAT.Price.IServices;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 using VIAT.Basic.Services;
+using System;
+
 namespace VIAT.Price.Services
 {
     public partial class View_price_distributor_mappingService
@@ -90,6 +92,15 @@ namespace VIAT.Price.Services
                     }
                     //产品dbid
                     string sProdDBID = prod.prod_dbid.ToString();
+                    #region 新增判断，存在就不用保存
+                    Guid prod_dbid = new Guid(sProdDBID);
+                    List<Viat_app_dist_mapping> mapp = repository.DbContext.Set<Viat_app_dist_mapping>()
+                        .Where(x => x.prod_dbid == prod_dbid && x.price_channel == sPriceChannel).ToList();
+                    if (mapp.Count() > 0)
+                    {
+                        continue;
+                    }
+                    #endregion
                     Dictionary<string, object> saveDic = new Dictionary<string, object>(saveDataModel.MainData);
                     //处理distmapping_dbid，prod_dbid，cust_dbid,pricegroup_dbid
                     if (saveDic.ContainsKey("distmapping_dbid") == false)
@@ -135,6 +146,18 @@ namespace VIAT.Price.Services
                             return webResponse.Error("no groupdbid");
                         }
                         string scust_dbidDBID = group.pricegroup_dbid.ToString();
+
+                        #region 增加如果存在就排除，不在新增
+                        Guid prod_dbid = new Guid(sProdDBID);
+                        Guid pricegroup_dbid = new Guid(scust_dbidDBID);
+                        List<Viat_app_dist_mapping> mapp = repository.DbContext.Set<Viat_app_dist_mapping>()
+                            .Where(x => x.prod_dbid == prod_dbid && x.pricegroup_dbid == pricegroup_dbid).ToList();
+                        if (mapp.Count()>0)
+                        {
+                            continue;
+                        }
+                        #endregion
+
                         Dictionary<string, object> saveDic = new Dictionary<string, object>(saveDataModel.MainData);
 
                         //处理distmapping_dbid，prod_dbid，cust_dbid,pricegroup_dbid
@@ -182,6 +205,16 @@ namespace VIAT.Price.Services
                             return webResponse.Error("no custdbid");
                         }
                         string sCustDBID = cust.cust_dbid.ToString();
+                        #region 新增判断，存在就不用保存
+                        Guid prod_dbid = new Guid(sProdDBID);
+                        Guid cust_dbid = new Guid(sCustDBID);
+                        List<Viat_app_dist_mapping> mapp = repository.DbContext.Set<Viat_app_dist_mapping>()
+                            .Where(x => x.prod_dbid == prod_dbid && x.cust_dbid == cust_dbid).ToList();
+                        if (mapp.Count() > 0)
+                        {
+                            continue;
+                        }
+                        #endregion
                         Dictionary<string, object> saveDic = new Dictionary<string, object>(saveDataModel.MainData);
                         //处理distmapping_dbid，prod_dbid，cust_dbid,pricegroup_dbid
                         if (saveDic.ContainsKey("distmapping_dbid") == false)
