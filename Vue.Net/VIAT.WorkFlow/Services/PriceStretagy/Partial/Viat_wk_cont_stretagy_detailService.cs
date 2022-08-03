@@ -54,13 +54,15 @@ namespace VIAT.WorkFlow.Services
             DataTable dt = detailContent.Data as DataTable;
             foreach (DataRow dw in dt.Rows)
             {
+                Viat_wk_cont_stretagy_detail stretagyDetailModel = new Viat_wk_cont_stretagy_detail();
+                SaveModel.DetailListDataResult detailResult = new SaveModel.DetailListDataResult();
+                saveModel.DetailListData.Add(detailResult);
                 string cont_stretagy_id = dw["Strategy ID"].ToString();
                 string prod_id = dw["Product ID"].ToString();
                 decimal invoice_price = dw["Invoice Price"] == null ? 0 : Convert.ToDecimal(dw["Invoice Price"]);
                 decimal net_price = dw["Net Price"] == null ? 0 : Convert.ToDecimal(dw["Net Price"]);
                 int min_qty = dw["Min Qty"] == null ? 0 : Convert.ToInt32(dw["Min Qty"]);
-                SaveModel.DetailListDataResult detailResult = new SaveModel.DetailListDataResult();
-                Viat_wk_cont_stretagy_detail stretagyDetailModel = new Viat_wk_cont_stretagy_detail();
+                
                 #region 查询contstret_dbid
                 var lstStretagy = repository.DbContext.Set<Viat_wk_contract_stretagy>().Where(x => x.cont_stretagy_id == cont_stretagy_id).ToList();
                 if (lstStretagy.Count() == 0)
@@ -75,9 +77,10 @@ namespace VIAT.WorkFlow.Services
                     return new WebResponseContent { Code = "-2", Message = $"The {prod_id} not exist" };
                 }
                 #endregion
-                int detailCon = repository.DbContext.Set<Viat_wk_cont_stretagy_detail>().Where(x => x.contstret_dbid == lstStretagy[0].contstret_dbid && x.prod_dbid == lstProd[0].prod_dbid).Count();
-                if (detailCon>0)
+                var detailCon = repository.DbContext.Set<Viat_wk_cont_stretagy_detail>().Where(x => x.contstret_dbid == lstStretagy[0].contstret_dbid && x.prod_dbid == lstProd[0].prod_dbid).ToList();
+                if (detailCon.Count() > 0)
                 {
+                    stretagyDetailModel.contstretail_dbid = detailCon[0].contstretail_dbid;
                     detailResult.optionType = SaveModel.MainOptionType.update;
                 }
                 else
@@ -93,9 +96,8 @@ namespace VIAT.WorkFlow.Services
 
                 detailResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(stretagyDetailModel)));
                 detailResult.detailType = typeof(Viat_wk_cont_stretagy_detail);
-                saveModel.DetailListData.Add(detailResult);
+                
             }
-
             base.CustomBatchProcessEntity(saveModel);
             webResponse.Code = "-1";
             return webResponse;
