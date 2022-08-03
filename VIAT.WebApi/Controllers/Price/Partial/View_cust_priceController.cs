@@ -178,5 +178,10 @@ namespace VIAT.Price.Controllers
             return Json(_service.importData(list));
         }
 
+        [HttpPost, Route("NhiPriceData")]
+        public decimal NhiPriceData(string prod_dbid,string start_date)
+        {
+            return _service.NhiPriceData(prod_dbid, start_date);
+        }
     }
 }
