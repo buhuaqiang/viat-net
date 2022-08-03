@@ -38,9 +38,8 @@ namespace VIAT.WorkFlow.Controllers
             return Json(_service.StretagyImport(files));
         }
 
-        //查詢當前價格群組商品(需要重新寫sql)
         [ApiActionPermission]
-        [HttpPost, Route("DownLoadTemp")]
+        [HttpGet, Route("DownLoadTemp")]
         public ActionResult DownLoadTemp()
         {
             return Json(_service.DownLoadTemp());   
