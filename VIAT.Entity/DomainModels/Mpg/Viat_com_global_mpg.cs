@@ -42,14 +42,21 @@ namespace VIAT.Entity.DomainModels
        public string division { get; set; }
 
        /// <summary>
-       ///Global Mpg ID
+       ///Mpg ID
        /// </summary>
-       [Display(Name ="Global Mpg ID")]
+       [Display(Name ="Mpg ID")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string global_mpg { get; set; }
+
+       /// <summary>
+       ///Finance Mpg PKID
+       /// </summary>
+       [Display(Name ="Finance Mpg PKID")]
+       [Column(TypeName="uniqueidentifier")]
+       public Guid? financempg_dbid { get; set; }
 
        /// <summary>
        ///Bu ID
@@ -58,15 +65,26 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string bu_id { get; set; }
 
        /// <summary>
-       ///Global Mpg Name
+       ///Finance mpg
        /// </summary>
-       [Display(Name ="Global Mpg Name")]
+       [Display(Name ="Finance mpg")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       [Editable(true)]
+       public string finance_mpg { get; set; }
+
+       /// <summary>
+       ///Mpg Name
+       /// </summary>
+       [Display(Name ="Mpg Name")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string mpg_name { get; set; }
 
        /// <summary>
@@ -77,24 +95,6 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
        public string category { get; set; }
-
-       /// <summary>
-       ///Ta
-       /// </summary>
-       [Display(Name ="Ta")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       public string ta { get; set; }
-
-       /// <summary>
-       ///IMT Type
-       /// </summary>
-       [Display(Name ="IMT Type")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
-       [Editable(true)]
-       public string imt_type { get; set; }
 
        /// <summary>
        ///HFM Description
@@ -119,6 +119,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string status { get; set; }
 
        /// <summary>
