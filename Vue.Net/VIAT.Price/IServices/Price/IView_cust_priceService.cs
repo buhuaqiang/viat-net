@@ -29,5 +29,7 @@ namespace VIAT.Price.IServices
         PageGridData<View_cust_price> GetGroupInvalidPageData(PageDataOptions options);
 
         WebResponseContent importData(List<View_cust_price> list);
+
+        decimal NhiPriceData(string prod_dbid, string start_date);
     }
 }

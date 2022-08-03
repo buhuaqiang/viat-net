@@ -1893,6 +1893,27 @@ namespace VIAT.Price.Services
 
         #endregion
 
+        public decimal NhiPriceData(string prod_dbid, string start_date)
+        {
+            string sql = $@"select top 1 nhi_price from viat_app_cust_price where pricegroup_dbid =(select pricegroup_dbid from viat_app_cust_price_group where group_id = 'NHI')
+	                        and prod_dbid = '{prod_dbid}'
+	                        and (CONVERT(date,'{start_date}') >= CONVERT(date,start_date))
+	                        and (CONVERT(date,'{start_date}') <= CONVERT(date,end_date))
+	                         ORDER BY start_date,end_date desc ";
+            var priceData = repository.DapperContext.ExecuteScalar(sql, null);
+            if (priceData != null)
+            {
+                return (decimal)priceData;
+            }
+            sql = $"select top 1 nhi_price from viat_com_prod where prod_dbid = '{prod_dbid}'";
+            priceData = repository.DapperContext.ExecuteScalar(sql, null);
+            if (priceData != null)
+            {
+                return (decimal)priceData;
+            }
+            return 0;
+        }
+
       /*  public override WebResponseContent Export(PageDataOptions pageData)
         {
             ExportColumns = x => new { };
