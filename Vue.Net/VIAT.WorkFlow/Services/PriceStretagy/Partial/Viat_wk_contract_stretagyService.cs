@@ -190,7 +190,7 @@ namespace VIAT.WorkFlow.Services
         {
             //指定导出模板的字段,如果不设置DownLoadTemplateColumns，默认导出查所有页面上能看到的列(2020.05.07)
             //DownLoadTemplateColumns = x => new { x.SellNo, x.TranNo, x.Remark, x.CreateDate };
-            return Viat_wk_cont_stretagy_detail_selectService.Instance.DownLoadTemp();
+            return Viat_wk_cont_stretagy_detail_selectService.Instance.DownLoadTemplate();
         }
 
         /// <summary>
