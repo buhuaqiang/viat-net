@@ -48,6 +48,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string mpg_id { get; set; }
 
        /// <summary>
@@ -57,6 +58,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string mpg_name { get; set; }
 
        /// <summary>
@@ -84,16 +86,8 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string ta { get; set; }
-
-       /// <summary>
-       ///Ma
-       /// </summary>
-       [Display(Name ="Ma")]
-       [MaxLength(40)]
-       [Column(TypeName="varchar(40)")]
-       [Editable(true)]
-       public string maUserName { get; set; }
 
        /// <summary>
        ///PM
@@ -103,6 +97,15 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="varchar(40)")]
        [Editable(true)]
        public string supervisorUserName { get; set; }
+
+       /// <summary>
+       ///Ma
+       /// </summary>
+       [Display(Name ="Ma")]
+       [MaxLength(40)]
+       [Column(TypeName="varchar(40)")]
+       [Editable(true)]
+       public string maUserName { get; set; }
 
        /// <summary>
        ///Medical Reviewer Name
