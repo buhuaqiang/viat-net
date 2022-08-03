@@ -250,12 +250,18 @@ namespace VIAT.WorkFlow.Services
             if (string.IsNullOrEmpty(sData) == false)
             {
                 List<Viat_app_cust_price_transfer> bidList = JsonConvert.DeserializeObject<List<Viat_app_cust_price_transfer>>(sData);
-
+                string cust_dbid = saveModel.MainData["cust_dbid"]?.ToString();
+                Guid? custdbid = null;
+                if (!string.IsNullOrEmpty(cust_dbid))
+                {
+                    custdbid = new Guid(cust_dbid);
+                }
                 //处理本身
                 SaveModel.DetailListDataResult priceTransferResult = new SaveModel.DetailListDataResult();
                 saveModel.DetailListData.Add(priceTransferResult);
                 foreach (Viat_app_cust_price_transfer bid in bidList)
                 {
+                    bid.cust_dbid = custdbid;
                     bid.start_date = Convert.ToDateTime(saveModel.MainData["start_date"]);
                     bid.end_date = Convert.ToDateTime(saveModel.MainData["end_date"]);
                     if (bid.state == "2")
@@ -384,6 +390,12 @@ namespace VIAT.WorkFlow.Services
                         View_cust_priceService.Instance.processData(saveModel);
                         break;
                     case "CustDetail":
+                        string cust_dbid = saveModel.MainData["cust_dbid"]?.ToString();
+                        Guid? custdbid = null;
+                        if (!string.IsNullOrEmpty(cust_dbid))
+                        {
+                            custdbid = new Guid(cust_dbid);
+                        }
                         foreach (var bid in bidLst)
                         {
                             if (bid.state == "2") continue;
@@ -392,6 +404,7 @@ namespace VIAT.WorkFlow.Services
                             bid.MapValueToEntity(custPrice);
                             custPrice.pricedetail_dbid = System.Guid.NewGuid();
                             custPrice.remarks = sRemark;
+                            custPrice.cust_dbid = custdbid;
                             if (bid.start_date != null)
                             {
                                 custPrice.start_date = getFormatYYYYMMDD(bid.start_date);
