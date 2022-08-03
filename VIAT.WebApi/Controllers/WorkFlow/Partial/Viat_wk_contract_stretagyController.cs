@@ -37,13 +37,5 @@ namespace VIAT.WorkFlow.Controllers
         {
             return Json(_service.StretagyImport(files));
         }
-
-        [ApiActionPermission]
-        [HttpGet, Route("DownLoadTemp")]
-        public ActionResult DownLoadTemp()
-        {
-            return Json(_service.DownLoadTemp());   
-        }
-
     }
 }

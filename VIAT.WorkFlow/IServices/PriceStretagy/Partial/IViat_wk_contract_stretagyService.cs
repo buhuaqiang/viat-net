@@ -13,6 +13,5 @@ namespace VIAT.WorkFlow.IServices
     public partial interface IViat_wk_contract_stretagyService
     {
         WebResponseContent StretagyImport(List<IFormFile> files);
-        WebResponseContent DownLoadTemp();
     }
  }
