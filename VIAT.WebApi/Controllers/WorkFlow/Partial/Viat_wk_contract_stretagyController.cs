@@ -30,5 +30,12 @@ namespace VIAT.WorkFlow.Controllers
             _service = service;
             _httpContextAccessor = httpContextAccessor;
         }
+
+        [ApiActionPermission]
+        [HttpPost, Route("StretagyImport")]
+        public ActionResult StretagyImport([FromBody] List<IFormFile> files)
+        {
+            return Json(_service.StretagyImport(files));
+        }
     }
 }

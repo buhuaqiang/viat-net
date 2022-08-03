@@ -189,8 +189,8 @@ namespace VIAT.WorkFlow.Services
         //public override WebResponseContent DownLoadTemplate()
         //{
         //    //指定导出模板的字段,如果不设置DownLoadTemplateColumns，默认导出查所有页面上能看到的列(2020.05.07)
-        //    DownLoadTemplateColumns = x => new { x.cont_stretagy_type, x.cont_stretagy_id, x.cont_stretagy_name, x.amount,x.status };
-        //    return base.DownLoadTemplate();
+        //    //DownLoadTemplateColumns = x => new { x.cont_stretagy_type, x.cont_stretagy_id, x.cont_stretagy_name, x.amount, x.status };
+        //    return Viat_wk_cont_stretagy_detailService.Instance.DownLoadTemplate();
         //}
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace VIAT.WorkFlow.Services
         /// </summary>
         /// <param name="files"></param>
         /// <returns></returns>
-        public override WebResponseContent Import(List<IFormFile> files)
+        public WebResponseContent StretagyImport(List<IFormFile> files)
         {
             return Viat_wk_cont_stretagy_detailService.Instance.Import(files);
         }
