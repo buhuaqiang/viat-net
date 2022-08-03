@@ -186,12 +186,12 @@ namespace VIAT.WorkFlow.Services
         /// 下载模板(导入时弹出框中的下载模板)(2020.05.07)
         /// </summary>
         /// <returns></returns>
-        //public override WebResponseContent DownLoadTemplate()
-        //{
-        //    //指定导出模板的字段,如果不设置DownLoadTemplateColumns，默认导出查所有页面上能看到的列(2020.05.07)
-        //    //DownLoadTemplateColumns = x => new { x.cont_stretagy_type, x.cont_stretagy_id, x.cont_stretagy_name, x.amount, x.status };
-        //    return Viat_wk_cont_stretagy_detailService.Instance.DownLoadTemplate();
-        //}
+        public override WebResponseContent DownLoadTemplate()
+        {
+            //指定导出模板的字段,如果不设置DownLoadTemplateColumns，默认导出查所有页面上能看到的列(2020.05.07)
+            //DownLoadTemplateColumns = x => new { x.SellNo, x.TranNo, x.Remark, x.CreateDate };
+            return Viat_wk_cont_stretagy_detail_selectService.Instance.DownLoadTemplate();
+        }
 
         /// <summary>
         /// 导入
