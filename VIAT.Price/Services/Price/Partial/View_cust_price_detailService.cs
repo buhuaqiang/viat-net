@@ -1248,7 +1248,8 @@ namespace VIAT.Price.Services
                     Viat_com_prod prod = getProd(group.prod_id, "");
                     if (prod != null)
                     {
-                        group.nhi_price = prod.nhi_price;
+                        group.nhi_price = View_cust_priceService.Instance.NhiPriceData(prod.prod_dbid.ToString(), group.start_date.ToString());
+                        //group.nhi_price = prod.nhi_price;
                     }
                 }
 
