@@ -49,7 +49,7 @@ namespace VIAT.WorkFlow.Services
         public override WebResponseContent DownLoadTemplate()
         {
             //指定导出模板的字段,如果不设置DownLoadTemplateColumns，默认导出查所有页面上能看到的列(2020.05.07)
-            DownLoadTemplateColumns = x => new { x.cont_stretagy_id,x.cont_stretagy_name,x.prod_id,x.prod_ename,x.nhi_price,x.invoice_price,x.net_price };
+            DownLoadTemplateColumns = x => new { x.cont_stretagy_id,x.cont_stretagy_name,x.amount, x.prod_id,x.prod_ename,x.nhi_price,x.invoice_price,x.net_price,x.min_qty };
             return base.DownLoadTemplate();
         }
     }
