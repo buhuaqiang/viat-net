@@ -85,5 +85,11 @@ namespace VIAT.WorkFlow.Services
 
             return _repository.DapperContext.QueryList<Viat_wk_bid_detail>(sSql, null);
         }
+
+        public override WebResponseContent DownLoadTemplate()
+        {
+            DownLoadTemplateColumns = x => new { x.prod_id,x.prod_ename,x.invoice_price,x.bid_price,x.min_qty };
+            return base.DownLoadTemplate();
+        }
     }
 }
