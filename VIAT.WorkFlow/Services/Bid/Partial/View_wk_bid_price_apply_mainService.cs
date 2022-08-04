@@ -220,6 +220,10 @@ namespace VIAT.WorkFlow.Services
                 throw new Exception(ex.Message);
             }
         }
+        public override WebResponseContent DownLoadTemplate()
+        {
+            return Viat_wk_bid_detailService.Instance.DownLoadTemplate();
+        }
 
         public WebResponseContent CustPriceTransferImport(List<IFormFile> files, string cust_id, string group_dbid)
         {
@@ -233,12 +237,12 @@ namespace VIAT.WorkFlow.Services
             PageGridData<View_cust_price_detail> GetPriceDetail = new PageGridData<View_cust_price_detail>();
             foreach (DataRow item in dt.Rows)
             {
-                string prod_id = item["Product ID"].ToString();
-                string prod_ename = item["Product Name"].ToString();
+                string prod_id = item["prod_id"].ToString();
+                string prod_ename = item["prod_ename"].ToString();
                 decimal? net_price = 0 ;
-                decimal invice_price = item["Invice Price"] == null ? 0 : Convert.ToDecimal(item["Invice Price"]);
-                decimal bid_price = item["Bid Price"] == null ? 0 : Convert.ToDecimal(item["Bid Price"]);
-                int min_qty = item["Min Qty"] == null ? 0 : Convert.ToInt32(item["Min Qty"]);
+                decimal invice_price = item["invoice_price"] == null ? 0 : Convert.ToDecimal(item["invoice_price"]);
+                decimal bid_price = item["bid_price"] == null ? 0 : Convert.ToDecimal(item["bid_price"]);
+                int min_qty = item["min_qty"] == null ? 0 : Convert.ToInt32(item["min_qty"]);
                 Guid? prod_dbid = null;
                 Viat_com_prod ComProd = repository.DbContext.Set<Viat_com_prod>().Where(x => x.prod_id == prod_id).First();
                 if (ComProd.prod_dbid == null)
