@@ -57,11 +57,11 @@ namespace VIAT.WorkFlow.Services
                 Viat_wk_cont_stretagy_detail stretagyDetailModel = new Viat_wk_cont_stretagy_detail();
                 SaveModel.DetailListDataResult detailResult = new SaveModel.DetailListDataResult();
                 saveModel.DetailListData.Add(detailResult);
-                string cont_stretagy_id = dw["Stretagy ID"].ToString();
-                string prod_id = dw["Product ID"].ToString();
-                decimal invoice_price = dw["Invoice Price"] == null ? 0 : Convert.ToDecimal(dw["Invoice Price"]);
-                decimal net_price = dw["Net Price"] == null ? 0 : Convert.ToDecimal(dw["Net Price"]);
-                int min_qty = dw["Min Qty"] == null ? 0 : Convert.ToInt32(dw["Min Qty"]);
+                string cont_stretagy_id = dw["stretagy_id"].ToString();
+                string prod_id = dw["prod_id"].ToString();
+                decimal invoice_price = dw["invoice_price"] == null ? 0 : Convert.ToDecimal(dw["invoice_price"]);
+                decimal net_price = dw["net_price"] == null ? 0 : Convert.ToDecimal(dw["net_price"]);
+                int min_qty = dw["min_qty"] == null ? 0 : Convert.ToInt32(dw["min_qty"]);
                 
                 #region 查询contstret_dbid
                 var lstStretagy = repository.DbContext.Set<Viat_wk_contract_stretagy>().Where(x => x.cont_stretagy_id == cont_stretagy_id).ToList();
