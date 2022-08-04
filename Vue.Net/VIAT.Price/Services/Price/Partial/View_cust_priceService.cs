@@ -1584,9 +1584,12 @@ namespace VIAT.Price.Services
                 if (string.IsNullOrEmpty(group.prod_id) == false)
                 {
                     Viat_com_prod prod = getProd(group.prod_id,"");
+                    //
                     if (prod != null)
                     {
-                        group.nhi_price = prod.nhi_price;
+                        //decimal nhiprice = NhiPriceData(prod.prod_dbid.ToString(), group.start_date.ToString());
+                        //group.nhi_price = prod.nhi_price;
+                        group.nhi_price = NhiPriceData(prod.prod_dbid.ToString(), group.start_date.ToString());
                     }
                 }
 
@@ -1889,7 +1892,7 @@ namespace VIAT.Price.Services
             webResponse = this.bathSaveCustPrice(JsonConvert.SerializeObject(list));
             webResponse.Code = "-1";
             return webResponse;             
-        }
+            }
 
         #endregion
 
