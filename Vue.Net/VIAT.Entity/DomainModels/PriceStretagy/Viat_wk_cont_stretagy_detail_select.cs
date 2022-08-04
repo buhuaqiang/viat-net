@@ -126,7 +126,7 @@ namespace VIAT.Entity.DomainModels
         [MaxLength(10)]
         [Column(TypeName = "varchar(10)")]
         [Editable(true)]
-        public string cont_stretagy_id { get; set; }
+        public string stretagy_id { get; set; }
 
         /// <summary>
         ///Stretagy Name
@@ -135,7 +135,7 @@ namespace VIAT.Entity.DomainModels
         [MaxLength(100)]
         [Column(TypeName = "varchar(100)")]
         [Editable(true)]
-        public string cont_stretagy_name { get; set; }
+        public string stretagy_name { get; set; }
 
         /// <summary>
         ///Rang
