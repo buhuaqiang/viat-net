@@ -85,7 +85,7 @@ namespace VIAT.Core.Controllers.Basic
         /// </summary>
         /// <returns></returns>
         [HttpGet, Route("DownLoadTemplate")]
-        [ApiActionPermission(Enums.ActionPermissionOptions.Import)]
+        //[ApiActionPermission(Enums.ActionPermissionOptions.Import)]
         [ApiExplorerSettings(IgnoreApi = true)]
         public virtual ActionResult DownLoadTemplate()
         {
