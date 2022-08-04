@@ -23,6 +23,8 @@ namespace VIAT.Price.IServices
         /// <param name="pageData"></param>
         /// <returns></returns>
         public PageGridData<Viat_app_cust_group> getCustomerProducts(PageDataOptions pageData);
-        
+
+        WebResponseContent excuteCustomerJoinGroup(SaveModel saveModel);
+
     }
  }

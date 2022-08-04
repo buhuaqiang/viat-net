@@ -94,7 +94,7 @@ namespace VIAT.Price.Controllers
         [HttpPost, Route("excuteCustomerJoinGroup")]
         public ActionResult excuteCustomerJoinGroup([FromBody] SaveModel saveModel)
         {
-            return Json(_baseWebResponseContent);
+            return Json(_service.excuteCustomerJoinGroup(saveModel));
         }
 
         [ApiActionPermission]
