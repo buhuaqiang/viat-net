@@ -33,14 +33,23 @@ namespace VIAT.Price.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        //查詢當前價格群組商品(需要重新寫sql)
+        //查詢當前價格群組商品
         [ApiActionPermission]
         [HttpPost, Route("getPriceGroupProducts")]
         public ActionResult getPriceGroupProducts([FromBody] PageDataOptions loadData)
         {
-            return base.GetPageData(loadData);
+            return Json(_service.getPriceGroupProducts(loadData));
         }
 
+        //查詢客戶在群組內的產品
+        [ApiActionPermission]
+        [HttpPost, Route("getCustomerProducts")]
+        public ActionResult getCustomerProducts([FromBody] PageDataOptions loadData)
+        {
+            return Json(_service.getCustomerProducts(loadData));
+        }
+
+        
         //copy price list頁面查詢方法
         [ApiActionPermission]
         [HttpPost, Route("getOrginalDataFromCustOrGroup")]
