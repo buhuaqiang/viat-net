@@ -33,7 +33,7 @@ namespace VIAT.WorkFlow.Controllers
 
         [ApiActionPermission]
         [HttpPost, Route("StretagyImport")]
-        public ActionResult StretagyImport([FromBody] List<IFormFile> files)
+        public ActionResult StretagyImport(List<IFormFile> files)
         {
             return Json(_service.StretagyImport(files));
         }
