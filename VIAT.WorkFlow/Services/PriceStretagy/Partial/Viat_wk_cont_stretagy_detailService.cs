@@ -57,7 +57,7 @@ namespace VIAT.WorkFlow.Services
                 Viat_wk_cont_stretagy_detail stretagyDetailModel = new Viat_wk_cont_stretagy_detail();
                 SaveModel.DetailListDataResult detailResult = new SaveModel.DetailListDataResult();
                 saveModel.DetailListData.Add(detailResult);
-                string cont_stretagy_id = dw["Strategy ID"].ToString();
+                string cont_stretagy_id = dw["Stretagy ID"].ToString();
                 string prod_id = dw["Product ID"].ToString();
                 decimal invoice_price = dw["Invoice Price"] == null ? 0 : Convert.ToDecimal(dw["Invoice Price"]);
                 decimal net_price = dw["Net Price"] == null ? 0 : Convert.ToDecimal(dw["Net Price"]);
