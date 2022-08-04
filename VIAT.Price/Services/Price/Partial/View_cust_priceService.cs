@@ -1917,10 +1917,205 @@ namespace VIAT.Price.Services
             return 0;
         }
 
-      /*  public override WebResponseContent Export(PageDataOptions pageData)
+
+        public PageGridData<View_cust_price> getPriceGroupProducts(PageDataOptions pageData)
         {
-            ExportColumns = x => new { };
-            return base.Export(pageData);
-        }*/
+            PageGridData<View_cust_price> pageGridData = new PageGridData<View_cust_price>();
+            string sGroupID = "";
+            string sCustID = "";
+            string custpriceDBIDS="";
+            /*解析查询条件*/
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            if (!string.IsNullOrEmpty(pageData.Wheres))
+            {
+                searchParametersList = pageData.Wheres.DeserializeObject<List<SearchParameters>>();
+                if (searchParametersList != null && searchParametersList.Count > 0)
+                {
+                   
+                    foreach (SearchParameters sp in searchParametersList)
+                    {
+                        if (sp.Name.ToLower() == "pricegroup_dbid".ToLower())
+                        {
+                            sGroupID = sp.Value;
+                            continue;
+                        }
+
+                        if (sp.Name.ToLower() == "cust_dbid".ToLower())
+                        {
+                            sCustID = sp.Value;
+                            continue;
+                        }
+                        //
+                        if (sp.Name.ToLower() == "custprice_dbids".ToLower())
+                        {
+                            custpriceDBIDS =string.Format("'{0}'", sp.Value.Replace(",", "','"));
+                            continue;
+                        }
+                    }
+                }
+            }
+            QuerySql = @"
+                SELECT
+                    ROW_NUMBER()over(order by prod.prod_ename ) as rowId,
+	                custprice.*, 
+                    prod.prod_id,
+	                prod.prod_ename,
+	                prod.prod_cname,
+	                prod.state
+                FROM
+	                viat_app_cust_price AS custprice
+                INNER JOIN viat_com_prod AS prod ON custprice.prod_dbid = prod.prod_dbid
+                WHERE
+	                custprice.status = 'Y'
+                AND prod.state = '1'
+                ";
+            if (string.IsNullOrEmpty(sGroupID) == false)
+            {
+                QuerySql += @" and custprice.pricegroup_dbid='"+@sGroupID+"'";
+            }
+            
+            if (string.IsNullOrEmpty(custpriceDBIDS) == false)
+            {
+                QuerySql += @" and custprice.custprice_dbid not in (" + @custpriceDBIDS + ")";
+            }
+            if (string.IsNullOrEmpty(sCustID) == false)
+            {
+                QuerySql += @"
+                        AND (
+	                        NOT EXISTS (
+		                        SELECT
+			                        1 AS C1
+		                        FROM
+			                        (
+				                        SELECT DISTINCT
+					                        custgroup.prod_dbid
+				                        FROM
+					                        viat_app_cust_group AS custgroup
+				                        WHERE
+					                        custgroup.cust_dbid = '"+sCustID+@"'  AND custgroup.pricegroup_dbid = '"+sGroupID+@"'
+                                        AND custgroup.status = 'Y'
+			                        ) AS custgroup
+		                        WHERE
+			                        custprice.prod_dbid = custgroup.prod_dbid
+	                        )
+                        )
+
+                    ";
+            }
+           
+            string sql = "select count(1) from (" + QuerySql + ") a";
+
+
+            pageGridData.total = repository.DapperContext.ExecuteScalar(sql, null).GetInt();
+
+            sql = @$"select * from (" +
+                QuerySql + $" ) as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
+            pageGridData.rows = repository.DapperContext.QueryList<View_cust_price>(sql, null);
+            return pageGridData;
+
+        }
+
+        public PageGridData<Viat_app_cust_group> getCustomerProducts(PageDataOptions pageData)
+        {
+            PageGridData<Viat_app_cust_group> pageGridData = new PageGridData<Viat_app_cust_group>();
+            string sProdID = "";
+            string sCustID = "";
+            string show_invalid = "";
+
+            /*解析查询条件*/
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            if (!string.IsNullOrEmpty(pageData.Wheres))
+            {
+                searchParametersList = pageData.Wheres.DeserializeObject<List<SearchParameters>>();
+                if (searchParametersList != null && searchParametersList.Count > 0)
+                {
+
+                    foreach (SearchParameters sp in searchParametersList)
+                    {
+                        if (sp.Name.ToLower() == "prod_dbid".ToLower())
+                        {
+                            sProdID = sp.Value;
+                            continue;
+                        }
+
+                        if (sp.Name.ToLower() == "cust_dbid".ToLower())
+                        {
+                            sCustID = sp.Value;
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "show_invalid".ToLower())
+                        {
+                            show_invalid = sp.Value;
+                            continue;
+                        }
+                    }
+                }
+            }
+            QuerySql = @"
+               SELECT
+                ROW_NUMBER()over(order by prod.prod_ename ) as rowId,
+	            custgroup.custgroup_dbid,
+	            custgroup.cust_dbid,
+	            custgroup.prod_dbid,
+	            custprice.nhi_price,
+	            custprice.invoice_price,
+	            custprice.net_price,
+	            custprice.min_qty,
+	            custprice.start_date,
+	            custprice.end_date,
+	            custprice.status,
+	            prod.prod_id,
+	            prod.prod_ename,
+	            pricegroup.group_id,
+	            pricegroup.group_name
+            FROM
+	            viat_app_cust_group AS custgroup
+            LEFT JOIN viat_app_cust_price AS custprice ON custprice.pricegroup_dbid = custgroup.pricegroup_dbid
+            AND custprice.prod_dbid = custgroup.prod_dbid
+            AND custprice.status = 'Y'
+            LEFT JOIN viat_app_cust_price_group AS pricegroup ON custgroup.pricegroup_dbid = pricegroup.pricegroup_dbid
+            INNER JOIN viat_com_prod AS prod ON custgroup.prod_dbid = prod.prod_dbid
+            WHERE
+	            (
+		            NOT EXISTS (
+			            SELECT
+				            1 AS C1
+			            FROM
+				            viat_app_cust_price_detail AS pricedetail
+			            WHERE
+				            pricedetail.cust_dbid = custgroup.cust_dbid
+			            AND pricedetail.status = 'Y'
+			            AND pricedetail.prod_dbid = prod.prod_dbid
+		            )
+	            )
+            AND custgroup.status = 'Y'
+                ";
+            if (string.IsNullOrEmpty(sProdID) == false)
+            {
+                QuerySql += @" and custgroup.prod_dbid='" + sProdID + "'";
+            }
+            if (string.IsNullOrEmpty(sCustID) == false)
+            {
+                QuerySql += @" and custgroup.cust_dbid='" + sCustID + "'";
+            }
+            if (string.IsNullOrEmpty(show_invalid) == false && show_invalid == "1")
+            {
+                QuerySql += @" AND prod.state = '1' ";
+            }
+
+            string sql = "select count(1) from (" + QuerySql + ") a";
+
+            pageGridData.total = repository.DapperContext.ExecuteScalar(sql, null).GetInt();
+
+            sql = @$"select * from (" +
+                QuerySql + $" ) as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
+            pageGridData.rows = repository.DapperContext.QueryList<Viat_app_cust_group>(sql, null);
+            return pageGridData;
+        }
+        /*  public override WebResponseContent Export(PageDataOptions pageData)
+          {
+              ExportColumns = x => new { };
+              return base.Export(pageData);
+          }*/
     }
 }
