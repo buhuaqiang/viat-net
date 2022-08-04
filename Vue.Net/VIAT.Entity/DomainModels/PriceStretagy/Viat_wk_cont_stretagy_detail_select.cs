@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "價格策略合約產品信息",TableName = "Viat_wk_cont_stretagy_detail")]
+    [Entity(TableCnName = "價格策略合約產品信息",TableName = "Viat_wk_cont_stretagy_detail_select")]
     public partial class Viat_wk_cont_stretagy_detail_select:BaseEntity
     {
         /// <summary>
@@ -43,31 +43,7 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public Guid prod_dbid { get; set; }
 
-       /// <summary>
-       ///最低數量
-       /// </summary>
-       [Display(Name ="最低數量")]
-       [Column(TypeName="int")]
-       [Editable(true)]
-       public int? min_qty { get; set; }
-
-       /// <summary>
-       ///發票價
-       /// </summary>
-       [Display(Name ="發票價")]
-       [DisplayFormat(DataFormatString="18,5")]
-       [Column(TypeName="decimal")]
-       [Editable(true)]
-       public decimal? invoice_price { get; set; }
-
-       /// <summary>
-       ///實售價
-       /// </summary>
-       [Display(Name ="實售價")]
-       [DisplayFormat(DataFormatString="18,5")]
-       [Column(TypeName="decimal")]
-       [Editable(true)]
-       public decimal? net_price { get; set; }
+      
 
        /// <summary>
        ///建立用戶
@@ -195,5 +171,35 @@ namespace VIAT.Entity.DomainModels
         [Column(TypeName = "decimal")]
         [Editable(true)]
         public decimal? nhi_price { get; set; }
+
+        /// <summary>
+        ///發票價
+        /// </summary>
+        [Display(Name = "發票價")]
+        [DisplayFormat(DataFormatString = "18,5")]
+        [Column(TypeName = "decimal")]
+        [Editable(true)]
+        public decimal? invoice_price { get; set; }
+
+        /// <summary>
+        ///實售價
+        /// </summary>
+        [Display(Name = "實售價")]
+        [DisplayFormat(DataFormatString = "18,5")]
+        [Column(TypeName = "decimal")]
+        [Editable(true)]
+        public decimal? net_price { get; set; }
+
+        /// <summary>
+        ///最低數量
+        /// </summary>
+        [Display(Name = "最低數量")]
+        [Column(TypeName = "int")]
+        [Editable(true)]
+        public int? min_qty { get; set; }
+
+       
+
+      
     }
 }
