@@ -20,6 +20,7 @@ using VIAT.Price.IRepositories;
 using System.Collections.Generic;
 using VIAT.Core.Enums;
 using VIAT.Price.IServices;
+using Newtonsoft.Json;
 
 namespace VIAT.Price.Services
 {
@@ -143,8 +144,9 @@ namespace VIAT.Price.Services
         {
             AddOnExecute = (SaveModel saveModel) =>
             {
+                Viat_app_cust_price_group group1=JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveModel.MainData));
                 //如果返回false,后面代码不会再执行
-                Viat_app_cust_price_group group = null;// repository.FindAsIQueryable(x => x.group_id == saveDataModel.MainData.GetValue("group_id")).FirstOrDefault();
+                Viat_app_cust_price_group group =repository.FindAsIQueryable(x => x.group_id == group1.group_id).FirstOrDefault();
                 if (group != null)
                 {
                     return webResponse.Error("Group ID duplicate or have exist.");
@@ -153,6 +155,29 @@ namespace VIAT.Price.Services
             };
             //
             return base.Add(saveDataModel);
+        }
+
+        public override WebResponseContent Update(SaveModel saveModel)
+        {
+            UpdateOnExecute = (saveModel) =>
+            {
+                Viat_app_cust_price_group group1 = JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveModel.MainData));
+                //如果返回false,后面代码不会再执行
+                Viat_app_cust_price_group group = repository.FindAsIQueryable(x => x.group_id == group1.group_id).FirstOrDefault();
+                if (group != null)
+                {
+                    return webResponse.Error("Group ID duplicate or have exist.");
+                }
+                //如果修改后的状态为N,需要修改group name+(x)
+
+                return webResponse.OK();
+            };
+            UpdateOnExecuted = (Viat_app_cust_price_group order, object addList, object updateList, List<object> delKeys) =>
+            {
+                //如果修改后的状态为N ,处理 cust_price和cust_group的数据
+                return webResponse.OK();
+            };
+            return base.Update(saveModel);
         }
     }
 }

@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "價格群組",TableName = "Viat_app_cust_price_group")]
+    [Entity(TableCnName = "Price Group",TableName = "Viat_app_cust_price_group")]
     public partial class Viat_app_cust_price_group:BaseEntity
     {
         /// <summary>
@@ -42,9 +42,9 @@ namespace VIAT.Entity.DomainModels
        public string division { get; set; }
 
        /// <summary>
-       ///群組代碼
+       ///Group ID
        /// </summary>
-       [Display(Name ="群組代碼")]
+       [Display(Name ="Group ID")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
        [Editable(true)]
@@ -52,9 +52,9 @@ namespace VIAT.Entity.DomainModels
        public string group_id { get; set; }
 
        /// <summary>
-       ///群組名稱
+       ///Group Name
        /// </summary>
-       [Display(Name ="群組名稱")]
+       [Display(Name ="Group Name")]
        [MaxLength(100)]
        [Column(TypeName="varchar(100)")]
        [Editable(true)]
@@ -62,27 +62,36 @@ namespace VIAT.Entity.DomainModels
        public string group_name { get; set; }
 
        /// <summary>
-       ///群組類別
+       ///Group Price Channel
        /// </summary>
-       [Display(Name ="群組類別")]
+       [Display(Name ="Group Price Channel")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
        public string group_type { get; set; }
 
        /// <summary>
-       ///是否有效
+       ///Status
        /// </summary>
-       [Display(Name ="是否有效")]
+       [Display(Name ="Status")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
        [Editable(true)]
        public string status { get; set; }
 
        /// <summary>
-       ///建立用戶
+       ///Gov/Private
        /// </summary>
-       [Display(Name ="建立用戶")]
+       [Display(Name ="Gov/Private")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       [Editable(true)]
+       public string cust_type { get; set; }
+
+       /// <summary>
+       ///Created User
+       /// </summary>
+       [Display(Name ="Created User")]
        [Column(TypeName="int")]
        public int? created_user { get; set; }
 
@@ -110,9 +119,9 @@ namespace VIAT.Entity.DomainModels
        public string created_clientusername { get; set; }
 
        /// <summary>
-       ///建立時間
+       ///Created Date
        /// </summary>
-       [Display(Name ="建立時間")]
+       [Display(Name ="Created Date")]
        [Column(TypeName="datetime")]
        public DateTime? created_date { get; set; }
 
@@ -147,16 +156,24 @@ namespace VIAT.Entity.DomainModels
        public string modified_clientusername { get; set; }
 
        /// <summary>
-       ///最後修改時間
+       ///Modified Date
        /// </summary>
-       [Display(Name ="最後修改時間")]
+       [Display(Name ="Modified Date")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 
        /// <summary>
-       ///備註
+       ///Pricing Field
        /// </summary>
-       [Display(Name ="備註")]
+       [Display(Name ="Pricing Field")]
+       [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
+       public Guid? pricing_field { get; set; }
+
+       /// <summary>
+       ///Remarks
+       /// </summary>
+       [Display(Name ="Remarks")]
        [MaxLength(450)]
        [Column(TypeName="nvarchar(450)")]
        [Editable(true)]
