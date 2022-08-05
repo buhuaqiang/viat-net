@@ -101,7 +101,7 @@ namespace VIAT.Price.Controllers
         [HttpPost, Route("excuteCustomerDetachGroup")]
         public ActionResult excuteCustomerDetachGroup([FromBody] SaveModel saveModel)
         {
-            return Json(_baseWebResponseContent);
+            return Json(_service.excuteCustomerDetachGroup(saveModel));
         }
 
 

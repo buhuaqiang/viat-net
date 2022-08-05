@@ -1162,7 +1162,7 @@ namespace VIAT.Price.Services
                 {
 
                     //viat_app_cust_group
-                    List<Viat_app_cust_group> custGroupPriceList = getAllCustGroupByProd(sProdDBID,"");
+                    List<Viat_app_cust_group> custGroupPriceList = getAllCustGroupByProd(sProdDBID,"","");
                     if (custGroupPriceList != null)
                     {
                         foreach (Viat_app_cust_group groupPrice in custGroupPriceList)
@@ -1467,7 +1467,7 @@ namespace VIAT.Price.Services
         /// <param name="sProdDBID"></param>
         /// <returns></returns>
 
-        private List<Viat_app_cust_group> getAllCustGroupByProd(string sProdDBID,string cust_dbid)
+        private List<Viat_app_cust_group> getAllCustGroupByProd(string sProdDBID,string cust_dbid,string custgroup_dbids)
         {
             string sSql = @"select * from viat_app_cust_group where 1=1 and status = 'Y'";
             if (string.IsNullOrEmpty(sProdDBID) == false)
@@ -1478,7 +1478,10 @@ namespace VIAT.Price.Services
             {
                 sSql += $" and cust_dbid = '{cust_dbid}'";
             }
-
+            if (!string.IsNullOrEmpty(custgroup_dbids))
+            {
+                sSql += $" and custgroup_dbid in ({custgroup_dbids})";
+            }
             return _repository.DapperContext.QueryList<Viat_app_cust_group>(sSql, null);
         }
 
@@ -2126,6 +2129,8 @@ namespace VIAT.Price.Services
               return base.Export(pageData);
           }*/
 
+        #region Customer Join to Group Price->Execute
+
         /// <summary>
         /// Customer Join to Group Price->Execute
         /// </summary>
@@ -2176,7 +2181,7 @@ namespace VIAT.Price.Services
         /// <param name="cust_dbid"></param>
         public void ProceeGroup(SaveModel saveModel,Viat_app_cust_group cust_group,string cust_dbid)
         {
-            List<Viat_app_cust_group> lstCustGroup = getAllCustGroupByProd(cust_group.prod_dbid.ToString(), cust_dbid);
+            List<Viat_app_cust_group> lstCustGroup = getAllCustGroupByProd(cust_group.prod_dbid.ToString(), cust_dbid,"");
             if (lstCustGroup.Count() > 0)
             {
                 foreach (var item in lstCustGroup)
@@ -2215,5 +2220,54 @@ namespace VIAT.Price.Services
                 }
             }
         }
+        #endregion
+
+        #region
+        public WebResponseContent excuteCustomerDetachGroup(SaveModel saveModel)
+        {
+            ProcessGroup(saveModel);
+            return base.CustomBatchProcessEntity(saveModel);
+        }
+
+        public void ProcessGroup(SaveModel saveModel)
+        {
+            string custgroup_dbids = saveModel.MainData["detachKeys"]?.ToString();
+            string custgroup_dbid = string.Format("'{0}'", custgroup_dbids.Replace(",", "','"));
+            string detach_date = Convert.ToDateTime(saveModel.MainData["detach_date"]).ToString("yyyy-MM-dd");
+            string remark = "";
+            if (saveModel.MainData.ContainsKey("remark"))
+            {
+                remark = saveModel.MainData["remark"].ToString();
+            }
+            List<Viat_app_cust_group> lstCustGroup = getAllCustGroupByProd("", "", custgroup_dbid);
+            if (lstCustGroup.Count()>0)
+            {
+                foreach (var item in lstCustGroup)
+                {
+                    ProceeDetail(saveModel, item, item.cust_dbid.ToString());
+                    if (getFormatYYYYMMDD(detach_date) < getFormatYYYYMMDD(DateTime.Now))
+                    {
+                        item.status = "C";
+                    }
+                    else
+                    {
+                        item.end_date = getFormatYYYYMMDD(detach_date).AddDays(-1);
+                        if (getFormatYYYYMMDD(item.end_date)< getFormatYYYYMMDD(item.start_date))
+                        {
+                            item.start_date = item.end_date;
+                        }
+                        item.status = "N";
+
+                    }
+                    item.remarks = remark;
+                    SaveModel.DetailListDataResult custGroupResult = new SaveModel.DetailListDataResult();
+                    custGroupResult.optionType = SaveModel.MainOptionType.update;
+                    custGroupResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
+                    custGroupResult.detailType = typeof(Viat_app_cust_group);
+                    saveModel.DetailListData.Add(custGroupResult);
+                }
+            }
+        } 
+        #endregion
     }
 }
