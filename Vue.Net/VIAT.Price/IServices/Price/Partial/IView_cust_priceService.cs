@@ -25,6 +25,7 @@ namespace VIAT.Price.IServices
         public PageGridData<Viat_app_cust_group_for_detach> getCustomerProducts(PageDataOptions pageData);
 
         WebResponseContent excuteCustomerJoinGroup(SaveModel saveModel);
+        WebResponseContent excuteCustomerDetachGroup(SaveModel saveModel);
 
     }
  }
