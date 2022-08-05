@@ -57,7 +57,9 @@ namespace VIAT.Entity.DomainModels
         //Y;Valid;N;Invalid;C;OverA:Not Achieve
         /// </summary>
         [Display(Name = "Y;Valid;N;Invalid;C;OverA:Not Achieve")]
-      
+        [Column(TypeName = "varcher（1）")]
+        [Editable(true)]
+
         public string status { get; set; }
 
         /// <summary>
