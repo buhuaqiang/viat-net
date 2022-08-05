@@ -243,6 +243,7 @@ namespace VIAT.WorkFlow.Services
                 decimal invice_price = item["invoice_price"] == null ? 0 : Convert.ToDecimal(item["invoice_price"]);
                 decimal bid_price = item["bid_price"] == null ? 0 : Convert.ToDecimal(item["bid_price"]);
                 int min_qty = item["min_qty"] == null ? 0 : Convert.ToInt32(item["min_qty"]);
+                string isbelong = item["isbelong"].ToString();
                 Guid? prod_dbid = null;
                 Viat_com_prod ComProd = repository.DbContext.Set<Viat_com_prod>().Where(x => x.prod_id == prod_id).First();
                 if (ComProd.prod_dbid == null)
@@ -269,6 +270,7 @@ namespace VIAT.WorkFlow.Services
                 bidDetail.invoice_price = invice_price;
                 bidDetail.bid_price = bid_price;
                 bidDetail.min_qty = min_qty;
+                bidDetail.isbelong = isbelong;
                 bidDetail.prod_dbid = prod_dbid;
                 bidDetail.nhi_price = Convert.ToDecimal(ComProd.nhi_price);
                 bidDetail.net_price = (decimal)net_price;
