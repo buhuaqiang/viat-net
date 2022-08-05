@@ -2258,7 +2258,7 @@ namespace VIAT.Price.Services
                         item.start_date = item.end_date;
                     }
                     item.status = "N";
-                    item.remarks = remark;
+                    item.remarks += remark;
                     SaveModel.DetailListDataResult custGroupResult = new SaveModel.DetailListDataResult();
                     custGroupResult.optionType = SaveModel.MainOptionType.update;
                     custGroupResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
