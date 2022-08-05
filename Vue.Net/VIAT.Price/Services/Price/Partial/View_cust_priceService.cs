@@ -2158,6 +2158,11 @@ namespace VIAT.Price.Services
         {
             if (!string.IsNullOrEmpty(group))
             {
+                string remark = "";
+                if (saveModel.MainData.ContainsKey("remark"))
+                {
+                    remark = saveModel.MainData["remark"].ToString();
+                }
                 Guid? custdbid = new Guid(cust_dbid);
                 List<Viat_app_cust_group> lstGroup = JsonConvert.DeserializeObject<List<Viat_app_cust_group>>(group);
                 foreach (var item in lstGroup)
@@ -2166,6 +2171,7 @@ namespace VIAT.Price.Services
                     ProceeDetail(saveModel, item, cust_dbid);
                     SaveModel.DetailListDataResult custGroupResult = new SaveModel.DetailListDataResult();
                     item.cust_dbid = custdbid;
+                    item.remarks = remark;
                     custGroupResult.optionType = SaveModel.MainOptionType.add;
                     custGroupResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
                     custGroupResult.detailType = typeof(Viat_app_cust_group);
@@ -2222,7 +2228,7 @@ namespace VIAT.Price.Services
         }
         #endregion
 
-        #region
+        #region Customer Detach->Detach Selected
         public WebResponseContent excuteCustomerDetachGroup(SaveModel saveModel)
         {
             ProcessGroup(saveModel);
