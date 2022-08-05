@@ -28,12 +28,16 @@ namespace VIAT.Price.Services
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IViat_app_cust_price_groupRepository _repository;//访问数据库
         private readonly IView_cust_custgroup_pricegroupService _view_Cust_Custgroup_PricegroupService;
+        WebResponseContent webResponse = new WebResponseContent();
+        private readonly IView_cust_priceService _view_cust_priceService;
+
 
         [ActivatorUtilitiesConstructor]
         public Viat_app_cust_price_groupService(
             IViat_app_cust_price_groupRepository dbRepository,
             IHttpContextAccessor httpContextAccessor,
-            IView_cust_custgroup_pricegroupService view_Cust_Custgroup_PricegroupService
+            IView_cust_custgroup_pricegroupService view_Cust_Custgroup_PricegroupService,
+            IView_cust_priceService view_cust_priceService
             )
         : base(dbRepository)
         {
@@ -42,6 +46,7 @@ namespace VIAT.Price.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
             _view_Cust_Custgroup_PricegroupService = view_Cust_Custgroup_PricegroupService;
+            _view_cust_priceService = view_cust_priceService;
         }
 
         /// <summary>
@@ -113,6 +118,25 @@ namespace VIAT.Price.Services
         public override WebResponseContent Export(PageDataOptions pageData)
         {
             return _view_Cust_Custgroup_PricegroupService.Export(pageData);
+        }
+
+        public override WebResponseContent Del(object[] keys, bool delList = true)
+        {
+            bool hasPrice = false;
+            foreach(string k in keys)
+            {
+                string sSql = "select count(*) from viat_app_cust_price where pricegroup_dbid=@pricegroup_dbid";
+                object obj = _repository.DapperContext.ExecuteScalar(sSql, new { pricegroup_dbid =k });
+                hasPrice= (((int)obj) == 0) ? false : true;
+                break;
+            }
+            if (hasPrice)
+            {
+                webResponse.Code = "-1";
+                return webResponse.Error("This group has price,can not delete.");
+            }
+
+            return base.Del(keys, delList);
         }
     }
 }
