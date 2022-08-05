@@ -113,10 +113,19 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public int min_qty { get; set; }
 
-       /// <summary>
-       ///FG%
-       /// </summary>
-       [Display(Name ="FG%")]
+        /// <summary>
+        ///是否屬合約品項
+        /// </summary>
+        [Display(Name = "Is Belong")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        [Editable(true)]
+        public string isbelong { get; set; }
+
+        /// <summary>
+        ///FG%
+        /// </summary>
+        [Display(Name ="FG%")]
        [DisplayFormat(DataFormatString="18,2")]
        [Column(TypeName="decimal")]
        [Required(AllowEmptyStrings=false)]
