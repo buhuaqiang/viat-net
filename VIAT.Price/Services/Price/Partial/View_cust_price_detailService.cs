@@ -326,7 +326,7 @@ namespace VIAT.Price.Services
 	                    custGroup.modified_date,
                         custGroup.updated_date,
                         custGroup.modified_username,
-	                    custPrice.remarks,
+	                    custGroup.remarks,
 	                    '' as bid_no,
 	                    prod.state,
 	                     custPrice.status priceStatus,
