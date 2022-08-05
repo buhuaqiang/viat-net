@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Price.IRepositories;
+using System.Collections.Generic;
 
 namespace VIAT.Price.Services
 {
@@ -37,5 +38,38 @@ namespace VIAT.Price.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+
+        public override PageGridData<View_cust_custgroup_pricegroup> GetPageData(PageDataOptions pageData)
+        {
+            QuerySql = @"
+                select distinct 	
+                    cust.cust_dbid,
+	                cust.cust_id, 
+	                cust.cust_name,
+	                cust.status as custStatus,
+	                grp.status ,
+	                prc.group_id as group_id,
+	                prc.group_name as group_name
+                from viat_app_cust_group grp
+                left JOIN viat_com_cust cust ON cust.cust_dbid = grp.cust_dbid
+                left JOIN viat_app_cust_price_group prc ON grp.pricegroup_dbid = prc.pricegroup_dbid
+                where cust.cust_id is not null and prc.group_id is not null
+               ";
+            return base.GetPageData(pageData);
+        }
+        public override WebResponseContent Export(PageDataOptions pageData)
+        {
+            ExportColumns = x =>new
+            {
+               x.group_id,
+               x.group_name,
+               x.cust_id,
+               x.cust_name,
+               x.status,
+               x.custStatus
+            };
+
+            return base.Export(pageData);
+        }
+    }
 }
