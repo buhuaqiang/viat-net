@@ -209,6 +209,13 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 
-       
+        /// <summary>
+        ///是否屬合約品項
+        /// </summary>
+        [Display(Name = "Is Belong")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        [Editable(true)]
+        public string isbelong { get; set; }
     }
 }
