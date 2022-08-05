@@ -57,8 +57,113 @@ namespace VIAT.Contract.Services
 
         public override PageGridData<View_app_hp_contract> GetPageData(PageDataOptions options)
         {
+           
             /*解析查询条件*/
-            QuerySql = "select * from view_app_hp_contract ";
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            string contractNo = "";
+            string startDate = "";
+            string endDate = "";
+            string groupDbid = "";
+            string custDbid = "";
+            string cpProdDbid = "";
+            string cfProdDbid = "";
+            string status = "";
+            string innerCust = "";
+            if (!string.IsNullOrEmpty(options.Wheres))
+            {
+                searchParametersList = options.Wheres.DeserializeObject<List<SearchParameters>>();
+                if (searchParametersList != null && searchParametersList.Count > 0)
+                {
+                    foreach (SearchParameters sp in searchParametersList)
+                    {
+                        if (sp.Name.ToLower() == "contract_no".ToLower())
+                        {
+                            contractNo = " AND(hp_contract.contract_no like '%"+sp.Value+ "%') ";
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "start_date".ToLower())
+                        {
+                            startDate = " and hp_contract.start_date>=" + sp.Value ;
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "end_date".ToLower())
+                        {
+                            endDate = " and hp_contract.end_date<=" + sp.Value;
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "pricegroup_dbid".ToLower())
+                        {
+                            groupDbid = " and ( hp_contract.pricegroup_dbid=" + sp.Value+")";
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "cust_dbid".ToLower())
+                        {
+                            custDbid = " and ( c_cust.cust_dbid=" + sp.Value + ")";
+                            innerCust = " INNER JOIN viat_app_hp_contract_cust  c_cust ON c_cust.hpcont_dbid = hp_contract.hpcont_dbid ";
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "pu_prod_dbid".ToLower())
+                        {
+                            cpProdDbid = " and ( EXISTS (SELECT 1 AS C1 FROM viat_app_hp_contract_purchase_prod  p_prod WHERE p_prod.prod_dbid =" + sp.Value + " AND hp_contract.hpcont_dbid = p_prod.hpcont_dbid ))";
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "cf_prod_dbid".ToLower())
+                        {
+                            cfProdDbid = " and ( EXISTS (SELECT 1 AS C1 FROM viat_app_hp_contract_free_prod f_prod WHERE f_prod.prod_dbid  =" + sp.Value + " AND hp_contract.hpcont_dbid =  f_prod.hpcont_dbid ))";
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "state".ToLower())
+                        {
+                            status = " and hp_contract.state=" + sp.Value ;
+                            continue;
+                        }
+                    }
+                }
+            }
+
+
+            QuerySql = "select tab3.* , null as cf_prod_dbid ,null as pu_prod_dbid, " +
+        "(select top 1 cust_id from viat_app_hp_contract_cust c where c.hpcont_dbid= tab3.hpcont_dbid order by created_date desc ) as cust_id," +
+        "(select top 1 cust_name from viat_app_hp_contract_cust c where c.hpcont_dbid= tab3.hpcont_dbid order by created_date desc ) as cust_name," +
+        "(select substring(prod_id,0,len(prod_id)) prod_id from (select (select CONVERT(NVARCHAR, prod_id)+' , ' from (" +
+        "select  prod.prod_id from  viat_app_hp_contract_free_prod f_prod left join viat_com_prod prod on f_prod.prod_dbid=prod.prod_dbid and  f_prod.hpcont_dbid =  tab3.hpcont_dbid " +
+        ") a FOR XML PATH ('') ) prod_id) c) as prod_id," +
+        "(select substring(prod_ename,0,len(prod_ename)) prod_name from (select (select CONVERT(NVARCHAR, prod_ename)+' , ' from ( " +
+        "select  prod.prod_ename from  viat_app_hp_contract_free_prod f_prod left join viat_com_prod prod on f_prod.prod_dbid=prod.prod_dbid  and  f_prod.hpcont_dbid =  tab3.hpcont_dbid " +
+        ") a FOR XML PATH ('') ) prod_ename) c) as prod_ename " +
+        "from ( " +
+        "SELECT tab.*,tab1.cust_dbid,tab2.prod_dbid from ( " +
+        "select  hp_contract.* ,c_a_sum1.A1 as C1,c_a_sum2.A1 AS C2,c_a_sum3.A1 AS C3,c_p_group.group_id ,c_p_group.group_name as group_name,case when c_p_group.group_id is null then '1' else '0' end costomer_type " +
+        "from  viat_app_hp_contract hp_contract " +
+        "LEFT OUTER JOIN( select hpcont_dbid as K1, sum(amount) as A1  from viat_app_hp_contract_allw_sum as allw_sum " +
+        "where hpcont_dbid is not null  and action_type='1' and trans_date<=SysDateTime ( ) group  by hpcont_dbid) as  c_a_sum1 on c_a_sum1.K1 = hp_contract.hpcont_dbid " +
+        "left outer join (select  hpcont_dbid as K1, sum(amount) as A1 	from  viat_app_hp_contract_allw_sum c_a_sum  " +
+        "where hpcont_dbid is not null  and action_type='2' group  by hpcont_dbid ) as c_a_sum2 on c_a_sum2.K1 = hp_contract.hpcont_dbid " +
+        "left outer join (select  hpcont_dbid as K1, sum(amount) as A1 from  viat_app_hp_contract_allw_sum c_a_sum  " +
+        "where hpcont_dbid is not null  and action_type='3' group  by hpcont_dbid ) as c_a_sum3 on c_a_sum3.K1 = hp_contract.hpcont_dbid " +
+        "left outer join viat_app_cust_price_group c_p_group on c_p_group.pricegroup_dbid = hp_contract.pricegroup_dbid " +
+        innerCust +
+        " where 1=1  " +
+        contractNo +
+        startDate +
+        endDate +
+        groupDbid +
+        custDbid +
+        cpProdDbid +
+        cfProdDbid +
+        status +
+        " ) tab outer apply ( " +
+        "select top 1 h_c_cust.cust_dbid as cust_dbid  " +
+        "from  viat_app_hp_contract_cust h_c_cust " +
+        "inner join viat_com_cust cust on cust.cust_dbid = h_c_cust.cust_dbid " +
+        "where   h_c_cust.status = 1  and cust.status='Y' and h_c_cust.hpcont_dbid=tab.hpcont_dbid " +
+        ")tab1 outer apply( " +
+        "select  top 1 c_f_prod.prod_dbid as prod_dbid from viat_app_hp_contract_free_prod  c_f_prod where c_f_prod.hpcont_dbid = tab.hpcont_dbid )tab2 " +
+        ") tab3 " +
+        "left outer join viat_com_cust c_cust on c_cust.cust_dbid=tab3.cust_dbid " +
+        "left outer join viat_com_prod c_prod on c_prod.prod_dbid = tab3.prod_dbid ";
+       
+
             return base.GetPageData(options);
         }
 
