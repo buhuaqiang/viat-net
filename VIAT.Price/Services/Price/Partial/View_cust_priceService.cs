@@ -2250,21 +2250,14 @@ namespace VIAT.Price.Services
             {
                 foreach (var item in lstCustGroup)
                 {
-                    ProceeDetail(saveModel, item, item.cust_dbid.ToString());
-                    if (getFormatYYYYMMDD(detach_date) < getFormatYYYYMMDD(DateTime.Now))
+                    //ProceeDetail(saveModel, item, item.cust_dbid.ToString());
+                    DetachDetail(saveModel, item, item.cust_dbid.ToString(), detach_date);
+                    item.end_date = getFormatYYYYMMDD(detach_date).AddDays(-1);
+                    if (getFormatYYYYMMDD(item.end_date) < getFormatYYYYMMDD(item.start_date))
                     {
-                        item.status = "C";
+                        item.start_date = item.end_date;
                     }
-                    else
-                    {
-                        item.end_date = getFormatYYYYMMDD(detach_date).AddDays(-1);
-                        if (getFormatYYYYMMDD(item.end_date)< getFormatYYYYMMDD(item.start_date))
-                        {
-                            item.start_date = item.end_date;
-                        }
-                        item.status = "N";
-
-                    }
+                    item.status = "N";
                     item.remarks = remark;
                     SaveModel.DetailListDataResult custGroupResult = new SaveModel.DetailListDataResult();
                     custGroupResult.optionType = SaveModel.MainOptionType.update;
@@ -2273,7 +2266,37 @@ namespace VIAT.Price.Services
                     saveModel.DetailListData.Add(custGroupResult);
                 }
             }
-        } 
+        }
+
+        /// <summary>
+        /// edit Viat_app_cust_group
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <param name="cust_group"></param>
+        /// <param name="cust_dbid"></param>
+        public void DetachDetail(SaveModel saveModel, Viat_app_cust_group entiy, string cust_dbid,string detach_date)
+        {
+            List<Viat_app_cust_price_detail> lstPriceDetail = getAllPriceDetailByGroupAndProd("", entiy.prod_dbid.ToString(), cust_dbid);
+            if (lstPriceDetail.Count() > 0)
+            {
+                foreach (var item in lstPriceDetail)
+                {
+                    SaveModel.DetailListDataResult custPiceDetailResult = new SaveModel.DetailListDataResult();
+                    custPiceDetailResult.optionType = SaveModel.MainOptionType.update;
+                    if (getFormatYYYYMMDD(detach_date) < getFormatYYYYMMDD(DateTime.Now))
+                    {
+                        item.status = "C";
+                    }
+                    else
+                    {
+                        item.status = "N";
+                    }
+                    custPiceDetailResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
+                    custPiceDetailResult.detailType = typeof(Viat_app_cust_price_detail);
+                    saveModel.DetailListData.Add(custPiceDetailResult);
+                }
+            }
+        }
         #endregion
     }
 }
