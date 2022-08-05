@@ -79,33 +79,33 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///CustID
        /// </summary>
-       [Display(Name ="CustID")]
+     /*  [Display(Name ="CustID")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
-       public string g_cust_id { get; set; }
+       public string g_cust_id { get; set; }*/
 
        /// <summary>
        ///CustName
        /// </summary>
-       [Display(Name ="CustName")]
+      /* [Display(Name ="CustName")]
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
-       public string g_cust_name { get; set; }
+       public string g_cust_name { get; set; }*/
 
        /// <summary>
        ///FG Product Code
        /// </summary>
        [Display(Name ="FG Product Code")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
+       [MaxLength(1000)]
+       [Column(TypeName="varchar(1000)")]
        public string prod_id { get; set; }
 
        /// <summary>
        ///FG Product Name
        /// </summary>
        [Display(Name ="FG Product Name")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
+       [MaxLength(2000)]
+       [Column(TypeName="varchar(2000)")]
        public string prod_ename { get; set; }
 
        /// <summary>
@@ -269,9 +269,9 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///列名cust_dbid2
        /// </summary>
-       [Display(Name ="列名cust_dbid2")]
+       /*[Display(Name ="列名cust_dbid2")]
        [Column(TypeName="uniqueidentifier")]
-       public Guid? cust_dbid2 { get; set; }
+       public Guid? cust_dbid2 { get; set; }*/
 
        /// <summary>
        ///列名cust_dbid
