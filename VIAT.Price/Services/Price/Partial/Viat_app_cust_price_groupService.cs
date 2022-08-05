@@ -138,5 +138,21 @@ namespace VIAT.Price.Services
 
             return base.Del(keys, delList);
         }
+
+        public override WebResponseContent Add(SaveModel saveDataModel)
+        {
+            AddOnExecute = (SaveModel saveModel) =>
+            {
+                //如果返回false,后面代码不会再执行
+                Viat_app_cust_price_group group = null;// repository.FindAsIQueryable(x => x.group_id == saveDataModel.MainData.GetValue("group_id")).FirstOrDefault();
+                if (group != null)
+                {
+                    return webResponse.Error("Group ID duplicate or have exist.");
+                }
+                return webResponse.OK();
+            };
+            //
+            return base.Add(saveDataModel);
+        }
     }
 }
