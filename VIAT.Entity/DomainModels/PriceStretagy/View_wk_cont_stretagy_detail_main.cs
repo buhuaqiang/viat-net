@@ -113,10 +113,19 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public Guid contstretail_dbid { get; set; }
 
-       /// <summary>
-       ///列名modified_date
-       /// </summary>
-       [Display(Name ="列名modified_date")]
+        /// <summary>
+        ///是否屬合約品項
+        /// </summary>
+        [Display(Name = "Is Belong")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        [Editable(true)]
+        public string isbelong { get; set; }
+
+        /// <summary>
+        ///列名modified_date
+        /// </summary>
+        [Display(Name ="列名modified_date")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
 

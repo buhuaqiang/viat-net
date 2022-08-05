@@ -69,10 +69,20 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public decimal? net_price { get; set; }
 
-       /// <summary>
-       ///建立用戶
-       /// </summary>
-       [Display(Name ="建立用戶")]
+        /// <summary>
+        ///是否屬合約品項
+        /// </summary>
+        [Display(Name = "Is Belong")]
+        [MaxLength(1)]
+        [Column(TypeName = "varchar(1)")]
+        [Editable(true)]
+        public string isbelong { get; set; }
+
+
+        /// <summary>
+        ///建立用戶
+        /// </summary>
+        [Display(Name ="建立用戶")]
        [Column(TypeName="int")]
        public int? created_user { get; set; }
 
