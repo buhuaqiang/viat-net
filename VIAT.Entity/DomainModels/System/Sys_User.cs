@@ -14,16 +14,15 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Table("Sys_User")]
-    [Entity(ApiInput = typeof(ApiSys_UserInput),ApiOutput = typeof(ApiSys_UserOutput))]
-    public class Sys_User:BaseEntity
+    [Entity(TableCnName = "用户管理",TableName = "Sys_User",ApiInput = typeof(ApiSys_UserInput),ApiOutput = typeof(ApiSys_UserOutput))]
+    public partial class Sys_User:BaseEntity
     {
         /// <summary>
-       ///用户名
+       ///帐号
        /// </summary>
-       [Display(Name ="用户名")]
-       [MaxLength(200)]
-       [Column(TypeName="nvarchar(200)")]
+       [Display(Name ="帐号")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string UserName { get; set; }
@@ -49,8 +48,8 @@ namespace VIAT.Entity.DomainModels
        ///头像
        /// </summary>
        [Display(Name ="头像")]
-       [MaxLength(400)]
-       [Column(TypeName="nvarchar(400)")]
+       [MaxLength(200)]
+       [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
        public string HeadImageUrl { get; set; }
 
@@ -65,8 +64,8 @@ namespace VIAT.Entity.DomainModels
        ///部门
        /// </summary>
        [Display(Name ="部门")]
-       [MaxLength(300)]
-       [Column(TypeName="nvarchar(300)")]
+       [MaxLength(150)]
+       [Column(TypeName="nvarchar(150)")]
        [Editable(true)]
        public string DeptName { get; set; }
 
@@ -83,8 +82,8 @@ namespace VIAT.Entity.DomainModels
        ///
        /// </summary>
        [Display(Name ="RoleName")]
-       [MaxLength(300)]
-       [Column(TypeName="nvarchar(300)")]
+       [MaxLength(150)]
+       [Column(TypeName="nvarchar(150)")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string RoleName { get; set; }
@@ -93,8 +92,8 @@ namespace VIAT.Entity.DomainModels
        ///Token
        /// </summary>
        [Display(Name ="Token")]
-       [MaxLength(1000)]
-       [Column(TypeName="nvarchar(1000)")]
+       [MaxLength(500)]
+       [Column(TypeName="nvarchar(500)")]
        [Editable(true)]
        public string Token { get; set; }
 
@@ -107,11 +106,11 @@ namespace VIAT.Entity.DomainModels
        public int? AppType { get; set; }
 
        /// <summary>
-       ///用户真实姓名
+       ///真实姓名
        /// </summary>
-       [Display(Name ="用户真实姓名")]
-       [MaxLength(40)]
-       [Column(TypeName="nvarchar(40)")]
+       [Display(Name ="真实姓名")]
+       [MaxLength(20)]
+       [Column(TypeName="nvarchar(20)")]
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public string UserTrueName { get; set; }
@@ -120,9 +119,9 @@ namespace VIAT.Entity.DomainModels
        ///密码
        /// </summary>
        [Display(Name ="密码")]
-       [MaxLength(400)]
+       [MaxLength(200)]
        [JsonIgnore]
-       [Column(TypeName="nvarchar(400)")]
+       [Column(TypeName="nvarchar(200)")]
        public string UserPwd { get; set; }
 
        /// <summary>
@@ -134,28 +133,27 @@ namespace VIAT.Entity.DomainModels
        public DateTime? CreateDate { get; set; }
 
        /// <summary>
-       ///是否手机用户
+       ///手机用户
        /// </summary>
-       [Display(Name ="是否手机用户")]
+       [Display(Name ="手机用户")]
        [Column(TypeName="int")]
        [Editable(true)]
-      // [Required(AllowEmptyStrings=false)]
-       public int IsRegregisterPhone { get; set; }
+       public int? IsRegregisterPhone { get; set; }
 
        /// <summary>
        ///手机号
        /// </summary>
        [Display(Name ="手机号")]
-       [MaxLength(22)]
-       [Column(TypeName="nvarchar(22)")]
+       [MaxLength(11)]
+       [Column(TypeName="nvarchar(11)")]
        public string PhoneNo { get; set; }
 
        /// <summary>
        ///
        /// </summary>
        [Display(Name ="Tel")]
-       [MaxLength(40)]
-       [Column(TypeName="nvarchar(40)")]
+       [MaxLength(20)]
+       [Column(TypeName="nvarchar(20)")]
        public string Tel { get; set; }
 
        /// <summary>
@@ -169,8 +167,8 @@ namespace VIAT.Entity.DomainModels
        ///创建人
        /// </summary>
        [Display(Name ="创建人")]
-       [MaxLength(400)]
-       [Column(TypeName="nvarchar(400)")]
+       [MaxLength(200)]
+       [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
        public string Creator { get; set; }
 
@@ -194,8 +192,8 @@ namespace VIAT.Entity.DomainModels
        ///修改人
        /// </summary>
        [Display(Name ="修改人")]
-       [MaxLength(400)]
-       [Column(TypeName="nvarchar(400)")]
+       [MaxLength(200)]
+       [Column(TypeName="nvarchar(200)")]
        public string Modifier { get; set; }
 
        /// <summary>
@@ -216,8 +214,8 @@ namespace VIAT.Entity.DomainModels
        ///审核人
        /// </summary>
        [Display(Name ="审核人")]
-       [MaxLength(400)]
-       [Column(TypeName="nvarchar(400)")]
+       [MaxLength(200)]
+       [Column(TypeName="nvarchar(200)")]
        public string Auditor { get; set; }
 
        /// <summary>
@@ -245,8 +243,8 @@ namespace VIAT.Entity.DomainModels
        ///地址
        /// </summary>
        [Display(Name ="地址")]
-       [MaxLength(400)]
-       [Column(TypeName="nvarchar(400)")]
+       [MaxLength(200)]
+       [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
        public string Address { get; set; }
 
@@ -254,8 +252,8 @@ namespace VIAT.Entity.DomainModels
        ///电话
        /// </summary>
        [Display(Name ="电话")]
-       [MaxLength(200)]
-       [Column(TypeName="nvarchar(200)")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
        public string Mobile { get; set; }
 
@@ -263,8 +261,8 @@ namespace VIAT.Entity.DomainModels
        ///Email
        /// </summary>
        [Display(Name ="Email")]
-       [MaxLength(200)]
-       [Column(TypeName="nvarchar(200)")]
+       [MaxLength(100)]
+       [Column(TypeName="nvarchar(100)")]
        [Editable(true)]
        public string Email { get; set; }
 
@@ -272,8 +270,8 @@ namespace VIAT.Entity.DomainModels
        ///备注
        /// </summary>
        [Display(Name ="备注")]
-       [MaxLength(400)]
-       [Column(TypeName="nvarchar(400)")]
+       [MaxLength(200)]
+       [Column(TypeName="nvarchar(200)")]
        [Editable(true)]
        public string Remark { get; set; }
 
@@ -285,14 +283,31 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public int? OrderNo { get; set; }
 
-     /// <summary>
-       ///員工識別碼
+       /// <summary>
+       ///
        /// </summary>
-       [Display(Name ="員工識別碼")]
-       [Column(TypeName="uniqueidentifier")]
+       [Display(Name ="profession_type")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
        [Editable(true)]
-        public Guid emp_dbid { get; set; }
- 
+        public string profession_type { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="deputy_zone")]
+       [MaxLength(255)]
+        [Editable(true)]
+        [Column(TypeName="varchar(255)")]
+       public string deputy_zone { get; set; }
+
+       /// <summary>
+       ///员工id
+       /// </summary>
+       [Display(Name ="员工id")]
+       [Column(TypeName="uniqueidentifier")]
+       public Guid? emp_dbid { get; set; }
+
        
     }
 }
