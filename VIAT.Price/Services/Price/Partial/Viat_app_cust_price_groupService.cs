@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using VIAT.Price.IRepositories;
 using System.Collections.Generic;
 using VIAT.Core.Enums;
+using VIAT.Price.IServices;
 
 namespace VIAT.Price.Services
 {
@@ -26,11 +27,13 @@ namespace VIAT.Price.Services
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IViat_app_cust_price_groupRepository _repository;//访问数据库
+        private readonly IView_cust_custgroup_pricegroupService _view_Cust_Custgroup_PricegroupService;
 
         [ActivatorUtilitiesConstructor]
         public Viat_app_cust_price_groupService(
             IViat_app_cust_price_groupRepository dbRepository,
-            IHttpContextAccessor httpContextAccessor
+            IHttpContextAccessor httpContextAccessor,
+            IView_cust_custgroup_pricegroupService view_Cust_Custgroup_PricegroupService
             )
         : base(dbRepository)
         {
@@ -38,6 +41,7 @@ namespace VIAT.Price.Services
             _repository = dbRepository;
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
+            _view_Cust_Custgroup_PricegroupService = view_Cust_Custgroup_PricegroupService;
         }
 
         /// <summary>
@@ -103,6 +107,12 @@ namespace VIAT.Price.Services
 	                )";
 
             return _repository.DapperContext.QueryFirst<Viat_app_cust_price_group>(sql,null);
+        }
+
+
+        public override WebResponseContent Export(PageDataOptions pageData)
+        {
+            return _view_Cust_Custgroup_PricegroupService.Export(pageData);
         }
     }
 }

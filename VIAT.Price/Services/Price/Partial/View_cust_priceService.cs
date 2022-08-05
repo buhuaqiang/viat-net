@@ -2023,9 +2023,9 @@ namespace VIAT.Price.Services
 
         }
 
-        public PageGridData<Viat_app_cust_group> getCustomerProducts(PageDataOptions pageData)
+        public PageGridData<Viat_app_cust_group_for_detach> getCustomerProducts(PageDataOptions pageData)
         {
-            PageGridData<Viat_app_cust_group> pageGridData = new PageGridData<Viat_app_cust_group>();
+            PageGridData<Viat_app_cust_group_for_detach> pageGridData = new PageGridData<Viat_app_cust_group_for_detach>();
             string sProdID = "";
             string sCustID = "";
             string show_invalid = "";
@@ -2117,7 +2117,7 @@ namespace VIAT.Price.Services
 
             sql = @$"select * from (" +
                 QuerySql + $" ) as s where s.rowId between {((pageData.Page - 1) * pageData.Rows + 1)} and {pageData.Page * pageData.Rows} ";
-            pageGridData.rows = repository.DapperContext.QueryList<Viat_app_cust_group>(sql, null);
+            pageGridData.rows = repository.DapperContext.QueryList<Viat_app_cust_group_for_detach>(sql, null);
             return pageGridData;
         }
         /*  public override WebResponseContent Export(PageDataOptions pageData)
