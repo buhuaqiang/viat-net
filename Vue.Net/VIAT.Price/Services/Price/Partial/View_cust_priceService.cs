@@ -1378,8 +1378,7 @@ namespace VIAT.Price.Services
         /// <param name="sPriceGroupDBID"></param>
         /// <param name="sProdDBID"></param>
         /// <returns></returns>
-
-        private List<Viat_app_cust_price_detail> getAllPriceDetailByGroupAndProd(string sPriceDetailDBID, string sProdDBID,string cust_dbid)
+        public List<Viat_app_cust_price_detail> getAllPriceDetailByGroupAndProd(string sPriceDetailDBID, string sProdDBID,string cust_dbid,string pricegroup_dbid)
         {
             string sSql = @"select * from viat_app_cust_price_detail where 1=1 ";
             if (string.IsNullOrEmpty(sPriceDetailDBID) == false)
@@ -1393,6 +1392,10 @@ namespace VIAT.Price.Services
             if (!string.IsNullOrEmpty(cust_dbid))
             {
                 sSql += $" and cust_dbid = '{cust_dbid}' and status = 'Y'";
+            }
+            if (!string.IsNullOrEmpty(pricegroup_dbid))
+            {
+                sSql += $" and pricegroup_dbid = '{pricegroup_dbid}'";
             }
 
             return _repository.DapperContext.QueryList<Viat_app_cust_price_detail>(sSql, null);
@@ -2211,7 +2214,7 @@ namespace VIAT.Price.Services
         /// <param name="cust_dbid"></param>
         public void ProceeDetail(SaveModel saveModel, Viat_app_cust_group entiy, string cust_dbid)
         {
-            List<Viat_app_cust_price_detail> lstPriceDetail = getAllPriceDetailByGroupAndProd("", entiy.prod_dbid.ToString(), cust_dbid);
+            List<Viat_app_cust_price_detail> lstPriceDetail = getAllPriceDetailByGroupAndProd("", entiy.prod_dbid.ToString(), cust_dbid,"");
             if (lstPriceDetail.Count()>0)
             {
                 foreach (var item in lstPriceDetail)
@@ -2276,7 +2279,7 @@ namespace VIAT.Price.Services
         /// <param name="cust_dbid"></param>
         public void DetachDetail(SaveModel saveModel, Viat_app_cust_group entiy, string cust_dbid,string detach_date)
         {
-            List<Viat_app_cust_price_detail> lstPriceDetail = getAllPriceDetailByGroupAndProd("", entiy.prod_dbid.ToString(), cust_dbid);
+            List<Viat_app_cust_price_detail> lstPriceDetail = getAllPriceDetailByGroupAndProd("", entiy.prod_dbid.ToString(), cust_dbid,"");
             if (lstPriceDetail.Count() > 0)
             {
                 foreach (var item in lstPriceDetail)

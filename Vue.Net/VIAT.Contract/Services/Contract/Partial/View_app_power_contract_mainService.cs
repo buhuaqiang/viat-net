@@ -23,6 +23,8 @@ using VIAT.Contract.Repositories;
 using Newtonsoft.Json;
 using System.Threading.Tasks;
 using VIAT.Basic.Services;
+using System.Reflection;
+
 namespace VIAT.Contract.Services
 {
     public partial class View_app_power_contract_mainService
@@ -50,62 +52,65 @@ namespace VIAT.Contract.Services
              * 如果表头是Isgroup,则把组内的用户，同时增加到viat_app_power_contract_cust表中
              *思路：根据pricegroup_dbid关联出用户，根据信息生成cust类，用框架表头表体事务插入
              */
-            AddOnExecute = (saveModel) => {
-                //指定操作类型为新增
-                saveModel.mainOptionType = SaveModel.MainOptionType.add;
-                //如果是视图，则要替换maindata
-                saveModel.MainFacType = typeof(Viat_app_power_contract);
+            //            AddOnExecute = (saveModel) => {
+            //                //指定操作类型为新增
+            //                saveModel.mainOptionType = SaveModel.MainOptionType.add;
+            //                //如果是视图，则要替换maindata
+            //                saveModel.MainFacType = typeof(Viat_app_power_contract);
 
-                //新增保存时，给合约号赋值
-                string code = getContractNo();
-                saveModel.MainData["contract_no"] = code;
+            //                //新增保存时，给合约号赋值
+            //                string code = getContractNo();
+            //                saveModel.MainData["contract_no"] = code;
 
-                //isgroup与iscust二选择一
-                /*if (saveModel.MainData.GetValue("isgroup")?.ToString() == "1")
-                {
-                    saveModel.MainData["cust_dbid"] = "";
-                }
-                else if (saveModel.MainData.GetValue("isgroup")?.ToString() == "0")
-                {
-                    saveModel.MainData["pricegroup_dbid"] = "";
-                }
-*/
-                    if (saveModel.MainData.GetValue("isgroup")?.ToString() == "1")
-                {
-                    //isgroup为1时，则pricegroup
-                    string sPriceGroupDBID = saveModel.MainData.GetValue("pricegroup_dbid")?.ToString() ;
-                    /*
-                                        string sSql = @"select distinct b.* from viat_app_cust_group  a left join viat_com_cust b on a.cust_dbid=b.cust_dbid 
-                                                where a.pricegroup_dbid=@pricegroup_dbid";*/
-                    // repository.DapperContext.QueryList<Viat_com_cust>(sSql, new { pricegroup_dbid = sPriceGroupDBID });
-                    //根据pricegroupid获取用户信息列表
-                    List<Viat_com_cust> lstCust = Viat_com_custService.Instance.GetCustListByPriceGroupDBID(sPriceGroupDBID);                 
-                    List<Dictionary<string, object>> dicLst = new List<Dictionary<string, object>>();
-                    SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
-                    
-                    detailDataResult.detailType = typeof(Viat_app_power_contract_cust);
-                    foreach (Viat_com_cust cust in lstCust)
-                    {
-                        //把用户信息转化实体
-                        Dictionary<string, object> dic = new Dictionary<string, object>();                        
-                        dic.Add("cust_dbid", cust.cust_dbid);
-                        dicLst.Add(dic);                       
-                    }
-                    detailDataResult.DetailData = dicLst;
+            //                //isgroup与iscust二选择一
+            //                /*if (saveModel.MainData.GetValue("isgroup")?.ToString() == "1")
+            //                {
+            //                    saveModel.MainData["cust_dbid"] = "";
+            //                }
+            //                else if (saveModel.MainData.GetValue("isgroup")?.ToString() == "0")
+            //                {
+            //                    saveModel.MainData["pricegroup_dbid"] = "";
+            //                }
+            //*/
+            //                    if (saveModel.MainData.GetValue("isgroup")?.ToString() == "1")
+            //                {
+            //                    //isgroup为1时，则pricegroup
+            //                    string sPriceGroupDBID = saveModel.MainData.GetValue("pricegroup_dbid")?.ToString() ;
+            //                    /*
+            //                                        string sSql = @"select distinct b.* from viat_app_cust_group  a left join viat_com_cust b on a.cust_dbid=b.cust_dbid 
+            //                                                where a.pricegroup_dbid=@pricegroup_dbid";*/
+            //                    // repository.DapperContext.QueryList<Viat_com_cust>(sSql, new { pricegroup_dbid = sPriceGroupDBID });
+            //                    //根据pricegroupid获取用户信息列表
+            //                    List<Viat_com_cust> lstCust = Viat_com_custService.Instance.GetCustListByPriceGroupDBID(sPriceGroupDBID);                 
+            //                    List<Dictionary<string, object>> dicLst = new List<Dictionary<string, object>>();
+            //                    SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
 
-                    saveModel.DetailListData.Add(detailDataResult);
-                     
-                }
+            //                    detailDataResult.detailType = typeof(Viat_app_power_contract_cust);
+            //                    foreach (Viat_com_cust cust in lstCust)
+            //                    {
+            //                        //把用户信息转化实体
+            //                        Dictionary<string, object> dic = new Dictionary<string, object>();                        
+            //                        dic.Add("cust_dbid", cust.cust_dbid);
+            //                        dicLst.Add(dic);                       
+            //                    }
+            //                    detailDataResult.DetailData = dicLst;
 
-                return webResponse.OK();
-                    
-            };
+            //                    saveModel.DetailListData.Add(detailDataResult);
 
-            //处理表体
-            dataProcess(saveModel);
+            //                }
+
+            //                return webResponse.OK();
+
+            //            };
+
+            //            //处理表体
+            //            dataProcess(saveModel);
 
 
-            return base.Add(saveModel);
+            //            return base.Add(saveModel);
+
+            processHpContract(saveModel);
+            return base.CustomBatchProcessEntity(saveModel);
         }
 
 
@@ -119,20 +124,197 @@ namespace VIAT.Contract.Services
         WebResponseContent webResponse = new WebResponseContent();
         public override WebResponseContent Update(SaveModel saveModel)
         {
-            UpdateOnExecute = (saveModel) =>
-             {
-                 //指定表头真实有类型
-                 saveModel.MainFacType = typeof(Viat_app_power_contract);
-                 saveModel.mainOptionType = SaveModel.MainOptionType.update;
-                 return webResponse.OK();
-             };
+            //UpdateOnExecute = (saveModel) =>
+            // {
+            //     //指定表头真实有类型
+            //     saveModel.MainFacType = typeof(Viat_app_power_contract);
+            //     saveModel.mainOptionType = SaveModel.MainOptionType.update;
+            //     return webResponse.OK();
+            // };
 
-            dataProcess(saveModel);
+            //dataProcess(saveModel);
 
 
-            return base.Update(saveModel);
+            //return base.Update(saveModel);
+            processHpContract(saveModel);
+            return base.CustomBatchProcessEntity(saveModel);
         }
-       
+
+
+        /// <summary>
+        /// save -> Viat_app_hp_contract
+        /// </summary>
+        /// <param name="saveModel"></param>
+        public void processHpContract(SaveModel saveModel)
+        {
+            SaveModel.DetailListDataResult countResult = new SaveModel.DetailListDataResult();
+            string hpcount_dbid = "";
+            if (!saveModel.MainData.ContainsKey("powercont_dbid"))
+            {
+                saveModel.MainData.Add("powercont_dbid", "");
+            }
+            if (!saveModel.MainData.ContainsKey("contract_no"))
+            {
+                saveModel.MainData.Add("contract_no", "");
+            }
+            hpcount_dbid = saveModel.MainData["powercont_dbid"]?.ToString();
+            if (string.IsNullOrEmpty(hpcount_dbid))
+            {
+                countResult.optionType = SaveModel.MainOptionType.add;
+                saveModel.MainData["powercont_dbid"] = Guid.NewGuid().ToString();
+                saveModel.MainData["contract_no"] = "123";
+            }
+            else
+            {
+                countResult.optionType = SaveModel.MainOptionType.update;
+            }
+            countResult.detailType = typeof(Viat_app_power_contract);
+            //增加表头处理
+            countResult.DetailData.Add(saveModel.MainData);
+            saveModel.DetailListData.Add(countResult);
+            Viat_app_power_contract contractEntry = JsonConvert.DeserializeObject<Viat_app_power_contract>(JsonConvert.SerializeObject(saveModel.MainData));
+            //处理子表
+            ProcessCustOrProd(saveModel, contractEntry);
+        }
+
+        /// <summary>
+        /// conduct -> Viat_app_hp_contract -> Viat_app_hp_contract
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <param name="HpContrant"></param>
+        public void ProcessCustOrProd(SaveModel saveModel, Viat_app_power_contract PowerContrant)
+        {
+            if (saveModel.DetailData != null && saveModel.DetailData.Count > 0)
+            {
+                foreach (Dictionary<string, object> dic in saveModel.DetailData)
+                {
+                    Dictionary<string, object> dicTmp = dic;
+                    switch (dicTmp["key"]?.ToString())
+                    {
+                        case "table1RowData":
+                        case "delTable1RowData":
+                            //List<Viat_app_power_contract> c = new List<Viat_app_power_contract>();
+                            //Cwsdh(saveModel, c, dicTmp["value"]?.ToString());
+                            ProcessCust(saveModel, PowerContrant, dicTmp["value"]?.ToString());
+                            break;
+                        case "table2RowData":
+                        case "delTable2RowData":
+                            ProcessProd(saveModel, PowerContrant, dicTmp["value"]?.ToString());
+                            break;
+                        case "table3RowData":
+                        case "delTable3RowData":
+                            ProcessFreeProd(saveModel, PowerContrant, dicTmp["value"]?.ToString());
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+        }
+
+        public static void Cwsdh<T>(SaveModel saveModel, List<T> PowerContrant, string s_cust) where T : new()
+        {
+            PowerContrant = JsonConvert.DeserializeObject<List<T>>(s_cust);
+            string tempName = "";
+            foreach (var item in PowerContrant)
+            {
+                T t = new T();
+                // 获得此模型的公共属性      
+                PropertyInfo[] propertys = t.GetType().GetProperties();
+                foreach (PropertyInfo pi in propertys)
+                {
+                    tempName = pi.Name;  // 检查DataTable是否包含此列    
+                }    
+                //if (item. == null || item.powercontcust_dbid.ToString() == getDefaultGuid(typeof(Viat_app_power_contract_cust)))
+            }
+        }
+
+        /// <summary>
+        /// option -> Viat_app_power_contract_cust
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <param name="HpContrant"></param>
+        /// <param name="s_cust"></param>
+        public void ProcessCust(SaveModel saveModel, Viat_app_power_contract PowerContrant, string s_cust)
+        {
+            if (!string.IsNullOrEmpty(s_cust))
+            {
+                List<Viat_app_power_contract_cust> lstCust = JsonConvert.DeserializeObject<List<Viat_app_power_contract_cust>>(s_cust);
+                foreach (var item in lstCust)
+                {
+                    SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
+                    if (item.powercontcust_dbid == null || item.powercontcust_dbid.ToString() == getDefaultGuid(typeof(Viat_app_power_contract_cust)))
+                    {
+                        custResult.optionType = SaveModel.MainOptionType.add;
+                        item.powercontcust_dbid = Guid.NewGuid();
+                        item.powercont_dbid = PowerContrant.powercont_dbid;
+                    }
+                    else
+                    {
+                        custResult.optionType = SaveModel.MainOptionType.delete;
+                    }
+                    custResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
+                    custResult.detailType = typeof(Viat_app_power_contract_cust);
+                    saveModel.DetailListData.Add(custResult);
+                }
+            }
+        }
+
+        /// <summary>
+        /// option -> Viat_app_power_contract_purchase_prod
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <param name="HpContrant"></param>
+        /// <param name="s_prod"></param>
+        public void ProcessProd(SaveModel saveModel, Viat_app_power_contract HpContrant, string s_prod)
+        {
+            if (!string.IsNullOrEmpty(s_prod))
+            {
+                List<Viat_app_power_contract_purchase_prod> lstCust = JsonConvert.DeserializeObject<List<Viat_app_power_contract_purchase_prod>>(s_prod);
+                foreach (var item in lstCust)
+                {
+                    SaveModel.DetailListDataResult prodResult = new SaveModel.DetailListDataResult();
+                    if (item.powercontpurprod_dbid == null || item.powercontpurprod_dbid.ToString() == getDefaultGuid(typeof(Viat_app_power_contract_purchase_prod)))
+                    {
+                        prodResult.optionType = SaveModel.MainOptionType.add;
+                        item.powercontpurprod_dbid = Guid.NewGuid();
+                        item.powercont_dbid = HpContrant.powercont_dbid;
+                    }
+                    else
+                    {
+                        prodResult.optionType = SaveModel.MainOptionType.delete;
+                    }
+                    prodResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
+                    prodResult.detailType = typeof(Viat_app_power_contract_purchase_prod);
+                    saveModel.DetailListData.Add(prodResult);
+                }
+            }
+        }
+        public void ProcessFreeProd(SaveModel saveModel, Viat_app_power_contract HpContrant, string s_freeprod)
+        {
+            if (!string.IsNullOrEmpty(s_freeprod))
+            {
+                List<Viat_app_power_contract_free_prod> lstCust = JsonConvert.DeserializeObject<List<Viat_app_power_contract_free_prod>>(s_freeprod);
+                foreach (var item in lstCust)
+                {
+                    SaveModel.DetailListDataResult prodResult = new SaveModel.DetailListDataResult();
+                    if (item.powercontfreeprod_dbid == null || item.powercontfreeprod_dbid.ToString() == getDefaultGuid(typeof(Viat_app_power_contract_free_prod)))
+                    {
+                        prodResult.optionType = SaveModel.MainOptionType.add;
+                        item.powercontfreeprod_dbid = Guid.NewGuid();
+                        item.powercont_dbid = HpContrant.powercont_dbid;
+                    }
+                    else
+                    {
+                        prodResult.optionType = SaveModel.MainOptionType.delete;
+                    }
+                    prodResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
+                    prodResult.detailType = typeof(Viat_app_power_contract_free_prod);
+                    saveModel.DetailListData.Add(prodResult);
+                }
+            }
+        }
+
 
         /// <summary>
         /// 新增，修改，同一方法操作保存
@@ -178,7 +360,7 @@ namespace VIAT.Contract.Services
 
                                 //计算表体和实体的值
                                 List<Dictionary<string, object>> entityDic = base.CalcSameEntiryProperties(detailDataResult.detailType, cusDic);
-                        
+                                
                                 detailDataResult.DetailData = entityDic;
                                 saveModel.DetailListData.Add(detailDataResult);
                             }
