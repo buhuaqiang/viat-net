@@ -25,7 +25,13 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public Guid prod_dbid { get; set; }
 
-     
+       /// <summary>
+       ///ID
+       /// </summary>
+       [Display(Name ="ID")]
+       [Column(TypeName="int")]
+       [Required(AllowEmptyStrings=false)]
+       public int dbid { get; set; }
 
        /// <summary>
        ///公司別
@@ -33,16 +39,16 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="公司別")]
        [MaxLength(3)]
        [Column(TypeName="varchar(3)")]
-       [Editable(true)]
-       public string entity { get; set; }
+        [Editable(true)]
+        public string entity { get; set; }
 
        /// <summary>
        ///本地產品組DBID
        /// </summary>
        [Display(Name ="本地產品組DBID")]
        [Column(TypeName="uniqueidentifier")]
-       [Editable(true)]
-       public Guid? localmpg_dbid { get; set; }
+        [Editable(true)]
+        public Guid? localmpg_dbid { get; set; }
 
        /// <summary>
        ///所屬事業單位
@@ -50,8 +56,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="所屬事業單位")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       public string division { get; set; }
+        [Editable(true)]
+        public string division { get; set; }
 
        /// <summary>
        ///產品id
@@ -69,8 +75,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="英文名稱")]
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
-       [Editable(true)]
-       public string prod_ename { get; set; }
+        [Editable(true)]
+        public string prod_ename { get; set; }
 
        /// <summary>
        ///中文名稱
@@ -78,8 +84,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="中文名稱")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
-       [Editable(true)]
-       public string prod_cname { get; set; }
+        [Editable(true)]
+        public string prod_cname { get; set; }
 
        /// <summary>
        ///中文名稱
@@ -87,8 +93,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="中文名稱")]
        [MaxLength(50)]
        [Column(TypeName="nvarchar(50)")]
-       [Editable(true)]
-       public string prod_sname { get; set; }
+        [Editable(true)]
+        public string prod_sname { get; set; }
 
        /// <summary>
        ///標準成本
@@ -105,8 +111,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="最小庫存單位")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
-       [Editable(true)]
-       public string unit_stock { get; set; }
+        [Editable(true)]
+        public string unit_stock { get; set; }
 
        /// <summary>
        ///最小銷售單位
@@ -114,8 +120,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="最小銷售單位")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
-       [Editable(true)]
-       public string unit_sale { get; set; }
+        [Editable(true)]
+        public string unit_sale { get; set; }
 
        /// <summary>
        ///全球產品群組
@@ -123,8 +129,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="全球產品群組")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       public string global_mpg { get; set; }
+        [Editable(true)]
+        public string global_mpg { get; set; }
 
        /// <summary>
        ///產品保健代碼
@@ -132,8 +138,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="產品保健代碼")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       public string nhi_id { get; set; }
+        [Editable(true)]
+        public string nhi_id { get; set; }
 
        /// <summary>
        ///產品類別
@@ -141,8 +147,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="產品類別")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       public string prod_type { get; set; }
+        [Editable(true)]
+        public string prod_type { get; set; }
 
        /// <summary>
        ///庫存類別
@@ -150,8 +156,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="庫存類別")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       public string inv_type { get; set; }
+        [Editable(true)]
+        public string inv_type { get; set; }
 
        /// <summary>
        ///盒裝數
@@ -159,8 +165,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="盒裝數")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
-       [Editable(true)]
-       public decimal? pack_size { get; set; }
+        [Editable(true)]
+        public decimal? pack_size { get; set; }
 
        /// <summary>
        ///包裝係數
@@ -168,8 +174,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="包裝係數")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
-       [Editable(true)]
-       public decimal? pack_size_pri { get; set; }
+        [Editable(true)]
+        public decimal? pack_size_pri { get; set; }
 
        /// <summary>
        ///新產品代碼
@@ -177,8 +183,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="新產品代碼")]
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
-       [Editable(true)]
-       public string new_prod_id { get; set; }
+        [Editable(true)]
+        public string new_prod_id { get; set; }
 
        /// <summary>
        ///是否為管制藥品
@@ -195,8 +201,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="健保價")]
        [DisplayFormat(DataFormatString="18,5")]
        [Column(TypeName="decimal")]
-       [Editable(true)]
-       public decimal? nhi_price { get; set; }
+        [Editable(true)]
+        public decimal? nhi_price { get; set; }
 
        /// <summary>
        ///許可證字號
@@ -221,16 +227,8 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="stock_market")]
        [Column(TypeName="int")]
-       [Editable(true)]
-       public int? stock_market { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="stock_pfizer")]
-       [Column(TypeName="int")]
-       [Editable(true)]
-       public int? stock_pfizer { get; set; }
+        [Editable(true)]
+        public int? stock_market { get; set; }
 
        /// <summary>
        ///安全庫存量
@@ -268,15 +266,6 @@ namespace VIAT.Entity.DomainModels
        public string status_bid { get; set; }
 
        /// <summary>
-       ///輝瑞庫存狀態
-       /// </summary>
-       [Display(Name ="輝瑞庫存狀態")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       [Editable(true)]
-       public string status_stock_pfizer { get; set; }
-
-       /// <summary>
        ///經銷商庫存狀態
        /// </summary>
        [Display(Name ="經銷商庫存狀態")]
@@ -309,8 +298,8 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="產品屬性-產品大類")]
        [MaxLength(30)]
        [Column(TypeName="varchar(30)")]
-       [Editable(true)]
-       public string prod_category { get; set; }
+        [Editable(true)]
+        public string prod_category { get; set; }
 
        /// <summary>
        ///產品屬性-產品劑型(膠囊/針劑/藥丸)
@@ -412,6 +401,32 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_clientusername { get; set; }
+
+       /// <summary>
+       ///Pfizer 庫存量
+       /// </summary>
+       [Display(Name ="Pfizer 庫存量")]
+       [Column(TypeName="int")]
+        [Editable(true)]
+        public int? stock_viat { get; set; }
+
+       /// <summary>
+       ///輝瑞庫存狀態,Y: 是; N: 否
+       /// </summary>
+       [Display(Name ="輝瑞庫存狀態,Y: 是; N: 否")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+        [Editable(true)]
+        public string status_stock_viat { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="storage_condition")]
+       [MaxLength(10)]
+       [Column(TypeName="varchar(10)")]
+        [Editable(true)]
+        public string storage_condition { get; set; }
 
        
     }

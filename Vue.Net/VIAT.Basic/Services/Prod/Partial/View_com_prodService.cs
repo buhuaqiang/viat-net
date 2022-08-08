@@ -60,7 +60,7 @@ namespace VIAT.Basic.Services
         {
             ExportColumns = x => new {x.entity,x.prod_id,x.prod_ename,x.prod_sname,x.unit_stock,x.unit_sale,x.global_mpg,x.lmpg_mpg_id,
             x.nhi_id,x.default_dist_id,x.pack_size,x.pack_size_pri,x.nhi_price,x.division,x.prod_short_name,x.license_name,x.license_no,x.prod_form,x.prod_strength,
-            x.is_ctrl_drug,x.safty_stock,x.state,x.status_sample,x.status_bid,x.status_stock_pfizer,x.status_stock_dist };
+            x.is_ctrl_drug,x.safty_stock,x.state,x.status_sample,x.status_bid,x.status_stock_viat,x.status_stock_dist };
             return base.Export(pageData);
         }
 
