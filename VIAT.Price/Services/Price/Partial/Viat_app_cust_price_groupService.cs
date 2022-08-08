@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using VIAT.Core.Enums;
 using VIAT.Price.IServices;
 using Newtonsoft.Json;
+using System;
 
 namespace VIAT.Price.Services
 {
@@ -163,25 +164,103 @@ namespace VIAT.Price.Services
 
         public override WebResponseContent Update(SaveModel saveModel)
         {
-            UpdateOnExecute = (saveModel) =>
-            {
-                Viat_app_cust_price_group group1 = JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveModel.MainData));
-                //如果返回false,后面代码不会再执行
-                Viat_app_cust_price_group group = repository.FindAsIQueryable(x => x.group_id == group1.group_id).FirstOrDefault();
-                if (group != null)
-                {
-                    return webResponse.Error("Group ID duplicate or have exist.");
-                }
-                //如果修改后的状态为N,需要修改group name+(x)
+            //UpdateOnExecute = (saveModel) =>
+            //{
+            //    Viat_app_cust_price_group group1 = JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveModel.MainData));
+            //    //如果返回false,后面代码不会再执行
+            //    Viat_app_cust_price_group group = repository.FindAsIQueryable(x => x.group_id == group1.group_id).FirstOrDefault();
+            //    if (group != null)
+            //    {
+            //        return webResponse.Error("Group ID duplicate or have exist.");
+            //    }
+            //    //如果修改后的状态为N,需要修改group name+(x)
 
-                return webResponse.OK();
-            };
-            UpdateOnExecuted = (Viat_app_cust_price_group order, object addList, object updateList, List<object> delKeys) =>
+            //    return webResponse.OK();
+            //};
+            //UpdateOnExecuted = (Viat_app_cust_price_group order, object addList, object updateList, List<object> delKeys) =>
+            //{
+            //    //如果修改后的状态为N ,处理 cust_price和cust_group的数据
+            //    return webResponse.OK();
+            //};
+            //return base.Update(saveModel);
+            ProcessPriceGroup(saveModel);
+
+            return base.CustomBatchProcessEntity(saveModel);
+        }
+
+        public void ProcessPriceGroup(SaveModel saveModel)
+        {
+            SaveModel.DetailListDataResult countResult = new SaveModel.DetailListDataResult();
+            countResult.optionType = SaveModel.MainOptionType.update;
+            countResult.detailType = typeof(Viat_app_cust_price_group);
+            //增加表头处理
+            countResult.DetailData.Add(saveModel.MainData);
+            saveModel.DetailListData.Add(countResult);
+            Viat_app_cust_price_group groupEntry = JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveModel.MainData));
+            if (groupEntry.status.Equals("N"))
             {
-                //如果修改后的状态为N ,处理 cust_price和cust_group的数据
-                return webResponse.OK();
-            };
-            return base.Update(saveModel);
+                ProcessCustPrice(saveModel, groupEntry);
+                ProcessCustGroup(saveModel, groupEntry);
+            }
+
+        }
+
+        public void ProcessCustPrice(SaveModel saveModel, Viat_app_cust_price_group groupEntry)
+        {
+            List<Viat_app_cust_price> lstCustPrice = repository.DbContext.Set<Viat_app_cust_price>().Where(x => x.pricegroup_dbid == groupEntry.pricegroup_dbid && x.status == "Y").ToList();
+            if (lstCustPrice.Count()>0)
+            {
+                foreach (var item in lstCustPrice)
+                {
+                    SaveModel.DetailListDataResult priceResult = new SaveModel.DetailListDataResult();
+                    priceResult.optionType = SaveModel.MainOptionType.update;
+                    item.end_date = getFormatYYYYMMDD(DateTime.Now);
+                    item.status = "N";
+                    priceResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
+                    priceResult.detailType = typeof(Viat_app_cust_price);
+                    saveModel.DetailListData.Add(priceResult);
+                }
+            }
+        }
+        public void ProcessCustGroup(SaveModel saveModel, Viat_app_cust_price_group groupEntry)
+        {
+            List<Viat_app_cust_group> lstCustGroup = repository.DbContext.Set<Viat_app_cust_group>().Where(x => x.pricegroup_dbid == groupEntry.pricegroup_dbid && x.status == "Y").ToList();
+            if (lstCustGroup.Count()>0)
+            {
+                foreach (var item in lstCustGroup)
+                {
+                    DetachDetail(saveModel, item);
+                    item.end_date = getFormatYYYYMMDD(DateTime.Now).AddDays(-1);
+                    if (getFormatYYYYMMDD(item.end_date) < getFormatYYYYMMDD(item.start_date))
+                    {
+                        item.start_date = item.end_date;
+                    }
+                    item.status = "N";
+                    item.remarks += " " + groupEntry.remarks;
+                    SaveModel.DetailListDataResult custGroupResult = new SaveModel.DetailListDataResult();
+                    custGroupResult.optionType = SaveModel.MainOptionType.update;
+                    custGroupResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
+                    custGroupResult.detailType = typeof(Viat_app_cust_group);
+                    saveModel.DetailListData.Add(custGroupResult);
+                }
+            }
+        }
+
+        public void DetachDetail(SaveModel saveModel, Viat_app_cust_group entiy)
+        {
+            List<Viat_app_cust_price_detail> lstPriceDetail = View_cust_priceService.Instance.getAllPriceDetailByGroupAndProd("", entiy.prod_dbid.ToString(), entiy.cust_dbid.ToString(), entiy.pricegroup_dbid.ToString());
+            if (lstPriceDetail.Count() > 0)
+            {
+                foreach (var item in lstPriceDetail)
+                {
+                    SaveModel.DetailListDataResult custPiceDetailResult = new SaveModel.DetailListDataResult();
+                    custPiceDetailResult.optionType = SaveModel.MainOptionType.update;
+                    item.status = "N";
+                    custPiceDetailResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
+                    custPiceDetailResult.detailType = typeof(Viat_app_cust_price_detail);
+                    saveModel.DetailListData.Add(custPiceDetailResult);
+                }
+            }
         }
     }
 }

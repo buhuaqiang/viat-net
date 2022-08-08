@@ -31,5 +31,6 @@ namespace VIAT.Price.IServices
         WebResponseContent importData(List<View_cust_price> list);
 
         decimal NhiPriceData(string prod_dbid, string start_date);
+        List<Viat_app_cust_price_detail> getAllPriceDetailByGroupAndProd(string sPriceDetailDBID, string sProdDBID, string cust_dbid,string pricegroup_dbid);
     }
 }
