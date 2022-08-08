@@ -211,9 +211,9 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="stock_pfizer")]
+       [Display(Name ="stock_viat")]
        [Column(TypeName="int")]
-       public int? stock_pfizer { get; set; }
+       public int? stock_viat { get; set; }
 
        /// <summary>
        ///
@@ -249,10 +249,10 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="status_stock_pfizer")]
+       [Display(Name ="status_stock_viat")]
        [MaxLength(1)]
        [Column(TypeName="varchar(1)")]
-       public string status_stock_pfizer { get; set; }
+       public string status_stock_viat { get; set; }
 
        /// <summary>
        ///
