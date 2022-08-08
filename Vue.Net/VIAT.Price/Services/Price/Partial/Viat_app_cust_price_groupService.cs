@@ -148,19 +148,38 @@ namespace VIAT.Price.Services
 
         public override WebResponseContent Add(SaveModel saveDataModel)
         {
-            AddOnExecute = (SaveModel saveModel) =>
-            {
-                Viat_app_cust_price_group group1=JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveModel.MainData));
-                //如果返回false,后面代码不会再执行
-                Viat_app_cust_price_group group = getPriceGroupByGroupID(group1.group_id);
-                if (group != null)
-                {
-                    return webResponse.Error("Group ID duplicate or have exist.");
-                }
-                return webResponse.OK();
-            };
+            //AddOnExecute = (SaveModel saveModel) =>
+            //{
+            //    Viat_app_cust_price_group group1=JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveModel.MainData));
+            //    //如果返回false,后面代码不会再执行
+            //    Viat_app_cust_price_group group = getPriceGroupByGroupID(group1.group_id);
+            //    if (group != null)
+            //    {
+            //        return webResponse.Error("Group ID duplicate or have exist.");
+            //    }
+            //    return webResponse.OK();
+            //};
             //
-            return base.Add(saveDataModel);
+            Viat_app_cust_price_group group1 = JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveDataModel.MainData));
+            //    //如果返回false,后面代码不会再执行
+            Viat_app_cust_price_group group = getPriceGroupByGroupID(group1.group_id);
+            if (group != null)
+            {
+                return webResponse.Error("Group ID duplicate or have exist.");
+            }
+            SaveModel.DetailListDataResult countResult = new SaveModel.DetailListDataResult();
+            countResult.optionType = SaveModel.MainOptionType.add;
+            if (!saveDataModel.MainData.ContainsKey("pricegroup_dbid"))
+            {
+                saveDataModel.MainData.Add("pricegroup_dbid", "");
+            }
+            saveDataModel.MainData["pricegroup_dbid"] = Guid.NewGuid().ToString();
+            countResult.detailType = typeof(Viat_app_cust_price_group);
+            //增加表头处理
+            countResult.DetailData.Add(saveDataModel.MainData);
+            saveDataModel.DetailListData.Add(countResult);
+            Viat_app_cust_price_group groupEntry = JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveDataModel.MainData));
+            return base.CustomBatchProcessEntity(saveDataModel);
         }
 
         public override WebResponseContent Update(SaveModel saveModel)
