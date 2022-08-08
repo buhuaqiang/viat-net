@@ -2222,7 +2222,7 @@ namespace VIAT.Price.Services
                     SaveModel.DetailListDataResult custPiceDetailResult = new SaveModel.DetailListDataResult();
                     custPiceDetailResult.optionType = SaveModel.MainOptionType.update;
                     item.status = "N";
-                    item.end_date = getFormatYYYYMMDD(DateTime.Now);
+                    item.end_date = item.start_date.AddDays(-1);
                     custPiceDetailResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
                     custPiceDetailResult.detailType = typeof(Viat_app_cust_price_detail);
                     saveModel.DetailListData.Add(custPiceDetailResult);
