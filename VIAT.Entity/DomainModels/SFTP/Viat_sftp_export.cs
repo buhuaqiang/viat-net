@@ -66,10 +66,10 @@ namespace VIAT.Entity.DomainModels
        ///
        /// </summary>
        [Key]
-       [Display(Name ="sftp_dbid")]
+       [Display(Name ="sftp_ex_dbid")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-       public Guid sftp_dbid { get; set; }
+       public Guid sftp_ex_dbid { get; set; }
 
        
     }
