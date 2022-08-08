@@ -6,7 +6,7 @@ using VIAT.Entity.DomainModels;
 
 namespace VIAT.Price.IServices
 {
-    public partial interface IViat_app_cust_price_groupService : IService<Viat_app_cust_price_group>
+    public partial interface IViat_app_cust_price_groupService : IService<Viat_app_cust_price_group_select>
     {
     }
 }

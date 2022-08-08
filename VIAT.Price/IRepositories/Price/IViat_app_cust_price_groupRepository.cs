@@ -12,7 +12,7 @@ using VIAT.Entity.DomainModels;
 using VIAT.Core.Extensions.AutofacManager;
 namespace VIAT.Price.IRepositories
 {
-    public partial interface IViat_app_cust_price_groupRepository : IDependency,IRepository<Viat_app_cust_price_group>
+    public partial interface IViat_app_cust_price_groupRepository : IDependency,IRepository<Viat_app_cust_price_group_select>
     {
     }
 }
