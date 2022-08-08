@@ -336,12 +336,12 @@ namespace VIAT.Price.Services
                     '' as QueryStatus
                     FROM
                         viat_app_cust_group AS custGroup
-                    JOIN viat_app_cust_price AS custPrice ON custPrice.pricegroup_dbid = custGroup.pricegroup_dbid
+                    inner JOIN viat_app_cust_price AS custPrice ON custPrice.pricegroup_dbid = custGroup.pricegroup_dbid
                     AND custPrice.prod_dbid = custGroup.prod_dbid
-                    JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid 
+                    inner JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid 
                     AND priceGroup.status = 'Y'
-                    JOIN viat_com_prod AS prod ON custGroup.prod_dbid = prod.prod_dbid
-                    JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid where 1=1";
+                   inner JOIN viat_com_prod AS prod ON custGroup.prod_dbid = prod.prod_dbid
+                   inner JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid where 1=1";
             QuerySql += sGroupConditon;
 
 

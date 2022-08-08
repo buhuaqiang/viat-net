@@ -68,6 +68,10 @@ namespace VIAT.Price.Services
         /// <returns></returns>
         public override PageGridData<Viat_app_cust_price_group> GetPageData(PageDataOptions options)
         {
+            QuerySql = @"SELECT grp.*,
+	            emp.emp_ename as pricing_manager_name
+             from viat_app_cust_price_group grp 
+            left join viat_com_employee emp on grp.pricing_field=emp.emp_dbid";
             base.OrderByExpression = x => new Dictionary<object, QueryOrderBy>() {
                 {
                     x.group_id,QueryOrderBy.Asc
