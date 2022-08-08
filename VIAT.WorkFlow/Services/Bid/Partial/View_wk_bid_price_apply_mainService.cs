@@ -149,19 +149,19 @@ namespace VIAT.WorkFlow.Services
                 {
                     if (!string.IsNullOrEmpty(item["bid_date"].ToString()))
                     {
-                        item["bid_date"] = Convert.ToDateTime(item["bid_date"]).ToString("yyyy-MM-dd HH:mm:ss:fff");
+                        item["bid_date"] = Convert.ToDateTime(item["bid_date"]).ToString("yyyy-MM-dd HH:mm:ss");
                     }
                     if (!string.IsNullOrEmpty(item["start_date"].ToString()))
                     {
-                        item["start_date"] = Convert.ToDateTime(item["start_date"]).ToString("yyyy-MM-dd HH:mm:ss:fff");
+                        item["start_date"] = Convert.ToDateTime(item["start_date"]).ToString("yyyy-MM-dd HH:mm:ss");
                     }
                     if (!string.IsNullOrEmpty(item["end_date"].ToString()))
                     {
-                        item["end_date"] = Convert.ToDateTime(item["end_date"]).ToString("yyyy-MM-dd HH:mm:ss:fff");
+                        item["end_date"] = Convert.ToDateTime(item["end_date"]).ToString("yyyy-MM-dd HH:mm:ss");
                     }
                     if (!string.IsNullOrEmpty(item["approved_date"].ToString()))
                     {
-                        item["approved_date"] = Convert.ToDateTime(item["approved_date"]).ToString("yyyy-MM-dd HH:mm:ss:fff");
+                        item["approved_date"] = Convert.ToDateTime(item["approved_date"]).ToString("yyyy-MM-dd HH:mm:ss");
                     }
                 }
                 if (lst == null || lst.Count == 0)
