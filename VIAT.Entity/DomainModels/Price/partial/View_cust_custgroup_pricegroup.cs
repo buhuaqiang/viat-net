@@ -17,5 +17,7 @@ namespace VIAT.Entity.DomainModels
     public partial class View_cust_custgroup_pricegroup
     {
         //此处配置字段(字段配置见此model的另一个partial),如果表中没有此字段请加上 [NotMapped]属性，否则会异常
+       
+
     }
 }

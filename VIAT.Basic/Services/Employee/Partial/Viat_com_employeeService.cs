@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Basic.IRepositories;
+using System.Collections.Generic;
 
 namespace VIAT.Basic.Services
 {
@@ -37,5 +38,28 @@ namespace VIAT.Basic.Services
             //多租户会用到这init代码，其他情况可以不用
             //base.Init(dbRepository);
         }
-  }
+
+        public override PageGridData<Viat_com_employee> GetPageData(PageDataOptions options)
+        {
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            searchParametersList = options.Wheres.DeserializeObject<List<SearchParameters>>();
+
+            string whereConditon = "";
+            for (int i = searchParametersList.Count - 1; i >= 0; i--)
+            {
+                SearchParameters item = searchParametersList[i];
+                
+                if (item.Name == "profession_type")
+                {
+                    searchParametersList.Remove(item);
+                    whereConditon += " and emp_dbid in (SELECT emp_dbid from Sys_User WHERE profession_type='"+item.Value+"')";
+                    break;
+                }
+
+            }
+            QuerySql =@"select * from viat_com_employee where 1=1";
+            QuerySql += whereConditon;
+            return base.GetPageData(options);
+        }
+    }
 }

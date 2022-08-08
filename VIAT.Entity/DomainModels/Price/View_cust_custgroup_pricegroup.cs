@@ -45,6 +45,29 @@ namespace VIAT.Entity.DomainModels
         [Column(TypeName = "varchar(50)")]
         public string group_name { get; set; }
 
+        //-------------------
+        [Display(Name = "Pricing Manager")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string pricing_manager_name { get; set; }
+
+        [Display(Name = "Group Channel")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string groupTypeName { get; set; }
+
+
+        [Display(Name = "Cust Type")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string custTypeName { get; set; }
+
+        [Display(Name = "Remarks")]
+        [MaxLength(50)]
+        [Column(TypeName = "varchar(50)")]
+        public string remarks { get; set; }
+        //==================
+
 
         /// <summary>
         ///

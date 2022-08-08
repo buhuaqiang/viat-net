@@ -42,17 +42,29 @@ namespace VIAT.Price.Services
         public override PageGridData<View_cust_custgroup_pricegroup> GetPageData(PageDataOptions pageData)
         {
             QuerySql = @"
-                select distinct 	
+               select distinct 	
                     cust.cust_dbid,
 	                cust.cust_id, 
 	                cust.cust_name,
 	                cust.status as custStatus,
 	                grp.status ,
 	                prc.group_id as group_id,
-	                prc.group_name as group_name
+	                prc.group_name as group_name,
+									prc.group_type,
+									dic1.DicName as groupTypeName,
+									prc.cust_type,
+									dic.DicName as custTypeName,
+									prc.pricing_field,
+									emp.emp_ename as pricing_manager_name,
+                                    prc.remarks
                 from viat_app_cust_group grp
                 left JOIN viat_com_cust cust ON cust.cust_dbid = grp.cust_dbid
                 left JOIN viat_app_cust_price_group prc ON grp.pricegroup_dbid = prc.pricegroup_dbid
+								left join viat_com_employee emp on prc.pricing_field=emp.emp_dbid
+								left join Sys_DictionaryList dic on prc.cust_type=dic.DicValue 
+								left join Sys_Dictionary sdic on dic.Dic_ID=sdic.Dic_ID and sdic.dicNo='cust_type'
+								left join Sys_DictionaryList dic1 on prc.group_type=dic1.DicValue 
+								left join Sys_Dictionary sdic1 on dic1.Dic_ID=sdic1.Dic_ID and sdic1.dicNo='group_price_channel'
                 where cust.cust_id is not null and prc.group_id is not null
                ";
             return base.GetPageData(pageData);
@@ -63,6 +75,10 @@ namespace VIAT.Price.Services
             {
                x.group_id,
                x.group_name,
+               x.pricing_manager_name,
+               x.groupTypeName,
+               x.custTypeName,
+               x.remarks,
                x.cust_id,
                x.cust_name,
                x.status,
