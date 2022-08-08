@@ -62,7 +62,7 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="議價決標單號")]
        [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
+       [Column(TypeName="varchar(20)")]
        public string bid_no { get; set; }
 
        /// <summary>
