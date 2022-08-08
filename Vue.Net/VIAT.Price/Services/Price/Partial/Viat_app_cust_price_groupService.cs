@@ -58,8 +58,9 @@ namespace VIAT.Price.Services
         /// <returns></returns>
         public Viat_app_cust_price_group getPriceGroupByGroupID(string group_id)
         {
-
-            return repository.FindAsIQueryable(x => x.group_id == group_id).FirstOrDefault();
+            string sql = "select * from Viat_app_cust_price_group where group_id='"+group_id+"'";
+            return _repository.DapperContext.QueryFirst<Viat_app_cust_price_group>(sql, null);
+           // return repository.FindAsIQueryable(x => x.group_id == group_id).FirstOrDefault();
         }
 
         /// <summary>
@@ -67,7 +68,7 @@ namespace VIAT.Price.Services
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        public override PageGridData<Viat_app_cust_price_group> GetPageData(PageDataOptions options)
+        public override PageGridData<Viat_app_cust_price_group_select> GetPageData(PageDataOptions options)
         {
             QuerySql = @"SELECT grp.*,
 	            emp.emp_ename as pricing_manager_name
@@ -151,7 +152,7 @@ namespace VIAT.Price.Services
             {
                 Viat_app_cust_price_group group1=JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveModel.MainData));
                 //如果返回false,后面代码不会再执行
-                Viat_app_cust_price_group group =repository.FindAsIQueryable(x => x.group_id == group1.group_id).FirstOrDefault();
+                Viat_app_cust_price_group group = getPriceGroupByGroupID(group1.group_id);
                 if (group != null)
                 {
                     return webResponse.Error("Group ID duplicate or have exist.");
@@ -182,7 +183,7 @@ namespace VIAT.Price.Services
             //    //如果修改后的状态为N ,处理 cust_price和cust_group的数据
             //    return webResponse.OK();
             //};
-            //return base.Update(saveModel);
+            //return base.Update(saveModel);           
             ProcessPriceGroup(saveModel);
 
             return base.CustomBatchProcessEntity(saveModel);

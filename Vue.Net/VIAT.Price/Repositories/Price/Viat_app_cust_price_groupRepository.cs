@@ -10,7 +10,7 @@ using VIAT.Entity.DomainModels;
 
 namespace VIAT.Price.Repositories
 {
-    public partial class Viat_app_cust_price_groupRepository : RepositoryBase<Viat_app_cust_price_group> , IViat_app_cust_price_groupRepository
+    public partial class Viat_app_cust_price_groupRepository : RepositoryBase<Viat_app_cust_price_group_select> , IViat_app_cust_price_groupRepository
     {
     public Viat_app_cust_price_groupRepository(VOLContext dbContext)
     : base(dbContext)

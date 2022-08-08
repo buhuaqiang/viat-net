@@ -12,7 +12,7 @@ using VIAT.Entity.DomainModels;
 
 namespace VIAT.Price.Services
 {
-    public partial class Viat_app_cust_price_groupService : ServiceBase<Viat_app_cust_price_group, IViat_app_cust_price_groupRepository>
+    public partial class Viat_app_cust_price_groupService : ServiceBase<Viat_app_cust_price_group_select, IViat_app_cust_price_groupRepository>
     , IViat_app_cust_price_groupService, IDependency
     {
     public Viat_app_cust_price_groupService(IViat_app_cust_price_groupRepository repository)
