@@ -99,5 +99,11 @@ namespace VIAT.WorkFlow.Controllers
         {
             return Json(_service.CustPriceTransferImport(files, cust_id, group_dbid));
         }
+        [ApiActionPermission]
+        [HttpPost, Route("SysUserData")]
+        public ActionResult SysUserData()
+        {
+            return Json(_service.SysUserData());
+        }
     }
 }

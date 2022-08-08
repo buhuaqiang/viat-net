@@ -1471,6 +1471,13 @@ namespace VIAT.WorkFlow.Services
         { 
             return OrderNo == 0 ? "1".PadLeft(5, '0'): (OrderNo+1).ToString().PadLeft(5, '0');
         }
+
+        public Sys_User SysUserData()
+        {
+            UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
+            List<Sys_User> userList = repository.DbContext.Set<Sys_User>().Where(x => x.User_Id.Equals(userInfo.User_Id)).ToList();
+            return userList[0];
+        }
         #endregion
 
         #endregion
