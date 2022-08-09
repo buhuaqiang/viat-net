@@ -10,11 +10,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using VIAT.Entity.SystemModels;
-using System.Reflection;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "GP合約客戶子表",TableName = "Viat_app_power_contract_cust")] 
+    [Entity(TableCnName = "GP合約客戶子表",TableName = "Viat_app_power_contract_cust")]
     public partial class Viat_app_power_contract_cust:BaseEntity
     {
       /*  /// <summary>
@@ -24,7 +23,7 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="int")]
        [Required(AllowEmptyStrings=false)]
        public int dbid { get; set; }
-*/
+      */
        /// <summary>
        ///所屬事業單位,01:PH;03:AH;05:CH;06:NU
        /// </summary>
@@ -34,22 +33,22 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public string division { get; set; }
 
-      /* /// <summary>
-       ///序號
-       /// </summary>
-       [Display(Name ="序號")]
-       [Column(TypeName="decimal")]
-       [Editable(true)]
-       [Required(AllowEmptyStrings=false)]
-       public decimal serial_no { get; set; }
-*/
-       /// <summary>
-       ///GP合約表主鍵
-       /// </summary>
-       [Display(Name ="GP合約表主鍵")]
+        /*   /// <summary>
+           ///序號
+           /// </summary>
+           [Display(Name ="序號")]
+           [Column(TypeName="decimal")]
+           [Editable(true)]
+        [Required(AllowEmptyStrings=false)]
+           public decimal? serial_no { get; set; }
+        */
+        /// <summary>
+        ///GP合約表主鍵
+        /// </summary>
+        [Display(Name ="GP合約表主鍵")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-       [Editable(true)]
+        [Editable(true)]
         public Guid powercont_dbid { get; set; }
 
        /// <summary>
@@ -67,31 +66,17 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="int")]
        public int? created_user { get; set; }
 
-        /// <summary>
-        ///建立用戶名称
-        /// </summary>
-        [Display(Name = "建立用戶名称")]
-        [Column(TypeName = "varcher（50）")]
-        public string created_username { get; set; }
-
-        /// <summary>
-        ///建立者的委託人
-        /// </summary>
-        [Display(Name ="建立者的委託人")]
+       /// <summary>
+       ///建立者的委託人
+       /// </summary>
+       [Display(Name ="建立者的委託人")]
        [Column(TypeName="int")]
        public int? created_client { get; set; }
 
-        /// <summary>
-        ///建立委託人用戶名称
-        /// </summary>
-        [Display(Name = "建立用戶名称")]
-        [Column(TypeName = "varcher（50）")]
-        public string created_clientusername { get; set; }
-
-        /// <summary>
-        ///建立時間
-        /// </summary>
-        [Display(Name ="建立時間")]
+       /// <summary>
+       ///建立時間
+       /// </summary>
+       [Display(Name ="建立時間")]
        [Column(TypeName="datetime")]
        public DateTime? created_date { get; set; }
 
@@ -102,33 +87,26 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="int")]
        public int? modified_user { get; set; }
 
-        /// <summary>
-        ///最後修改用戶名称
-        /// </summary>
-        [Display(Name = "最後修改用戶名称")]
-        [Column(TypeName = "varcher（50）")]
-        public string modified_username { get; set; }
-
-        /// <summary>
-        ///最後修改者的委託人
-        /// </summary>
-        [Display(Name ="最後修改者的委託人")]
+       /// <summary>
+       ///最後修改者的委託人
+       /// </summary>
+       [Display(Name ="最後修改者的委託人")]
        [Column(TypeName="int")]
        public int? modified_client { get; set; }
 
-        /// <summary>
-        ///最後修改委託人用戶名称
-        /// </summary>
-        [Display(Name = "最後修改用戶名称")]
-        [Column(TypeName = "varcher（50）")]
-        public string modified_clientusername { get; set; }
-
-        /// <summary>
-        ///最後修改時間
-        /// </summary>
-        [Display(Name ="最後修改時間")]
+       /// <summary>
+       ///最後修改時間
+       /// </summary>
+       [Display(Name ="最後修改時間")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name = "最後修改用戶名稱")]
+       [Column(TypeName="varchar(50)")]
+       public string modified_username { get; set; }
 
        /// <summary>
        ///主鍵
@@ -139,27 +117,27 @@ namespace VIAT.Entity.DomainModels
        [Required(AllowEmptyStrings=false)]
        public Guid powercontcust_dbid { get; set; }
 
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name = "建立用戶名稱")]
+       [Column(TypeName="varchar(50)")]
+       public string created_username { get; set; }
 
-      /*  /// <summary>
-        ///cust_id
-        /// </summary>
-        [Display(Name = "CanNotWrite", AutoGenerateField=false)]
-        [Column(TypeName = "varcher(15)")]
-        public string cust_id { get; set; }
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name = "建立用戶名稱")]
+       [Column(TypeName="varchar(50)")]
+       public string created_clientusername { get; set; }
 
-        /// <summary>
-        ///cust_name
-        /// </summary>    
-        [Display(Name = "CanNotWrite")]      
-        [Column(TypeName = "varcher(15)")]
-        public string cust_name { get; set; }*/
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name = "最後修改用戶名稱")]
+       [Column(TypeName="varchar(50)")]
+       public string modified_clientusername { get; set; }
 
-        /*/// <summary>
-        ///territory_id
-        /// </summary>
-        [Display(Name = "預設業代分區")]
-        [Column(TypeName = "varcher(15)")]
-        public string territory_id { get; set; }*/
-
+       
     }
 }
