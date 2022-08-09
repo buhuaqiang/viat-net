@@ -5,9 +5,13 @@ using VIAT.Core.BaseProvider;
 using VIAT.Entity.DomainModels;
 using VIAT.Core.Utilities;
 using System.Linq.Expressions;
+using System.Collections.Generic;
+
 namespace VIAT.DataEntry.IServices
 {
     public partial interface IViat_sftp_exportService
     {
+
+        WebResponseContent Execute(SaveModel saveModel);
     }
  }

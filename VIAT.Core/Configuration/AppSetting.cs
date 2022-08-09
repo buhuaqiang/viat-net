@@ -49,6 +49,7 @@ namespace VIAT.Core.Configuration
         /// kafka配置
         /// </summary>
         public static Kafka Kafka { get; set; }
+        public static SftpSite SftpSite { get; set; }
 
 
         /// <summary>
@@ -67,6 +68,7 @@ namespace VIAT.Core.Configuration
             services.Configure<ModifyMember>(configuration.GetSection("ModifyMember"));
             services.Configure<GlobalFilter>(configuration.GetSection("GlobalFilter"));
             services.Configure<Kafka>(configuration.GetSection("Kafka"));
+            services.Configure<SftpSite>(configuration.GetSection("SftpSite"));
 
             var provider = services.BuildServiceProvider();
             IWebHostEnvironment environment = provider.GetRequiredService<IWebHostEnvironment>();
@@ -82,6 +84,8 @@ namespace VIAT.Core.Configuration
 
             GlobalFilter.Actions = GlobalFilter.Actions ?? new string[0];
             Kafka = provider.GetRequiredService<IOptions<Kafka>>().Value ?? new Kafka();
+
+            SftpSite = provider.GetRequiredService<IOptions<SftpSite>>().Value;
 
             _connection = provider.GetRequiredService<IOptions<Connection>>().Value;
 
@@ -210,5 +214,11 @@ namespace VIAT.Core.Configuration
     public class Topics
     {
         public string TestTopic { get; set; }
+    }
+    public class SftpSite
+    {
+        public string HostName { get; set; }
+        public string UserName { get; set; }
+        public string Password { get; set; }
     }
 }
