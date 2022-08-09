@@ -210,19 +210,21 @@ namespace VIAT.Price.Services
 
         public void ProcessPriceGroup(SaveModel saveModel)
         {
-            SaveModel.DetailListDataResult countResult = new SaveModel.DetailListDataResult();
-            countResult.optionType = SaveModel.MainOptionType.update;
-            countResult.detailType = typeof(Viat_app_cust_price_group);
-            //增加表头处理
-            countResult.DetailData.Add(saveModel.MainData);
-            saveModel.DetailListData.Add(countResult);
             Viat_app_cust_price_group groupEntry = JsonConvert.DeserializeObject<Viat_app_cust_price_group>(JsonConvert.SerializeObject(saveModel.MainData));
             if (groupEntry.status.Equals("N"))
             {
                 ProcessCustPrice(saveModel, groupEntry);
                 ProcessCustGroup(saveModel, groupEntry);
+                saveModel.MainData["group_name"] = "(X)" + saveModel.MainData["group_name"];
             }
-
+            SaveModel.DetailListDataResult countResult = new SaveModel.DetailListDataResult();
+            countResult.optionType = SaveModel.MainOptionType.update;
+            countResult.detailType = typeof(Viat_app_cust_price_group);
+            
+            //增加表头处理
+            countResult.DetailData.Add(saveModel.MainData);
+            saveModel.DetailListData.Add(countResult);
+            
         }
 
         public void ProcessCustPrice(SaveModel saveModel, Viat_app_cust_price_group groupEntry)

@@ -2161,10 +2161,18 @@ namespace VIAT.Price.Services
         {
             if (!string.IsNullOrEmpty(group))
             {
-                string remark = "";
+                string remark = "",start_date = "",end_date = "";
                 if (saveModel.MainData.ContainsKey("remark"))
                 {
                     remark = saveModel.MainData["remark"].ToString();
+                }
+                if (!string.IsNullOrEmpty(saveModel.MainData["start_date"].ToString()))
+                {
+                    start_date = saveModel.MainData["start_date"].ToString();
+                }
+                if (!string.IsNullOrEmpty(saveModel.MainData["end_date"].ToString()))
+                {
+                    end_date = saveModel.MainData["end_date"].ToString();
                 }
                 Guid? custdbid = new Guid(cust_dbid);
                 List<Viat_app_cust_group> lstGroup = JsonConvert.DeserializeObject<List<Viat_app_cust_group>>(group);
@@ -2175,6 +2183,9 @@ namespace VIAT.Price.Services
                     SaveModel.DetailListDataResult custGroupResult = new SaveModel.DetailListDataResult();
                     item.cust_dbid = custdbid;
                     item.remarks = remark;
+                    item.start_date = getFormatYYYYMMDD(start_date);
+                    item.end_date = getFormatYYYYMMDD(end_date);
+                    item.bid_no = "";
                     custGroupResult.optionType = SaveModel.MainOptionType.add;
                     custGroupResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
                     custGroupResult.detailType = typeof(Viat_app_cust_group);
