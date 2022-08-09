@@ -1393,10 +1393,10 @@ namespace VIAT.Price.Services
             {
                 sSql += $" and cust_dbid = '{cust_dbid}' and status = 'Y'";
             }
-            if (!string.IsNullOrEmpty(pricegroup_dbid))
+           /* if (!string.IsNullOrEmpty(pricegroup_dbid))
             {
                 sSql += $" and pricegroup_dbid = '{pricegroup_dbid}'";
-            }
+            }*/
 
             return _repository.DapperContext.QueryList<Viat_app_cust_price_detail>(sSql, null);
         }
