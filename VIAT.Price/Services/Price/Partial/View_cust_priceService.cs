@@ -2179,7 +2179,7 @@ namespace VIAT.Price.Services
                 foreach (var item in lstGroup)
                 {
                     ProceeGroup(saveModel, item, cust_dbid);
-                    ProceeDetail(saveModel, item, cust_dbid);
+                    ProceeDetail(saveModel, item, cust_dbid, start_date);
                     SaveModel.DetailListDataResult custGroupResult = new SaveModel.DetailListDataResult();
                     item.cust_dbid = custdbid;
                     item.remarks = remark;
@@ -2223,7 +2223,7 @@ namespace VIAT.Price.Services
         /// <param name="saveModel"></param>
         /// <param name="cust_group"></param>
         /// <param name="cust_dbid"></param>
-        public void ProceeDetail(SaveModel saveModel, Viat_app_cust_group entiy, string cust_dbid)
+        public void ProceeDetail(SaveModel saveModel, Viat_app_cust_group entiy, string cust_dbid,string start_date)
         {
             List<Viat_app_cust_price_detail> lstPriceDetail = getAllPriceDetailByGroupAndProd("", entiy.prod_dbid.ToString(), cust_dbid,"");
             if (lstPriceDetail.Count()>0)
@@ -2233,7 +2233,7 @@ namespace VIAT.Price.Services
                     SaveModel.DetailListDataResult custPiceDetailResult = new SaveModel.DetailListDataResult();
                     custPiceDetailResult.optionType = SaveModel.MainOptionType.update;
                     item.status = "N";
-                    item.end_date = item.start_date.AddDays(-1);
+                    item.end_date = Convert.ToDateTime(start_date).AddDays(-1);
                     custPiceDetailResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
                     custPiceDetailResult.detailType = typeof(Viat_app_cust_price_detail);
                     saveModel.DetailListData.Add(custPiceDetailResult);
