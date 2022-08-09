@@ -61,8 +61,8 @@ namespace VIAT.Price.Services
                 left JOIN viat_com_cust cust ON cust.cust_dbid = grp.cust_dbid
                 left JOIN viat_app_cust_price_group prc ON grp.pricegroup_dbid = prc.pricegroup_dbid
 				left join viat_com_employee emp on prc.pricing_field=emp.emp_dbid
-				left join Sys_DictionaryList dic on (prc.cust_type=dic.DicValue AND dic.Dic_ID=(SELECT Dic_ID FROM Sys_Dictionary WHERE DicNo='price_group_cust_type'))								
-				left join Sys_DictionaryList dic1 on (prc.group_type=dic1.DicValue AND dic1.Dic_ID=(SELECT Dic_ID FROM Sys_Dictionary WHERE DicNo='group_price_channel'))
+				left join Sys_DictionaryList dic on (prc.cust_type=dic.DicValue AND dic.Dic_ID=(SELECT top 1 Dic_ID FROM Sys_Dictionary WHERE DicNo='price_group_cust_type'))								
+				left join Sys_DictionaryList dic1 on (prc.group_type=dic1.DicValue AND dic1.Dic_ID=(SELECT top 1 Dic_ID FROM Sys_Dictionary WHERE DicNo='group_price_channel'))
                 where cust.cust_id is not null and prc.group_id is not null
                ";
             return base.GetPageData(pageData);
