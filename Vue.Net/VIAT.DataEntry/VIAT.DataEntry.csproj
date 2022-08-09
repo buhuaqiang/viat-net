@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DiffieHellman" Version="1.0.0" />
+    <PackageReference Include="Org.Mentalis.Security" Version="1.0.0" />
+    <PackageReference Include="Tamir.SharpSSH" Version="1.1.1.13" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\VIAT.Core\VIAT.Core.csproj" />
     <ProjectReference Include="..\VIAT.Entity\VIAT.Entity.csproj" />
   </ItemGroup>

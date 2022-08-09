@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
 using VIAT.Entity.DomainModels;
 using VIAT.DataEntry.IServices;
+using VIAT.Core.Filters;
 
 namespace VIAT.DataEntry.Controllers
 {
@@ -28,6 +29,13 @@ namespace VIAT.DataEntry.Controllers
         {
             _service = service;
             _httpContextAccessor = httpContextAccessor;
+        }
+
+        [ApiActionPermission]
+        [HttpPost, Route("Execute")]
+        public ActionResult Execute([FromBody] SaveModel saveModel)
+        {
+            return Json(_service.Execute(saveModel));
         }
     }
 }
