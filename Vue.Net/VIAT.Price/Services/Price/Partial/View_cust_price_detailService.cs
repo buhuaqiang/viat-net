@@ -245,6 +245,22 @@ namespace VIAT.Price.Services
             searchParametersList = options.Wheres.DeserializeObject<List<SearchParameters>>();
             setQueryParametersNew(searchParametersList);
 
+
+            /*取得status的值*/
+            string sStatus = "";
+            foreach (SearchParameters para in searchParametersList)
+            {
+                if (para.Name == "QueryStatus" && string.IsNullOrEmpty(para.Value) == false)
+                {
+                    sStatus = para.Value;
+
+                    /*因为单独写了SQL，所以不需要再动态组织SQL,，移除查询*/
+                    searchParametersList.Remove(para);
+                    break;
+                }
+            }
+
+            
             Dictionary<string, string> detailsAlias = new Dictionary<string, string>() {
                 { "cust_id", "cust" },{ "start_date","custPrice"} ,{ "end_date","custPrice"},{ "updated_date","custPrice"},
                  { "prod_id", "prod" },{ "cust_dbid","custPrice"} ,{ "status","custPrice"} ,
@@ -256,6 +272,7 @@ namespace VIAT.Price.Services
             };
             string sDetailConditon = getWhereCondition(searchParametersList, detailsAlias);            //处理查询条件
             string sGroupConditon =getWhereCondition(searchParametersList, groupAlias);// sDetailConditon;//查詢條件是一樣的,所以直接拿這個拼接好的sql,如果查詢條件不一樣需要重新 getWhereCondition(in的時候字符串會再多一層'')    
+
 
             QuerySql = @"SELECT
 	                    custPrice.pricedetail_dbid AS pricedetail_dbid,
@@ -297,7 +314,27 @@ namespace VIAT.Price.Services
                     LEFT JOIN viat_com_prod AS prod ON custPrice.prod_dbid = prod.prod_dbid
                     LEFT JOIN viat_com_employee AS emp ON custPrice.modified_user = emp.dbid
                     WHERE 1=1  ";
-            QuerySql += sDetailConditon;
+
+
+            if (string.IsNullOrEmpty(sStatus) == false)
+            {
+                if(sStatus == "1")
+                {
+                    QuerySql += @"  AND custPrice.status = 'Y'
+	                    AND (CONVERT(Date, GETDATE( )) >= CONVERT(DATE, custPrice.start_date)) 
+	                    AND (CONVERT(Date, GETDATE( )) <= CONVERT(DATE, custPrice.end_date))";
+                }
+                else if(sStatus =="3")
+                {
+                    QuerySql += @" AND custPrice.status = 'Y'
+	                            AND (CONVERT(Date, GETDATE( )) <= CONVERT(DATE, custPrice.start_date))";
+                }
+                else if(sStatus == "2")
+                {
+                    QuerySql += @" AND custPrice.status = 'N'";
+                }
+            }
+                QuerySql += sDetailConditon;
             QuerySql += " union  all";
             QuerySql += @" SELECT
                         custPrice.custprice_dbid AS pricedetail_dbid,
@@ -341,8 +378,45 @@ namespace VIAT.Price.Services
                     inner JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid 
                     AND priceGroup.status = 'Y'
                    inner JOIN viat_com_prod AS prod ON custGroup.prod_dbid = prod.prod_dbid
-                   inner JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid where 1=1";
-            QuerySql += sGroupConditon;
+                   inner JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid where 1=1 ";
+
+            if (string.IsNullOrEmpty(sStatus) == false)
+            {
+                if (sStatus == "1" )
+                {
+                    QuerySql += " AND custGroup.status = 'Y' AND custPrice.status = 'Y'";
+                    QuerySql += @"AND (CONVERT(Date, GETDATE( )) >= CONVERT(DATE, custPrice.start_date)) 
+	                                AND (CONVERT(Date, GETDATE( )) <= CONVERT(DATE, custPrice.end_date)) 
+	                                AND (CONVERT(Date, GETDATE( )) >= CONVERT(DATE, custGroup.start_date)) 
+	                                AND (CONVERT(Date, GETDATE( )) <= CONVERT(DATE, custGroup.end_date))";
+                }
+                else if(sStatus == "3")
+                {
+                    QuerySql += " AND custGroup.status = 'Y' AND custPrice.status = 'Y'";
+                    QuerySql += @"AND ((CONVERT(Date, GETDATE()) < CONVERT(Date, custPrice.start_date))
+                                    OR (CONVERT(Date, GETDATE()) < CONVERT(Date, custGroup.start_date)))";
+                }            
+            }
+            QuerySql += @" AND (((CONVERT(DATE, custGroup.start_date) >= CONVERT(DATE, custPrice.start_date)
+                             AND CONVERT(DATE, custGroup.start_date) <= CONVERT(DATE, custPrice.end_date))
+                          OR(CONVERT(DATE, custGroup.end_date) >= CONVERT(DATE, custPrice.start_date)
+                             AND CONVERT(DATE, custGroup.end_date) <= CONVERT(DATE, custPrice.end_date))
+                          OR(CONVERT(DATE, custGroup.start_date) <= CONVERT(DATE, custPrice.start_date)
+                             AND CONVERT(DATE, custGroup.end_date) >= CONVERT(DATE, custPrice.end_date))) 
+			                AND(custPrice.status = 'N' OR custGroup.status = 'N')";
+
+            //Status = Valid(Current)、 Valid(Future) ,ALL
+            if (string.IsNullOrEmpty(sStatus) == false)
+            {
+                if(sStatus == "1" || sStatus == "3" || sStatus == "4")
+                {
+                    QuerySql += @" OR (priceGroup.status = 'Y' AND custGroup.status = 'Y' AND custPrice.status = 'Y')";
+                }
+            }
+
+                QuerySql += ")";
+
+        QuerySql += sGroupConditon;
 
 
 
@@ -353,7 +427,7 @@ namespace VIAT.Price.Services
                     x.updated_date,QueryOrderBy.Asc
                 }
             };*/
-            setQueryParameters();
+            //setQueryParameters();
             return base.GetPageData(options);
         }
 
@@ -385,7 +459,7 @@ namespace VIAT.Price.Services
                 }
                 if (item.Name == "QueryStatus")
                 {
-                    searchParametersList.Remove(item);
+                    /*searchParametersList.Remove(item);
                     //Valid(Current) 开始日期小于等于系统日期，结束日期大于等于系统日期
                     if (item.Value == "1")
                     {
@@ -430,7 +504,7 @@ namespace VIAT.Price.Services
                         paraTmpStatus.Value = "Y";
                         paraTmpStatus.DisplayType = "";
                         searchParametersList.Add(paraTmpStatus);
-                    }
+                    }*/
                 }
                 if (item.Name == "ShowInvalidProd")
                 {
@@ -450,12 +524,7 @@ namespace VIAT.Price.Services
 
 
                 }
-            }
-            //如果没有勾选页面的show invalid products则默认查询 产品的state=1
-            if (!isShowInvalidProd)
-            {
-                
-            }
+            } 
         }
 
         /// <summary>
