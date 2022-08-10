@@ -91,11 +91,14 @@ namespace VIAT.DataEntry.Services
             s_Distributor = string.IsNullOrEmpty(s_Distributor) ? GetDistEName("") : s_Distributor;
             string[] type = s_type.Split(new char[] { ',' });
             string[] distributor = s_Distributor.Split(new char[] { ',' });
-            SFTPHelper s = new SFTPHelper();
-            foreach (var item in distributor)
+            //SFTPHelper s = new SFTPHelper();
+            using (SFTPHelper s = new SFTPHelper())
             {
-                List<Viat_sftp_export> ss = s.GetFileList($"/home/{item}/Download", ".csv");
-                dicStfp.Add(item, ss);
+                foreach (var item in distributor)
+                {
+                    List<Viat_sftp_export> ss = s.GetFileList($"/home/{item}/Download", ".csv");
+                    dicStfp.Add(item, ss);
+                }
             }
 
             IEnumerable<Viat_sftp_export> value = dicStfp.SelectMany(x => x.Value);
@@ -199,15 +202,16 @@ namespace VIAT.DataEntry.Services
                     break;
             }
 
-            SFTPHelper s = new SFTPHelper();
-
-            s.CreateDirectory(path);
-            if (!s.Put(strings[0], path + strings[1]))
+            
+            using (SFTPHelper s = new SFTPHelper())
             {
-                File.Delete(strings[0]);
-                return webResponse.Error("fail to upload");
+                s.CreateDirectory(path);
+                if (!s.Put(strings[0], path + strings[1]))
+                {
+                    File.Delete(strings[0]);
+                    return webResponse.Error("fail to upload");
+                }
             }
-
             File.Delete(strings[0]);
             return webResponse.OK();
         }
