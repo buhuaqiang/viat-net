@@ -2,6 +2,7 @@
 using VIAT.Core.Utilities;
 using VIAT.Entity.DomainModels;
 using System.Threading.Tasks;
+using VIAT.Entity.DomainModels.System;
 
 namespace VIAT.System.IServices
 {
@@ -14,6 +15,8 @@ namespace VIAT.System.IServices
         Task<WebResponseContent> GetCurrentUserInfo();
 
         Task<WebResponseContent> getChangeUserImformation(string sChangeUserName);
+
+        Viat_Sys_Org_Level_Detail GetLevelDetail(string emp_dbid);
     }
 }
 
