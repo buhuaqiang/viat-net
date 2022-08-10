@@ -19,6 +19,13 @@ using Microsoft.AspNetCore.Http;
 using VIAT.DataEntry.IRepositories;
 using System.Collections.Generic;
 using VIAT.DataEntry.Utillity;
+using System;
+using System.ComponentModel;
+using System.Reflection;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
+using System.IO;
+using System.Text;
+using VIAT.Entity.DomainModels.SFTP;
 
 namespace VIAT.DataEntry.Services
 {
@@ -49,7 +56,7 @@ namespace VIAT.DataEntry.Services
         public override PageGridData<Viat_sftp_export> GetPageData(PageDataOptions options)
         { 
             PageGridData<Viat_sftp_export> pageData = new PageGridData<Viat_sftp_export>();
-            List<Viat_sftp_export> SftpList = new List<Viat_sftp_export>();
+            Dictionary<string, List<Viat_sftp_export>> dicStfp = new Dictionary<string, List<Viat_sftp_export>>();
             List<SearchParameters> searchParametersList = new List<SearchParameters>();
 
             string s_type = null;
@@ -62,34 +69,38 @@ namespace VIAT.DataEntry.Services
                 {
                     foreach (SearchParameters sp in searchParametersList)
                     {
-                        if (sp.Name.ToLower() == "type".ToLower())
+                        switch (sp.Name.ToLower())
                         {
-                            s_type = GetTypeName(sp.Value);
-                            continue;
-                        }
-                        if (sp.Name.ToLower() == "dist_id".ToLower())
-                        {
-                            s_Distributor = GetDistEName(sp.Value);
-                            continue;
-                        }
-                        if (sp.Name.ToLower() == "start_date".ToLower())
-                        {
-                            start_date = sp.Value;
-                            continue;
-                        }
-                        if (sp.Name.ToLower() == "end_date".ToLower())
-                        {
-                            end_date = sp.Value;
-                            continue;
+                            case "type":
+                                s_type = GetTypeName(sp.Value);
+                                break;
+                            case "dist_id":
+                                s_Distributor = GetDistEName(sp.Value);
+                                break;
+                            case "start_date":
+                                start_date = sp.Value;
+                                break;
+                            case "end_date":
+                                end_date = sp.Value;
+                                break;
                         }
                     }
                 }
             }
-            using (var sftpClient = new SftpClient())
+            s_type = string.IsNullOrEmpty(s_type) ? GetTypeName("") : s_type;
+            s_Distributor = string.IsNullOrEmpty(s_Distributor) ? GetDistEName("") : s_Distributor;
+            string[] type = s_type.Split(new char[] { ',' });
+            string[] distributor = s_Distributor.Split(new char[] { ',' });
+            SFTPHelper s = new SFTPHelper();
+            foreach (var item in distributor)
             {
-                //处理逻辑
-                var ob = sftpClient.GetFileList("", ".csv");
+                List<Viat_sftp_export> ss = s.GetFileList($"/home/{item}/Download", ".csv");
+                dicStfp.Add(item, ss);
             }
+
+
+
+            List<Viat_sftp_export> SftpList = new List<Viat_sftp_export>();
             pageData.total = SftpList.Count();
             pageData.rows = SftpList;
             return pageData;
@@ -102,11 +113,97 @@ namespace VIAT.DataEntry.Services
         /// <returns></returns>
         public WebResponseContent Execute(SaveModel saveModel)
         {
-            using (var sftpClient = new SftpClient())
+            string distId = saveModel.MainData["distId"].ToString();
+            string s_type = GetTypeName(saveModel.MainData["type"].ToString());
+            string s_Distributor = GetDistEName(distId);
+            string date = saveModel.MainData["transferDate"].ToString();
+            string dates = Convert.ToDateTime(date).ToString("yyyyMMdd");
+            string localPath = "",csvName = "",path = "";
+            switch (s_type)
             {
-
+                case "price":
+                    List<SftpPrice> priceList = GetSftpPrices(distId, dates);
+                    localPath = $"Upload/price/{s_Distributor}/".MapPath();
+                    if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
+                    csvName = $"price_{s_Distributor}_{DateTime.Now.ToString("yyyyMMddHHmmddsss")}.csv";
+                    localPath += csvName;
+                    FileSave<SftpPrice> priceFile = new FileSave<SftpPrice>();
+                    priceFile.CsvSave(localPath, priceList);
+                    path = $"/home/{s_Distributor}/Download/";
+                    break;
+                case "order":
+                    List<SftpOrder> OrderList = GetSftpOrder(distId, dates);
+                    localPath = $"Upload/order/{s_Distributor}/".MapPath();
+                    if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
+                    csvName = $"order_{s_Distributor}_{DateTime.Now.ToString("yyyyMMddHHmmddsss")}.csv";
+                    localPath += csvName;
+                    FileSave<SftpOrder> orderFile = new FileSave<SftpOrder>();
+                    orderFile.CsvSave(localPath, OrderList);
+                    path = $"/home/{s_Distributor}/Download/";
+                    break;
+                case "Allowance":
+                    List<SftpAllowance> allowanceList = GetSftpAllowance(distId, dates);
+                    localPath = $"Upload/Allowance/{s_Distributor}/".MapPath();
+                    if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
+                    csvName = $"Allowance_{s_Distributor}_{DateTime.Now.ToString("yyyyMMddHHmmddsss")}.csv";
+                    localPath += csvName;
+                    FileSave<SftpAllowance> alowanceFile = new FileSave<SftpAllowance>();
+                    alowanceFile.CsvSave(localPath, allowanceList);
+                    path = $"/home/{s_Distributor}/Download/";
+                    break;
+                case "customer":
+                    List<SftpCustomer> customerList = GetSftpCustomer(date);
+                    localPath = $"Upload/customer/arich/".MapPath();
+                    if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
+                    csvName = $"customer_arich_{DateTime.Now.ToString("yyyyMMddHHmmddsss")}.csv";
+                    localPath += csvName;
+                    FileSave<SftpCustomer> customerFile = new FileSave<SftpCustomer>();
+                    customerFile.CsvSave(localPath, customerList);
+                    path = $"/home/arich/Download/";
+                    break;
             }
+
+            SFTPHelper s = new SFTPHelper();
+
+            s.CreateDirectory(path);
+            if (!s.Put(localPath,path + csvName))
+            {
+                File.Delete(localPath);
+                return webResponse.Error("fail to upload");
+            }
+
+            File.Delete(localPath);
             return webResponse.OK();
+        }
+
+        public List<SftpPrice> GetSftpPrices(string distId,string dates)
+        {
+            return repository.DapperContext.QueryList<SftpPrice>("sp_viat_price_to_distributor_data", new { @DistId = distId, @trans_date = dates }, System.Data.CommandType.StoredProcedure);
+        }
+        public List<SftpOrder> GetSftpOrder(string distId, string dates)
+        {
+            return repository.DapperContext.QueryList<SftpOrder>("sp_viat_customer_order_to_distributor_data", new { @DistId = distId, @trans_date = dates }, System.Data.CommandType.StoredProcedure);
+        }
+        public List<SftpAllowance> GetSftpAllowance(string distId, string dates)
+        {
+            return repository.DapperContext.QueryList<SftpAllowance>("sp_viat_nhi_allw_to_distributor", new { @DistId = distId, @trans_date = dates }, System.Data.CommandType.StoredProcedure);
+        }
+        public List<SftpCustomer> GetSftpCustomer(string date)
+        {
+            return CustomerData(date);
+        }
+
+        public List<SftpCustomer> CustomerData(string date)
+        {
+            string sql = $@"SELECT a.cust_id,a.cust_name,a.invoice_name,a.cust_address,a.tax_id,a.tel_no 
+            , a.owner,a.contact, a.modified_date
+          
+            ,b.zip_id as invoice_zip_id,a.ctrl_drug_no,a.ctrl_drug_contact,a.doh_type,a.margin_type
+            ,case when a.status = 'C' then 'N' else a.status end as status,a.remarks
+            from viat_com_cust as a
+            left join viat_com_zip_city as b on a.invoice_zip_id = b.zip_id 
+            where 1 = 1 and a.doh_type <> 'WS' and(a.created_date >= '{date}' or a.modified_date >= '{date}') ";
+            return repository.DapperContext.QueryList<SftpCustomer>(sql, null);
         }
 
         public string GetTypeName(string type)
@@ -114,17 +211,17 @@ namespace VIAT.DataEntry.Services
             string typeName = "";
             switch (type)
             {
-                case "1":
-                    type = "price";
+                case "01":
+                    typeName = "price";
                     break;
-                case "2":
-                    type = "customer";
+                case "02":
+                    typeName = "customer";
                     break;
-                case "3":
-                    type = "order";
+                case "03":
+                    typeName = "order";
                     break;
-                case "4":
-                    type = "Allowance";
+                case "04":
+                    typeName = "Allowance";
                     break;
                 default:
                     typeName = "price,customer,order,Allowance";
@@ -206,9 +303,104 @@ namespace VIAT.DataEntry.Services
                 case "O":
                     na = "pingtin";
                     break;
+                default:
+                    na = "ParkeDavis,Zuellig,Arich,ShineSeng,Holding,grholddi,Summit,OrientEropharma,AnChiang,HuiMaw,SingLong,HorngWang,EnHong,CCPC,CONMED,keto,zowhong,medlion,supermed,astrong,pingtin";
+                    break;
+                    
 
             }
             return na.ToLower();
         }
+    }
+    /// <summary>
+    /// 指定是否保存到文件中
+    /// </summary>
+    [AttributeUsage(AttributeTargets.Property)]
+    public sealed class FileSaveAttribute : Attribute
+    {
+        public bool Save { get; set; }
+        public FileSaveAttribute(bool isSave)
+        {
+            Save = isSave;
+        }
+    }
+    public class FileSave<T>
+    {
+        public void CsvSave(string path, List<T> list, string title = null)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (title != null)
+            {
+                sb.AppendLine(title);
+            }
+            Type tInfo = typeof(T);
+            List<object> listHeader = new List<object>();
+            Dictionary<string, object> dictData = new Dictionary<string, object>();
+            foreach (PropertyInfo p in tInfo.GetProperties())
+            {
+                string key = p.Name;
+                if (GetAttributes<FileSaveAttribute>(key, out object isSave))
+                {
+                    if (!(bool)isSave)
+                    {
+                        continue;
+                    }
+                }
+                //不存在默认为保存
+                GetAttributes<DisplayNameAttribute>(key, out object displayName);
+                listHeader.Add(displayName ?? key);
+                dictData[key] = null;
+            }
+            sb.AppendLine(string.Join(",", listHeader));
+            foreach (var model in list)
+            {
+                foreach (PropertyInfo p in tInfo.GetProperties())
+                {
+                    string key = p.Name;
+                    if (dictData.ContainsKey(key))
+                    {
+                        dictData[key] = p.GetValue(model, null);
+                    }
+                }
+                sb.AppendLine(string.Join(",", dictData.Values));
+            }
+            File.WriteAllText(path, sb.ToString(), Encoding.Default);
+        }
+
+        /// <summary>
+        /// 获取该属性设对应的特性值（若该属性没有这个特性会抛出异常）
+        /// </summary>
+        bool GetAttributes<A>(string propertyName, out object value)
+        {
+            value = default;
+            Type attributeType = typeof(A);
+            PropertyInfo propertyInfo = typeof(T).GetProperties().FirstOrDefault(p => p.Name == propertyName);
+            if (propertyInfo != null)
+            {
+                Attribute attr = Attribute.GetCustomAttribute(propertyInfo, attributeType);
+                if (attr != null)
+                {
+                    string attributeFieldName = string.Empty;
+                    switch (attributeType.Name)
+                    {
+                        case "CategoryAttribute": attributeFieldName = "categoryValue"; break;
+                        case "DescriptionAttribute": attributeFieldName = "description"; break;
+                        case "DisplayNameAttribute": attributeFieldName = "_displayName"; break;
+                        case "ReadOnlyAttribute": attributeFieldName = "isReadOnly"; break;
+                        case "BrowsableAttribute": attributeFieldName = "browsable"; break;
+                        case "DefaultValueAttribute": attributeFieldName = "value"; break;
+                        case "FileSaveAttribute": attributeFieldName = "Save"; break;
+                        default:
+                            return false;
+                    }
+                    PropertyDescriptorCollection attributes = TypeDescriptor.GetProperties(typeof(T));
+                    FieldInfo fieldInfo = attributeType.GetField(attributeFieldName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance);
+                    value = fieldInfo.GetValue(attributes[propertyInfo.Name].Attributes[attributeType]);
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }
