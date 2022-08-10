@@ -640,6 +640,14 @@ namespace VIAT.WorkFlow.Services
                 //        processOrderTransfer(saveModel, ordLst, masterEntry);
                 //    }
                 //}
+                if (bAddEditSubmit == false)
+                {
+                    processOrderTransferByBidMasterDBID(saveModel, masterEntry);
+                }
+                else
+                {
+                    processOrderTransfer(saveModel, ordLst, masterEntry);
+                }
             }
         }
 
@@ -1255,6 +1263,7 @@ namespace VIAT.WorkFlow.Services
 
             if (orderLst != null && orderLst.Count > 0)
             {
+                string orderDate = "ORDER" + DateTime.Now.ToString("yyyyMMdd"),orderNo = "";
                 foreach (Viat_wk_ord_detail order in orderLst)
                 {
                     //把cust記錄寫入transfer, delivery transfer
@@ -1281,6 +1290,23 @@ namespace VIAT.WorkFlow.Services
                     transfer.bid_no = masterEntry.bid_no;
 
                     transfer.state = "0";
+                    #region 增加order_no规则
+                    List<Viat_app_cust_order_transfer> lstCustOrder = repository.DbContext.Set<Viat_app_cust_order_transfer>()
+                        .Where(a => a.order_no.Contains(orderDate)).OrderByDescending(a => a.order_no).ToList();
+
+                    if (string.IsNullOrEmpty(orderNo))
+                    {
+                        if (lstCustOrder.Count() > 0)
+                        {
+                            orderNo = lstCustOrder[0].order_no;
+                        }
+                    }
+                    //int str = string.IsNullOrEmpty(orderNo) ? 0 : (Convert.ToInt32(orderNo.Substring(orderNo.Length - 5)));
+                    orderNo = orderDate + "-" + OrderNo(string.IsNullOrEmpty(orderNo) ? 0 : (Convert.ToInt32(orderNo.Substring(orderNo.Length - 5))));
+                    #endregion
+                    transfer.order_no = orderNo;
+                    //取viat_wk_master里面的remarks
+                    transfer.note = masterEntry.remarks;
                     transfer.transfer_date = getFormatYYYYMMDD(System.DateTime.Now);
                     SaveModel.DetailListDataResult transferResult = new SaveModel.DetailListDataResult();
                     transferResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(transfer)));
