@@ -88,7 +88,7 @@ namespace VIAT.WorkFlow.Services
 
         public override WebResponseContent DownLoadTemplate()
         {
-            DownLoadTemplateColumns = x => new { x.prod_id,x.prod_ename,x.invoice_price,x.bid_price,x.min_qty,x.isbelong };
+            DownLoadTemplateColumns = x => new { x.prod_id,x.prod_ename,x.invoice_price,x.bid_price,x.min_qty };
             return base.DownLoadTemplate();
         }
     }
