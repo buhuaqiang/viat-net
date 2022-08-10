@@ -125,13 +125,11 @@ namespace VIAT.DataEntry.Utillity
                     Connect();
                     //CreateDirectory(remotePath);
                     sftp.UploadFile(file, remotePath);
-                    Disconnect();
                 }
                 return true;
             }
             catch (Exception ex)
             {
-                Disconnect();
                 return false;
             }
         }
@@ -169,28 +167,28 @@ namespace VIAT.DataEntry.Utillity
         {
             try
             {
+                List<Viat_sftp_export> sftp_ExportList = new List<Viat_sftp_export>();
                 Connect();
-                var files = sftp.ListDirectory(remotePath);
-                Disconnect();
-                var objList = new List<string>();
-                List < Viat_sftp_export > sftp_ExportList = new List<Viat_sftp_export>();
-                foreach (var file in files)
+                if (sftp.Exists(remotePath))
                 {
-                    Viat_sftp_export sftp_Export = new Viat_sftp_export();
-                    string name = file.Name;
-                    if (name.Length > (fileSuffix.Length + 1) && fileSuffix == name.Substring(name.Length - fileSuffix.Length))
+                    var files = sftp.ListDirectory(remotePath);
+                    foreach (var file in files)
                     {
-                        sftp_Export.file_name = file.Name;
-                        sftp_Export.file_size = file.Length;
-                        sftp_Export.modified_date = file.LastWriteTime;
-                        sftp_ExportList.Add(sftp_Export);
+                        Viat_sftp_export sftp_Export = new Viat_sftp_export();
+                        string name = file.Name;
+                        if (name.Length > (fileSuffix.Length + 1) && fileSuffix == name.Substring(name.Length - fileSuffix.Length))
+                        {
+                            sftp_Export.file_name = file.Name;
+                            sftp_Export.file_size = file.Length;
+                            sftp_Export.modified_date = file.LastWriteTime;
+                            sftp_ExportList.Add(sftp_Export);
+                        }
                     }
                 }
                 return sftp_ExportList;
             }
             catch (Exception ex)
             {
-                Disconnect();
                 throw new Exception(string.Format("SFTP文件列表获取失败，原因：{0}", ex.Message));
             }
         }
