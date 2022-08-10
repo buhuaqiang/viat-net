@@ -79,7 +79,7 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///CustID
        /// </summary>
-     /*  [Display(Name ="CustID")]
+      /*  [Display(Name ="CustID")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        public string g_cust_id { get; set; }*/
@@ -116,6 +116,14 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        [Required(AllowEmptyStrings=false)]
        public DateTime start_date { get; set; }
+
+       /// <summary>
+       ///Bu
+       /// </summary>
+       [Display(Name ="Bu")]
+       [MaxLength(20)]
+       [Column(TypeName="varchar(20)")]
+       public string bu_id { get; set; }
 
        /// <summary>
        ///End Date

@@ -58,8 +58,8 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="主鍵")]
        [Column(TypeName="uniqueidentifier")]
-       [Editable(true)]
-       public Guid? pricegroup_dbid { get; set; }
+        [Editable(true)]
+        public Guid? pricegroup_dbid { get; set; }
 
        /// <summary>
        ///生效日
@@ -201,6 +201,30 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="最後修改時間")]
        [Column(TypeName="datetime")]
        public DateTime? modified_date { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="accrue_price")]
+       [DisplayFormat(DataFormatString="18,5")]
+       [Column(TypeName="decimal")]
+       public decimal? accrue_price { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="accrue_start_date")]
+       [Column(TypeName="datetime")]
+       public DateTime? accrue_start_date { get; set; }
+
+       /// <summary>
+       ///Bu
+       /// </summary>
+       [Display(Name ="Bu")]
+       [MaxLength(20)]
+       [Column(TypeName="varchar(20)")]
+       [Editable(true)]
+       public string bu_id { get; set; }
 
        
     }
