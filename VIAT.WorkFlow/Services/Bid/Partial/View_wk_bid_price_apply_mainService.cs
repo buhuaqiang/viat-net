@@ -640,14 +640,6 @@ namespace VIAT.WorkFlow.Services
                 //        processOrderTransfer(saveModel, ordLst, masterEntry);
                 //    }
                 //}
-                if (bAddEditSubmit == false)
-                {
-                    processOrderTransferByBidMasterDBID(saveModel, masterEntry);
-                }
-                else
-                {
-                    processOrderTransfer(saveModel, ordLst, masterEntry);
-                }
             }
         }
 
