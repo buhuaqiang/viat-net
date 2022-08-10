@@ -28,10 +28,10 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///ID
        /// </summary>
-       [Display(Name ="ID")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
+       //[Display(Name ="ID")]
+       //[Column(TypeName="int")]
+       //[Required(AllowEmptyStrings=false)]
+       //public int dbid { get; set; }
 
        /// <summary>
        ///公司別
