@@ -5,9 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DiffieHellman" Version="1.0.0" />
-    <PackageReference Include="Org.Mentalis.Security" Version="1.0.0" />
-    <PackageReference Include="Tamir.SharpSSH" Version="1.1.1.13" />
+    <PackageReference Include="Renci.SshNet.Async" Version="1.4.0" />
   </ItemGroup>
 
   <ItemGroup>
