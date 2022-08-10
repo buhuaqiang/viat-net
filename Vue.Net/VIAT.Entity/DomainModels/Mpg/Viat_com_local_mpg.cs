@@ -48,6 +48,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string mpg_id { get; set; }
 
        /// <summary>
@@ -205,14 +206,6 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///
        /// </summary>
-       [Display(Name ="ma_name")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
-       public string ma_name { get; set; }
-
-       /// <summary>
-       ///
-       /// </summary>
        [Display(Name ="medical_reviewer_id")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
@@ -220,22 +213,21 @@ namespace VIAT.Entity.DomainModels
        public string medical_reviewer_id { get; set; }
 
        /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="medical_reviewer_name")]
-       [MaxLength(50)]
-       [Column(TypeName="nvarchar(50)")]
-       [Editable(true)]
-       public string medical_reviewer_name { get; set; }
-
-       /// <summary>
        ///IMT Type
        /// </summary>
        [Display(Name ="IMT Type")]
-       [MaxLength(50)]
-       [Column(TypeName="varchar(50)")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
        [Editable(true)]
        public string imt_type { get; set; }
+
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="old_mpg_id")]
+       [MaxLength(15)]
+       [Column(TypeName="varchar(15)")]
+       public string old_mpg_id { get; set; }
 
        
     }
