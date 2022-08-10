@@ -247,7 +247,7 @@ namespace VIAT.Price.Services
 
 
             /*取得status的值*/
-            string sStatus = "";
+            string sStatus = "4";//如果页面传ALL,则把值默认为4
             foreach (SearchParameters para in searchParametersList)
             {
                 if (para.Name == "QueryStatus" && string.IsNullOrEmpty(para.Value) == false)
@@ -375,9 +375,19 @@ namespace VIAT.Price.Services
                         viat_app_cust_group AS custGroup
                     inner JOIN viat_app_cust_price AS custPrice ON custPrice.pricegroup_dbid = custGroup.pricegroup_dbid
                     AND custPrice.prod_dbid = custGroup.prod_dbid
-                    inner JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid 
-                    AND priceGroup.status = 'Y'
-                   inner JOIN viat_com_prod AS prod ON custGroup.prod_dbid = prod.prod_dbid
+                    inner JOIN viat_app_cust_price_group AS priceGroup ON custPrice.pricegroup_dbid = priceGroup.pricegroup_dbid ";
+
+                    if (string.IsNullOrEmpty(sStatus) == false)
+                    {
+                        
+                        if (sStatus == "1" || sStatus == "3" )
+                        {
+                            QuerySql += "AND priceGroup.status = 'Y'";
+                        }
+                    }
+               
+
+            QuerySql += @"inner JOIN viat_com_prod AS prod ON custGroup.prod_dbid = prod.prod_dbid
                    inner JOIN viat_com_cust AS cust ON custGroup.cust_dbid = cust.cust_dbid where 1=1 ";
 
             if (string.IsNullOrEmpty(sStatus) == false)
