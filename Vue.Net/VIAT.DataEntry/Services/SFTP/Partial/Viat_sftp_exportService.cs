@@ -120,8 +120,34 @@ namespace VIAT.DataEntry.Services
         {
             string distId = saveModel.MainData["distId"].ToString();
             string s_type = GetTypeName(saveModel.MainData["type"].ToString());
-            string s_Distributor = GetDistEName(distId);
+           
             string date = saveModel.MainData["transferDate"].ToString();
+
+            return SftpUpload(s_type, distId, date);
+        }
+
+        public WebResponseContent ExecuteBatch()
+        {
+            List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x=>x.category_id == "DistID").ToList();
+            if (systemValueList.Count()>0)
+            {
+                foreach (var item in systemValueList)
+                {
+                    if (item.sys_key.Equals("3"))
+                    {
+                        SftpUpload("customer", item.sys_key, DateTime.Now.ToString("yyyy-MM-dd"));
+                    }
+                    SftpUpload("price", item.sys_key, DateTime.Now.ToString("yyyy-MM-dd"));
+                    SftpUpload("order", item.sys_key, DateTime.Now.ToString("yyyy-MM-dd"));
+                    SftpUpload("Allowance", item.sys_key, DateTime.Now.ToString("yyyy-MM-dd"));
+                }
+            }
+            return webResponse.OK();
+        }
+
+        public WebResponseContent SftpUpload(string s_type,string distId,string date)
+        {
+            string s_Distributor = GetDistEName(distId);
             string dates = Convert.ToDateTime(date).ToString("yyyyMMdd");
             string path = "";
             string[] strings = new string[2];
@@ -129,7 +155,7 @@ namespace VIAT.DataEntry.Services
             {
                 case "price":
                     List<SftpPrice> priceList = GetSftpPrices(distId, dates);
-                    if (priceList.Count == 0 )
+                    if (priceList.Count == 0)
                     {
                         return webResponse.Error("price no data");
                     }
@@ -185,6 +211,7 @@ namespace VIAT.DataEntry.Services
             File.Delete(strings[0]);
             return webResponse.OK();
         }
+
         public string[] LocalPath(string s_type,string s_Distributor)
         {
             string localPath = "", csvName ="";

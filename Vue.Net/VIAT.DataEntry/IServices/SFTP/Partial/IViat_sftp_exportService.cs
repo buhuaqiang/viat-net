@@ -13,5 +13,6 @@ namespace VIAT.DataEntry.IServices
     {
 
         WebResponseContent Execute(SaveModel saveModel);
+        WebResponseContent ExecuteBatch();
     }
  }

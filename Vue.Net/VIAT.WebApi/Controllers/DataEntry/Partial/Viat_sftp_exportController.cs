@@ -37,5 +37,10 @@ namespace VIAT.DataEntry.Controllers
         {
             return Json(_service.Execute(saveModel));
         }
+        [HttpPost, Route("ExecuteBatch")]
+        public ActionResult ExecuteBatch()
+        {
+            return Json(_service.ExecuteBatch());
+        }
     }
 }
