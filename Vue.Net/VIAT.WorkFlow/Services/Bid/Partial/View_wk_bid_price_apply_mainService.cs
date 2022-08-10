@@ -806,7 +806,8 @@ namespace VIAT.WorkFlow.Services
             {
                 //新增
                 string sBinNo = Viat_wk_masterService.Instance.getBidNO();
-
+                UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
+                saveDataModel.MainData["Territory_Id"] = userInfo.TerritoryId;
                 saveDataModel.MainData["bidmast_dbid"] = bidMastDBID;
                 saveDataModel.MainData["bid_no"] = sBinNo;                
                 //saveDataModel.MainData["start_date"] = getFormatYYYYMMDD(DateTime.Now.ToString("yyyy-MM-dd"));
