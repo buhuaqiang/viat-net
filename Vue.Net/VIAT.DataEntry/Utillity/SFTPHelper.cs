@@ -182,7 +182,7 @@ namespace VIAT.DataEntry.Utillity
                     {
                         sftp_Export.file_name = file.Name;
                         sftp_Export.file_size = file.Length;
-                        sftp_Export.modified_date = file.LastWriteTimeUtc;
+                        sftp_Export.modified_date = file.LastWriteTime;
                         sftp_ExportList.Add(sftp_Export);
                     }
                 }

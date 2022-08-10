@@ -235,18 +235,18 @@ namespace VIAT.WorkFlow.Services
         {
             try
             {
-                string result = "", CustId = "";
-                if (saveDataModel.MainData.ContainsKey("cust_id"))
+                string result = "", wkcust_did = "";
+                if (saveDataModel.MainData.ContainsKey("wkcust_dbid"))
                 {
-                    CustId = saveDataModel.MainData["cust_id"] ==null ? "" : saveDataModel.MainData["cust_id"].ToString();
+                    wkcust_did = saveDataModel.MainData["wkcust_dbid"] ==null ? "" : saveDataModel.MainData["wkcust_dbid"].ToString();
                 }
                 string dohInstituteNo = saveDataModel.MainData["doh_institute_no"] == null ? "" : saveDataModel.MainData["doh_institute_no"].ToString();
                 string taxId = saveDataModel.MainData["tax_id"]==null ? "" : saveDataModel.MainData["tax_id"].ToString();
                 PageGridData<Viat_wk_cust> detailGrid = new PageGridData<Viat_wk_cust>();
                 if (!string.IsNullOrEmpty(dohInstituteNo))
                 {
-                    string sql = $"select count(1) from viat_com_cust where doh_institute_no='{dohInstituteNo}'";
-                    sql += string.IsNullOrEmpty(CustId) ? "" : $" and cust_id <> '{CustId}'";
+                    string sql = $"select count(1) from Viat_wk_cust where doh_institute_no='{dohInstituteNo}'";
+                    sql += string.IsNullOrEmpty(wkcust_did) ? "" : $" and wkcust_dbid <> '{wkcust_did}'";
                     detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { }).GetInt();
                     if (detailGrid.total > 0)
                     {
@@ -255,8 +255,8 @@ namespace VIAT.WorkFlow.Services
                 }
                 if (!string.IsNullOrEmpty(taxId))
                 {
-                    string sql = $"select count(1) from viat_com_cust where tax_id='{taxId}'";
-                    sql += string.IsNullOrEmpty(CustId) ? "" : $" and cust_id <> '{CustId}'";
+                    string sql = $"select count(1) from Viat_wk_cust where tax_id='{taxId}'";
+                    sql += string.IsNullOrEmpty(wkcust_did) ? "" : $" and wkcust_did <> '{wkcust_did}'";
                     detailGrid.total = repository.DapperContext.ExecuteScalar(sql, new { }).GetInt();
                     if (detailGrid.total > 0)
                     {

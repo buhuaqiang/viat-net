@@ -98,11 +98,16 @@ namespace VIAT.DataEntry.Services
                 dicStfp.Add(item, ss);
             }
 
-
-
+            IEnumerable<Viat_sftp_export> value = dicStfp.SelectMany(x => x.Value);
             List<Viat_sftp_export> SftpList = new List<Viat_sftp_export>();
+            SftpList.AddRange(value);
+            if (type != null)
+            {
+                SftpList = SftpList.Where(x=> type.Contains(x.file_name.Split('_')[0])).ToList();
+            }
+
             pageData.total = SftpList.Count();
-            pageData.rows = SftpList;
+            pageData.rows = SftpList.Skip((options.Page - 1) * options.Rows).Take(options.Rows).ToList();
             return pageData;
         }
 
@@ -118,47 +123,52 @@ namespace VIAT.DataEntry.Services
             string s_Distributor = GetDistEName(distId);
             string date = saveModel.MainData["transferDate"].ToString();
             string dates = Convert.ToDateTime(date).ToString("yyyyMMdd");
-            string localPath = "",csvName = "",path = "";
+            string path = "";
+            string[] strings = new string[2];
             switch (s_type)
             {
                 case "price":
                     List<SftpPrice> priceList = GetSftpPrices(distId, dates);
-                    localPath = $"Upload/price/{s_Distributor}/".MapPath();
-                    if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
-                    csvName = $"price_{s_Distributor}_{DateTime.Now.ToString("yyyyMMddHHmmddsss")}.csv";
-                    localPath += csvName;
+                    if (priceList.Count == 0 )
+                    {
+                        return webResponse.Error("price no data");
+                    }
+                    strings = LocalPath(s_type, s_Distributor);
                     FileSave<SftpPrice> priceFile = new FileSave<SftpPrice>();
-                    priceFile.CsvSave(localPath, priceList);
+                    priceFile.CsvSave(strings[0], priceList);
                     path = $"/home/{s_Distributor}/Download/";
                     break;
                 case "order":
                     List<SftpOrder> OrderList = GetSftpOrder(distId, dates);
-                    localPath = $"Upload/order/{s_Distributor}/".MapPath();
-                    if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
-                    csvName = $"order_{s_Distributor}_{DateTime.Now.ToString("yyyyMMddHHmmddsss")}.csv";
-                    localPath += csvName;
+                    if (OrderList.Count == 0)
+                    {
+                        return webResponse.Error("order no data");
+                    }
+                    strings = LocalPath(s_type, s_Distributor);
                     FileSave<SftpOrder> orderFile = new FileSave<SftpOrder>();
-                    orderFile.CsvSave(localPath, OrderList);
+                    orderFile.CsvSave(strings[0], OrderList);
                     path = $"/home/{s_Distributor}/Download/";
                     break;
                 case "Allowance":
                     List<SftpAllowance> allowanceList = GetSftpAllowance(distId, dates);
-                    localPath = $"Upload/Allowance/{s_Distributor}/".MapPath();
-                    if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
-                    csvName = $"Allowance_{s_Distributor}_{DateTime.Now.ToString("yyyyMMddHHmmddsss")}.csv";
-                    localPath += csvName;
+                    if (allowanceList.Count == 0)
+                    {
+                        return webResponse.Error("Allowance no data");
+                    }
+                    strings = LocalPath(s_type, s_Distributor);
                     FileSave<SftpAllowance> alowanceFile = new FileSave<SftpAllowance>();
-                    alowanceFile.CsvSave(localPath, allowanceList);
+                    alowanceFile.CsvSave(strings[0], allowanceList);
                     path = $"/home/{s_Distributor}/Download/";
                     break;
                 case "customer":
                     List<SftpCustomer> customerList = GetSftpCustomer(date);
-                    localPath = $"Upload/customer/arich/".MapPath();
-                    if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
-                    csvName = $"customer_arich_{DateTime.Now.ToString("yyyyMMddHHmmddsss")}.csv";
-                    localPath += csvName;
+                    if (customerList.Count == 0)
+                    {
+                        return webResponse.Error("customer no data");
+                    }
+                    strings = LocalPath(s_type, s_Distributor);
                     FileSave<SftpCustomer> customerFile = new FileSave<SftpCustomer>();
-                    customerFile.CsvSave(localPath, customerList);
+                    customerFile.CsvSave(strings[0], customerList);
                     path = $"/home/arich/Download/";
                     break;
             }
@@ -166,16 +176,40 @@ namespace VIAT.DataEntry.Services
             SFTPHelper s = new SFTPHelper();
 
             s.CreateDirectory(path);
-            if (!s.Put(localPath,path + csvName))
+            if (!s.Put(strings[0], path + strings[1]))
             {
-                File.Delete(localPath);
+                File.Delete(strings[0]);
                 return webResponse.Error("fail to upload");
             }
 
-            File.Delete(localPath);
+            File.Delete(strings[0]);
             return webResponse.OK();
         }
-
+        public string[] LocalPath(string s_type,string s_Distributor)
+        {
+            string localPath = "", csvName ="";
+            string[] strings = new string[2];
+            if (s_type.Equal("customer"))
+            {
+                localPath = $"Upload/customer/arich/".MapPath();
+            }
+            else
+            {
+                localPath = $"Upload/{s_type}/{s_Distributor}/".MapPath();
+            }
+            if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
+            csvName = $"{s_type}_{s_Distributor}_{DateTime.Now.ToString("yyyyMMddHHmmddsss")}.csv";
+            localPath += csvName;
+            strings[0] = localPath;
+            strings[1] = csvName;
+            return strings;
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="distId"></param>
+        /// <param name="dates"></param>
+        /// <returns></returns>
         public List<SftpPrice> GetSftpPrices(string distId,string dates)
         {
             return repository.DapperContext.QueryList<SftpPrice>("sp_viat_price_to_distributor_data", new { @DistId = distId, @trans_date = dates }, System.Data.CommandType.StoredProcedure);
