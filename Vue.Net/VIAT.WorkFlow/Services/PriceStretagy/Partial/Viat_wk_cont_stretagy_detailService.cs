@@ -62,7 +62,7 @@ namespace VIAT.WorkFlow.Services
                 decimal invoice_price = dw["invoice_price"] == null ? 0 : Convert.ToDecimal(dw["invoice_price"]);
                 decimal net_price = dw["net_price"] == null ? 0 : Convert.ToDecimal(dw["net_price"]);
                 int min_qty = dw["min_qty"] == null ? 0 : Convert.ToInt32(dw["min_qty"]);
-                string isbelong = dw["isbelong"].ToString();
+                //string isbelong = dw["isbelong"].ToString();
 
                 #region 查询contstret_dbid
                 var lstStretagy = repository.DbContext.Set<Viat_wk_contract_stretagy>().Where(x => x.cont_stretagy_id == cont_stretagy_id).ToList();
@@ -92,7 +92,7 @@ namespace VIAT.WorkFlow.Services
                 stretagyDetailModel.invoice_price = invoice_price;
                 stretagyDetailModel.net_price = net_price;
                 stretagyDetailModel.min_qty = min_qty;
-                stretagyDetailModel.isbelong = isbelong;
+                stretagyDetailModel.isbelong = "Y";
                 stretagyDetailModel.contstret_dbid = lstStretagy[0].contstret_dbid;
                 stretagyDetailModel.prod_dbid = lstProd[0].prod_dbid;
 
