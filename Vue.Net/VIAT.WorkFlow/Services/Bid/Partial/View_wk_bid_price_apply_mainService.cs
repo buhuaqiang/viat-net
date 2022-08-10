@@ -806,8 +806,7 @@ namespace VIAT.WorkFlow.Services
             {
                 //新增
                 string sBinNo = Viat_wk_masterService.Instance.getBidNO();
-                UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
-                saveDataModel.MainData["Territory_Id"] = userInfo.TerritoryId;
+               
                 saveDataModel.MainData["bidmast_dbid"] = bidMastDBID;
                 saveDataModel.MainData["bid_no"] = sBinNo;                
                 //saveDataModel.MainData["start_date"] = getFormatYYYYMMDD(DateTime.Now.ToString("yyyy-MM-dd"));
@@ -818,7 +817,12 @@ namespace VIAT.WorkFlow.Services
             {
                 //修改
                 masterResult.optionType = SaveModel.MainOptionType.update;
-            } 
+            }
+            UserInfo userInfo = VIAT.Core.ManageUser.UserContext.Current.UserInfo;
+            if (string.IsNullOrEmpty(saveDataModel.MainData["territory_id"].ToString()))
+            {
+                saveDataModel.MainData["territory_id"] = userInfo.TerritoryId;
+            }
             masterResult.DetailData.Add(saveDataModel.MainData);        
             masterResult.detailType = typeof(Viat_wk_master);
             saveDataModel.DetailListData.Add(masterResult);
