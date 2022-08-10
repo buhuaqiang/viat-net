@@ -59,7 +59,7 @@ namespace VIAT.System.Services
                                 left join viat_sys_org_level_detail a on detail.dbid=a.dbid
                                 )org_lev  on u.emp_dbid=org_lev.emp_dbid where u.emp_dbid ='{user.emp_dbid}'";
                 detailGrid.rows = repository.DapperContext.QueryList<Viat_Sys_Org_Level_Detail>(sql, new { });
-
+                string territory_id = detailGrid.rows.Count() > 0 ? string.IsNullOrEmpty(detailGrid.rows[0].Org_Id) ? "QQ1" : detailGrid.rows[0].Org_Id : "QQ1";
                 string token = JwtHelper.IssueJwt(new UserInfo()
                 {
                     User_Id = user.User_Id,
@@ -68,10 +68,10 @@ namespace VIAT.System.Services
                     ClientID = loginInfo.ClientID,
                     ClientUserName = loginInfo.ClientUserName ?? "",
                     ClientTrueUserName = loginInfo.ClientTrueUserName ?? "",
-                    TerritoryId = detailGrid.rows.Count() > 0 ? string.IsNullOrEmpty(detailGrid.rows[0].Org_Id)? "QQ1": detailGrid.rows[0].Org_Id : "QQ1"//"01515"
+                    TerritoryId = territory_id//"01515"
                 });
                 user.Token = token;
-                responseContent.Data = new { token, userName = user.UserTrueName, img = user.HeadImageUrl,userId = user.User_Id };
+                responseContent.Data = new { token, userName = user.UserTrueName, img = user.HeadImageUrl,userId = user.User_Id, territoryId = territory_id };
                 repository.Update(user, x => x.Token, true);
                 UserContext.Current.LogOut(user.User_Id);
 
