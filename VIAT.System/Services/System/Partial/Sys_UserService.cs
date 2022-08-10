@@ -514,6 +514,13 @@ namespace VIAT.System.Services
             };
             return base.Export(pageData);
         }
+
+        public Viat_Sys_Org_Level_Detail GetLevelDetail(string emp_dbid)
+        {
+            string sql = @$"select a.*  from viat_sys_org_level_detail a,viat_sys_org_level b where a.emp_dbid = '{emp_dbid}'  
+                        and a.sysorg_dbid = b.sysorg_dbid  and b.status = 'Y'";
+            return repository.DapperContext.QueryList<Viat_Sys_Org_Level_Detail>(sql, null)[0];
+        }
     }
 }
 

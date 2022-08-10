@@ -188,5 +188,12 @@ namespace VIAT.System.Controllers
             HttpContext.GetService<IMemoryCache>().Set(data.uuid.ToString(), code, new TimeSpan(0, 5, 0));
             return Json(data);
         }
+
+        [ApiActionPermission]
+        [HttpPost, Route("GetLevelDetail")]
+        public IActionResult GetLevelDetail([FromBody] string emp_dbid)
+        {
+            return Json(Service.GetLevelDetail(emp_dbid));
+        }
     }
 }
