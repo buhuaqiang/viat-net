@@ -216,8 +216,8 @@ namespace VIAT.Entity.DomainModels
        ///IMT Type
        /// </summary>
        [Display(Name ="IMT Type")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
        [Editable(true)]
        public string imt_type { get; set; }
 
