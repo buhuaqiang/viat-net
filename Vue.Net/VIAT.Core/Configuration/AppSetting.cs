@@ -50,6 +50,7 @@ namespace VIAT.Core.Configuration
         /// </summary>
         public static Kafka Kafka { get; set; }
         public static SftpSite SftpSite { get; set; }
+        public static Smtp Smtp { get; set; }
         public static QuartzHeader quartzHeader { get; set; }
 
 
@@ -88,6 +89,7 @@ namespace VIAT.Core.Configuration
             Kafka = provider.GetRequiredService<IOptions<Kafka>>().Value ?? new Kafka();
 
             SftpSite = provider.GetRequiredService<IOptions<SftpSite>>().Value;
+            Smtp = provider.GetRequiredService<IOptions<Smtp>>().Value;
             quartzHeader = provider.GetRequiredService<IOptions<QuartzHeader>>().Value;
 
             _connection = provider.GetRequiredService<IOptions<Connection>>().Value;
@@ -224,9 +226,19 @@ namespace VIAT.Core.Configuration
         public string UserName { get; set; }
         public string Password { get; set; }
     }
+
+    public class Smtp
+    {
+        public string SmtpServer { get; set; }
+        public string SmtpUsername { get; set; }
+        public string SmtpPasswd { get; set; }
+        public string SendFrom { get; set; }
+    }
+
     public class QuartzHeader
     {
         public string  Name { get; set; }
         public string Password { get; set; }
     }
+
 }
