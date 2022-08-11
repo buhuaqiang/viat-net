@@ -189,7 +189,7 @@ namespace VIAT.System.Controllers
             return Json(data);
         }
 
-        [ApiActionPermission]
+        //[ApiActionPermission]
         [HttpGet, Route("GetLevelDetail")]
         public IActionResult GetLevelDetail(string emp_dbid)
         {
