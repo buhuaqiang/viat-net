@@ -301,11 +301,21 @@ namespace VIAT.Entity.DomainModels
         [Column(TypeName="varchar(255)")]
        public string deputy_zone { get; set; }
 
-       /// <summary>
-       ///员工id
-       /// </summary>
-       [Display(Name ="员工id")]
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "deputy_zone")]
+        [MaxLength(255)]
+        [Editable(true)]
+        [Column(TypeName = "varchar(255)")]
+        public string deputy_zone_sa { get; set; }
+
+        /// <summary>
+        ///员工id
+        /// </summary>
+        [Display(Name ="员工id")]
        [Column(TypeName="uniqueidentifier")]
+       [Editable(true)]
        public Guid? emp_dbid { get; set; }
 
        
