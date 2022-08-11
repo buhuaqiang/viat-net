@@ -50,6 +50,7 @@ namespace VIAT.Core.Configuration
         /// </summary>
         public static Kafka Kafka { get; set; }
         public static SftpSite SftpSite { get; set; }
+        public static QuartzHeader quartzHeader { get; set; }
 
 
         /// <summary>
@@ -69,6 +70,7 @@ namespace VIAT.Core.Configuration
             services.Configure<GlobalFilter>(configuration.GetSection("GlobalFilter"));
             services.Configure<Kafka>(configuration.GetSection("Kafka"));
             services.Configure<SftpSite>(configuration.GetSection("SftpSite"));
+            services.Configure<QuartzHeader>(configuration.GetSection("QuartzHeader"));
 
             var provider = services.BuildServiceProvider();
             IWebHostEnvironment environment = provider.GetRequiredService<IWebHostEnvironment>();
@@ -86,6 +88,7 @@ namespace VIAT.Core.Configuration
             Kafka = provider.GetRequiredService<IOptions<Kafka>>().Value ?? new Kafka();
 
             SftpSite = provider.GetRequiredService<IOptions<SftpSite>>().Value;
+            quartzHeader = provider.GetRequiredService<IOptions<QuartzHeader>>().Value;
 
             _connection = provider.GetRequiredService<IOptions<Connection>>().Value;
 
@@ -219,6 +222,11 @@ namespace VIAT.Core.Configuration
     {
         public string HostName { get; set; }
         public string UserName { get; set; }
+        public string Password { get; set; }
+    }
+    public class QuartzHeader
+    {
+        public string  Name { get; set; }
         public string Password { get; set; }
     }
 }
