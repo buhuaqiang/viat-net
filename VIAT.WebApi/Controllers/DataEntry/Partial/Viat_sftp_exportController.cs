@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using VIAT.Entity.DomainModels;
 using VIAT.DataEntry.IServices;
 using VIAT.Core.Filters;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VIAT.DataEntry.Controllers
 {
@@ -37,7 +38,7 @@ namespace VIAT.DataEntry.Controllers
         {
             return Json(_service.Execute(saveModel));
         }
-        [HttpPost, Route("ExecuteBatch")]
+        [HttpPost, Route("ExecuteBatch"), AllowAnonymous]
         public ActionResult ExecuteBatch()
         {
             return Json(_service.ExecuteBatch());
