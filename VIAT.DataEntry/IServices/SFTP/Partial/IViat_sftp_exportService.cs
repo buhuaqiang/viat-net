@@ -6,6 +6,7 @@ using VIAT.Entity.DomainModels;
 using VIAT.Core.Utilities;
 using System.Linq.Expressions;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Http;
 
 namespace VIAT.DataEntry.IServices
 {
@@ -13,6 +14,6 @@ namespace VIAT.DataEntry.IServices
     {
 
         WebResponseContent Execute(SaveModel saveModel);
-        WebResponseContent ExecuteBatch();
+        WebResponseContent ExecuteBatch(IHeaderDictionary header);
     }
  }

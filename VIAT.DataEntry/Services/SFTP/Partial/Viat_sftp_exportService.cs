@@ -26,6 +26,7 @@ using OfficeOpenXml.FormulaParsing.Excel.Functions.Text;
 using System.IO;
 using System.Text;
 using VIAT.Entity.DomainModels.SFTP;
+using VIAT.Core.Configuration;
 
 namespace VIAT.DataEntry.Services
 {
@@ -129,9 +130,29 @@ namespace VIAT.DataEntry.Services
             return SftpUpload(s_type, distId, date);
         }
 
-        public WebResponseContent ExecuteBatch()
+        public WebResponseContent ExecuteBatch(IHeaderDictionary header)
         {
             WebResponseContent webContent = new WebResponseContent();
+
+            var keys = header.Keys;
+            var values = header.Values;
+            bool key = keys.Any((id) =>
+            {
+                return AppSetting.quartzHeader.Name.Equals(id, StringComparison.OrdinalIgnoreCase);
+            });
+            bool value = values.Any((id) =>
+            {
+                return AppSetting.quartzHeader.Password.Equals(id, StringComparison.OrdinalIgnoreCase);
+            });
+            if (!key)
+            {
+                return webContent.Error("人员不存在，没有权限");
+            }
+            if (value)
+            {
+                return webContent.Error("密码不对，没有权限");
+            }
+            
             List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x=>x.category_id == "DistID").ToList();
             if (systemValueList.Count()>0)
             {
@@ -146,7 +167,7 @@ namespace VIAT.DataEntry.Services
                     SftpUpload("Allowance", item.sys_key, DateTime.Now.ToString("yyyy-MM-dd"));
                 }
             }
-            return webContent.OK("导入成功!");
+            return webContent.OK("export success!");
         }
 
         public WebResponseContent SftpUpload(string s_type,string distId,string date)
