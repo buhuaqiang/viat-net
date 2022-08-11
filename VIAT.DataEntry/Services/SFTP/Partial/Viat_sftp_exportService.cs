@@ -192,7 +192,7 @@ namespace VIAT.DataEntry.Services
                     {
                         return webResponse.Error("price no data");
                     }
-                    strings = LocalPath(s_type, s_Distributor);
+                    strings = LocalPath(s_type, s_Distributor, dates);
                     FileSave<SftpPrice> priceFile = new FileSave<SftpPrice>();
                     priceFile.CsvSave(strings[0], priceList);
                     path = $"/home/{s_Distributor}/Download/";
@@ -203,7 +203,7 @@ namespace VIAT.DataEntry.Services
                     {
                         return webResponse.Error("order no data");
                     }
-                    strings = LocalPath(s_type, s_Distributor);
+                    strings = LocalPath(s_type, s_Distributor, dates);
                     FileSave<SftpOrder> orderFile = new FileSave<SftpOrder>();
                     orderFile.CsvSave(strings[0], OrderList);
                     path = $"/home/{s_Distributor}/Download/";
@@ -214,7 +214,7 @@ namespace VIAT.DataEntry.Services
                     {
                         return webResponse.Error("Allowance no data");
                     }
-                    strings = LocalPath(s_type, s_Distributor);
+                    strings = LocalPath(s_type, s_Distributor, dates);
                     FileSave<SftpAllowance> alowanceFile = new FileSave<SftpAllowance>();
                     alowanceFile.CsvSave(strings[0], allowanceList);
                     path = $"/home/{s_Distributor}/Download/";
@@ -225,7 +225,7 @@ namespace VIAT.DataEntry.Services
                     {
                         return webResponse.Error("customer no data");
                     }
-                    strings = LocalPath(s_type, s_Distributor);
+                    strings = LocalPath(s_type, s_Distributor, dates);
                     FileSave<SftpCustomer> customerFile = new FileSave<SftpCustomer>();
                     customerFile.CsvSave(strings[0], customerList);
                     path = $"/home/arich/Download/";
@@ -237,7 +237,7 @@ namespace VIAT.DataEntry.Services
             {
                 //判断是否存在当天有相同的类型的文件夹
                 List<Viat_sftp_export> exportList = s.GetFileList(path, ".csv");
-                string csvName = s_type.Equal("customer") ? $"{s_type}_arich_{DateTime.Now.ToString("yyyyMMdd")}" : $"{s_type}_{s_Distributor}_{DateTime.Now.ToString("yyyyMMdd")}";
+                string csvName = s_type.Equal("customer") ? $"{s_type}_arich_{dates}" : $"{s_type}_{s_Distributor}_{dates}";
                 var exportExtis = exportList.Where(x => x.file_name.Contains(csvName)).ToList();
                 if (exportExtis.Count()>0)
                 {
@@ -257,19 +257,19 @@ namespace VIAT.DataEntry.Services
             return webResponse.OK();
         }
 
-        public string[] LocalPath(string s_type,string s_Distributor)
+        public string[] LocalPath(string s_type,string s_Distributor,string date)
         {
             string localPath = "", csvName ="";
             string[] strings = new string[2];
             if (s_type.Equal("customer"))
             {
                 localPath = $"Upload/customer/arich/".MapPath();
-                csvName = $"{s_type}_arich_{DateTime.Now.ToString("yyyyMMddHHmmss")}.csv";
+                csvName = $"{s_type}_arich_{date}{DateTime.Now.ToString("HHmmss")}.csv";
             }
             else
             {
                 localPath = $"Upload/{s_type}/{s_Distributor}/".MapPath();
-                csvName = $"{s_type}_{s_Distributor}_{DateTime.Now.ToString("yyyyMMddHHmmss")}.csv";
+                csvName = $"{s_type}_{s_Distributor}_{date}{DateTime.Now.ToString("HHmmss")}.csv";
             }
             if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
             localPath += csvName;
