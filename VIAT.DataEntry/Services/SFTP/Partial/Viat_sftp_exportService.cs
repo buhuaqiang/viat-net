@@ -131,6 +131,7 @@ namespace VIAT.DataEntry.Services
 
         public WebResponseContent ExecuteBatch()
         {
+            WebResponseContent webContent = new WebResponseContent();
             List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x=>x.category_id == "DistID").ToList();
             if (systemValueList.Count()>0)
             {
@@ -145,7 +146,7 @@ namespace VIAT.DataEntry.Services
                     SftpUpload("Allowance", item.sys_key, DateTime.Now.ToString("yyyy-MM-dd"));
                 }
             }
-            return webResponse.OK();
+            return webContent.OK("导入成功!");
         }
 
         public WebResponseContent SftpUpload(string s_type,string distId,string date)
@@ -323,6 +324,9 @@ namespace VIAT.DataEntry.Services
                 case "6":
                     na = "grholddi";
                     break;
+                case "7":
+                    na = "Hintz";
+                    break;
                 case "8":
                     na = "Summit";
                     break;
@@ -344,6 +348,9 @@ namespace VIAT.DataEntry.Services
                 case "E":
                     na = "EnHong";
                     break;
+                case "F":
+                    na = "YiHui";
+                    break;
                 case "G":
                     na = "CCPC";
                     break;
@@ -358,6 +365,9 @@ namespace VIAT.DataEntry.Services
                     break;
                 case "K":
                     na = "medlion";
+                    break;
+                case "L":
+                    na = "dkshph";
                     break;
                 case "M":
                     na = "supermed";
