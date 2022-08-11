@@ -196,8 +196,8 @@ namespace VIAT.Entity.DomainModels
        ///IMT Type
        /// </summary>
        [Display(Name ="IMT Type")]
-       [MaxLength(15)]
-       [Column(TypeName="varchar(15)")]
+       [MaxLength(50)]
+       [Column(TypeName="varchar(50)")]
        [Editable(true)]
        public string imt_type { get; set; }
 
@@ -263,6 +263,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="medical_reviewer_id")]
        [MaxLength(5)]
        [Column(TypeName="varchar(5)")]
+       [Editable(true)]
        public string medical_reviewer_id { get; set; }
 
        
