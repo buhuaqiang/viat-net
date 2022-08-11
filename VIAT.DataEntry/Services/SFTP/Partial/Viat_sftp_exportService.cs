@@ -109,6 +109,14 @@ namespace VIAT.DataEntry.Services
             {
                 SftpList = SftpList.Where(x=> type.Contains(x.file_name.Split('_')[0])).ToList();
             }
+            if (!string.IsNullOrEmpty(start_date))
+            {
+                SftpList = SftpList.Where(x=> Convert.ToDateTime(x.modified_date) >= Convert.ToDateTime(start_date)).ToList();
+            }
+            if (!string.IsNullOrEmpty(end_date))
+            {
+                SftpList = SftpList.Where(x => Convert.ToDateTime(x.modified_date) <= Convert.ToDateTime(end_date)).ToList();
+            }
 
             pageData.total = SftpList.Count();
             pageData.rows = SftpList.Skip((options.Page - 1) * options.Rows).Take(options.Rows).ToList();
@@ -227,6 +235,17 @@ namespace VIAT.DataEntry.Services
             
             using (SFTPHelper s = new SFTPHelper())
             {
+                //判断是否存在当天有相同的类型的文件夹
+                List<Viat_sftp_export> exportList = s.GetFileList(path, ".csv");
+                string csvName = s_type.Equal("customer") ? $"{s_type}_arich_{DateTime.Now.ToString("yyyyMMdd")}" : $"{s_type}_{s_Distributor}_{DateTime.Now.ToString("yyyyMMdd")}";
+                var exportExtis = exportList.Where(x => x.file_name.Contains(csvName)).ToList();
+                if (exportExtis.Count()>0)
+                {
+                    foreach (var item in exportExtis)
+                    {
+                        s.Delete(path + item.file_name);
+                    }
+                }
                 s.CreateDirectory(path);
                 if (!s.Put(strings[0], path + strings[1]))
                 {
@@ -245,13 +264,14 @@ namespace VIAT.DataEntry.Services
             if (s_type.Equal("customer"))
             {
                 localPath = $"Upload/customer/arich/".MapPath();
+                csvName = $"{s_type}_arich_{DateTime.Now.ToString("yyyyMMddHHmmss")}.csv";
             }
             else
             {
                 localPath = $"Upload/{s_type}/{s_Distributor}/".MapPath();
+                csvName = $"{s_type}_{s_Distributor}_{DateTime.Now.ToString("yyyyMMddHHmmss")}.csv";
             }
             if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
-            csvName = $"{s_type}_{s_Distributor}_{DateTime.Now.ToString("yyyyMMddHHmmddsss")}.csv";
             localPath += csvName;
             strings[0] = localPath;
             strings[1] = csvName;
@@ -460,7 +480,7 @@ namespace VIAT.DataEntry.Services
                 }
                 sb.AppendLine(string.Join(",", dictData.Values));
             }
-            File.WriteAllText(path, sb.ToString(), Encoding.Default);
+            File.WriteAllText(path, sb.ToString(), Encoding.GetEncoding(950));
         }
 
         /// <summary>
