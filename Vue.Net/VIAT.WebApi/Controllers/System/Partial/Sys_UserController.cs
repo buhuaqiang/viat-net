@@ -190,8 +190,8 @@ namespace VIAT.System.Controllers
         }
 
         [ApiActionPermission]
-        [HttpPost, Route("GetLevelDetail")]
-        public IActionResult GetLevelDetail([FromBody] string emp_dbid)
+        [HttpGet, Route("GetLevelDetail")]
+        public IActionResult GetLevelDetail(string emp_dbid)
         {
             return Json(Service.GetLevelDetail(emp_dbid));
         }
