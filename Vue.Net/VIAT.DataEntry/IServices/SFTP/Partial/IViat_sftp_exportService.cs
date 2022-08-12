@@ -16,5 +16,6 @@ namespace VIAT.DataEntry.IServices
         WebResponseContent Execute(SaveModel saveModel);
         WebResponseContent ExecuteBatch(IHeaderDictionary header);
         WebResponseContent ExecuteRow(string file_name);
+        string GetDistEName(string dist_id);
     }
  }

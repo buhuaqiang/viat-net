@@ -26,6 +26,7 @@ using VIAT.Basic.IRepositories;
 using System.Collections.Generic;
 using VIAT.DataEntry.Utillity;
 using System.Text.RegularExpressions;
+using VIAT.Core.Configuration;
 
 namespace VIAT.DataEntry.Services
 {
@@ -179,6 +180,73 @@ namespace VIAT.DataEntry.Services
             
 
             return fileNameList;
+        }
+
+        public WebResponseContent ImportBatch(IHeaderDictionary header)
+        {
+            WebResponseContent webContent = new WebResponseContent();
+            var keys = header.Keys;
+            var values = header.Values;
+            bool key = keys.Any((id) =>
+            {
+                return AppSetting.quartzHeader.Name.Equals(id, StringComparison.OrdinalIgnoreCase);
+            });
+            bool value = values.Any((id) =>
+            {
+                return AppSetting.quartzHeader.Password.Equals(id, StringComparison.OrdinalIgnoreCase);
+            });
+            if (!key)
+            {
+                return webContent.Error("人员不存在，没有权限");
+            }
+            if (!value)
+            {
+                return webContent.Error("密码不对，没有权限");
+            }
+            Dictionary<string, List<Viat_sftp_export>> dicStfp = new Dictionary<string, List<Viat_sftp_export>>();
+            List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x => x.category_id == "DistID" && x.status == "Y").OrderBy(x=>x.sys_key).ToList();
+            if (systemValueList.Count() > 0)
+            {
+                string date = DateTime.Now.ToString("yyyyMMdd");
+                string localPath = $"Upload/SftpUpload/".MapPath();
+                if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
+                using (SFTPHelper s = new SFTPHelper())
+                {
+                    foreach (var item in systemValueList)
+                    {
+                        string distid = Viat_sftp_exportService.Instance.GetDistEName(item.sys_key);
+                        string path = $"/home/{distid}/Upload/";
+                        List<Viat_sftp_export> ss = s.GetFileList(path, ".csv");
+                        ss = ss.Where(x => x.file_name.Contains(date)).ToList();
+                        foreach (var import in ss)
+                        {
+                            s.Get(path + import.file_name, localPath + import.file_name);
+                        }
+                        dicStfp.Add(path, ss);
+                    }
+                }
+                IEnumerable<Viat_sftp_export> exportAble = dicStfp.SelectMany(x => x.Value);
+                List<Viat_sftp_export> SftpList = new List<Viat_sftp_export>();
+                SftpList.AddRange(exportAble);
+
+                foreach (var item in SftpList)
+                {
+                    if (item.file_name.IndexOf("sales") != -1)
+                    {
+                        importSalesCSV(localPath + item.file_name);
+                    }
+                    else if (item.file_name.IndexOf("invp") != -1)
+                    {
+                        ImportInvpfizerCSV(localPath + item.file_name);
+                    }
+                    else if (item.file_name.IndexOf("invd") != -1)
+                    {
+                        ImportInvdistCSV(localPath + item.file_name);
+                    }
+                    File.Delete(localPath+item.file_name);
+                }
+            }
+            return webContent.OK();
         }
 
         /// <summary>

@@ -39,5 +39,6 @@ namespace VIAT.DataEntry.IServices
         /// </summary>
         /// <param name="fileFullPaths"></param>
         public void doImportCSVFromFile(List<IFormFile> fileFullPaths);
+        WebResponseContent ImportBatch(IHeaderDictionary header);
     }
  }
