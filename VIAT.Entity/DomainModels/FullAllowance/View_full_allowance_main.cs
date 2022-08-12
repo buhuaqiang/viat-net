@@ -299,16 +299,16 @@ namespace VIAT.Entity.DomainModels
         ///Product Code
         /// </summary>
         [Display(Name = "Product Code")]
-        [MaxLength(15)]
-        [Column(TypeName = "varchar(15)")]
+        [MaxLength(1000)]
+        [Column(TypeName = "varchar(1000)")]
         public string prod_id { get; set; }
 
         /// <summary>
         ///Product Name
         /// </summary>
         [Display(Name = "Product Name")]
-        [MaxLength(50)]
-        [Column(TypeName = "varchar(50)")]
+        [MaxLength(1000)]
+        [Column(TypeName = "varchar(1000)")]
         public string prod_ename { get; set; }
 
 
@@ -316,15 +316,15 @@ namespace VIAT.Entity.DomainModels
         ///p_prod_dbid
         /// </summary>
         [Display(Name = "p_prod_dbid")]
-        [Column(TypeName = "varchar(50)")]
-        public string p_prod_dbid { get; set; }
+        [Column(TypeName = "uniqueidentifier")]
+        public Guid p_prod_dbid { get; set; }
 
         /// <summary>
         ///f_prod_dbid
         /// </summary>
         [Display(Name = "f_prod_dbid")]
-        [Column(TypeName = "varchar(50)")]
-        public string f_prod_dbid { get; set; }
+        [Column(TypeName = "uniqueidentifier")]
+        public Guid f_prod_dbid { get; set; }
 
     }
 }
