@@ -46,23 +46,27 @@ namespace VIAT.Price.Services
                     cust.cust_dbid,
 	                cust.cust_id, 
 	                cust.cust_name,
+                    cust.doh_type,
 	                cust.status as custStatus,
+                    cust.is_private,
+					dic2.DicName as custType,
 	                grp.status ,
 	                prc.group_id as group_id,
 	                prc.group_name as group_name,
-									prc.group_type,
-									dic1.DicName as groupTypeName,
-									prc.cust_type,
-									dic.DicName as custTypeName,
-									prc.pricing_field,
-									emp.emp_ename as pricing_manager_name,
-                                    prc.remarks
+					prc.group_type,
+					dic1.DicName as groupTypeName,
+					prc.cust_type,
+					dic.DicName as custTypeName,
+					prc.pricing_field,
+					emp.emp_ename as pricing_manager_name,
+                    prc.remarks
                 from viat_app_cust_group grp
                 left JOIN viat_com_cust cust ON cust.cust_dbid = grp.cust_dbid
                 left JOIN viat_app_cust_price_group prc ON grp.pricegroup_dbid = prc.pricegroup_dbid
 				left join viat_com_employee emp on prc.pricing_field=emp.emp_dbid
 				left join Sys_DictionaryList dic on (prc.cust_type=dic.DicValue AND dic.Dic_ID=(SELECT top 1 Dic_ID FROM Sys_Dictionary WHERE DicNo='price_group_cust_type'))								
 				left join Sys_DictionaryList dic1 on (prc.group_type=dic1.DicValue AND dic1.Dic_ID=(SELECT top 1 Dic_ID FROM Sys_Dictionary WHERE DicNo='group_price_channel'))
+			left join Sys_DictionaryList dic2 on (cust.is_private=dic2.DicValue AND dic2.Dic_ID=(SELECT top 1 Dic_ID FROM Sys_Dictionary WHERE DicNo='PublicPrivate'))
                 where cust.cust_id is not null and prc.group_id is not null
                ";
             return base.GetPageData(pageData);
@@ -79,6 +83,7 @@ namespace VIAT.Price.Services
                x.remarks,
                x.cust_id,
                x.cust_name,
+               x.custType,
                x.status,
                x.custStatus
             };
