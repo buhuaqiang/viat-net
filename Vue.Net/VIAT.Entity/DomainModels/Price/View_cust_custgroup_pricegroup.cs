@@ -90,6 +90,23 @@ namespace VIAT.Entity.DomainModels
         /// <summary>
         ///
         /// </summary>
+        [Display(Name = "DOH Type")]
+        [MaxLength(10)]
+        [Column(TypeName = "varchar(10)")]
+        public string doh_type { get; set; }
+
+
+        /// <summary>
+        ///
+        /// </summary>
+        [Display(Name = "custType")]
+        [MaxLength(10)]
+        [Column(TypeName = "varchar(20)")]
+        public string custType { get; set; }
+
+        /// <summary>
+        ///
+        /// </summary>
         [Display(Name = "Status")]
         [MaxLength(1)]
         [Column(TypeName = "varchar(1)")]
