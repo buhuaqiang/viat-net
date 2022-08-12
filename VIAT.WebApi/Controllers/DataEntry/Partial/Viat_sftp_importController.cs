@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using VIAT.Entity.DomainModels;
 using VIAT.DataEntry.IServices;
 using VIAT.Core.Utilities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VIAT.DataEntry.Controllers
 {
@@ -93,7 +94,12 @@ namespace VIAT.DataEntry.Controllers
             return Json(new WebResponseContent { Status = true });
         }
 
-      
+        [HttpPost, Route("ExecuteBatch"), AllowAnonymous]
+        public ActionResult ImportBatch()
+        {
+            return Json(_service.ImportBatch(HttpContext.Request.Headers));
+        }
+
 
         [HttpPost, Route("doExecute")]
         public IActionResult DoExecute([FromBody] Dictionary<string,string> options)
@@ -107,6 +113,8 @@ namespace VIAT.DataEntry.Controllers
             //_service.doImportCSVFromFile("D:\\Documents\\MyProject\\耀得\\SFTP Import", fileNames);
             return Json(options);
         }
+
+
     }
 
     public class SftpImportViewModel

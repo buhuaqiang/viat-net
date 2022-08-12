@@ -155,12 +155,12 @@ namespace VIAT.DataEntry.Services
             {
                 return webContent.Error("人员不存在，没有权限");
             }
-            if (value)
+            if (!value)
             {
                 return webContent.Error("密码不对，没有权限");
             }
             
-            List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x=>x.category_id == "DistID").ToList();
+            List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x=>x.category_id == "DistID" && x.status == "Y").OrderBy(x=>x.sys_key).ToList();
             if (systemValueList.Count()>0)
             {
                 foreach (var item in systemValueList)
