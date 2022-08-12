@@ -46,6 +46,7 @@ namespace VIAT.DataEntry.Services
         public override PageGridData<View_full_allowance_main> GetPageData(PageDataOptions options)
         {
 
+            PageGridData<View_full_allowance_main> pageGridData = new PageGridData<View_full_allowance_main>();
             /*解析查询条件*/
             List<SearchParameters> searchParametersList = new List<SearchParameters>();
             string contractNo = "";
@@ -110,7 +111,16 @@ namespace VIAT.DataEntry.Services
             }
 
 
-            QuerySql = "select  tab4.* ,cust.cust_id,cust.cust_name,prod.prod_id,prod.prod_ename,Null as p_prod_dbid,Null as f_prod_dbid from (  " +
+            QuerySql = "select ROW_NUMBER()over(order by tab4.created_date desc) as rowId,  tab4.*, " +
+                " (select top 1 case when tab4.pricegroup_dbid is null then cust_id else '' end cust_id from viat_app_hp_contract_cust c where c.hpcont_dbid= tab4.hpcont_dbid order by created_date desc ) as cust_id," +
+                " (select top 1 case when tab4.pricegroup_dbid is null then cust_name else '' end cust_name  from viat_app_hp_contract_cust c where c.hpcont_dbid= tab4.hpcont_dbid order by created_date desc ) as cust_name," +
+                " (select substring(prod_id,0,len(prod_id)) prod_id from (select (select CONVERT(NVARCHAR, prod_id)+' , ' from ( " +
+                "select  prod.prod_id from  viat_app_hp_contract_free_prod f_prod left join viat_com_prod prod on f_prod.prod_dbid=prod.prod_dbid and  f_prod.hpcont_dbid =  tab4.hpcont_dbid " +
+                " ) a FOR XML PATH ('') ) prod_id) c) as prod_id," +
+                " (select substring(prod_ename,0,len(prod_ename)) prod_name from (select (select CONVERT(NVARCHAR, prod_ename)+' , ' from (" +
+                "  select  prod.prod_ename from  viat_app_hp_contract_free_prod f_prod left join viat_com_prod prod on f_prod.prod_dbid=prod.prod_dbid  and  f_prod.hpcont_dbid =  tab4.hpcont_dbid " +
+                " ) a FOR XML PATH ('') ) prod_ename) c) as prod_ename ," +
+                " Null as p_prod_dbid,Null as f_prod_dbid from (  " +
                 "select  tab.* ,tab2.cust_dbid,tab3.prod_dbid from ( " +
                 "SELECT  hp_contract.*,allw_sum1.A1 as C1,allw_sum2.A1 AS C2,allw_sum3.A1 AS C3 ,price_group.group_id,price_group.group_name " +
                 "FROM  viat_app_hp_contract hp_contract " +
@@ -143,8 +153,16 @@ namespace VIAT.DataEntry.Services
                 "LEFT OUTER JOIN viat_com_cust cust on tab4.cust_dbid= cust.cust_dbid  " +
                 "LEFT OUTER JOIN viat_com_prod prod on tab4.prod_dbid=prod.prod_dbid ";
 
+            string sql = "select count(1) from (" + QuerySql + ") a";
+            pageGridData.total = repository.DapperContext.ExecuteScalar(sql, null).GetInt();
 
-             return base.GetPageData(options);
+            sql = @$"select * from (" +
+                QuerySql + $" ) as s where s.rowId between {((options.Page - 1) * options.Rows + 1)} and {options.Page * options.Rows} ";
+            pageGridData.rows = repository.DapperContext.QueryList<View_full_allowance_main>(sql, null);
+
+            return pageGridData;
+
+            //return base.GetPageData(options);
         }
 
 
