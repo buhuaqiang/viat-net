@@ -45,5 +45,11 @@ namespace VIAT.DataEntry.Controllers
         {
             return Json(_service.ExecuteBatch(HttpContext.Request.Headers));
         }
+        [ApiActionPermission]
+        [HttpPost, Route("ExecuteRow")]
+        public ActionResult ExecuteRow(string file_name)
+        {
+            return Json(_service.ExecuteRow(file_name));
+        }
     }
 }

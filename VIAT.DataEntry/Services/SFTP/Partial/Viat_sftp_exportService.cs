@@ -27,6 +27,12 @@ using System.IO;
 using System.Text;
 using VIAT.Entity.DomainModels.SFTP;
 using VIAT.Core.Configuration;
+using Newtonsoft.Json;
+using System.Net.Http;
+using System.Net;
+using System.Net.Http.Headers;
+using System.Web;
+using VIAT.Core.DBManager;
 
 namespace VIAT.DataEntry.Services
 {
@@ -62,7 +68,7 @@ namespace VIAT.DataEntry.Services
 
             string s_type = null;
             string s_Distributor = null;
-            string start_date = "",end_date = "";
+            string transfer_date = "";
             if (!string.IsNullOrEmpty(options.Wheres))
             {
                 searchParametersList = options.Wheres.DeserializeObject<List<SearchParameters>>();
@@ -78,11 +84,8 @@ namespace VIAT.DataEntry.Services
                             case "dist_id":
                                 s_Distributor = GetDistEName(sp.Value);
                                 break;
-                            case "start_date":
-                                start_date = sp.Value;
-                                break;
-                            case "end_date":
-                                end_date = sp.Value;
+                            case "transfer_date":
+                                transfer_date = sp.Value;
                                 break;
                         }
                     }
@@ -109,13 +112,9 @@ namespace VIAT.DataEntry.Services
             {
                 SftpList = SftpList.Where(x=> type.Contains(x.file_name.Split('_')[0])).ToList();
             }
-            if (!string.IsNullOrEmpty(start_date))
+            if (!string.IsNullOrEmpty(transfer_date))
             {
-                SftpList = SftpList.Where(x=> Convert.ToDateTime(x.modified_date) >= Convert.ToDateTime(start_date)).ToList();
-            }
-            if (!string.IsNullOrEmpty(end_date))
-            {
-                SftpList = SftpList.Where(x => Convert.ToDateTime(x.modified_date) <= Convert.ToDateTime(end_date)).ToList();
+                SftpList = SftpList.Where(x=> Convert.ToDateTime(x.modified_date) >= Convert.ToDateTime(transfer_date)).ToList();
             }
 
             pageData.total = SftpList.Count();
@@ -177,6 +176,32 @@ namespace VIAT.DataEntry.Services
             }
             return webContent.OK("export success!");
         }
+
+        public WebResponseContent ExecuteRow(string file_name)
+        {
+            string[] s_fileName = file_name.Split('_');
+            string localPath = $"Upload/{s_fileName[0]}/{s_fileName[1]}/".MapPath();
+            if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
+            SFTPHelper sftp = new SFTPHelper();
+            sftp.Get($"/home/{s_fileName}/Download/{file_name}", localPath);
+
+            FileStream stream = new FileStream(localPath + file_name, FileMode.Open);
+            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Content = new StreamContent(stream);
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            {
+                FileName = HttpUtility.UrlEncode(file_name)
+            };
+            response.Headers.Add("Access-Control-Expose-Headers", "FileName");
+            response.Headers.Add("FileName", HttpUtility.UrlEncode(file_name));
+
+            stream.Close();
+            File.Delete(localPath+file_name);
+            return webResponse.OK();
+        }
+
+
 
         public WebResponseContent SftpUpload(string s_type,string distId,string date)
         {
@@ -285,7 +310,11 @@ namespace VIAT.DataEntry.Services
         /// <returns></returns>
         public List<SftpPrice> GetSftpPrices(string distId,string dates)
         {
-            return repository.DapperContext.QueryList<SftpPrice>("sp_viat_price_to_distributor_data", new { @DistId = distId, @trans_date = dates }, System.Data.CommandType.StoredProcedure);
+            var priceList = repository.DapperContext.QueryMultiple<SftpPrice, SftpPrice>("sp_viat_price_to_distributor_data", new { @DistId = distId, @trans_date = dates }, System.Data.CommandType.StoredProcedure);
+            List<SftpPrice> priceA = priceList.Item1;
+            List<SftpPrice> priceB = priceList.Item2;
+            priceA = priceA.Concat(priceB).ToList();
+            return priceA;
         }
         public List<SftpOrder> GetSftpOrder(string distId, string dates)
         {
