@@ -13,7 +13,7 @@ using VIAT.Entity.SystemModels;
 
 namespace VIAT.Entity.DomainModels
 {
-    [Entity(TableCnName = "HP合約設置",TableName = "viat_app_hp_contract")]
+    [Entity(TableCnName = "HP合約設置", TableName = "viat_app_hp_contract")]
     public partial class View_app_hp_contract:BaseEntity
     {
         /// <summary>
@@ -79,7 +79,7 @@ namespace VIAT.Entity.DomainModels
        /// <summary>
        ///CustID
        /// </summary>
-      /*  [Display(Name ="CustID")]
+      /* [Display(Name ="CustID")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        public string g_cust_id { get; set; }*/
@@ -97,7 +97,7 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="FG Product Code")]
        [MaxLength(1000)]
-       [Column(TypeName="varchar(1000)")]
+       [Column(TypeName= "varchar(1000)")]
        public string prod_id { get; set; }
 
        /// <summary>
@@ -333,15 +333,30 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="uniqueidentifier")]
        public Guid? pricegroup_dbid { get; set; }
 
-        /// <summary>
-        ///
-        /// </summary>
-        [Display(Name = "costomer_type")]
-        [MaxLength(1)]
-        [Column(TypeName = "varchar(1)")]
-        [Required(AllowEmptyStrings = false)]
-        public string costomer_type { get; set; }
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="accrue_price")]
+       [DisplayFormat(DataFormatString="18,5")]
+       [Column(TypeName="decimal")]
+       public decimal? accrue_price { get; set; }
 
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="accrue_start_date")]
+       [Column(TypeName="datetime")]
+       public DateTime? accrue_start_date { get; set; }
 
+       /// <summary>
+       ///
+       /// </summary>
+       [Display(Name ="costomer_type")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       [Required(AllowEmptyStrings=false)]
+       public string costomer_type { get; set; }
+
+       
     }
 }

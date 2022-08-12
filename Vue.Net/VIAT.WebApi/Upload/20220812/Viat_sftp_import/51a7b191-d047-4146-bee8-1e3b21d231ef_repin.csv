@@ -1,0 +1,116 @@
+package rep;
+import com.emis.report.*;
+import com.emis.business.*;
+import com.emis.util.*;
+import com.emis.db.*;
+import java.io.*;
+import java.util.*;
+import emisReportGEM;
+public class Repin extends emisReportGEM {
+  private String sDateSepa_;
+  private String sChestNewdate_ = "";
+  public Repin(emisRptProvider oProvider) throws Exception {
+    super(oProvider);
+  }
+  public void printRpt() throws Exception {
+    emisProp _oProp = emisProp.getInstance(oProvider_.getContext());
+    sDateSepa_ = _oProp.get("EPOS_DATESEPA");
+    if (sDateSepa_ == null) sDateSepa_ = "";
+    sChestNewdate_ = emisUtil.setNull(_oProp.get("CHK_CHEST_NEWDATE"));
+    super.printRpt();
+  }
+  protected void processBody() {
+    String _sReprecno = getData("REPRECNO");
+    String _sBookdate = getData("BOOKDATE");
+    String _sCheckno  = getData("CHECKNO");
+    emisDb _oDb = null;
+    String _sSQLStr = "";
+    String _sIpnameLine="";
+    try { 
+      _oDb = emisDb.getInstance(oProvider_.getContext());
+      _sSQLStr = "select distinct i.IPKIND, i.IPNO, i.IPNAME"
+               + "  from Repitem i, dbo.chkGetBookRepYes(?,'','','') a"
+               + "  where ((i.IPKIND=a.IPKIND and i.IPNO=a.IPNO) or i.IPKIND='A')"
+               + "    and i.RFLAG>'' and i.NODATAFLAG>''"
+               + "  order by i.IPKIND, i.IPNO";
+      _oDb.prepareStmt(_sSQLStr);
+      _oDb.setString(1, _sReprecno);
+      _oDb.prepareQuery();
+      emisRowSet _oIpitem = new emisRowSet(_oDb);
+      String _sNowIpkind  = "";
+      boolean _hasRowData = false;
+      boolean _bFirst=true;
+      while (_oIpitem.next()) {
+        String _sIpkind = _oIpitem.getString("IPKIND");
+        String _sIpno   = _oIpitem.getString("IPNO");
+        String _sIpitem = _sIpkind+emisString.lPadB(_sIpno,3,"0");
+        String _sIpname = _oIpitem.getString("IPNAME");
+        if ("H007".equals(_sIpitem))
+          continue;
+        if ("H008,H009,H010".indexOf(_sIpitem)>=0) {
+          _sIpitem = "H007";
+          _sIpname = "腸鏡";
+        }
+        if ("A001".equals(_sIpitem))
+          _sIpname = "既往史";
+        if ("A003".equals(_sIpitem) || "A004".equals(_sIpitem))
+          continue;
+        if (_sBookdate.compareTo(sChestNewdate_)>=0 && "I001".equals(_sIpitem))
+          continue;
+        if (!_sNowIpkind.equals(_sIpkind)) {
+          _sSQLStr = "select * from REP_" + _sIpkind
+                   + " where BOOKDATE='" + _sBookdate + "' "
+                   + "   and CHECKNO ='" + _sCheckno + "'";
+          _oDb.executeQuery(_sSQLStr);
+          _sNowIpkind = _sIpkind;
+          _hasRowData = _oDb.next()? true: false;   
+        }
+        String _sData = "";
+        if (_hasRowData) {
+          try {
+            _sData = _oDb.getString("R"+_sIpitem);
+            if ("A001".equals(_sIpitem))
+              _sData = emisUtil.setNull(_oDb.getString("RA001"))
+                     + emisUtil.setNull(_oDb.getString("RA003"))
+                     + emisUtil.setNull(_oDb.getString("RA004"));
+          } catch (Exception e) {
+            continue;
+          }
+        }
+        if (!emisUtil.empty(_sData))
+          continue;
+        String _sBufIPName = _sIpnameLine + ("".equals(_sIpnameLine)?"":"、")
+                           + _sIpname;
+        if (emisString.lengthB(_sBufIPName)>60) {
+          printIPName(_bFirst, _sIpnameLine);
+          _bFirst = false;
+          _sIpnameLine = _sIpname;
+        } else {
+          _sIpnameLine = _sBufIPName;
+        }
+      }
+      printIPName(_bFirst, _sIpnameLine);
+    } catch (Exception e) {
+      throw new RuntimeException("錯誤訊息: " + e.getMessage());
+    } finally {
+      _oDb.close();
+    }
+    if (!"".equals(_sIpnameLine))
+      super.processBody();
+  }
+  private void printIPName(boolean bFirst, String sIPName) {
+    if ("".equals(sIPName))
+      return;
+    String _sLineStr="";
+    if (bFirst) {
+      _sLineStr += emisString.rPadB(getData("CHECKNO"),8," ") + " "
+                 + emisString.rPadB(getData("PERNAME").trim(),10," ") + " "
+                 + emisString.rPadB(getData("TEAMNO").trim(),4," ") + "－"
+                 + emisString.rPadB(getData("TEAMSEQNO").trim(),3," ") + " "
+                 + emisString.rPadB(getData("TEAMNAME").trim(),10," ") + " ";
+    } else {
+      _sLineStr += emisString.replicate(" ",41);
+    }
+    printLine(_sLineStr + sIPName);
+  }
+}
