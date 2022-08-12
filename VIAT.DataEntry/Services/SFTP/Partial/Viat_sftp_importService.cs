@@ -74,6 +74,17 @@ namespace VIAT.DataEntry.Services
             //base.Init(dbRepository);
         }
 
+
+        public override PageGridData<Viat_sftp_import> GetPageData(PageDataOptions options)
+        {
+            object extraValue = options.Value;
+            string distId = "";
+            string source = "";
+            List<Viat_sftp_export> rows = queryCSVFromSftp(distId, source);
+            PageGridData<Viat_sftp_import> gridData = new PageGridData<Viat_sftp_import>();
+            return base.GetPageData(options);
+        }
+
         /// <summary>
         /// 從SFTP查詢檔案清單
         /// </summary>
@@ -221,6 +232,8 @@ namespace VIAT.DataEntry.Services
                 case "O":
                     dist = "pingtin";
                     break;
+                default:
+                    return;
             }
             string sftpPath = "/home/" + dist + "/Upload";
             foreach (string fileName in fileNames)
@@ -269,6 +282,57 @@ namespace VIAT.DataEntry.Services
             foreach (string fileName in fileNames)
             {
                 string filePath = Path.Combine(tempPath, fileName);
+                if (fileName.IndexOf("sales") != -1)
+                {
+                    importSalesCSV(filePath);
+                }
+                else if (fileName.IndexOf("invp") != -1)
+                {
+                    ImportInvpfizerCSV(filePath);
+                }
+                else if (fileName.IndexOf("invd") != -1)
+                {
+                    ImportInvdistCSV(filePath);
+                }
+                else if (fileName.IndexOf("re-sales") != -1)
+                {
+                    //TODO: 暫時還未知
+                }
+                else
+                {
+
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// 匯入檔案內容
+        /// </summary>
+        /// <param name="fileFullPaths"></param>
+        public void doImportCSVFromFile(List<IFormFile> fileFullPaths)
+        {
+            this.Response = new WebResponseContent();
+            IFormFile formFile = fileFullPaths[0];
+            string targetPath = $"Upload/{DateTime.Now.ToString("yyyMMdd")}/{typeof(Viat_sftp_import).Name}/".MapPath();
+            if (!Directory.Exists(targetPath)) Directory.CreateDirectory(targetPath);
+
+            List<string> fileNamePathList = new List<string>();
+            foreach (IFormFile f in fileFullPaths)
+            {
+                string dicPath = $"{targetPath}{Guid.NewGuid().ToString()}_{f.FileName}";
+                FileInfo file = new FileInfo(dicPath);
+                using (var stream = new FileStream(dicPath, FileMode.Create))
+                {
+                    formFile.CopyTo(stream);
+                }
+                fileNamePathList.Add(dicPath);
+            }
+
+
+            foreach (string filePath in fileNamePathList)
+            {
+                string fileName = Path.GetFileName(filePath);
                 if (fileName.IndexOf("sales") != -1)
                 {
                     importSalesCSV(filePath);
@@ -1018,36 +1082,42 @@ namespace VIAT.DataEntry.Services
             try
             {
                 Viat_com_system_value distMail=_viat_com_system_valueRepository.Find(x => x.category_id == "DistID" && x.sys_key == fileInfo[1]).FirstOrDefault();
-
-                string pattern = "\"(.*)\"";
-                Regex rg = new Regex(pattern);
-                string[] mails = rg.Match(distMail.remarks).ToString().Replace("\"", "").Split(';');
-                //信件內容
-                string pcontect = data.filenameimp + " " + data.errormessage;//"string or html";
-                string subject = "";
-                //主旨
-                if (success == false)
+                if(distMail != null)
                 {
-                    string content = data.filenameimp + " File Error";
-                    if (errorMessage.Count() > 0 && data.filetext != "")
+                    string pattern = "\"(.*)\"";
+                    Regex rg = new Regex(pattern);
+                    string[] mails = rg.Match(distMail.remarks).ToString().Replace("\"", "").Split(';');
+                    //信件內容
+                    string pcontect = data.filenameimp + " " + data.errormessage;//"string or html";
+                    string subject = "";
+                    //主旨
+                    if (success == false)
                     {
-                        pcontect = "<br>Data:<br>";
-                        foreach (var p in errorMessage)
+                        string content = data.filenameimp + " File Error";
+                        if (errorMessage.Count() > 0 && data.filetext != "")
                         {
-                            if (p.filetext != "")
-                                pcontect += p.filetext + " " + p.errormessage + "<br>";
+                            pcontect = "<br>Data:<br>";
+                            foreach (var p in errorMessage)
+                            {
+                                if (p.filetext != "")
+                                    pcontect += p.filetext + " " + p.errormessage + "<br>";
+                            }
                         }
+                        subject = data.filenameimp + " " + " File Import Error ";
                     }
-                    subject = data.filenameimp + " " + " File Import Error ";
+                    else
+                        subject = data.filenameimp + " File Import Successful";
+                    SmtpHelper smtpHelper = new SmtpHelper();
+                    foreach (var dist_mail in mails)
+                    {
+                        smtpHelper.sendMail(dist_mail, subject, pcontect);
+                    }
+                    return true;
                 }
                 else
-                    subject = data.filenameimp + " File Import Successful";
-                SmtpHelper smtpHelper = new SmtpHelper();
-                foreach (var dist_mail in mails)
                 {
-                    smtpHelper.sendMail(dist_mail, subject, pcontect);
-                }                
-                return true;
+                    return true;
+                }
             }
             catch
             {
