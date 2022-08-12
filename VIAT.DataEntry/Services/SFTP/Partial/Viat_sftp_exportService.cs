@@ -311,10 +311,8 @@ namespace VIAT.DataEntry.Services
         public List<SftpPrice> GetSftpPrices(string distId,string dates)
         {
             var priceList = repository.DapperContext.QueryMultiple<SftpPrice, SftpPrice>("sp_viat_price_to_distributor_data", new { @DistId = distId, @trans_date = dates }, System.Data.CommandType.StoredProcedure);
-            List<SftpPrice> priceA = priceList.Item1;
             List<SftpPrice> priceB = priceList.Item2;
-            priceA = priceA.Concat(priceB).ToList();
-            return priceA;
+            return priceB;
         }
         public List<SftpOrder> GetSftpOrder(string distId, string dates)
         {
