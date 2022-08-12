@@ -17,28 +17,6 @@ namespace VIAT.Entity.DomainModels
     public partial class View_full_allowance_sharing:BaseEntity
     {
         /// <summary>
-       ///K1
-       /// </summary>
-       [Display(Name ="K1")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? K1 { get; set; }
-
-       /// <summary>
-       ///K2
-       /// </summary>
-       [Display(Name ="K2")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? K2 { get; set; }
-
-       /// <summary>
-       ///A1
-       /// </summary>
-       [Display(Name ="A1")]
-       [DisplayFormat(DataFormatString="38,5")]
-       [Column(TypeName="decimal")]
-       public decimal? A1 { get; set; }
-
-       /// <summary>
        ///Customer ID
        /// </summary>
        [Display(Name ="Customer ID")]
@@ -53,14 +31,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(100)]
        [Column(TypeName="nvarchar(100)")]
        public string cust_name { get; set; }
-
-       /// <summary>
-       ///status
-       /// </summary>
-       [Display(Name ="status")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       public string status { get; set; }
 
        /// <summary>
        ///Product ID
@@ -79,14 +49,6 @@ namespace VIAT.Entity.DomainModels
        public string prod_ename { get; set; }
 
        /// <summary>
-       ///state
-       /// </summary>
-       [Display(Name ="state")]
-       [MaxLength(1)]
-       [Column(TypeName="varchar(1)")]
-       public string state { get; set; }
-
-       /// <summary>
        ///Sharing amount
        /// </summary>
        [Display(Name ="Sharing amount")]
@@ -103,20 +65,44 @@ namespace VIAT.Entity.DomainModels
        public decimal? percent { get; set; }
 
        /// <summary>
-       ///hpcont_dbid
+       ///state
        /// </summary>
-       [Display(Name ="hpcont_dbid")]
-       [Column(TypeName="uniqueidentifier")]
-       public Guid? hpcont_dbid { get; set; }
+       [Display(Name ="state")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       public string state { get; set; }
 
        /// <summary>
-       ///hpallw_dbid
+       ///status
+       /// </summary>
+       [Display(Name ="status")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       public string status { get; set; }
+
+       /// <summary>
+       ///A1
+       /// </summary>
+       [Display(Name ="A1")]
+       [DisplayFormat(DataFormatString="38,5")]
+       [Column(TypeName="decimal")]
+       public decimal? A1 { get; set; }
+
+       /// <summary>
+       ///prod_dbid
        /// </summary>
        [Key]
-       [Display(Name ="hpallw_dbid")]
+       [Display(Name ="prod_dbid")]
        [Column(TypeName="uniqueidentifier")]
        [Required(AllowEmptyStrings=false)]
-       public Guid hpallw_dbid { get; set; }
+       public Guid prod_dbid { get; set; }
+
+       /// <summary>
+       ///cust_dbid
+       /// </summary>
+       [Display(Name ="cust_dbid")]
+       [Column(TypeName="uniqueidentifier")]
+       public Guid? cust_dbid { get; set; }
 
        
     }

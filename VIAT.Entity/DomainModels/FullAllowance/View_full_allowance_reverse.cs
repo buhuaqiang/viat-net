@@ -23,6 +23,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string cust_id { get; set; }
 
        /// <summary>
@@ -40,6 +41,7 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(15)]
        [Column(TypeName="varchar(15)")]
        [Editable(true)]
+       [Required(AllowEmptyStrings=false)]
        public string prod_id { get; set; }
 
        /// <summary>
@@ -79,8 +81,8 @@ namespace VIAT.Entity.DomainModels
        ///Invoice No
        /// </summary>
        [Display(Name ="Invoice No")]
-       [MaxLength(10)]
-       [Column(TypeName="varchar(10)")]
+       [MaxLength(20)]
+       [Column(TypeName="varchar(20)")]
        [Editable(true)]
        public string invoice_no { get; set; }
 
@@ -99,6 +101,13 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Modify_user")]
        [Column(TypeName="int")]
        public int? modified_user { get; set; }
+
+       /// <summary>
+       ///Modify Date
+       /// </summary>
+       [Display(Name ="Modify Date")]
+       [Column(TypeName="datetime")]
+       public DateTime? modified_date { get; set; }
 
        /// <summary>
        ///列名entity
@@ -258,14 +267,6 @@ namespace VIAT.Entity.DomainModels
        [MaxLength(50)]
        [Column(TypeName="varchar(50)")]
        public string modified_clientusername { get; set; }
-
-       /// <summary>
-       ///列名percent
-       /// </summary>
-       [Display(Name ="列名percent")]
-       [DisplayFormat(DataFormatString="18,5")]
-       [Column(TypeName="decimal")]
-       public decimal? percent { get; set; }
 
        /// <summary>
        ///hpallw_dbid
