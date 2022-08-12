@@ -298,32 +298,65 @@ namespace VIAT.DataEntry.Services
             string dist = "";
             switch (distId)
             {
+                case "1":
+                    dist = "ParkeDavis";
+                    break;
                 case "2":
-                    dist = "grzueph";
+                    dist = "Zuellig";
                     break;
                 case "3":
-                    dist = "arichph";
+                    dist = "Arich";
+                    break;
+                case "4":
+                    dist = "ShineSeng";
+                    break;
+                case "5":
+                    dist = "Holding";
                     break;
                 case "6":
                     dist = "grholddi";
                     break;
+                case "7":
+                    dist = "Hintz";
+                    break;
+                case "8":
+                    dist = "Summit";
+                    break;
                 case "9":
-                    dist = "grorieur";
+                    dist = "OrientEropharma";
                     break;
                 case "A":
-                    dist = "granchia";
+                    dist = "AnChiang";
                     break;
                 case "B":
-                    dist = "grhuimaw";
+                    dist = "HuiMaw";
+                    break;
+                case "C":
+                    dist = "SingLong";
+                    break;
+                case "D":
+                    dist = "HorngWang";
+                    break;
+                case "E":
+                    dist = "EnHong";
+                    break;
+                case "F":
+                    dist = "YiHui";
+                    break;
+                case "G":
+                    dist = "CCPC";
                     break;
                 case "H":
-                    dist = "grconmed";
+                    dist = "CONMED";
+                    break;
+                case "I":
+                    dist = "keto";
                     break;
                 case "J":
-                    dist = "zowph";
+                    dist = "zowhong";
                     break;
                 case "K":
-                    dist = "medph";
+                    dist = "medlion";
                     break;
                 case "L":
                     dist = "dkshph";
@@ -338,8 +371,10 @@ namespace VIAT.DataEntry.Services
                     dist = "pingtin";
                     break;
                 default:
-                    return;
+                    dist = "ParkeDavis,Zuellig,Arich,ShineSeng,Holding,grholddi,Summit,OrientEropharma,AnChiang,HuiMaw,SingLong,HorngWang,EnHong,CCPC,CONMED,keto,zowhong,medlion,supermed,astrong,pingtin";
+                    break;
             }
+            dist = dist.ToLower();
             string sftpPath = "/home/" + dist + "/Upload";
             foreach (string fileName in fileNames)
             {
