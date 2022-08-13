@@ -32,7 +32,7 @@ namespace VIAT.DataEntry.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public override ActionResult GetPageData([FromBody] PageDataOptions loadData)
+      /*  public override ActionResult GetPageData([FromBody] PageDataOptions loadData)
         {
             string distId = "";
             string source = "";
@@ -62,7 +62,7 @@ namespace VIAT.DataEntry.Controllers
             List<Viat_sftp_import> result = _service.queryCSVFromSftp(distId, source);
             return Json(result);
             //return base.GetPageData(loadData);
-        }
+        }*/
 
         [HttpPost, Route("doImportCSVFromSftp")]
         public IActionResult DoImportCSVFromSftp([FromBody] SftpImportViewModel options)
