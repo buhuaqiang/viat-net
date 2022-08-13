@@ -75,15 +75,38 @@ namespace VIAT.DataEntry.Services
             //base.Init(dbRepository);
         }
 
-
+        WebResponseContent webResponse = new WebResponseContent();
+        /// <summary>
+        /// 获取SFTP信息
+        /// </summary>
+        /// <param name="saveModel"></param>
+        /// <returns></returns>
         public override PageGridData<Viat_sftp_import> GetPageData(PageDataOptions options)
         {
-            object extraValue = options.Value;
             string distId = "";
             string source = "";
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            if (!string.IsNullOrEmpty(options.Wheres))
+            {
+                searchParametersList = options.Wheres.DeserializeObject<List<SearchParameters>>();
+                if (searchParametersList != null && searchParametersList.Count > 0)
+                {
+                    foreach (SearchParameters sp in searchParametersList)
+                    {
+                        switch (sp.Name.ToLower())
+                        {
+                            case "dist_id":
+                                distId = sp.Value;
+                                break;
+                            case "source":
+                                source = sp.Value;
+                                break;
+                        }
+                    }
+                }
+            }
             List<Viat_sftp_import> rows = queryCSVFromSftp(distId, source);
             PageGridData<Viat_sftp_import> gridData = new PageGridData<Viat_sftp_import>();
-
             gridData.total = rows.Count();
             gridData.rows = rows.Skip((options.Page - 1) * options.Rows).Take(options.Rows).ToList();
             return gridData;
@@ -99,6 +122,7 @@ namespace VIAT.DataEntry.Services
         {
             this.Response = new WebResponseContent();
             List<Viat_sftp_import> fileNameList = new List<Viat_sftp_import>();
+            Dictionary<string, List<Viat_sftp_import>> dicStfp = new Dictionary<string, List<Viat_sftp_import>>();
             Regex reg1 = new Regex(@"sales_[a-zA-Z0-9]{1,}_\d{14}\.csv");
             Regex reg2 = new Regex(@"invp[a-z]{0,5}_[a-zA-Z0-9]{1,}_\d{10,14}\.csv");
             Regex reg3 = new Regex(@"invd[a-z]{0,3}_[a-zA-Z0-9]{1,}_\d{10,14}\.csv");
@@ -182,44 +206,57 @@ namespace VIAT.DataEntry.Services
                     break;
             }
             dist = dist.ToLower();
-            string sftpPath = "/home/" + dist + "/Upload";
+            string[] distributor = dist.Split(new char[] { ',' });
+            string sftpPath = "";
+            Console.WriteLine("sftpPath:" + sftpPath);
             List<Viat_sftp_import> sftpFileList = null;
             using (SFTPHelper sftpClient = new SFTPHelper())
             {
-                sftpFileList= sftpClient.GetFileImportList(sftpPath, ".csv");
-            }
-            foreach(Viat_sftp_import p in sftpFileList)
-            {
-                if(string.IsNullOrEmpty( source ))
+                foreach (var item in distributor)
                 {
-                    if (!reg1.IsMatch(p.file_name) && !reg2.IsMatch(p.file_name) && !reg3.IsMatch(p.file_name))
-                        continue;
-                } 
-                else if (source == "sales")
-                {
-                    if (!reg1.IsMatch(p.file_name))
-                        continue;
-                } 
-                else if (source == "invpfizer")
-                {
-                    if (!reg2.IsMatch(p.file_name))
-                        continue;
-                }
-                else if (source == "invdist")
-                {
-                    if (!reg3.IsMatch(p.file_name))
-                        continue;
-                }
-                string filenameAlike = getFilenameDatePart(p.file_name);
-                int findNum=_viat_imp_error_logRepository.Find(x =>x.filenameimp== p.file_name || (p.file_name.Contains(filenameAlike) && p.file_name.CompareTo(p.file_name) >0 )).Count();
-                if(findNum > 0) 
-                    continue;
+                    sftpPath = "/home/" + item + "/Download";
+                    sftpFileList = sftpClient.GetFileImportList(sftpPath, ".csv");
+                    foreach (Viat_sftp_import p in sftpFileList)
+                    {
+                        if (string.IsNullOrEmpty(source))
+                        {
+                            if (!reg1.IsMatch(p.file_name) && !reg2.IsMatch(p.file_name) && !reg3.IsMatch(p.file_name))
+                                continue;
+                        }
+                        else if (source == "sales")
+                        {
+                            if (!reg1.IsMatch(p.file_name))
+                                continue;
+                        }
+                        else if (source == "invpfizer")
+                        {
+                            if (!reg2.IsMatch(p.file_name))
+                                continue;
+                        }
+                        else if (source == "invdist")
+                        {
+                            if (!reg3.IsMatch(p.file_name))
+                                continue;
+                        }
+                        else if (source == "resales")
+                        {
+                            //邏輯待之後加入
+                            continue;
+                        }
+                        string filenameAlike = getFilenameDatePart(p.file_name);
+                        int findNum = _viat_imp_error_logRepository.Find(x => x.filenameimp == p.file_name || (p.file_name.Contains(filenameAlike) && p.file_name.CompareTo(p.file_name) > 0)).Count();
+                        if (findNum > 0)
+                            continue;
 
-                fileNameList.Add(p);
+                        fileNameList.Add(p);
+                    }
+                    dicStfp.Add(item, fileNameList);
+                }
             }
-            
-
-            return fileNameList;
+            IEnumerable<Viat_sftp_import> value = dicStfp.SelectMany(x => x.Value);
+            List<Viat_sftp_import> SftpList = new List<Viat_sftp_import>();
+            SftpList.AddRange(value);
+            return SftpList;
         }
 
         public WebResponseContent ImportBatch(IHeaderDictionary header)
