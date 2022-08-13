@@ -204,25 +204,25 @@ namespace VIAT.DataEntry.Utillity
         {
             try
             {
-                List<Viat_sftp_import> sftp_ExportList = new List<Viat_sftp_import>();
+                List<Viat_sftp_import> sftp_ImportList = new List<Viat_sftp_import>();
                 Connect();
                 if (sftp.Exists(remotePath))
                 {
                     var files = sftp.ListDirectory(remotePath);
                     foreach (var file in files)
                     {
-                        Viat_sftp_import sftp_Export = new Viat_sftp_import();
+                        Viat_sftp_import sftp_Import = new Viat_sftp_import();
                         string name = file.Name;
                         if (name.Length > (fileSuffix.Length + 1) && fileSuffix == name.Substring(name.Length - fileSuffix.Length))
                         {
-                            sftp_Export.file_name = file.Name;
-                            //sftp_Export. = file.Length;
-                            //sftp_Export.modified_date = file.LastWriteTime;
-                            sftp_ExportList.Add(sftp_Export);
+                            sftp_Import.file_name = file.Name;
+                            sftp_Import.upload_date = file.LastWriteTime;
+                            sftp_Import.file_path =  file.FullName;
+                            sftp_ImportList.Add(sftp_Import);
                         }
                     }
                 }
-                return sftp_ExportList;
+                return sftp_ImportList;
             }
             catch (Exception ex)
             {
