@@ -59,7 +59,7 @@ namespace VIAT.DataEntry.Controllers
                 return Json(new WebResponseContent { Status = false, Message = "請至少選取一個經銷商" });
             }
 
-            List<Viat_sftp_export> result = _service.queryCSVFromSftp(distId, source);
+            List<Viat_sftp_import> result = _service.queryCSVFromSftp(distId, source);
             return Json(result);
             //return base.GetPageData(loadData);
         }
@@ -105,7 +105,7 @@ namespace VIAT.DataEntry.Controllers
         public IActionResult DoExecute([FromBody] Dictionary<string,string> options)
         {
             int c = options.Count;
-            List<Viat_sftp_export>  result=_service.queryCSVFromSftp("2", "");
+            List<Viat_sftp_import>  result=_service.queryCSVFromSftp("2", "");
             //string[] fileNames = { "sales_3_20220708191938.csv" };
             //string[] fileNames = { "sales_3_20220707191938.csv" };
             //string[] fileNames = { "invdist_3_2022070819.csv" , "invpfizer_3_2022070819.csv" };

@@ -17,7 +17,7 @@ namespace VIAT.DataEntry.IServices
         /// </summary>
         /// <param name="distId"></param>
         /// <returns></returns>
-        public List<Viat_sftp_export> queryCSVFromSftp(string distId, string source);
+        public List<Viat_sftp_import> queryCSVFromSftp(string distId, string source);
 
         /// <summary>
         /// 匯入SFTP上檔案內容
