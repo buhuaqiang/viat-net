@@ -81,9 +81,12 @@ namespace VIAT.DataEntry.Services
             object extraValue = options.Value;
             string distId = "";
             string source = "";
-            List<Viat_sftp_export> rows = queryCSVFromSftp(distId, source);
+            List<Viat_sftp_import> rows = queryCSVFromSftp(distId, source);
             PageGridData<Viat_sftp_import> gridData = new PageGridData<Viat_sftp_import>();
-            return base.GetPageData(options);
+
+            gridData.total = rows.Count();
+            gridData.rows = rows.Skip((options.Page - 1) * options.Rows).Take(options.Rows).ToList();
+            return gridData;
         }
 
         /// <summary>
@@ -92,10 +95,10 @@ namespace VIAT.DataEntry.Services
         /// <param name="distId"></param>
         /// <param name="source"></param>
         /// <returns></returns>
-        public List<Viat_sftp_export> queryCSVFromSftp(string distId,string source)
+        public List<Viat_sftp_import> queryCSVFromSftp(string distId,string source)
         {
             this.Response = new WebResponseContent();
-            List<Viat_sftp_export> fileNameList = new List<Viat_sftp_export>();
+            List<Viat_sftp_import> fileNameList = new List<Viat_sftp_import>();
             Regex reg1 = new Regex(@"sales_[a-zA-Z0-9]{1,}_\d{14}\.csv");
             Regex reg2 = new Regex(@"invp[a-z]{0,5}_[a-zA-Z0-9]{1,}_\d{10,14}\.csv");
             Regex reg3 = new Regex(@"invd[a-z]{0,3}_[a-zA-Z0-9]{1,}_\d{10,14}\.csv");
@@ -180,12 +183,12 @@ namespace VIAT.DataEntry.Services
             }
             dist = dist.ToLower();
             string sftpPath = "/home/" + dist + "/Upload";
-            List<Viat_sftp_export> sftpFileList = null;
+            List<Viat_sftp_import> sftpFileList = null;
             using (SFTPHelper sftpClient = new SFTPHelper())
             {
-                sftpFileList= sftpClient.GetFileList(sftpPath, ".csv");
+                sftpFileList= sftpClient.GetFileImportList(sftpPath, ".csv");
             }
-            foreach(Viat_sftp_export p in sftpFileList)
+            foreach(Viat_sftp_import p in sftpFileList)
             {
                 if(string.IsNullOrEmpty( source ))
                 {

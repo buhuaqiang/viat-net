@@ -193,6 +193,43 @@ namespace VIAT.DataEntry.Utillity
             }
         }
         #endregion
+        #region 获取SFTP文件列表
+        /// <summary>
+        /// 获取SFTP文件列表
+        /// </summary>
+        /// <param name="remotePath">远程目录</param>
+        /// <param name="fileSuffix">文件后缀</param>
+        /// <returns></returns>
+        public List<Viat_sftp_import> GetFileImportList(string remotePath, string fileSuffix)
+        {
+            try
+            {
+                List<Viat_sftp_import> sftp_ExportList = new List<Viat_sftp_import>();
+                Connect();
+                if (sftp.Exists(remotePath))
+                {
+                    var files = sftp.ListDirectory(remotePath);
+                    foreach (var file in files)
+                    {
+                        Viat_sftp_import sftp_Export = new Viat_sftp_import();
+                        string name = file.Name;
+                        if (name.Length > (fileSuffix.Length + 1) && fileSuffix == name.Substring(name.Length - fileSuffix.Length))
+                        {
+                            sftp_Export.file_name = file.Name;
+                            //sftp_Export. = file.Length;
+                            //sftp_Export.modified_date = file.LastWriteTime;
+                            sftp_ExportList.Add(sftp_Export);
+                        }
+                    }
+                }
+                return sftp_ExportList;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("SFTP文件列表获取失败，原因：{0}", ex.Message));
+            }
+        }
+        #endregion
 
         #region 删除SFTP文件
         /// <summary>
