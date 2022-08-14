@@ -116,18 +116,6 @@ namespace VIAT.DataEntry.Controllers
         }
 
 
-        [HttpPost, Route("doExecute")]
-        public IActionResult DoExecute([FromBody] Dictionary<string,string> options)
-        {
-            int c = options.Count;
-            List<Viat_sftp_import>  result=_service.queryCSVFromSftp("2", "");
-            //string[] fileNames = { "sales_3_20220708191938.csv" };
-            //string[] fileNames = { "sales_3_20220707191938.csv" };
-            //string[] fileNames = { "invdist_3_2022070819.csv" , "invpfizer_3_2022070819.csv" };
-            
-            //_service.doImportCSVFromFile("D:\\Documents\\MyProject\\耀得\\SFTP Import", fileNames);
-            return Json(options);
-        }
 
 
     }
