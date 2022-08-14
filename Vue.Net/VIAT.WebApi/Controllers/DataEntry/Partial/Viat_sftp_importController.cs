@@ -32,10 +32,11 @@ namespace VIAT.DataEntry.Controllers
             _httpContextAccessor = httpContextAccessor;
         }
 
-      /*  public override ActionResult GetPageData([FromBody] PageDataOptions loadData)
+      public override ActionResult GetPageData([FromBody] PageDataOptions loadData)
         {
             string distId = "";
             string source = "";
+            Dictionary<string, object> result = new Dictionary<string, object>();
             if (!string.IsNullOrEmpty( loadData.Wheres))
             {
                 List<Dictionary<string, string>> whereList=  Newtonsoft.Json.JsonConvert.DeserializeObject<List<Dictionary<string, string>>>(loadData.Wheres);
@@ -54,15 +55,29 @@ namespace VIAT.DataEntry.Controllers
                     }
                 }
             }
+
+            WebResponseContent webContent = new WebResponseContent();
             if (string.IsNullOrEmpty(distId))
             {
+                //result.Add("status", null);
+                //result.Add("Status", false);
+                //result.Add("msg", "請至少選取一個經銷商");
+                //result.Add("Message", "請至少選取一個經銷商");
+                //return Json(result);
+                //return Json(webContent.Error("請至少選取一個經銷商"));
                 return Json(new WebResponseContent { Status = false, Message = "請至少選取一個經銷商" });
             }
 
-            List<Viat_sftp_import> result = _service.queryCSVFromSftp(distId, source);
+            List<Viat_sftp_import> rows = _service.queryCSVFromSftp(distId, source);
+            result.Add("status",true);
+            result.Add("msg", null);
+            result.Add("total", rows.Count);
+            result.Add("rows", rows);
+            result.Add("summary", null);
+            result.Add("extra", null);
             return Json(result);
             //return base.GetPageData(loadData);
-        }*/
+        }
 
         [HttpPost, Route("doImportCSVFromSftp")]
         public IActionResult DoImportCSVFromSftp([FromBody] SftpImportViewModel options)
