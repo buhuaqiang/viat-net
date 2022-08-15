@@ -33,6 +33,8 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Web;
 using VIAT.Core.DBManager;
+using System.Data;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace VIAT.DataEntry.Services
 {
@@ -177,31 +179,18 @@ namespace VIAT.DataEntry.Services
             return webContent.OK("export success!");
         }
 
-        public WebResponseContent ExecuteRow(string file_name)
+        public Stream ExecuteRow(string file_name)
         {
             string[] s_fileName = file_name.Split('_');
             string localPath = $"Upload/{s_fileName[0]}/{s_fileName[1]}/".MapPath();
-            if (!Directory.Exists(localPath)) Directory.CreateDirectory(localPath);
-            SFTPHelper sftp = new SFTPHelper();
-            sftp.Get($"/home/{s_fileName}/Download/{file_name}", localPath);
-
-            FileStream stream = new FileStream(localPath + file_name, FileMode.Open);
-            HttpResponseMessage response = new HttpResponseMessage(HttpStatusCode.OK);
-            response.Content = new StreamContent(stream);
-            response.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
-            response.Content.Headers.ContentDisposition = new ContentDispositionHeaderValue("attachment")
+            byte[] bytes = null;
+            using (SFTPHelper sftp = new SFTPHelper())
             {
-                FileName = HttpUtility.UrlEncode(file_name)
-            };
-            response.Headers.Add("Access-Control-Expose-Headers", "FileName");
-            response.Headers.Add("FileName", HttpUtility.UrlEncode(file_name));
-
-            stream.Close();
-            File.Delete(localPath+file_name);
-            return webResponse.OK();
+                bytes = sftp.GetByte($"/home/{s_fileName[1]}/Download/{file_name}");
+            }
+            Stream stream = new MemoryStream(bytes);
+            return stream;
         }
-
-
 
         public WebResponseContent SftpUpload(string s_type,string distId,string date)
         {
@@ -507,7 +496,7 @@ namespace VIAT.DataEntry.Services
                 }
                 sb.AppendLine(string.Join(",", dictData.Values));
             }
-            File.WriteAllText(path, sb.ToString(), Encoding.GetEncoding(950));
+            File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
         }
 
         /// <summary>

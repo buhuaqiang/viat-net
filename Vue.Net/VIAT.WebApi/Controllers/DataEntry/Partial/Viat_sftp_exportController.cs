@@ -15,6 +15,7 @@ using VIAT.Core.Filters;
 using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
 using System.Linq;
+using System.IO;
 
 namespace VIAT.DataEntry.Controllers
 {
@@ -46,10 +47,11 @@ namespace VIAT.DataEntry.Controllers
             return Json(_service.ExecuteBatch(HttpContext.Request.Headers));
         }
         [ApiActionPermission]
-        [HttpPost, Route("ExecuteRow")]
-        public ActionResult ExecuteRow(string file_name)
+        [HttpGet, Route("ExecuteRow")]
+        public async Task<IActionResult> ExecuteRow(string file_name)
         {
-            return Json(_service.ExecuteRow(file_name));
+            Stream stream = _service.ExecuteRow(file_name);
+            return File(stream, "application/octet-stream", file_name);
         }
     }
 }
