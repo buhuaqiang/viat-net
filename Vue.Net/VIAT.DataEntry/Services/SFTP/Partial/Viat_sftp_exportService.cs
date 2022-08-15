@@ -139,29 +139,10 @@ namespace VIAT.DataEntry.Services
             return SftpUpload(s_type, distId, date);
         }
 
-        public WebResponseContent ExecuteBatch(IHeaderDictionary header)
+        public WebResponseContent ExecuteBatch()
         {
             WebResponseContent webContent = new WebResponseContent();
 
-            var keys = header.Keys;
-            var values = header.Values;
-            bool key = keys.Any((id) =>
-            {
-                return AppSetting.quartzHeader.Name.Equals(id, StringComparison.OrdinalIgnoreCase);
-            });
-            bool value = values.Any((id) =>
-            {
-                return AppSetting.quartzHeader.Password.Equals(id, StringComparison.OrdinalIgnoreCase);
-            });
-            if (!key)
-            {
-                return webContent.Error("人员不存在，没有权限");
-            }
-            if (!value)
-            {
-                return webContent.Error("密码不对，没有权限");
-            }
-            
             List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x=>x.category_id == "DistID" && x.status == "Y").OrderBy(x=>x.sys_key).ToList();
             if (systemValueList.Count()>0)
             {

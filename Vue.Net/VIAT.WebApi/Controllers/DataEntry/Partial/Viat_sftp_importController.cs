@@ -111,10 +111,15 @@ namespace VIAT.DataEntry.Controllers
             return Json(new WebResponseContent { Status = true });
         }
 
-        [HttpPost, Route("ExecuteBatch"), AllowAnonymous]
+        [HttpPost, Route("ImportBatch"), AllowAnonymous]
         public ActionResult ImportBatch()
         {
-            return Json(_service.ImportBatch(HttpContext.Request.Headers));
+            WebResponseContent content = HttpContextHelper.HttpContextBase(HttpContext.Request.Headers);
+            if (!content.Status)
+            {
+                return Json(content);
+            }
+            return Json(_service.ImportBatch());
         }
 
         [ApiActionPermission]
