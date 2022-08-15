@@ -32,6 +32,7 @@ using VIAT.WorkFlow.IServices;
 using OfficeOpenXml;
 using System.Data;
 using VIAT.Price.IServices;
+using VIAT.Entity.DomainModels.System;
 
 namespace VIAT.WorkFlow.Services
 {
@@ -1501,7 +1502,40 @@ namespace VIAT.WorkFlow.Services
             List<Sys_User> userList = repository.DbContext.Set<Sys_User>().Where(x => x.User_Id.Equals(userInfo.User_Id)).ToList();
             return userList[0];
         }
+
         #endregion
+
+        #endregion
+
+        public List<Viat_Sys_Org_Level_Detail> LevelDetailData(string org_id)
+        {
+            string sql = $@"select * from viat_sys_org_level_detail where org_id like '{org_id}%' and org_level = 5 and org_type = 'SALES' order by org_id";
+            return repository.DapperContext.QueryList<Viat_Sys_Org_Level_Detail>(sql, null);
+        }
+
+        #region 审批流程
+
+        public void ApprovalProcess(SaveModel saveModel,Viat_wk_master masterEntiy)
+        {
+            //第一步查询人员职位
+            Sys_User user = SysUserData();
+            switch (user.profession_type)
+            {
+                case "FF":
+
+                    break;
+                case "SA":
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        public List<Viat_Sys_Org_Level_Detail> GetLevelDetailData(string territory_id)
+        {
+            return repository.DbContext.Set<Viat_Sys_Org_Level_Detail>().Where(x => x.Org_Id == territory_id && x.Org_Type == "SALES").ToList();
+        }
+
 
         #endregion
     }

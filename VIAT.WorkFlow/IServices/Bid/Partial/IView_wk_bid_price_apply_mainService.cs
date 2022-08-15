@@ -7,6 +7,7 @@ using VIAT.Core.Utilities;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using VIAT.Entity.DomainModels.System;
 
 namespace VIAT.WorkFlow.IServices
 {
@@ -28,5 +29,7 @@ namespace VIAT.WorkFlow.IServices
 
         WebResponseContent CustPriceTransferImport(List<IFormFile> files, string cust_id, string group_dbid);
         Sys_User SysUserData();
+
+        List<Viat_Sys_Org_Level_Detail> LevelDetailData(string org_id);
     }
  }
