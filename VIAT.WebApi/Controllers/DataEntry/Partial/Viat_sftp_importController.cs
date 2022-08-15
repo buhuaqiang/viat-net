@@ -13,6 +13,7 @@ using VIAT.Entity.DomainModels;
 using VIAT.DataEntry.IServices;
 using VIAT.Core.Utilities;
 using Microsoft.AspNetCore.Authorization;
+using VIAT.Core.Filters;
 
 namespace VIAT.DataEntry.Controllers
 {
@@ -79,7 +80,8 @@ namespace VIAT.DataEntry.Controllers
             //return base.GetPageData(loadData);
         }
 
-        [HttpPost, Route("doImportCSVFromSftp")]
+        [ApiActionPermission]
+        [HttpPost, Route("doImportCSVFromSftp"), AllowAnonymous]
         public IActionResult DoImportCSVFromSftp([FromBody] SftpImportViewModel options)
         {
             if(string.IsNullOrEmpty(options.DistId))
@@ -115,7 +117,20 @@ namespace VIAT.DataEntry.Controllers
             return Json(_service.ImportBatch(HttpContext.Request.Headers));
         }
 
-
+        [ApiActionPermission]
+        [HttpPost, Route("Execute")]
+        public IActionResult DoExecute()
+        {
+            Console.WriteLine("Execute");
+           
+            //List<Viat_sftp_import>  result=_service.queryCSVFromSftp("2", "");
+            //string[] fileNames = { "sales_3_20220708191938.csv" };
+            string[] fileNames = { "sales_3_20220707191938.csv" };
+            //string[] fileNames = { "invdist_3_2022070819.csv" , "invpfizer_3_2022070819.csv" };
+            
+            _service.doImportCSVFromFile("/home/arich/Download/", fileNames);
+            return Json("");
+        }
 
 
     }
