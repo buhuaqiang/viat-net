@@ -259,29 +259,12 @@ namespace VIAT.DataEntry.Services
             return SftpList;
         }
 
-        public WebResponseContent ImportBatch(IHeaderDictionary header)
+        public WebResponseContent ImportBatch()
         {
-            WebResponseContent webContent = new WebResponseContent();
-            var keys = header.Keys;
-            var values = header.Values;
-            bool key = keys.Any((id) =>
-            {
-                return AppSetting.quartzHeader.Name.Equals(id, StringComparison.OrdinalIgnoreCase);
-            });
-            bool value = values.Any((id) =>
-            {
-                return AppSetting.quartzHeader.Password.Equals(id, StringComparison.OrdinalIgnoreCase);
-            });
-            if (!key)
-            {
-                return webContent.Error("人员不存在，没有权限");
-            }
-            if (!value)
-            {
-                return webContent.Error("密码不对，没有权限");
-            }
+            string msg = "";
             Dictionary<string, List<Viat_sftp_export>> dicStfp = new Dictionary<string, List<Viat_sftp_export>>();
             List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x => x.category_id == "DistID" && x.status == "Y").OrderBy(x=>x.sys_key).ToList();
+
             if (systemValueList.Count() > 0)
             {
                 string date = DateTime.Now.ToString("yyyyMMdd");
@@ -305,7 +288,7 @@ namespace VIAT.DataEntry.Services
                 IEnumerable<Viat_sftp_export> exportAble = dicStfp.SelectMany(x => x.Value);
                 List<Viat_sftp_export> SftpList = new List<Viat_sftp_export>();
                 SftpList.AddRange(exportAble);
-
+                
                 foreach (var item in SftpList)
                 {
                     if (item.file_name.IndexOf("sales") != -1)
@@ -321,9 +304,15 @@ namespace VIAT.DataEntry.Services
                         ImportInvdistCSV(localPath + item.file_name);
                     }
                     File.Delete(localPath+item.file_name);
+                    List<Viat_imp_error_log> errorLog = repository.DbContext.Set<Viat_imp_error_log>().Where(x => x.filenameimp == item.file_name).ToList();
+                    if (errorLog.Count()>0)
+                    {
+                        msg += errorLog[0].errormessage + ",";
+                    }
                 }
             }
-            return webContent.OK();
+            msg = msg.TrimEnd(',');
+            return new WebResponseContent { Message = msg };
         }
 
         /// <summary>
@@ -415,14 +404,15 @@ namespace VIAT.DataEntry.Services
                     break;
             }
             dist = dist.ToLower();
-            string sftpPath = "/home/" + "anching" + "/Download";
-            fileNames[0] = "sales_3_20220707191938.csv";
+            string sftpPath = "/home/" + "anchiang" + "/Download";
+            fileNames[0] = "invpfizer_3_2022070719.csv";
             foreach (string fileName in fileNames)
             {
                 using(SFTPHelper sftpClient = new SFTPHelper())
                 {
                     string remotePath = sftpPath + "/" + fileName;
                     string localPath = Path.Combine(Path.GetTempPath(), fileName);
+                    sftpClient.CreateDirectory(remotePath);
                     sftpClient.Get(remotePath, localPath);
                     if(File.Exists(localPath))
                     {
@@ -776,7 +766,7 @@ namespace VIAT.DataEntry.Services
                             filenameimp = Path.GetFileName(filePath),
                             filetext = fileText + " " + Path.GetFileName(filePath),
                             errormessage = msg.TrimEnd(',')
-                        }); ;
+                        });
                         #endregion
                     }
                 }

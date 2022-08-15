@@ -16,6 +16,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Net.Http;
 using System.Linq;
 using System.IO;
+using VIAT.Core.Utilities;
 
 namespace VIAT.DataEntry.Controllers
 {
@@ -44,7 +45,12 @@ namespace VIAT.DataEntry.Controllers
         [HttpPost, Route("ExecuteBatch"), AllowAnonymous]
         public ActionResult ExecuteBatch()
         {
-            return Json(_service.ExecuteBatch(HttpContext.Request.Headers));
+            WebResponseContent content = HttpContextHelper.HttpContextBase(HttpContext.Request.Headers);
+            if (!content.Status)
+            {
+                return Json(content);
+            }
+            return Json(_service.ExecuteBatch());
         }
         [ApiActionPermission]
         [HttpGet, Route("ExecuteRow")]
