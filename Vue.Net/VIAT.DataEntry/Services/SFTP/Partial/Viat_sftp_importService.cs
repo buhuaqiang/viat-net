@@ -781,15 +781,9 @@ namespace VIAT.DataEntry.Services
             {
                 List<Viat_imp_error_log> data = new List<Viat_imp_error_log>();
                 data.Add(new Viat_imp_error_log { filenameimp = Path.GetFileName(filePath) });
-                Response = _viat_imp_error_logRepository.DbContextBeginTransaction(() =>
-                {
-                    _viat_imp_error_logRepository.AddRange(errorDatas, true);
-                    _viat_imp_error_logRepository.SaveChanges();
-                    Response.OK(Core.Enums.ResponseType.SaveSuccess);
-                    return Response;
-                });
+                ImporterrorLog(errorDatas);
                 SendMailToDistributor(errorDatas, false);
-                
+
                 return null;
             }
             else
@@ -822,13 +816,8 @@ namespace VIAT.DataEntry.Services
                         filetext = Path.GetFileName(filePath),
                         errormessage = "Insert error!"
                     });
-                    Response = _viat_imp_error_logRepository.DbContextBeginTransaction(() =>
-                    {
-                        _viat_imp_error_logRepository.AddRange(errorDatas, true);
-                        _viat_imp_error_logRepository.SaveChanges();
-                        Response.OK(Core.Enums.ResponseType.SaveSuccess);
-                        return Response;
-                    });
+                    ImporterrorLog(errorDatas);
+                    
 
 
                     //Maintainer.AddToImportErrorLog(null, errorDatas, fileName);
@@ -836,6 +825,30 @@ namespace VIAT.DataEntry.Services
                 }                               
             }
             return result;
+        }
+
+        private void ImporterrorLog(List<Viat_imp_error_log> errorDatas)
+        {
+            Response = _viat_imp_error_logRepository.DbContextBeginTransaction(() =>
+            {
+                foreach (Viat_imp_error_log el in errorDatas)
+                {
+                    List<Viat_imp_error_log> oldList = _viat_imp_error_logRepository.Find(x => x.filenameimp == el.filenameimp);
+                    if (oldList != null && oldList.Count > 0)
+                    {
+
+                        for (int c1 = 0; c1 < oldList.Count; c1++)
+                        {
+                            _viat_imp_error_logRepository.Delete(oldList[c1]);
+                        }
+                    }
+                }
+
+                _viat_imp_error_logRepository.AddRange(errorDatas, true);
+                _viat_imp_error_logRepository.SaveChanges();
+                Response.OK(Core.Enums.ResponseType.SaveSuccess);
+                return Response;
+            });
         }
 
 
@@ -966,13 +979,7 @@ namespace VIAT.DataEntry.Services
                 catch { }
                 if (errorDatas.Count > 0)
                 {
-                    Response = _viat_imp_error_logRepository.DbContextBeginTransaction(() =>
-                    {
-                        _viat_imp_error_logRepository.AddRange(errorDatas);
-                        int c=_viat_imp_error_logRepository.SaveChanges();
-                        Response.OK(Core.Enums.ResponseType.SaveSuccess);
-                        return Response;
-                    });
+                    ImporterrorLog(errorDatas);
                     SendMailToDistributor(errorDatas);                   
                     return null;
                 }
@@ -982,6 +989,18 @@ namespace VIAT.DataEntry.Services
                     {
                         Response = _viat_app_stock_viatrisRepository.DbContextBeginTransaction(() =>
                         {
+                            foreach (Viat_app_stock_viatris sd in importDatas)
+                            {
+                                List<Viat_app_stock_viatris> oldList = _viat_app_stock_viatrisRepository.Find(x => x.dist_id == sd.dist_id && x.dist_upload_date == sd.dist_upload_date);
+                                if (oldList != null && oldList.Count > 0)
+                                {
+                                    for (int c1 = 0; c1 < oldList.Count; c1++)
+                                    {
+                                        _viat_app_stock_viatrisRepository.Delete(oldList[c1]);
+                                    }
+                                }
+                            }
+
                             _viat_app_stock_viatrisRepository.AddRange(importDatas);
                             int c= _viat_app_stock_viatrisRepository.SaveChanges();
                             Response.OK(Core.Enums.ResponseType.SaveSuccess);
@@ -1006,13 +1025,7 @@ namespace VIAT.DataEntry.Services
                             filetext = Path.GetFileName(filePath),
                             errormessage = "Insert error!"
                         });
-                        Response = _viat_imp_error_logRepository.DbContextBeginTransaction(() =>
-                        {
-                            _viat_imp_error_logRepository.AddRange(errorDatas);
-                            _viat_imp_error_logRepository.SaveChanges();
-                            Response.OK(Core.Enums.ResponseType.SaveSuccess);
-                            return Response;
-                        });
+                        ImporterrorLog(errorDatas);
 
 
                         return null;
@@ -1029,7 +1042,7 @@ namespace VIAT.DataEntry.Services
                     filetext = Path.GetFileName(filePath),
                     errormessage = e.Message
                 });
-                _viat_imp_error_logRepository.AddRange(errorDatas, true);
+                ImporterrorLog(errorDatas);
                 SendMailToDistributor(errorDatas);
                 
                 return null;
@@ -1138,7 +1151,8 @@ namespace VIAT.DataEntry.Services
                                 borrow_sales = Convert.ToDecimal(borrow_sales),
                                 start_date = start_date,
                                 end_date = end_date,
-                                prod_dbid = prod_id_dbid
+                                prod_dbid = prod_id_dbid,
+                                created_date= dist_upload_date
                             });
                             tmp.Add(new Viat_app_stock_dist { lot_no = lot_no, dist_prod_id = dist_prod_id });
                         }
@@ -1170,13 +1184,7 @@ namespace VIAT.DataEntry.Services
 
                 if (errorDatas.Count() > 0)
                 {
-                    Response = _viat_imp_error_logRepository.DbContextBeginTransaction(() =>
-                    {
-                        _viat_imp_error_logRepository.AddRange(errorDatas);
-                        int c = _viat_imp_error_logRepository.SaveChanges();
-                        Response.OK(Core.Enums.ResponseType.SaveSuccess);
-                        return Response;
-                    });
+                    ImporterrorLog(errorDatas);
 
                     //_viat_imp_error_logRepository.AddRange(errorDatas, true);
                     SendMailToDistributor(errorDatas);
@@ -1189,6 +1197,17 @@ namespace VIAT.DataEntry.Services
                         
                         Response = _viat_app_stock_distRepository.DbContextBeginTransaction(() =>
                         {
+                            foreach(Viat_app_stock_dist sd in importDatas )
+                            {
+                                List<Viat_app_stock_dist> oldList = _viat_app_stock_distRepository.Find(x => x.dist_id == sd.dist_id && x.dist_upload_date == sd.dist_upload_date);
+                                if(oldList != null && oldList.Count > 0)
+                                {
+                                    for(int c1=0; c1 < oldList.Count; c1++)
+                                    {
+                                        _viat_app_stock_distRepository.Delete(oldList[c1]);
+                                    }
+                                }
+                            }
                             _viat_app_stock_distRepository.AddRange(importDatas, false);
                             int c=_viat_app_stock_distRepository.SaveChanges();
                             Response.OK(Core.Enums.ResponseType.SaveSuccess);
@@ -1213,13 +1232,7 @@ namespace VIAT.DataEntry.Services
                             filetext = Path.GetFileName(filePath),
                             errormessage = "Insert error!"
                         });
-                        Response = _viat_imp_error_logRepository.DbContextBeginTransaction(() =>
-                        {
-                            _viat_imp_error_logRepository.AddRange(errorDatas, true);
-                            _viat_imp_error_logRepository.SaveChanges();
-                            Response.OK(Core.Enums.ResponseType.SaveSuccess);
-                            return Response;
-                        });
+                        ImporterrorLog(errorDatas);
                         return null;
                     }
                 }
@@ -1235,14 +1248,8 @@ namespace VIAT.DataEntry.Services
                     filenameimp = Path.GetFileName(filePath),
                     filetext = Path.GetFileName(filePath),
                     errormessage = e.Message
-                });                
-                Response = _viat_imp_error_logRepository.DbContextBeginTransaction(() =>
-                {
-                    _viat_imp_error_logRepository.AddRange(errorDatas, true);
-                    _viat_imp_error_logRepository.SaveChanges();
-                    Response.OK(Core.Enums.ResponseType.SaveSuccess);
-                    return Response;
                 });
+                ImporterrorLog(errorDatas);
                 SendMailToDistributor(errorDatas);
                 return null;
             }
