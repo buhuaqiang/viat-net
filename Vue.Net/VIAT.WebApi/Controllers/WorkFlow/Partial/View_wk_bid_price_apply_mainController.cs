@@ -105,5 +105,11 @@ namespace VIAT.WorkFlow.Controllers
         {
             return Json(_service.SysUserData());
         }
+        [ApiActionPermission]
+        [HttpPost, Route("LevelDetailData")]
+        public ActionResult LevelDetailData(string org_id)
+        {
+            return Json(_service.LevelDetailData(org_id));
+        }
     }
 }
