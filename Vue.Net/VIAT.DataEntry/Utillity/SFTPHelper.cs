@@ -156,6 +156,27 @@ namespace VIAT.DataEntry.Utillity
         }
         #endregion
 
+        #region SFTP获取二进制
+        /// <summary>
+        /// SFTP获取文件
+        /// </summary>
+        /// <param name="remotePath">远程路径</param>
+        /// <param name="localPath">本地路径</param>
+        public byte[] GetByte(string remotePath)
+        {
+            try
+            {
+                Connect();
+                return sftp.ReadAllBytes(remotePath);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("SFTP文件获取失败，原因：{0}", ex.Message));
+            }
+
+        }
+        #endregion
+
         #region 获取SFTP文件列表
         /// <summary>
         /// 获取SFTP文件列表
