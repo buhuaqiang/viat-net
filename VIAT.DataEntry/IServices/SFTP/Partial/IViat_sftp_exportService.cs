@@ -7,6 +7,7 @@ using VIAT.Core.Utilities;
 using System.Linq.Expressions;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
+using System.IO;
 
 namespace VIAT.DataEntry.IServices
 {
@@ -15,7 +16,7 @@ namespace VIAT.DataEntry.IServices
 
         WebResponseContent Execute(SaveModel saveModel);
         WebResponseContent ExecuteBatch(IHeaderDictionary header);
-        WebResponseContent ExecuteRow(string file_name);
+        Stream ExecuteRow(string file_name);
         string GetDistEName(string dist_id);
     }
  }
