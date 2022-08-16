@@ -41,7 +41,82 @@ namespace VIAT.Price.Services
 
         public override PageGridData<View_cust_custgroup_pricegroup> GetPageData(PageDataOptions pageData)
         {
-            QuerySql = @"
+            string group_id = "";
+            string group_name = "";
+            string status = "";
+            string pricing_field = "";
+            string cust_type = "";
+            string group_type = "";
+            string where = "";
+            List<SearchParameters> searchParametersList = new List<SearchParameters>();
+            if (!string.IsNullOrEmpty(pageData.Wheres))
+            {
+                searchParametersList = pageData.Wheres.DeserializeObject<List<SearchParameters>>();
+                if (searchParametersList != null && searchParametersList.Count > 0)
+                {
+                    
+                    foreach (SearchParameters sp in searchParametersList)
+                    {
+                        if (sp.Name.ToLower() == "group_id".ToLower())
+                        {
+                            
+                            group_id = sp.Value;
+                            if (!string.IsNullOrEmpty(group_id))
+                            {
+                                where += " and prc.group_id like '"+group_id+"'";
+                            }
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "group_name".ToLower())
+                        {
+                            group_name = sp.Value;
+                            if (!string.IsNullOrEmpty(group_name))
+                            {
+                                where += " and prc.group_name like '" + group_name + "'";
+                            }
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "status".ToLower())
+                        {
+                            status = sp.Value;
+                            if (!string.IsNullOrEmpty(status))
+                            {
+                                where += " and grp.status = '" + status + "'";
+                            }
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "pricing_field".ToLower())
+                        {
+                            pricing_field = sp.Value;
+                            if (!string.IsNullOrEmpty(pricing_field))
+                            {
+                                where += " and prc.pricing_field = '" + pricing_field + "'";
+                            }
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "cust_type".ToLower())
+                        {
+                            cust_type = sp.Value;
+                            if (!string.IsNullOrEmpty(cust_type))
+                            {
+                                where += " and prc.cust_type = '" + cust_type + "'";
+                            }
+                            continue;
+                        }
+                        if (sp.Name.ToLower() == "group_type".ToLower())
+                        {
+                            group_type = sp.Value;
+                            if (!string.IsNullOrEmpty(group_type))
+                            {
+                                where += " and prc.group_type = '" + group_type + "'";
+                            }
+                            continue;
+                        }
+
+                    }
+                }
+            }
+                    QuerySql = @"
                select distinct 	
                     cust.cust_dbid,
 	                cust.cust_id, 
@@ -69,6 +144,7 @@ namespace VIAT.Price.Services
 			left join Sys_DictionaryList dic2 on (cust.is_private=dic2.DicValue AND dic2.Dic_ID=(SELECT top 1 Dic_ID FROM Sys_Dictionary WHERE DicNo='PublicPrivate'))
                 where cust.cust_id is not null and prc.group_id is not null
                ";
+            QuerySql += where;
             return base.GetPageData(pageData);
         }
         public override WebResponseContent Export(PageDataOptions pageData)
