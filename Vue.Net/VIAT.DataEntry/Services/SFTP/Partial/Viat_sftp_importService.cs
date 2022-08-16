@@ -775,7 +775,7 @@ namespace VIAT.DataEntry.Services
                             msg += "資料交易日期不可小於" + sales_start_date.Value.AddDays(-30).ToString("yyyy/MM/dd") + ",";
                         if(dataDup)
                         {
-                            msg += "資料重複,";
+                            msg += "資料已存在,";
                         }
 
                         string fileText = "";
