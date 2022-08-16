@@ -568,14 +568,16 @@ namespace VIAT.DataEntry.Services
                     string dist_cust_id = data[5].ToString().Replace("'", "").Trim();
                     string cust_id = data[7].ToString().Replace("'", "").Trim();
                     string prod_id = data[9].ToString().Replace("'", "").Trim();
-                    DateTime? trans_date = DateTime.ParseExact(data[4].ToString().Replace("'", ""), "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
+                    DateTime? trans_date = null;
+                    if(data[4] != null  && string.IsNullOrEmpty( data[4].ToString().Replace("'", "") )==false)
+                        trans_date = DateTime.ParseExact(data[4].ToString().Replace("'", ""), "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
                     string invoice_no = data[3].ToString().Replace("'", "");
                     string lot_no = data[15].ToString().Replace("'", "");
                     string order_no = data[17].ToString().Replace("'", "");
                     Guid? cust_id_dbid = null;
                     Guid? prod_id_dbid = null;
                     string custName = "";
-                    bool flag = true; bool NotProd = false; bool NotCust = false;
+                    bool flag = true; bool NotProd = false; bool NotCust = false; bool dataDup=false;
                     decimal _decimal = 0;
                     decimal? nhi_price = null, invoice_price = null, net_price = null;
 
@@ -646,6 +648,9 @@ namespace VIAT.DataEntry.Services
                         prod_id_dbid = pr.prod_dbid;
                         prod_content.Add(pr);
                     }
+
+                   
+
                     if (string.IsNullOrEmpty(neet_check_trans_date) && sales_start_date != null && trans_date < sales_start_date.Value.AddDays(-30))
                         flag = false;
 
@@ -653,6 +658,16 @@ namespace VIAT.DataEntry.Services
                     {
                         flag = false;//	duplicate key
                     }
+
+
+                    //因為增加了ak_viat_app_sales_transfer, 所以多檢查是否有重覆資料
+                    List<viat_app_sales_transfer> oldlist= _viat_app_sales_transferRepository.Find(z => z.dist_id == dist_id && z.trans_date == trans_date && z.trans_type == trans_type && z.invoice_no == invoice_no && z.cust_dbid == cust_id_dbid && z.lot_no == lot_no && z.trans_class == trans_class && z.order_no == order_no);
+                    if(oldlist != null )
+                    {
+                        flag = false;
+                        dataDup = true;
+                    }
+
                     #endregion
                     if (flag == true)
                     {
@@ -711,7 +726,7 @@ namespace VIAT.DataEntry.Services
                     else
                     {
                         #region error data
-                        string msg = "";
+                        string msg = "" ;
                         if (data.Count() < 18)
                             msg += "資料欄位有誤,";
                         if (string.IsNullOrEmpty(trans_type))
@@ -756,6 +771,11 @@ namespace VIAT.DataEntry.Services
                         }
                         if (string.IsNullOrEmpty(neet_check_trans_date) && sales_start_date != null && trans_date < sales_start_date.Value.AddDays(-30))
                             msg += "資料交易日期不可小於" + sales_start_date.Value.AddDays(-30).ToString("yyyy/MM/dd") + ",";
+                        if(dataDup)
+                        {
+                            msg += "資料重複,";
+                        }
+
                         string fileText = "";
                         fileText = string.Join(",", data);
                         errorDatas.Add(new Viat_imp_error_log
@@ -790,17 +810,27 @@ namespace VIAT.DataEntry.Services
             {
                 try
                 {
+                    byte[] photo = GetPhoto(filePath);                    
                     Response = _viat_app_sales_transferRepository.DbContextBeginTransaction(() =>
                     {
-                        _viat_app_sales_transferRepository.AddRange(result, true);
+                        _viat_app_sales_transferRepository.AddRange(result);
                        int c= _viat_app_sales_transferRepository.SaveChanges();
                         Response.OK(Core.Enums.ResponseType.SaveSuccess);
                         return Response;
                     });
-                    
+                    errorDatas.Add(new Viat_imp_error_log
+                    {
+                        errorlog_dbid = System.Guid.NewGuid(),
+                        created_date = DateTime.Now,
+                        errormessage = " 檔案 import 成功 ",
+                        filenameimp = Path.GetFileName(filePath),
+                        filetext = filePath,
+                        //filesupload = photo
+                    });
+                    ImporterrorLog(errorDatas);
                     List<Viat_imp_error_log> successInfo = new List<Viat_imp_error_log>();
                     successInfo.Add(new Viat_imp_error_log
-                    {
+                    {                        
                         filenameimp = Path.GetFileName(filePath),
                         errormessage = " 檔案 import 成功 "
                     });
@@ -844,7 +874,7 @@ namespace VIAT.DataEntry.Services
                     }
                 }
 
-                _viat_imp_error_logRepository.AddRange(errorDatas, true);
+                _viat_imp_error_logRepository.AddRange(errorDatas);
                 _viat_imp_error_logRepository.SaveChanges();
                 Response.OK(Core.Enums.ResponseType.SaveSuccess);
                 return Response;
@@ -888,7 +918,11 @@ namespace VIAT.DataEntry.Services
                         string prod_id = data[0].ToString().Replace("'", "");
                         string prod_name = data[1].ToString().Replace("'", "");
                         string lot_no = data[3].ToString().Replace("'", "");
-                        DateTime? expired_date = DateTime.ParseExact(data[4].ToString().Replace("'", ""), "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces); //Convert.ToDateTime(data[4].ToString().Replace("'", ""));
+                        DateTime? expired_date = null;
+                        if(data[4] != null && string.IsNullOrEmpty(data[4].ToString().Replace("'", "")) ==false) {
+                            expired_date = DateTime.ParseExact(data[4].ToString().Replace("'", ""), "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces); //Convert.ToDateTime(data[4].ToString().Replace("'", ""));
+                        }
+                           
                         string wh_id = data[7].ToString().Replace("'", "");
                         decimal qty = Convert.ToDecimal(data[5]);
                         Guid? prod_id_dbid = null;
@@ -1007,6 +1041,16 @@ namespace VIAT.DataEntry.Services
                             return Response;
                         });
 
+                        errorDatas.Add(new Viat_imp_error_log
+                        {
+                            errorlog_dbid = System.Guid.NewGuid(),
+                            created_date = DateTime.Now,
+                            errormessage = " 檔案 import 成功 ",
+                            filenameimp = Path.GetFileName(filePath),
+                            filetext = filePath,
+                        });
+                        ImporterrorLog(errorDatas);
+
                         List<Viat_imp_error_log> successInfo = new List<Viat_imp_error_log>();
                         successInfo.Add(new Viat_imp_error_log
                         {
@@ -1117,16 +1161,23 @@ namespace VIAT.DataEntry.Services
                             flag = false; // Lot No, Dist Prod Id 重複則視為錯誤資料
                             msg += ", Key Field 重複 [dist_prod_id = " + dist_prod_id + " lot_no = " + lot_no + "]";
                         }
-
-                        Viat_com_prod pr = _viat_com_prodRepository.Find(y => y.prod_id == prod_id).FirstOrDefault();
-                        if (pr == null)
+                        if (string.IsNullOrEmpty(prod_id))
                         {
-                            flag = false; NotProd = true;
+                            msg += "產品代碼為空,";
                         }
-                        else
-                        {
-                            prod_id_dbid = pr.prod_dbid;
+                            else {
+                            Viat_com_prod pr = _viat_com_prodRepository.Find(y => y.prod_id == prod_id).FirstOrDefault();
+                            if (pr == null)
+                            {
+                                flag = false; NotProd = true;
+                                msg += "產品代碼不存在,";
+                            }
+                            else
+                            {
+                                prod_id_dbid = pr.prod_dbid;
+                            }
                         }
+                        
 
                         if (flag == true)
                         {
@@ -1213,6 +1264,16 @@ namespace VIAT.DataEntry.Services
                             Response.OK(Core.Enums.ResponseType.SaveSuccess);
                             return Response;
                         });
+
+                        errorDatas.Add(new Viat_imp_error_log
+                        {
+                            errorlog_dbid = System.Guid.NewGuid(),
+                            created_date = DateTime.Now,
+                            errormessage = " 檔案 import 成功 ",
+                            filenameimp = Path.GetFileName(filePath),
+                            filetext = filePath,
+                        });
+                        ImporterrorLog(errorDatas);
                         List<Viat_imp_error_log> successInfo = new List<Viat_imp_error_log>();
                         successInfo.Add(new Viat_imp_error_log
                         {
@@ -1335,6 +1396,25 @@ namespace VIAT.DataEntry.Services
             }
 
             return results;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <returns></returns>
+        public static byte[] GetPhoto(string filePath)
+        {
+            FileStream stream = new FileStream(
+                filePath, FileMode.Open, FileAccess.Read);
+            BinaryReader reader = new BinaryReader(stream);
+
+            byte[] photo = reader.ReadBytes((int)stream.Length);
+
+            reader.Close();
+            stream.Close();
+
+            return photo;
         }
     }
 }
