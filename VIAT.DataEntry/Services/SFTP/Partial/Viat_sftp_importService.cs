@@ -214,7 +214,7 @@ namespace VIAT.DataEntry.Services
             {
                 foreach (var item in distributor)
                 {
-                    sftpPath = "/home/" + item + "/Download";
+                    sftpPath = "/home/" + item + "/Upload";
                     sftpFileList = sftpClient.GetFileImportList(sftpPath, ".csv");
                     foreach (Viat_sftp_import p in sftpFileList)
                     {
@@ -404,8 +404,8 @@ namespace VIAT.DataEntry.Services
                     break;
             }
             dist = dist.ToLower();
-            string sftpPath = "/home/" + "anchiang" + "/Download";
-            fileNames[0] = "invpfizer_3_2022070719.csv";
+            string sftpPath = "/home/" +dist + "/Upload";
+            //fileNames[0] = "invpfizer_3_2022070719.csv";
             foreach (string fileName in fileNames)
             {
                 using(SFTPHelper sftpClient = new SFTPHelper())
@@ -449,7 +449,7 @@ namespace VIAT.DataEntry.Services
         /// <param name="fileNames"></param>
         public void doImportCSVFromFile(string tempPath, string[] fileNames)
         {
-            Console.WriteLine("doImport");
+            
             this.Response = new WebResponseContent();
             foreach (string fileName in fileNames)
             {
@@ -536,7 +536,7 @@ namespace VIAT.DataEntry.Services
         /// <param name="neet_check_trans_date">為空的話表示排程執行，需檢查trans_date是否小於viat_com_close_period的sales_start_date-4，有值的話，不需檢查</param>
         private List<viat_app_sales_transfer> importSalesCSV(string filePath, string neet_check_trans_date = "")
         {
-            Console.WriteLine("importSalesCSV");
+            
             string newFile = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + "_1" + Path.GetExtension(filePath));
             File.WriteAllText(newFile, File.ReadAllText(filePath, Encoding.GetEncoding(950)), Encoding.UTF8);
             int contentRowIndex = 0;
@@ -859,7 +859,7 @@ namespace VIAT.DataEntry.Services
         /// <returns></returns>
         private List<Viat_app_stock_viatris > ImportInvpfizerCSV(string filePath)
         {
-            Console.WriteLine("ImportInvpfizerCSV");
+           
             int contentRowIndex = 0;
             List<Viat_app_stock_viatris> importDatas = new List<Viat_app_stock_viatris>();
             List<Viat_imp_error_log> errorDatas = new List<Viat_imp_error_log>();
