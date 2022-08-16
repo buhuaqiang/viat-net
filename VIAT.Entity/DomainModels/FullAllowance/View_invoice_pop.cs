@@ -375,6 +375,14 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="nvarchar(100)")]
        public string cust_name1 { get; set; }
 
+       /// <summary>
+       ///unit_price
+       /// </summary>
+       [Display(Name ="unit_price")]
+       [DisplayFormat(DataFormatString="18,5")]
+       [Column(TypeName="decimal")]
+       public decimal? unit_price { get; set; }
+
        
     }
 }
