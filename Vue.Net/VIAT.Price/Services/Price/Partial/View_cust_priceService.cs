@@ -2186,7 +2186,7 @@ namespace VIAT.Price.Services
                     item.remarks = remark;
                     item.start_date = getFormatYYYYMMDD(start_date);
                     item.end_date = getFormatYYYYMMDD(end_date);
-                    item.modified_date = getFormatYYYYMMDD(DateTime.Now);
+                    item.modified_date = DateTime.Now;
                     item.modified_user = userInfo.User_Id;
                     item.modified_username = userInfo.UserName;
                     item.bid_no = "";
