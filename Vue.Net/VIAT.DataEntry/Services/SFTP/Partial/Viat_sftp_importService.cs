@@ -663,12 +663,12 @@ namespace VIAT.DataEntry.Services
 
 
                     //因為增加了ak_viat_app_sales_transfer, 所以多檢查是否有重覆資料
-                    List<viat_app_sales_transfer> oldlist= _viat_app_sales_transferRepository.Find(z => z.dist_id == dist_id && z.trans_date == trans_date && z.trans_type == trans_type && z.invoice_no == invoice_no && z.cust_dbid == cust_id_dbid && z.lot_no == lot_no && z.trans_class == trans_class && z.order_no == order_no);
+                   /* List<viat_app_sales_transfer> oldlist= _viat_app_sales_transferRepository.Find(z => z.dist_id == dist_id && z.trans_date == trans_date && z.trans_type == trans_type && z.invoice_no == invoice_no && z.cust_dbid == cust_id_dbid && z.lot_no == lot_no && z.trans_class == trans_class && z.order_no == order_no);
                     if(oldlist != null )
                     {
                         flag = false;
                         dataDup = true;
-                    }
+                    }*/
 
                     #endregion
                     if (flag == true)
