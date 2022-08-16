@@ -2188,6 +2188,7 @@ namespace VIAT.Price.Services
                     item.end_date = getFormatYYYYMMDD(end_date);
                     item.modified_date = getFormatYYYYMMDD(DateTime.Now);
                     item.modified_user = userInfo.User_Id;
+                    item.modified_username = userInfo.UserName;
                     item.bid_no = "";
                     custGroupResult.optionType = SaveModel.MainOptionType.add;
                     custGroupResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
