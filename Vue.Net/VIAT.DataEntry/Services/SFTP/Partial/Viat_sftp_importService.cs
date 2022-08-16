@@ -261,6 +261,7 @@ namespace VIAT.DataEntry.Services
 
         public WebResponseContent ImportBatch()
         {
+            this.Response = new WebResponseContent();
             string msg = "";
             Dictionary<string, List<Viat_sftp_export>> dicStfp = new Dictionary<string, List<Viat_sftp_export>>();
             List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x => x.category_id == "DistID" && x.status == "Y").OrderBy(x=>x.sys_key).ToList();
@@ -312,7 +313,8 @@ namespace VIAT.DataEntry.Services
                 }
             }
             msg = msg.TrimEnd(',');
-            return new WebResponseContent { Message = msg };
+            Response.Message = msg;
+            return Response;
         }
 
         /// <summary>
