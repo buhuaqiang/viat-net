@@ -2176,6 +2176,7 @@ namespace VIAT.Price.Services
                 }
                 Guid? custdbid = new Guid(cust_dbid);
                 List<Viat_app_cust_group> lstGroup = JsonConvert.DeserializeObject<List<Viat_app_cust_group>>(group);
+                UserInfo userInfo = Core.ManageUser.UserContext.Current.UserInfo;
                 foreach (var item in lstGroup)
                 {
                     ProceeGroup(saveModel, item, cust_dbid);
@@ -2185,6 +2186,8 @@ namespace VIAT.Price.Services
                     item.remarks = remark;
                     item.start_date = getFormatYYYYMMDD(start_date);
                     item.end_date = getFormatYYYYMMDD(end_date);
+                    item.modified_date = getFormatYYYYMMDD(DateTime.Now);
+                    item.modified_user = userInfo.User_Id;
                     item.bid_no = "";
                     custGroupResult.optionType = SaveModel.MainOptionType.add;
                     custGroupResult.DetailData.Add(JsonConvert.DeserializeObject<Dictionary<string, object>>(JsonConvert.SerializeObject(item)));
