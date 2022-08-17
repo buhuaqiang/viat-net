@@ -23,6 +23,7 @@ using VIAT.Contract.Repositories;
 using VIAT.Basic.Services;
 using System.Collections.Generic;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace VIAT.Contract.Services
 {
@@ -276,7 +277,24 @@ namespace VIAT.Contract.Services
             if (string.IsNullOrEmpty(hpcount_dbid))
             {
                 countResult.optionType = SaveModel.MainOptionType.add;
-                saveModel.MainData["hpcont_dbid"] = Guid.NewGuid().ToString();
+                var guid = Guid.NewGuid();
+                saveModel.MainData["hpcont_dbid"] = guid.ToString();
+
+                // 特殊处理，hpcont_dbid 会存在为null 的情况，导致ProcessCust序列化json异常
+                foreach (var item in saveModel.DetailData)
+                {
+                    if (!string.IsNullOrEmpty(item["value"]?.ToString()))
+                    {
+                        var obj = JsonConvert.DeserializeObject<List<JObject>>(item["value"].ToString());
+                        if (obj.Count == 0) { continue; }
+
+                        foreach (var x in obj)
+                        {
+                            x["hpcont_dbid"] = guid;
+                        }
+                        item["value"] = JsonConvert.SerializeObject(obj);
+                    }
+                }
                 saveModel.MainData["contract_no"] = getContractNo();
             }
             else
@@ -284,6 +302,33 @@ namespace VIAT.Contract.Services
                 countResult.optionType = SaveModel.MainOptionType.update;
             }
             countResult.detailType = typeof(Viat_app_hp_contract);
+            if (saveModel.MainData.GetValue("costomer_type")?.ToString() == "0")
+            {
+                saveModel.MainData["cust_dbid"] = "";
+                //isgroup为1时，则pricegroup
+                string sPriceGroupDBID = saveModel.MainData.GetValue("pricegroup_dbid")?.ToString();
+                //根据pricegroupid获取用户信息列表
+                List<Viat_com_cust> lstCust = Viat_com_custService.Instance.GetCustListByPriceGroupDBID(sPriceGroupDBID);
+                List<Dictionary<string, object>> dicLst = new List<Dictionary<string, object>>();
+                SaveModel.DetailListDataResult detailDataResult = new SaveModel.DetailListDataResult();
+
+                detailDataResult.detailType = typeof(Viat_app_hp_contract_cust);
+                foreach (Viat_com_cust cust in lstCust)
+                {
+                    //把用户信息转化实体
+                    Dictionary<string, object> dic = new Dictionary<string, object>();
+                    dic.Add("cust_dbid", cust.cust_dbid);
+                    dicLst.Add(dic);
+                }
+
+                detailDataResult.DetailData = dicLst;
+                saveModel.DetailListData.Add(detailDataResult);
+            }
+            else
+            {
+                saveModel.MainData["pricegroup_dbid"] = "";
+            }
+
             //增加表头处理
             countResult.DetailData.Add(saveModel.MainData);
             saveModel.DetailListData.Add(countResult);
