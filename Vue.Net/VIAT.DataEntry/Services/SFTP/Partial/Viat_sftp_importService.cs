@@ -67,7 +67,7 @@ namespace VIAT.DataEntry.Services
             _viat_com_prodRepository = viat_com_prodRepository;
             _viat_com_close_periodRepository = viat_com_close_periodRepository;
             _viat_imp_error_logRepository = viat_imp_error_logRepository;
-             _viat_app_sales_transferRepository = viat_app_sales_transferRepository;
+            _viat_app_sales_transferRepository = viat_app_sales_transferRepository;
             _viat_com_system_valueRepository = viat_com_system_valueRepository;
             _viat_app_stock_viatrisRepository = viat_app_stock_viatrisRepository;
             _viat_app_stock_distRepository = viat_app_stock_distRepository;
@@ -118,7 +118,7 @@ namespace VIAT.DataEntry.Services
         /// <param name="distId"></param>
         /// <param name="source"></param>
         /// <returns></returns>
-        public List<Viat_sftp_import> queryCSVFromSftp(string distId,string source)
+        public List<Viat_sftp_import> queryCSVFromSftp(string distId, string source)
         {
             this.Response = new WebResponseContent();
             List<Viat_sftp_import> fileNameList = new List<Viat_sftp_import>();
@@ -264,7 +264,7 @@ namespace VIAT.DataEntry.Services
             this.Response = new WebResponseContent();
             string msg = "";
             Dictionary<string, List<Viat_sftp_export>> dicStfp = new Dictionary<string, List<Viat_sftp_export>>();
-            List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x => x.category_id == "DistID" && x.status == "Y").OrderBy(x=>x.sys_key).ToList();
+            List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x => x.category_id == "DistID" && x.status == "Y").OrderBy(x => x.sys_key).ToList();
 
             if (systemValueList.Count() > 0)
             {
@@ -289,7 +289,7 @@ namespace VIAT.DataEntry.Services
                 IEnumerable<Viat_sftp_export> exportAble = dicStfp.SelectMany(x => x.Value);
                 List<Viat_sftp_export> SftpList = new List<Viat_sftp_export>();
                 SftpList.AddRange(exportAble);
-                
+
                 foreach (var item in SftpList)
                 {
                     if (item.file_name.IndexOf("sales") != -1)
@@ -304,9 +304,9 @@ namespace VIAT.DataEntry.Services
                     {
                         ImportInvdistCSV(localPath + item.file_name);
                     }
-                    File.Delete(localPath+item.file_name);
+                    File.Delete(localPath + item.file_name);
                     List<Viat_imp_error_log> errorLog = repository.DbContext.Set<Viat_imp_error_log>().Where(x => x.filenameimp == item.file_name).ToList();
-                    if (errorLog.Count()>0)
+                    if (errorLog.Count() > 0)
                     {
                         msg += errorLog[0].errormessage + ",";
                     }
@@ -406,17 +406,17 @@ namespace VIAT.DataEntry.Services
                     break;
             }
             dist = dist.ToLower();
-            string sftpPath = "/home/" +dist + "/Upload";
+            string sftpPath = "/home/" + dist + "/Upload";
             //fileNames[0] = "invpfizer_3_2022070719.csv";
             foreach (string fileName in fileNames)
             {
-                using(SFTPHelper sftpClient = new SFTPHelper())
+                using (SFTPHelper sftpClient = new SFTPHelper())
                 {
                     string remotePath = sftpPath + "/" + fileName;
                     string localPath = Path.Combine(Path.GetTempPath(), fileName);
                     sftpClient.CreateDirectory(remotePath);
                     sftpClient.Get(remotePath, localPath);
-                    if(File.Exists(localPath))
+                    if (File.Exists(localPath))
                     {
                         if (fileName.IndexOf("sales") != -1)
                         {
@@ -451,7 +451,7 @@ namespace VIAT.DataEntry.Services
         /// <param name="fileNames"></param>
         public void doImportCSVFromFile(string tempPath, string[] fileNames)
         {
-            
+
             this.Response = new WebResponseContent();
             foreach (string fileName in fileNames)
             {
@@ -538,7 +538,7 @@ namespace VIAT.DataEntry.Services
         /// <param name="neet_check_trans_date">為空的話表示排程執行，需檢查trans_date是否小於viat_com_close_period的sales_start_date-4，有值的話，不需檢查</param>
         private List<viat_app_sales_transfer> importSalesCSV(string filePath, string neet_check_trans_date = "")
         {
-            
+
             string newFile = Path.Combine(Path.GetDirectoryName(filePath), Path.GetFileNameWithoutExtension(filePath) + "_1" + Path.GetExtension(filePath));
             File.WriteAllText(newFile, File.ReadAllText(filePath, Encoding.GetEncoding(950)), Encoding.UTF8);
             int contentRowIndex = 0;
@@ -571,7 +571,7 @@ namespace VIAT.DataEntry.Services
                     string cust_id = data[7].ToString().Replace("'", "").Trim();
                     string prod_id = data[9].ToString().Replace("'", "").Trim();
                     DateTime? trans_date = null;
-                    if(data[4] != null  && string.IsNullOrEmpty( data[4].ToString().Replace("'", "") )==false)
+                    if (data[4] != null && string.IsNullOrEmpty(data[4].ToString().Replace("'", "")) == false)
                         trans_date = DateTime.ParseExact(data[4].ToString().Replace("'", ""), "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces);
                     string invoice_no = data[3].ToString().Replace("'", "");
                     string lot_no = data[15].ToString().Replace("'", "");
@@ -579,7 +579,7 @@ namespace VIAT.DataEntry.Services
                     Guid? cust_id_dbid = null;
                     Guid? prod_id_dbid = null;
                     string custName = "";
-                    bool flag = true; bool NotProd = false; bool NotCust = false; bool dataDup=false;
+                    bool flag = true; bool NotProd = false; bool NotCust = false; bool dataDup = false;
                     decimal _decimal = 0;
                     decimal? nhi_price = null, invoice_price = null, net_price = null;
 
@@ -651,7 +651,7 @@ namespace VIAT.DataEntry.Services
                         prod_content.Add(pr);
                     }
 
-                   
+
 
                     if (string.IsNullOrEmpty(neet_check_trans_date) && sales_start_date != null && trans_date < sales_start_date.Value.AddDays(-30))
                         flag = false;
@@ -662,13 +662,20 @@ namespace VIAT.DataEntry.Services
                     }
 
 
-                    //因為增加了ak_viat_app_sales_transfer, 所以多檢查是否有重覆資料
-                   /* List<viat_app_sales_transfer> oldlist= _viat_app_sales_transferRepository.Find(z => z.dist_id == dist_id && z.trans_date == trans_date && z.trans_type == trans_type && z.invoice_no == invoice_no && z.cust_dbid == cust_id_dbid && z.lot_no == lot_no && z.trans_class == trans_class && z.order_no == order_no);
-                    if(oldlist != null )
+                    //因為增加了ak_viat_app_sales_transfer, 所以多檢查是否有重覆資料  
+                    List<viat_app_sales_transfer> oldlist = _viat_app_sales_transferRepository.Find(z => (z.dist_id==null?"": z.dist_id) == dist_id
+                        && z.trans_date == trans_date
+                        && (z.trans_type == null ? "" : z.trans_type) == trans_type
+                        && (z.invoice_no == null ? "" : z.invoice_no) == invoice_no
+                        && z.cust_dbid == cust_id_dbid
+                        && (z.lot_no == null ? "" : z.lot_no) == lot_no
+                        && (z.trans_class == null ? "" : z.trans_class) == trans_class
+                        && (z.order_no == null?"": z.order_no) == order_no);
+                    if (oldlist.Any() )
                     {
                         flag = false;
                         dataDup = true;
-                    }*/
+                    }
 
                     #endregion
                     if (flag == true)
@@ -728,7 +735,7 @@ namespace VIAT.DataEntry.Services
                     else
                     {
                         #region error data
-                        string msg = "" ;
+                        string msg = "";
                         if (data.Count() < 18)
                             msg += "資料欄位有誤,";
                         if (string.IsNullOrEmpty(trans_type))
@@ -773,7 +780,7 @@ namespace VIAT.DataEntry.Services
                         }
                         if (string.IsNullOrEmpty(neet_check_trans_date) && sales_start_date != null && trans_date < sales_start_date.Value.AddDays(-30))
                             msg += "資料交易日期不可小於" + sales_start_date.Value.AddDays(-30).ToString("yyyy/MM/dd") + ",";
-                        if(dataDup)
+                        if (dataDup)
                         {
                             msg += "資料已存在,";
                         }
@@ -782,8 +789,8 @@ namespace VIAT.DataEntry.Services
                         fileText = string.Join(",", data);
                         errorDatas.Add(new Viat_imp_error_log
                         {
-                            errorlog_dbid= System.Guid.NewGuid(),   
-                          
+                            errorlog_dbid = System.Guid.NewGuid(),
+
                             created_date = DateTime.Now,
                             filenameimp = Path.GetFileName(filePath),
                             filetext = fileText + " " + Path.GetFileName(filePath),
@@ -812,11 +819,11 @@ namespace VIAT.DataEntry.Services
             {
                 try
                 {
-                    byte[] photo = GetPhoto(filePath);                    
+                    byte[] photo = GetPhoto(filePath);
                     Response = _viat_app_sales_transferRepository.DbContextBeginTransaction(() =>
                     {
                         _viat_app_sales_transferRepository.AddRange(result);
-                       int c= _viat_app_sales_transferRepository.SaveChanges();
+                        int c = _viat_app_sales_transferRepository.SaveChanges();
                         Response.OK(Core.Enums.ResponseType.SaveSuccess);
                         return Response;
                     });
@@ -832,7 +839,7 @@ namespace VIAT.DataEntry.Services
                     ImporterrorLog(errorDatas);
                     List<Viat_imp_error_log> successInfo = new List<Viat_imp_error_log>();
                     successInfo.Add(new Viat_imp_error_log
-                    {                        
+                    {
                         filenameimp = Path.GetFileName(filePath),
                         errormessage = " 檔案 import 成功 "
                     });
@@ -849,12 +856,12 @@ namespace VIAT.DataEntry.Services
                         errormessage = "Insert error!"
                     });
                     ImporterrorLog(errorDatas);
-                    
+
 
 
                     //Maintainer.AddToImportErrorLog(null, errorDatas, fileName);
                     return null;
-                }                               
+                }
             }
             return result;
         }
@@ -863,17 +870,25 @@ namespace VIAT.DataEntry.Services
         {
             Response = _viat_imp_error_logRepository.DbContextBeginTransaction(() =>
             {
+                List<Viat_imp_error_log> delErrorLogList = new List<Viat_imp_error_log>();
                 foreach (Viat_imp_error_log el in errorDatas)
                 {
                     List<Viat_imp_error_log> oldList = _viat_imp_error_logRepository.Find(x => x.filenameimp == el.filenameimp);
-                    if (oldList != null && oldList.Count > 0)
+                    if (oldList.Any())
                     {
-
-                        for (int c1 = 0; c1 < oldList.Count; c1++)
+                        foreach(Viat_imp_error_log olog in oldList)
                         {
-                            _viat_imp_error_logRepository.Delete(oldList[c1]);
+                            if (delErrorLogList.Find(dl => dl.errorlog_dbid == olog.errorlog_dbid) == null)
+                            {
+                                delErrorLogList.Add(olog);
+                            }
                         }
+                       
                     }
+                }
+                for (int c1 = 0; c1 < delErrorLogList.Count; c1++)
+                {
+                    _viat_imp_error_logRepository.Delete(delErrorLogList[c1]);
                 }
 
                 _viat_imp_error_logRepository.AddRange(errorDatas);
@@ -889,9 +904,9 @@ namespace VIAT.DataEntry.Services
         /// </summary>        
         /// <param name="filePath">檔案路徑</param>
         /// <returns></returns>
-        private List<Viat_app_stock_viatris > ImportInvpfizerCSV(string filePath)
+        private List<Viat_app_stock_viatris> ImportInvpfizerCSV(string filePath)
         {
-           
+
             int contentRowIndex = 0;
             List<Viat_app_stock_viatris> importDatas = new List<Viat_app_stock_viatris>();
             List<Viat_imp_error_log> errorDatas = new List<Viat_imp_error_log>();
@@ -921,10 +936,11 @@ namespace VIAT.DataEntry.Services
                         string prod_name = data[1].ToString().Replace("'", "");
                         string lot_no = data[3].ToString().Replace("'", "");
                         DateTime? expired_date = null;
-                        if(data[4] != null && string.IsNullOrEmpty(data[4].ToString().Replace("'", "")) ==false) {
+                        if (data[4] != null && string.IsNullOrEmpty(data[4].ToString().Replace("'", "")) == false)
+                        {
                             expired_date = DateTime.ParseExact(data[4].ToString().Replace("'", ""), "yyyyMMdd", null, System.Globalization.DateTimeStyles.AllowWhiteSpaces); //Convert.ToDateTime(data[4].ToString().Replace("'", ""));
                         }
-                           
+
                         string wh_id = data[7].ToString().Replace("'", "");
                         decimal qty = Convert.ToDecimal(data[5]);
                         Guid? prod_id_dbid = null;
@@ -959,7 +975,7 @@ namespace VIAT.DataEntry.Services
                             #region effect data
                             importDatas.Add(new Viat_app_stock_viatris
                             {
-                                stock_viatris_dbid=  System.Guid.NewGuid(),
+                                stock_viatris_dbid = System.Guid.NewGuid(),
                                 dist_prod_id = dist_product_id,
                                 lot_no = lot_no,
                                 expired_date = expired_date,
@@ -968,7 +984,7 @@ namespace VIAT.DataEntry.Services
                                 qty = qty,
                                 dist_id = dist_id,
                                 dist_upload_date = dist_upload_date,
-                                prod_dbid = prod_id_dbid,                    
+                                prod_dbid = prod_id_dbid,
                             });
                             temp.Add(new Viat_app_stock_viatris { lot_no = lot_no, prod_dbid = prod_id_dbid, wh_id = wh_id });
                             #endregion
@@ -1016,7 +1032,7 @@ namespace VIAT.DataEntry.Services
                 if (errorDatas.Count > 0)
                 {
                     ImporterrorLog(errorDatas);
-                    SendMailToDistributor(errorDatas);                   
+                    SendMailToDistributor(errorDatas);
                     return null;
                 }
                 else
@@ -1038,7 +1054,7 @@ namespace VIAT.DataEntry.Services
                             }
 
                             _viat_app_stock_viatrisRepository.AddRange(importDatas);
-                            int c= _viat_app_stock_viatrisRepository.SaveChanges();
+                            int c = _viat_app_stock_viatrisRepository.SaveChanges();
                             Response.OK(Core.Enums.ResponseType.SaveSuccess);
                             return Response;
                         });
@@ -1075,7 +1091,7 @@ namespace VIAT.DataEntry.Services
 
 
                         return null;
-                    }                    
+                    }
                 }
                 return importDatas;
             }
@@ -1090,7 +1106,7 @@ namespace VIAT.DataEntry.Services
                 });
                 ImporterrorLog(errorDatas);
                 SendMailToDistributor(errorDatas);
-                
+
                 return null;
             }
         }
@@ -1105,7 +1121,7 @@ namespace VIAT.DataEntry.Services
             Console.WriteLine("ImportInvdistCSV");
             int contentRowIndex = 0;
             List<Viat_app_stock_dist> importDatas = new List<Viat_app_stock_dist>();
-            List< Viat_imp_error_log> errorDatas = new List<Viat_imp_error_log>();
+            List<Viat_imp_error_log> errorDatas = new List<Viat_imp_error_log>();
             List<Viat_app_stock_dist> tmp = new List<Viat_app_stock_dist>();
 
             //先把該檔案轉成UTF8，否則會有亂碼
@@ -1167,7 +1183,8 @@ namespace VIAT.DataEntry.Services
                         {
                             msg += "產品代碼為空,";
                         }
-                            else {
+                        else
+                        {
                             Viat_com_prod pr = _viat_com_prodRepository.Find(y => y.prod_id == prod_id).FirstOrDefault();
                             if (pr == null)
                             {
@@ -1179,13 +1196,13 @@ namespace VIAT.DataEntry.Services
                                 prod_id_dbid = pr.prod_dbid;
                             }
                         }
-                        
+
 
                         if (flag == true)
                         {
                             importDatas.Add(new Viat_app_stock_dist
                             {
-                                stock_dist_dbid =  System.Guid.NewGuid(),
+                                stock_dist_dbid = System.Guid.NewGuid(),
                                 dist_upload_date = dist_upload_date,
                                 dist_id = dist_id,
                                 dist_prod_id = dist_prod_id,
@@ -1205,7 +1222,7 @@ namespace VIAT.DataEntry.Services
                                 start_date = start_date,
                                 end_date = end_date,
                                 prod_dbid = prod_id_dbid,
-                                created_date= dist_upload_date
+                                created_date = dist_upload_date
                             });
                             tmp.Add(new Viat_app_stock_dist { lot_no = lot_no, dist_prod_id = dist_prod_id });
                         }
@@ -1247,22 +1264,22 @@ namespace VIAT.DataEntry.Services
                 {
                     try
                     {
-                        
+
                         Response = _viat_app_stock_distRepository.DbContextBeginTransaction(() =>
                         {
-                            foreach(Viat_app_stock_dist sd in importDatas )
+                            foreach (Viat_app_stock_dist sd in importDatas)
                             {
                                 List<Viat_app_stock_dist> oldList = _viat_app_stock_distRepository.Find(x => x.dist_id == sd.dist_id && x.dist_upload_date == sd.dist_upload_date);
-                                if(oldList != null && oldList.Count > 0)
+                                if (oldList != null && oldList.Count > 0)
                                 {
-                                    for(int c1=0; c1 < oldList.Count; c1++)
+                                    for (int c1 = 0; c1 < oldList.Count; c1++)
                                     {
                                         _viat_app_stock_distRepository.Delete(oldList[c1]);
                                     }
                                 }
                             }
                             _viat_app_stock_distRepository.AddRange(importDatas, false);
-                            int c=_viat_app_stock_distRepository.SaveChanges();
+                            int c = _viat_app_stock_distRepository.SaveChanges();
                             Response.OK(Core.Enums.ResponseType.SaveSuccess);
                             return Response;
                         });
@@ -1325,8 +1342,8 @@ namespace VIAT.DataEntry.Services
 
             try
             {
-                Viat_com_system_value distMail=_viat_com_system_valueRepository.Find(x => x.category_id == "DistID" && x.sys_key == fileInfo[1]).FirstOrDefault();
-                if(distMail != null)
+                Viat_com_system_value distMail = _viat_com_system_valueRepository.Find(x => x.category_id == "DistID" && x.sys_key == fileInfo[1]).FirstOrDefault();
+                if (distMail != null)
                 {
                     string pattern = "\"(.*)\"";
                     Regex rg = new Regex(pattern);
@@ -1394,7 +1411,7 @@ namespace VIAT.DataEntry.Services
             }
             catch (Exception e)
             {
-                
+
             }
 
             return results;
