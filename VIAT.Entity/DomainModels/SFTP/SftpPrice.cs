@@ -20,6 +20,5 @@ namespace VIAT.Entity.DomainModels.SFTP
         public string group_name { get; set; }
         public string group_join_date { get; set; }
         public string status { get; set; }
-        public string group_id { get; set; }
     }
 }

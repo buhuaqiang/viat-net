@@ -6,7 +6,6 @@ namespace VIAT.Entity.DomainModels.SFTP
 {
     public class SftpOrder
     {
-        public string dbid { get; set; }
         public string order_no { get; set; }
         public string cust_id { get; set; }
         public string cust_name { get; set; }
@@ -14,6 +13,6 @@ namespace VIAT.Entity.DomainModels.SFTP
         public string prod_cname { get; set; }
         public string qty { get; set; }
         public string order_date { get; set; }
-        public string state { get; set; }
+        public string remarks { get; set; }
     }
 }

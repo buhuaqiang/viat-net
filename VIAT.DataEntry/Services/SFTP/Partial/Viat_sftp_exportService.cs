@@ -57,6 +57,11 @@ namespace VIAT.DataEntry.Services
         }
 
         WebResponseContent webResponse = new WebResponseContent();
+
+        /// <summary>
+        /// 汇总
+        /// </summary>
+        private List<SftpSummaryModel> SummaryList = new List<SftpSummaryModel>();
         /// <summary>
         /// 获取SFTP信息
         /// </summary>
@@ -142,6 +147,7 @@ namespace VIAT.DataEntry.Services
         public WebResponseContent ExecuteBatch()
         {
             WebResponseContent webContent = new WebResponseContent();
+            SummaryList = new List<SftpSummaryModel>();
 
             List<Viat_com_system_value> systemValueList = repository.DbContext.Set<Viat_com_system_value>().Where(x=>x.category_id == "DistID" && x.status == "Y").OrderBy(x=>x.sys_key).ToList();
             if (systemValueList.Count()>0)
@@ -175,6 +181,7 @@ namespace VIAT.DataEntry.Services
 
         public WebResponseContent SftpUpload(string s_type,string distId,string date)
         {
+            SftpSummaryModel summaryModel = new SftpSummaryModel();
             string s_Distributor = GetDistEName(distId);
             string dates = Convert.ToDateTime(date).ToString("yyyyMMdd");
             string path = "";
@@ -187,10 +194,15 @@ namespace VIAT.DataEntry.Services
                     {
                         return webResponse.Error("price no data");
                     }
+                    foreach (var item in priceList)
+                    {
+                        item.modified_time = item.modified_time.Replace(":","");
+                    }
                     strings = LocalPath(s_type, s_Distributor, dates);
                     FileSave<SftpPrice> priceFile = new FileSave<SftpPrice>();
-                    priceFile.CsvSave(strings[0], priceList);
+                    priceFile.CsvSaveValuesSingle(strings[0], priceList);
                     path = $"/home/{s_Distributor}/Download/";
+                    summaryModel.Count = priceList.Count();
                     break;
                 case "order":
                     List<SftpOrder> OrderList = GetSftpOrder(distId, dates);
@@ -198,21 +210,27 @@ namespace VIAT.DataEntry.Services
                     {
                         return webResponse.Error("order no data");
                     }
-                    strings = LocalPath(s_type, s_Distributor, dates);
-                    FileSave<SftpOrder> orderFile = new FileSave<SftpOrder>();
-                    orderFile.CsvSave(strings[0], OrderList);
-                    path = $"/home/{s_Distributor}/Download/";
-                    break;
-                case "Allowance":
-                    List<SftpAllowance> allowanceList = GetSftpAllowance(distId, dates);
-                    if (allowanceList.Count == 0)
+                    foreach (var item in OrderList)
                     {
-                        return webResponse.Error("Allowance no data");
+                        item.order_date = Convert.ToDateTime(item.order_date).ToString("yyyyMMdd");
                     }
                     strings = LocalPath(s_type, s_Distributor, dates);
-                    FileSave<SftpAllowance> alowanceFile = new FileSave<SftpAllowance>();
-                    alowanceFile.CsvSave(strings[0], allowanceList);
+                    FileSave<SftpOrder> orderFile = new FileSave<SftpOrder>();
+                    orderFile.CsvSaveValuesSingle(strings[0], OrderList);
                     path = $"/home/{s_Distributor}/Download/";
+                    summaryModel.Count = OrderList.Count();
+                    break;
+                case "Allowance":
+                    //List<SftpAllowance> allowanceList = GetSftpAllowance(distId, dates);
+                    //if (allowanceList.Count == 0)
+                    //{
+                    //    return webResponse.Error("Allowance no data");
+                    //}
+                    //strings = LocalPath(s_type, s_Distributor, dates);
+                    //FileSave<SftpAllowance> alowanceFile = new FileSave<SftpAllowance>();
+                    //alowanceFile.CsvSaveValues(strings[0], allowanceList);
+                    //path = $"/home/{s_Distributor}/Download/";
+                    //summaryModel.Count = allowanceList.Count();
                     break;
                 case "customer":
                     List<SftpCustomer> customerList = GetSftpCustomer(date);
@@ -222,12 +240,16 @@ namespace VIAT.DataEntry.Services
                     }
                     strings = LocalPath(s_type, s_Distributor, dates);
                     FileSave<SftpCustomer> customerFile = new FileSave<SftpCustomer>();
-                    customerFile.CsvSave(strings[0], customerList);
+                    customerFile.CsvSaveValues(strings[0], customerList);
                     path = $"/home/arich/Download/";
+                    summaryModel.Count = customerList.Count();
                     break;
             }
 
-            
+            summaryModel.PathName = path;
+            summaryModel.FileName = strings[1];
+            summaryModel.UpdateDate = DateTime.Now.ToString();
+            SummaryList.Add(summaryModel);
             using (SFTPHelper s = new SFTPHelper())
             {
                 //判断是否存在当天有相同的类型的文件夹
@@ -280,9 +302,7 @@ namespace VIAT.DataEntry.Services
         /// <returns></returns>
         public List<SftpPrice> GetSftpPrices(string distId,string dates)
         {
-            var priceList = repository.DapperContext.QueryMultiple<SftpPrice, SftpPrice>("sp_viat_price_to_distributor_data", new { @DistId = distId, @trans_date = dates }, System.Data.CommandType.StoredProcedure);
-            List<SftpPrice> priceB = priceList.Item2;
-            return priceB;
+            return repository.DapperContext.QueryList<SftpPrice>("sp_viat_price_to_distributor_data", new { @DistId = distId, @trans_date = dates }, System.Data.CommandType.StoredProcedure);
         }
         public List<SftpOrder> GetSftpOrder(string distId, string dates)
         {
@@ -300,8 +320,7 @@ namespace VIAT.DataEntry.Services
         public List<SftpCustomer> CustomerData(string date)
         {
             string sql = $@"SELECT a.cust_id,a.cust_name,a.invoice_name,a.cust_address,a.tax_id,a.tel_no 
-            , a.owner,a.contact, a.modified_date
-          
+            , a.owner,a.contact,CONVERT(varchar(100), a.modified_date, 112) as datey,right(cast(power(10,2) as varchar)+DATEPART(hour, a.modified_date),2)+right(cast(power(10,2) as varchar)+DATEPART(minute, a.modified_date),2)+right(cast(power(10,2) as varchar)+DATEPART(ss, a.modified_date),2) as dateh
             ,b.zip_id as invoice_zip_id,a.ctrl_drug_no,a.ctrl_drug_contact,a.doh_type,a.margin_type
             ,case when a.status = 'C' then 'N' else a.status end as status,a.remarks
             from viat_com_cust as a
@@ -480,6 +499,87 @@ namespace VIAT.DataEntry.Services
             File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
         }
 
+        public void CsvSaveValues(string path, List<T> list, string title = null)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (title != null)
+            {
+                sb.AppendLine(title);
+            }
+            Type tInfo = typeof(T);
+            //List<object> listHeader = new List<object>();
+            Dictionary<string, object> dictData = new Dictionary<string, object>();
+            foreach (PropertyInfo p in tInfo.GetProperties())
+            {
+                string key = p.Name;
+                if (GetAttributes<FileSaveAttribute>(key, out object isSave))
+                {
+                    if (!(bool)isSave)
+                    {
+                        continue;
+                    }
+                }
+                //不存在默认为保存
+                GetAttributes<DisplayNameAttribute>(key, out object displayName);
+                //listHeader.Add(displayName ?? key);
+                dictData[key] = null;
+            }
+            //sb.AppendLine(string.Join(",", listHeader));
+            foreach (var model in list)
+            {
+                foreach (PropertyInfo p in tInfo.GetProperties())
+                {
+                    string key = p.Name;
+                    if (dictData.ContainsKey(key))
+                    {
+                        dictData[key] = p.GetValue(model, null);
+                    }
+                }
+                sb.AppendLine(string.Join(",", dictData.Values));
+            }
+            File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
+        }
+        public void CsvSaveValuesSingle(string path, List<T> list, string title = null)
+        {
+            StringBuilder sb = new StringBuilder();
+            if (title != null)
+            {
+                sb.AppendLine(title);
+            }
+            Type tInfo = typeof(T);
+            //List<object> listHeader = new List<object>();
+            Dictionary<string, object> dictData = new Dictionary<string, object>();
+            foreach (PropertyInfo p in tInfo.GetProperties())
+            {
+                string key = p.Name;
+                if (GetAttributes<FileSaveAttribute>(key, out object isSave))
+                {
+                    if (!(bool)isSave)
+                    {
+                        continue;
+                    }
+                }
+                //不存在默认为保存
+                GetAttributes<DisplayNameAttribute>(key, out object displayName);
+                //listHeader.Add(displayName ?? key);
+                dictData[key] = null;
+            }
+            //sb.AppendLine(string.Join(",", listHeader));
+            foreach (var model in list)
+            {
+                foreach (PropertyInfo p in tInfo.GetProperties())
+                {
+                    string key = p.Name;
+                    if (dictData.ContainsKey(key))
+                    {
+                        dictData[key] = p.GetValue(model, null);
+                    }
+                }
+                object value = string.Join(",", dictData.Values);
+                sb.AppendLine(string.Format("'{0}'", value.ToString().Replace(",", "','")));
+            }
+            File.WriteAllText(path, sb.ToString(), Encoding.UTF8);
+        }
         /// <summary>
         /// 获取该属性设对应的特性值（若该属性没有这个特性会抛出异常）
         /// </summary>
@@ -514,6 +614,27 @@ namespace VIAT.DataEntry.Services
             }
             return false;
         }
+
+    }
+
+    internal class SftpSummaryModel
+    {
+        /// <summary>
+        /// SFTP保存地址
+        /// </summary>
+        public string PathName { get; set; }
+        /// <summary>
+        /// 文件名称
+        /// </summary>
+        public string FileName { get; set; }
+        /// <summary>
+        /// 保存时间
+        /// </summary>
+        public string UpdateDate { get; set; }
+        /// <summary>
+        /// 总数
+        /// </summary>
+        public int Count { get; set; }
 
     }
 }
