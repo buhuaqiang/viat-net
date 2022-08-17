@@ -308,11 +308,11 @@ namespace VIAT.Contract.Services
                     {
                         case "table1RowData":
                         case "delTable1RowData":
-                            ProcessCust(saveModel, HpContrant, dicTmp["value"]?.ToString());
+                            ProcessCust(saveModel, HpContrant, dicTmp["value"]?.ToString(), dicTmp["key"]?.ToString());
                             break;
                         case "table2RowData":
                         case "delTable2RowData":
-                            ProcessProd(saveModel, HpContrant, dicTmp["value"]?.ToString());
+                            ProcessProd(saveModel, HpContrant, dicTmp["value"]?.ToString(), dicTmp["key"]?.ToString());
                             break;
                         default:
                             break;
@@ -327,7 +327,7 @@ namespace VIAT.Contract.Services
         /// <param name="saveModel"></param>
         /// <param name="HpContrant"></param>
         /// <param name="s_cust"></param>
-        public void ProcessCust(SaveModel saveModel, Viat_app_hp_contract HpContrant,string s_cust)
+        public void ProcessCust(SaveModel saveModel, Viat_app_hp_contract HpContrant,string s_cust,string key)
         {
             if (!string.IsNullOrEmpty(s_cust))
             {
@@ -335,8 +335,12 @@ namespace VIAT.Contract.Services
                 foreach (var item in lstCust)
                 {
                     SaveModel.DetailListDataResult custResult = new SaveModel.DetailListDataResult();
-                    if (item.hpcontcust_dbid == null || item.hpcontcust_dbid.ToString() == getDefaultGuid(typeof(Viat_app_hp_contract_cust)))
+                    if (key.Equal("table1RowData"))
                     {
+                        if (item.hpcontcust_dbid != new Guid())
+                        {
+                            continue;
+                        }
                         custResult.optionType = SaveModel.MainOptionType.add;
                         item.hpcontcust_dbid = Guid.NewGuid();
                         item.hpcont_dbid = HpContrant.hpcont_dbid;
@@ -359,7 +363,7 @@ namespace VIAT.Contract.Services
         /// <param name="saveModel"></param>
         /// <param name="HpContrant"></param>
         /// <param name="s_prod"></param>
-        public void ProcessProd(SaveModel saveModel, Viat_app_hp_contract HpContrant, string s_prod)
+        public void ProcessProd(SaveModel saveModel, Viat_app_hp_contract HpContrant, string s_prod,string key)
         {
             if (!string.IsNullOrEmpty(s_prod))
             {
@@ -367,8 +371,12 @@ namespace VIAT.Contract.Services
                 foreach (var item in lstCust)
                 {
                     SaveModel.DetailListDataResult prodResult = new SaveModel.DetailListDataResult();
-                    if (item.hpcontfreeprod_dbid == null || item.hpcontfreeprod_dbid.ToString() == getDefaultGuid(typeof(Viat_app_hp_contract_free_prod)))
+                    if (key.Equal("table2RowData"))
                     {
+                        if (item.hpcontfreeprod_dbid != new Guid())
+                        {
+                            continue;
+                        }
                         prodResult.optionType = SaveModel.MainOptionType.add;
                         item.hpcontfreeprod_dbid = Guid.NewGuid();
                         item.hpcont_dbid = HpContrant.hpcont_dbid;
