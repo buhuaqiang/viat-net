@@ -27,6 +27,7 @@
     <ProjectReference Include="..\VIAT.Basic\VIAT.Basic.csproj" />
     <ProjectReference Include="..\VIAT.Contract\VIAT.Contract.csproj" />
     <ProjectReference Include="..\VIAT.DataEntry\VIAT.DataEntry.csproj" />
+    <ProjectReference Include="..\VIAT.DataProcessing\VIAT.DataProcessing.csproj" />
     <ProjectReference Include="..\VIAT.Price\VIAT.Price.csproj" />
     <ProjectReference Include="..\VIAT.Entity\VIAT.Entity.csproj" />
     <ProjectReference Include="..\VIAT.AppManager\VIAT.AppManager.csproj" />
