@@ -277,6 +277,7 @@ namespace VIAT.Contract.Services
             {
                 countResult.optionType = SaveModel.MainOptionType.add;
                 saveModel.MainData["hpcont_dbid"] = Guid.NewGuid().ToString();
+                saveModel.MainData["contract_no"] = getContractNo();
             }
             else
             {
