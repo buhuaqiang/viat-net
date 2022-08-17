@@ -22,6 +22,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Type")]
        [MaxLength(20)]
        [Column(TypeName="varchar(20)")]
+       [Required(AllowEmptyStrings=false)]
        public string type { get; set; }
 
        /// <summary>
@@ -30,6 +31,7 @@ namespace VIAT.Entity.DomainModels
        [Display(Name ="Distributor")]
        [MaxLength(10)]
        [Column(TypeName="varchar(10)")]
+       [Required(AllowEmptyStrings=false)]
        public string dist_id { get; set; }
 
        /// <summary>
@@ -37,7 +39,8 @@ namespace VIAT.Entity.DomainModels
        /// </summary>
        [Display(Name ="Date")]
        [Column(TypeName="datetime")]
-       public DateTime? transfer_date { get; set; }
+       [Required(AllowEmptyStrings=false)]
+       public DateTime transfer_date { get; set; }
 
        /// <summary>
        ///File Name

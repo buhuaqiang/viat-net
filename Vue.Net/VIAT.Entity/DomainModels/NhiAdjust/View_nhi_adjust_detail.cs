@@ -94,6 +94,14 @@ namespace VIAT.Entity.DomainModels
        [Editable(true)]
        public Guid? nhiadjustm_dbid { get; set; }
 
+       /// <summary>
+       ///Apply Allowance
+       /// </summary>
+       [Display(Name ="Apply Allowance")]
+       [MaxLength(1)]
+       [Column(TypeName="varchar(1)")]
+       public string apply_allow { get; set; }
+
        
     }
 }
