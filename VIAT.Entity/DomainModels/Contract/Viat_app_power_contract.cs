@@ -284,13 +284,13 @@ namespace VIAT.Entity.DomainModels
        [Column(TypeName="varchar(20)")]
        public string bu_id { get; set; }
 
-       /// <summary>
-       ///
-       /// </summary>
-       [Display(Name ="dbid")]
-       [Column(TypeName="int")]
-       [Required(AllowEmptyStrings=false)]
-       public int dbid { get; set; }
+       ///// <summary>
+       /////
+       ///// </summary>
+       //[Display(Name ="dbid")]
+       ////[Column(TypeName="int")]
+       ////[Required(AllowEmptyStrings=false)]
+       //public int dbid { get; set; }
 
        
     }
