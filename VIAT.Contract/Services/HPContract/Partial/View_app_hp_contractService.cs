@@ -58,7 +58,7 @@ namespace VIAT.Contract.Services
 
         public override PageGridData<View_app_hp_contract> GetPageData(PageDataOptions options)
         {
-           
+            PageGridData<View_app_hp_contract> pageGridData = new PageGridData<View_app_hp_contract>();
             /*解析查询条件*/
             List<SearchParameters> searchParametersList = new List<SearchParameters>();
             string contractNo = "";
@@ -84,38 +84,38 @@ namespace VIAT.Contract.Services
                         }
                         if (sp.Name.ToLower() == "start_date".ToLower())
                         {
-                            startDate = " and hp_contract.start_date>=" + sp.Value ;
+                            startDate = " and hp_contract.start_date>='" + sp.Value+"'" ;
                             continue;
                         }
                         if (sp.Name.ToLower() == "end_date".ToLower())
                         {
-                            endDate = " and hp_contract.end_date<=" + sp.Value;
+                            endDate = " and hp_contract.end_date<='" + sp.Value+"'";
                             continue;
                         }
                         if (sp.Name.ToLower() == "pricegroup_dbid".ToLower())
                         {
-                            groupDbid = " and ( hp_contract.pricegroup_dbid=" + sp.Value+")";
+                            groupDbid = " and ( hp_contract.pricegroup_dbid='" + sp.Value+"')";
                             continue;
                         }
                         if (sp.Name.ToLower() == "cust_dbid".ToLower())
                         {
-                            custDbid = " and ( c_cust.cust_dbid=" + sp.Value + ")";
+                            custDbid = " and ( c_cust.cust_dbid='" + sp.Value + "')";
                             innerCust = " INNER JOIN viat_app_hp_contract_cust  c_cust ON c_cust.hpcont_dbid = hp_contract.hpcont_dbid ";
                             continue;
                         }
                         if (sp.Name.ToLower() == "pu_prod_dbid".ToLower())
                         {
-                            cpProdDbid = " and ( EXISTS (SELECT 1 AS C1 FROM viat_app_hp_contract_purchase_prod  p_prod WHERE p_prod.prod_dbid =" + sp.Value + " AND hp_contract.hpcont_dbid = p_prod.hpcont_dbid ))";
+                            cpProdDbid = " and ( EXISTS (SELECT 1 AS C1 FROM viat_app_hp_contract_purchase_prod  p_prod WHERE p_prod.prod_dbid ='" + sp.Value + "' AND hp_contract.hpcont_dbid = p_prod.hpcont_dbid ))";
                             continue;
                         }
                         if (sp.Name.ToLower() == "cf_prod_dbid".ToLower())
                         {
-                            cfProdDbid = " and ( EXISTS (SELECT 1 AS C1 FROM viat_app_hp_contract_free_prod f_prod WHERE f_prod.prod_dbid  =" + sp.Value + " AND hp_contract.hpcont_dbid =  f_prod.hpcont_dbid ))";
+                            cfProdDbid = " and ( EXISTS (SELECT 1 AS C1 FROM viat_app_hp_contract_free_prod f_prod WHERE f_prod.prod_dbid  ='" + sp.Value + "' AND hp_contract.hpcont_dbid =  f_prod.hpcont_dbid ))";
                             continue;
                         }
                         if (sp.Name.ToLower() == "state".ToLower())
                         {
-                            status = " and hp_contract.state=" + sp.Value ;
+                            status = " and hp_contract.state='" + sp.Value +"'";
                             continue;
                         }
                     }
@@ -123,7 +123,7 @@ namespace VIAT.Contract.Services
             }
 
 
-            QuerySql = "select tab3.* , null as cf_prod_dbid ,null as pu_prod_dbid, " +
+            QuerySql = "select ROW_NUMBER()over(order by tab3.created_date desc) as rowId, tab3.* , null as cf_prod_dbid ,null as pu_prod_dbid, " +
         "(select top 1 cust_id from viat_app_hp_contract_cust c where c.hpcont_dbid= tab3.hpcont_dbid order by created_date desc ) as cust_id," +
         "(select top 1 cust_name from viat_app_hp_contract_cust c where c.hpcont_dbid= tab3.hpcont_dbid order by created_date desc ) as cust_name," +
         "(select substring(prod_id,0,len(prod_id)) prod_id from (select (select CONVERT(NVARCHAR, prod_id)+' , ' from (" +
@@ -163,9 +163,15 @@ namespace VIAT.Contract.Services
         ") tab3 " +
         "left outer join viat_com_cust c_cust on c_cust.cust_dbid=tab3.cust_dbid " +
         "left outer join viat_com_prod c_prod on c_prod.prod_dbid = tab3.prod_dbid ";
-       
 
-            return base.GetPageData(options);
+            string sql = "select count(1) from (" + QuerySql + ") a";
+            pageGridData.total = repository.DapperContext.ExecuteScalar(sql, null).GetInt();
+
+            sql = @$"select * from (" +
+                QuerySql + $" ) as s where s.rowId between {((options.Page - 1) * options.Rows + 1)} and {options.Page * options.Rows} ";
+            pageGridData.rows = repository.DapperContext.QueryList<View_app_hp_contract>(sql, null);
+
+            return pageGridData;
         }
 
         public string getContractNo()
