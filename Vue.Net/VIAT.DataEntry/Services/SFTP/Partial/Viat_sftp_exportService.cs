@@ -163,6 +163,13 @@ namespace VIAT.DataEntry.Services
                     SftpUpload("Allowance", item.sys_key, DateTime.Now.ToString("yyyy-MM-dd"));
                 }
             }
+            if (SummaryList.Count()>0)
+            {
+                foreach (var item in SummaryList)
+                {
+
+                }
+            }
             return webContent.OK("export success!");
         }
 
@@ -221,16 +228,16 @@ namespace VIAT.DataEntry.Services
                     summaryModel.Count = OrderList.Count();
                     break;
                 case "Allowance":
-                    //List<SftpAllowance> allowanceList = GetSftpAllowance(distId, dates);
-                    //if (allowanceList.Count == 0)
-                    //{
-                    //    return webResponse.Error("Allowance no data");
-                    //}
-                    //strings = LocalPath(s_type, s_Distributor, dates);
-                    //FileSave<SftpAllowance> alowanceFile = new FileSave<SftpAllowance>();
-                    //alowanceFile.CsvSaveValues(strings[0], allowanceList);
-                    //path = $"/home/{s_Distributor}/Download/";
-                    //summaryModel.Count = allowanceList.Count();
+                    List<SftpAllowance> allowanceList = GetSftpAllowance(distId, dates);
+                    if (allowanceList.Count == 0)
+                    {
+                        return webResponse.Error("Allowance no data");
+                    }
+                    strings = LocalPath(s_type, s_Distributor, dates);
+                    FileSave<SftpAllowance> alowanceFile = new FileSave<SftpAllowance>();
+                    alowanceFile.CsvSaveValues(strings[0], allowanceList);
+                    path = $"/home/{s_Distributor}/Download/";
+                    summaryModel.Count = allowanceList.Count();
                     break;
                 case "customer":
                     List<SftpCustomer> customerList = GetSftpCustomer(date);
