@@ -165,10 +165,42 @@ namespace VIAT.DataEntry.Services
             }
             if (SummaryList.Count()>0)
             {
-                foreach (var item in SummaryList)
+                using (SFTPHelper s = new SFTPHelper())
                 {
-
+                    FileSave<SftpSummaryModel> summaryFile = new FileSave<SftpSummaryModel>();
+                    foreach (var item in systemValueList)
+                    {
+                        string s_Distributor = GetDistEName(item.sys_key);
+                        var summary = SummaryList.Where(x => x.DicName == s_Distributor).ToList();
+                        if (summary.Count()>0)
+                        {
+                            string path = $"/home/{s_Distributor}/Download/";
+                            //本地文件和保存文件的名称
+                            string[] localPath = LocalPath("summary", s_Distributor, DateTime.Now.ToString("yyyyMMdd"));
+                            summaryFile.CsvSave(localPath[0], summary);
+                            //判断是否存在当天有相同的类型的文件夹
+                            List<Viat_sftp_export> exportList = s.GetFileList(path, ".csv");
+                            string csvName = $"summary_{s_Distributor}_{DateTime.Now.ToString("yyyyMMdd")}";
+                            var exportExtis = exportList.Where(x => x.file_name.Contains(csvName)).ToList();
+                            if (exportExtis.Count() > 0)
+                            {
+                                foreach (var items in exportExtis)
+                                {
+                                    s.Delete(path + items.file_name);
+                                }
+                            }
+                            s.CreateDirectory(path);
+                            if (!s.Put(localPath[0], path + localPath[1]))
+                            {
+                                File.Delete(localPath[0]);
+                                return webResponse.Error("fail to upload");
+                            }
+                            File.Delete(localPath[0]);
+                        }
+                        
+                    }
                 }
+                
             }
             return webContent.OK("export success!");
         }
@@ -209,7 +241,7 @@ namespace VIAT.DataEntry.Services
                     FileSave<SftpPrice> priceFile = new FileSave<SftpPrice>();
                     priceFile.CsvSaveValuesSingle(strings[0], priceList);
                     path = $"/home/{s_Distributor}/Download/";
-                    summaryModel.Count = priceList.Count();
+                    summaryModel.共计 = priceList.Count();
                     break;
                 case "order":
                     List<SftpOrder> OrderList = GetSftpOrder(distId, dates);
@@ -225,7 +257,7 @@ namespace VIAT.DataEntry.Services
                     FileSave<SftpOrder> orderFile = new FileSave<SftpOrder>();
                     orderFile.CsvSaveValuesSingle(strings[0], OrderList);
                     path = $"/home/{s_Distributor}/Download/";
-                    summaryModel.Count = OrderList.Count();
+                    summaryModel.共计 = OrderList.Count();
                     break;
                 case "Allowance":
                     List<SftpAllowance> allowanceList = GetSftpAllowance(distId, dates);
@@ -237,7 +269,7 @@ namespace VIAT.DataEntry.Services
                     FileSave<SftpAllowance> alowanceFile = new FileSave<SftpAllowance>();
                     alowanceFile.CsvSaveValues(strings[0], allowanceList);
                     path = $"/home/{s_Distributor}/Download/";
-                    summaryModel.Count = allowanceList.Count();
+                    summaryModel.共计 = allowanceList.Count();
                     break;
                 case "customer":
                     List<SftpCustomer> customerList = GetSftpCustomer(date);
@@ -249,13 +281,14 @@ namespace VIAT.DataEntry.Services
                     FileSave<SftpCustomer> customerFile = new FileSave<SftpCustomer>();
                     customerFile.CsvSaveValues(strings[0], customerList);
                     path = $"/home/arich/Download/";
-                    summaryModel.Count = customerList.Count();
+                    summaryModel.共计 = customerList.Count();
                     break;
             }
 
             summaryModel.PathName = path;
-            summaryModel.FileName = strings[1];
-            summaryModel.UpdateDate = DateTime.Now.ToString();
+            summaryModel.文件名称 = strings[1];
+            summaryModel.保存时间 = DateTime.Now.ToString();
+            summaryModel.DicName = s_Distributor;
             SummaryList.Add(summaryModel);
             using (SFTPHelper s = new SFTPHelper())
             {
@@ -600,22 +633,23 @@ namespace VIAT.DataEntry.Services
                 Attribute attr = Attribute.GetCustomAttribute(propertyInfo, attributeType);
                 if (attr != null)
                 {
-                    string attributeFieldName = string.Empty;
-                    switch (attributeType.Name)
-                    {
-                        case "CategoryAttribute": attributeFieldName = "categoryValue"; break;
-                        case "DescriptionAttribute": attributeFieldName = "description"; break;
-                        case "DisplayNameAttribute": attributeFieldName = "_displayName"; break;
-                        case "ReadOnlyAttribute": attributeFieldName = "isReadOnly"; break;
-                        case "BrowsableAttribute": attributeFieldName = "browsable"; break;
-                        case "DefaultValueAttribute": attributeFieldName = "value"; break;
-                        case "FileSaveAttribute": attributeFieldName = "Save"; break;
-                        default:
-                            return false;
-                    }
-                    PropertyDescriptorCollection attributes = TypeDescriptor.GetProperties(typeof(T));
-                    FieldInfo fieldInfo = attributeType.GetField(attributeFieldName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance);
-                    value = fieldInfo.GetValue(attributes[propertyInfo.Name].Attributes[attributeType]);
+                    //string attributeFieldName = string.Empty;
+                    //switch (attributeType.Name)
+                    //{
+                    //    case "CategoryAttribute": attributeFieldName = "categoryValue"; break;
+                    //    case "DescriptionAttribute": attributeFieldName = "description"; break;
+                    //    case "DisplayNameAttribute": attributeFieldName = "_displayName"; break;
+                    //    case "ReadOnlyAttribute": attributeFieldName = "isReadOnly"; break;
+                    //    case "BrowsableAttribute": attributeFieldName = "browsable"; break;
+                    //    case "DefaultValueAttribute": attributeFieldName = "value"; break;
+                    //    case "FileSaveAttribute": attributeFieldName = "Save"; break;
+                    //    default:
+                    //        return false;
+                    //}
+                    //PropertyDescriptorCollection attributes = TypeDescriptor.GetProperties(typeof(T));
+                    //FieldInfo fieldInfo = attributeType.GetField(attributeFieldName, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.CreateInstance);
+                    //value = fieldInfo.GetValue(attributes[propertyInfo.Name].Attributes[attributeType]);
+                    value = false;
                     return true;
                 }
             }
@@ -629,19 +663,25 @@ namespace VIAT.DataEntry.Services
         /// <summary>
         /// SFTP保存地址
         /// </summary>
+        [FileSaveAttribute(true)]
         public string PathName { get; set; }
         /// <summary>
         /// 文件名称
         /// </summary>
-        public string FileName { get; set; }
+        public string 文件名称 { get; set; }
         /// <summary>
         /// 保存时间
         /// </summary>
-        public string UpdateDate { get; set; }
+        public string 保存时间 { get; set; }
         /// <summary>
         /// 总数
         /// </summary>
-        public int Count { get; set; }
+        public int 共计 { get; set; }
+        /// <summary>
+        /// 经销商
+        /// </summary>
+        [FileSaveAttribute(true)]
+        public string DicName { get; set; }
 
     }
 }
