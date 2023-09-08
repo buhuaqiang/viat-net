@@ -10,12 +10,6 @@ bin/
 obj/
 publish/
 
-# local tools
-tools/
-
-# user-specific state
-*.sln.DotSettings.user
-
 ### STS/Eclipse ###
 .apt_generated
 .classpath

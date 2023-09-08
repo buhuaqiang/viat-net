@@ -1,0 +1,15 @@
+id: ad828afc-f704-4064-aa2b-a614547e3c26
+timestamp: 2023-09-08T03:02:26Z
+username: buhuaqiang
+source: TAP-GUI
+accelerator:
+  name: weatherforecast-csharp
+  source:
+    image: harbor-1.t2.lab/tanzu-application-platform/tap-packages@sha256:d08db384477a6a0b1b288b70aea1c1d24b7ea38edd726b4c1b977128e625046b
+fragments:
+  - name: tap-workload
+    source:
+      image: harbor-1.t2.lab/tanzu-application-platform/tap-packages@sha256:dbf0dedb6848ad8a7704c1c19465a1ddae9039b0e63c1dd0df3e2ed9cbda6093
+options:
+  applicationName: viatris-webapi-app
+  projectName: viatris-webapi
