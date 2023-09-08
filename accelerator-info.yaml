@@ -1,0 +1,22 @@
+id: 97bb6372-56df-4449-b736-690c0ba5ebea
+timestamp: 2023-09-08T01:22:26Z
+username: buhuaqiang
+source: TAP-GUI
+accelerator:
+  name: viatris-webapi
+  source:
+    image: harbor-1.t2.lab/tanzu-application-platform/tap-packages@sha256:54100c5b789a4984abf3c5551a2a2030dc6f720250f8f69c424a0e7e37102622
+fragments:
+  - name: steeltoe-postgresql
+    source:
+      image: harbor-1.t2.lab/tanzu-application-platform/tap-packages@sha256:e82638d1412409c4944ebeb2bfcfcb0d762a4adb323e9fda9cd8d7e7b00551cf
+  - name: tap-workload
+    source:
+      image: harbor-1.t2.lab/tanzu-application-platform/tap-packages@sha256:dbf0dedb6848ad8a7704c1c19465a1ddae9039b0e63c1dd0df3e2ed9cbda6093
+options:
+  applicationName: CustomerProfileAPI
+  databaseName: customer-database
+  databasePostgresStorageClass: default
+  databaseType: postgres
+  exposeOpenAPIEndpoint: false
+  projectName: viatris-webapi

@@ -1,0 +1,12 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: viatris-webapi
+  annotations:
+    "backstage.io/kubernetes-label-selector": "app.kubernetes.io/part-of=viatris-webapi"
+spec:
+  type: service
+  lifecycle: experimental
+  owner: default-team
+  providesApis:
+    - viatris-webapi
